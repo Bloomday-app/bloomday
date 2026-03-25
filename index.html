@@ -1,0 +1,544 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <meta name="theme-color" content="#E8891A" />
+  <meta name="description" content="Bloomday — Ne ratez plus jamais un anniversaire." />
+  <title>Bloomday — Onboarding + Calendrier + IA</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+    :root{
+      --b1:#F5A623;--b1l:#FEF3DC;--b1d:#7A4E00;
+      --b2:#E05C8A;--b2l:#FDEDF5;--b2d:#8C1450;
+      --b3:#18A86B;--b3l:#E3F9F0;--b3d:#0A5C3A;
+      --b4:#7C6EE0;--b4l:#F0EEFF;--b4d:#3A2FA0;
+      --bg:#FFFCF7;--bg2:#F8F2E9;--bg3:#EEE4D5;
+      --txt:#1A1510;--txt2:#786C5D;--txt3:#B4A898;
+      --brd:#E5DDD0;--brd2:#D1C4B2;--card:#fff;
+      --grad:linear-gradient(135deg,#F5A623,#E8891A,#E05C8A);
+      --grad2:linear-gradient(135deg,#fff3de,#fdebf4,#f0edff);
+      --shadow:0 14px 44px rgba(26,21,16,.09);
+      --rad:20px;--rad-sm:13px;
+    }
+    body{font-family:'Plus Jakarta Sans',sans-serif;background:linear-gradient(135deg,var(--bg3),var(--bg));color:var(--txt);min-height:100vh}
+    .app-shell{max-width:480px;margin:0 auto;background:var(--bg);min-height:100vh;box-shadow:0 10px 70px rgba(0,0,0,.08);position:relative;overflow:hidden}
+    .hidden{display:none!important}
+    .offline{background:#2B1700;color:#FAC75A;font-size:12px;font-weight:800;text-align:center;padding:8px 12px}
+    .topbar{position:sticky;top:0;z-index:50;padding:14px 16px;background:var(--grad);display:flex;align-items:center;justify-content:space-between}
+    .brand{display:flex;align-items:center;gap:10px}
+    .flower{width:40px;height:40px;border-radius:50%;background:rgba(255,255,255,.36);display:flex;align-items:center;justify-content:center;font-size:20px}
+    .title{font-family:'Playfair Display',serif;font-size:22px;font-weight:800;color:#3D1A00;line-height:1}
+    .subtitle{font-size:11px;color:rgba(61,26,0,.74);margin-top:2px}
+    .pill{border:none;background:rgba(61,26,0,.12);color:#3D1A00;font-size:11px;font-weight:800;padding:8px 10px;border-radius:999px}
+    .content{padding:16px}
+    .card{background:var(--card);border:1px solid var(--brd);border-radius:var(--rad);padding:14px;box-shadow:var(--shadow);margin-bottom:12px}
+    .card.soft{background:var(--bg2)}
+    .card.pink{background:var(--b2l);border-color:var(--b2)}
+    .card.green{background:var(--b3l);border-color:var(--b3)}
+    .card.purple{background:var(--b4l);border-color:var(--b4)}
+    .card.hero{background:var(--grad2);padding:18px}
+    .btn{border:none;border-radius:15px;padding:12px 14px;font-size:14px;font-weight:800;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:6px;font-family:inherit;transition:transform .14s ease,opacity .14s ease}
+    .btn:hover{transform:translateY(-1px)}
+    .btn.full{width:100%}
+    .btn.primary{background:var(--grad);color:#fff}
+    .btn.secondary{background:var(--card);color:var(--txt);border:1px solid var(--brd2)}
+    .btn.green{background:var(--b3l);color:var(--b3d);border:1px solid var(--b3)}
+    .btn.purple{background:var(--b4l);color:var(--b4d);border:1px solid var(--b4)}
+    .btn.orange{background:var(--b1l);color:var(--b1d);border:1px solid var(--b1)}
+    .btn.red{background:var(--b2l);color:var(--b2d);border:1px solid var(--b2)}
+    .btn.small{padding:9px 12px;font-size:12px}
+    .btn-row{display:flex;gap:8px;flex-wrap:wrap}
+    .section-title{font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.08em;color:var(--txt2);margin:16px 0 10px}
+    .grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+    .stat{background:var(--bg2);border:1px solid var(--brd);border-radius:16px;padding:12px;text-align:center}
+    .stat strong{display:block;font-family:'Playfair Display',serif;font-size:28px}.stat span{font-size:11px;color:var(--txt2);font-weight:700}
+    .nav{position:sticky;bottom:0;background:var(--card);border-top:1px solid var(--brd);display:grid;grid-template-columns:repeat(5,1fr);z-index:50}
+    .nav button{background:transparent;border:none;padding:12px 4px;font-size:11px;color:var(--txt3);font-weight:800}.nav button.active{color:var(--b2)}
+    .gbar{display:flex;gap:8px;overflow:auto;padding:10px 16px;background:var(--bg2);border-bottom:1px solid var(--brd)}
+    .gc{border:1px solid var(--brd2);background:transparent;border-radius:999px;padding:7px 12px;font-size:12px;font-weight:800;color:var(--txt2);white-space:nowrap}.gc.active{background:var(--grad);color:#fff;border-color:transparent}.gc.add{color:var(--b3);border-color:var(--b3)}
+    label{display:block;font-size:12px;color:var(--txt2);font-weight:800;margin:10px 0 5px}
+    input,select,textarea{width:100%;border:1px solid var(--brd2);border-radius:13px;padding:12px 13px;font-size:15px;background:var(--bg2);font-family:inherit;color:var(--txt)}
+    textarea{resize:vertical;min-height:86px}
+    .member{display:flex;gap:10px;padding:12px 0;border-bottom:1px solid var(--brd)}.member:last-child{border-bottom:none}
+    .avatar{width:46px;height:46px;border-radius:50%;background:var(--b1l);color:var(--b1d);display:flex;align-items:center;justify-content:center;font-weight:800;flex-shrink:0}
+    .member-meta{flex:1;min-width:0}.member-name{font-size:14px;font-weight:800;line-height:1.35}.member-sub{font-size:12px;color:var(--txt2);margin-top:2px;line-height:1.55}
+    .tag{display:inline-block;font-size:10px;font-weight:800;border-radius:999px;padding:3px 8px;margin-left:5px;vertical-align:middle}.tag.today{background:var(--b2l);color:var(--b2d)}.tag.soon{background:var(--b1l);color:var(--b1d)}.tag.ai{background:var(--b4l);color:var(--b4d)}
+    .msgbox{background:var(--bg2);border:1px solid var(--brd);border-radius:14px;padding:13px;font-size:13px;line-height:1.75;white-space:pre-wrap;margin-top:8px}
+    .search{position:relative;margin-bottom:12px}.search input{padding-left:40px}.search .icon{position:absolute;left:13px;top:50%;transform:translateY(-50%);color:var(--txt2)}
+    .notice{background:var(--b4l);border:1px solid var(--b4);color:var(--b4d);padding:12px 14px;border-radius:14px;font-size:13px;line-height:1.7}
+    .empty{text-align:center;padding:34px 16px;color:var(--txt2)}
+    .feature-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+    .feature{background:var(--card);border:1px solid var(--brd);border-radius:18px;padding:14px;box-shadow:var(--shadow)}
+    .feature i{font-style:normal;font-size:26px;display:block;margin-bottom:7px}.feature strong{display:block;font-size:13px;margin-bottom:4px}.feature p{font-size:12px;color:var(--txt2);line-height:1.55}
+    .plan{border:1.5px solid var(--brd);border-radius:18px;padding:16px;background:var(--card);margin-bottom:10px}.plan.pop{border-color:var(--b1)}
+    .price{font-family:'Playfair Display',serif;font-size:36px;font-weight:800;line-height:1}.muted{font-size:12px;color:var(--txt2);line-height:1.6}
+    .hero-head{padding:44px 22px 24px;background:var(--grad);text-align:center}.hero-head h1{font-family:'Playfair Display',serif;font-size:30px;line-height:1.2;color:#3D1A00;margin:16px 0 10px}.hero-head p{font-size:14px;line-height:1.7;color:#6A3100;max-width:330px;margin:0 auto 16px}.badge{display:inline-block;background:rgba(61,26,0,.12);color:#3D1A00;padding:6px 14px;border-radius:999px;font-size:12px;font-weight:800}
+    .calendar{background:var(--card);border:1px solid var(--brd);border-radius:20px;padding:14px;box-shadow:var(--shadow)}
+    .calendar-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}.calendar-title{font-family:'Playfair Display',serif;font-size:19px;font-weight:800}
+    .calendar-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:4px}.calendar-w{font-size:10px;text-align:center;color:var(--txt2);font-weight:800;padding:4px 0;text-transform:uppercase}
+    .calendar-d{aspect-ratio:1;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;position:relative;background:var(--bg2);color:var(--txt)}
+    .calendar-d.empty{opacity:0;background:transparent}.calendar-d.today{background:var(--grad);color:#fff}.calendar-d.has{background:var(--b2l);color:var(--b2d);cursor:pointer}.calendar-d.has::after{content:'';position:absolute;bottom:4px;left:50%;transform:translateX(-50%);width:5px;height:5px;border-radius:50%;background:currentColor}
+    .calendar-list{margin-top:12px}
+    .calendar-list-item{display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid var(--brd)}.calendar-list-item:last-child{border-bottom:none}
+    .dot{width:10px;height:10px;border-radius:50%;background:var(--b2)}
+    .ob-wrap{padding:28px 20px 34px;min-height:100vh;background:linear-gradient(160deg,#fff7ea,#fdeff5,#f3f0ff)}
+    .ob-steps{display:flex;gap:8px;margin-bottom:26px}.ob-step{height:4px;flex:1;background:rgba(0,0,0,.08);border-radius:999px}.ob-step.active{background:var(--grad)}
+    .ob-card{background:rgba(255,255,255,.75);backdrop-filter:blur(8px);border:1px solid rgba(255,255,255,.5);padding:20px;border-radius:24px;box-shadow:var(--shadow)}
+    .ob-icon{font-size:56px;margin-bottom:14px}.ob-title{font-family:'Playfair Display',serif;font-size:28px;line-height:1.2;margin-bottom:8px}.ob-desc{font-size:14px;color:var(--txt2);line-height:1.75;margin-bottom:18px}
+    .demo-bubble{background:var(--b3l);border:1px solid var(--b3);border-radius:16px;padding:14px;color:var(--b3d);font-size:13px;line-height:1.7;margin-top:12px;white-space:pre-wrap}
+    .fade-in{animation:fade .25s ease}@keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+    .tiny{font-size:11px;color:var(--txt2)}
+    .install-pill{background:var(--b3l);color:var(--b3d);padding:8px 12px;border-radius:999px;font-size:12px;font-weight:800;border:1px solid var(--b3)}
+    .codebox{background:#15100A;color:#F7EAD6;padding:12px 14px;border-radius:14px;font-size:12px;line-height:1.8;overflow:auto;font-family:ui-monospace,SFMono-Regular,Menlo,monospace}
+  </style>
+</head>
+<body>
+  <div class="app-shell">
+    <div id="offlineBanner" class="offline hidden">⚡ Mode hors-ligne — Bloomday passe en messages de secours</div>
+
+    <section id="landingScreen">
+      <div class="hero-head">
+        <div class="flower" style="margin:0 auto">🌸</div>
+        <h1>Bloomday</h1>
+        <p>Une app élégante pour ne plus jamais oublier un anniversaire, avec onboarding, calendrier visuel et branchement IA prêt pour la prod.</p>
+        <div class="badge">MVP premium · Calendrier · IA ready</div>
+        <div class="btn-row" style="justify-content:center;margin-top:18px">
+          <button class="btn primary" onclick="startApp('bloom')">🌸 Démarrer</button>
+          <button class="btn secondary" onclick="scrollToPlans()">Voir les plans</button>
+        </div>
+      </div>
+      <div class="content">
+        <div class="feature-grid">
+          <div class="feature"><i>✨</i><strong>Onboarding premium</strong><p>Un accueil propre et guidé pour transformer le site en vrai produit.</p></div>
+          <div class="feature"><i>📅</i><strong>Calendrier visuel</strong><p>Les anniversaires sont visibles d’un coup d’œil par mois.</p></div>
+          <div class="feature"><i>🤖</i><strong>IA prête</strong><p>Branchement prévu sur backend sécurisé, sans clé exposée.</p></div>
+          <div class="feature"><i>📱</i><strong>Mobile first</strong><p>Parfait pour tester ensuite une version installable.</p></div>
+        </div>
+        <div class="section-title" id="plansAnchor">Choisissez votre plan</div>
+        <div class="plan"><div class="tiny" style="font-weight:800;text-transform:uppercase;letter-spacing:.08em">Starter</div><div class="price">0€</div><div class="muted">10 membres · 1 groupe · 5 messages/mois</div></div>
+        <div class="plan pop"><div class="tiny" style="font-weight:800;text-transform:uppercase;letter-spacing:.08em">Bloom</div><div class="price">4,99€</div><div class="muted">Membres illimités · 5 groupes · messages illimités · cadeaux · cartes</div><div style="height:10px"></div><button class="btn primary full" onclick="startApp('bloom')">Utiliser ce plan</button></div>
+        <div class="plan"><div class="tiny" style="font-weight:800;text-transform:uppercase;letter-spacing:.08em">Business</div><div class="price">19,99€</div><div class="muted">Groupes illimités · logique équipe · anniversaires collaborateurs</div></div>
+      </div>
+    </section>
+
+    <section id="onboardingScreen" class="hidden">
+      <div class="ob-wrap">
+        <div class="ob-steps">
+          <div class="ob-step active" id="obStep0"></div>
+          <div class="ob-step" id="obStep1"></div>
+          <div class="ob-step" id="obStep2"></div>
+        </div>
+        <div class="ob-card fade-in" id="obContent"></div>
+      </div>
+    </section>
+
+    <section id="appScreen" class="hidden">
+      <div class="topbar">
+        <div class="brand">
+          <div class="flower">🌸</div>
+          <div>
+            <div class="title">Bloomday</div>
+            <div class="subtitle" id="todayLabel"></div>
+          </div>
+        </div>
+        <button class="pill" id="planBadge" onclick="goLanding()">Bloom ▾</button>
+      </div>
+      <div class="gbar" id="groupBar"></div>
+      <div class="content">
+        <section id="screen-home"></section>
+        <section id="screen-members" class="hidden"></section>
+        <section id="screen-add" class="hidden"></section>
+        <section id="screen-events" class="hidden"></section>
+        <section id="screen-more" class="hidden"></section>
+      </div>
+      <div class="nav">
+        <button id="nav-home" class="active" onclick="showScreen('home')">Accueil</button>
+        <button id="nav-members" onclick="showScreen('members')">Membres</button>
+        <button id="nav-add" onclick="showScreen('add')">Ajouter</button>
+        <button id="nav-events" onclick="showScreen('events')">Calendrier</button>
+        <button id="nav-more" onclick="showScreen('more')">Plus</button>
+      </div>
+    </section>
+  </div>
+
+  <script>
+    const MONTHS=["Janvier","Février","Mars","Avril","Mai","Juin","Juillet","Août","Septembre","Octobre","Novembre","Décembre"];
+    const SHORT_MONTHS=["Jan","Fév","Mar","Avr","Mai","Juin","Juil","Aoû","Sep","Oct","Nov","Déc"];
+    const WEEKDAYS=["D","L","M","M","J","V","S"];
+    const PLANS={
+      starter:{name:'Starter',maxMembers:10,maxGroups:1,maxMessages:5,gifts:false,cards:false,price:'0€'},
+      bloom:{name:'Bloom',maxMembers:999,maxGroups:5,maxMessages:999,gifts:true,cards:true,price:'4,99€'},
+      business:{name:'Business',maxMembers:999,maxGroups:999,maxMessages:999,gifts:true,cards:true,price:'19,99€'}
+    };
+    const HOLIDAYS=[
+      {name:"Jour de l'An",icon:"🎆",day:1,month:1},
+      {name:"Saint-Valentin",icon:"💝",day:14,month:2},
+      {name:"Journée des Femmes",icon:"🌸",day:8,month:3},
+      {name:"Fête de la Musique",icon:"🎵",day:21,month:6},
+      {name:"Fête Nationale",icon:"🇫🇷",day:14,month:7},
+      {name:"Halloween",icon:"🎃",day:31,month:10},
+      {name:"Noël",icon:"🎄",day:25,month:12}
+    ];
+
+    const storage={
+      async set(key,value){localStorage.setItem(key, JSON.stringify(value));},
+      async get(key){return {value:localStorage.getItem(key)}}
+    };
+    window.storage=storage;
+
+    let state={
+      plan:'bloom',
+      currentGroupId:'g1',
+      currentScreen:'home',
+      groups:[{id:'g1',name:'Mon groupe',icon:'🌸',members:[]}],
+      stats:{sent:0,generated:0,monthlyMessages:0},
+      favorites:[],
+      search:'',
+      onboardingDone:false,
+      calendar:{year:new Date().getFullYear(),month:new Date().getMonth()},
+      aiMode:'demo'
+    };
+    let onboardingIndex=0;
+
+    function uid(){return 'id-'+Math.random().toString(36).slice(2,10)+Date.now().toString(36)}
+    function planData(){return PLANS[state.plan]||PLANS.bloom}
+    function initials(name){return (name||'').trim().split(/\s+/).slice(0,2).map(x=>x[0]||'').join('').toUpperCase()||'?'}
+    function esc(str){return String(str||'').replace(/[&<>\"]/g,s=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;"}[s]))}
+    function now(){return new Date()}
+    function isToday(day,month){const d=now();return d.getDate()===day&&d.getMonth()+1===month}
+    function daysUntil(day,month){const n=new Date();n.setHours(0,0,0,0);const t=new Date(n.getFullYear(),month-1,day);t.setHours(0,0,0,0);if(t<n)t.setFullYear(t.getFullYear()+1);return Math.round((t-n)/86400000)}
+    function currentGroup(){return state.groups.find(g=>g.id===state.currentGroupId)||state.groups[0]}
+    function currentMembers(){return currentGroup()?.members||[]}
+    function findMember(id){return currentMembers().find(m=>m.id===id)}
+    function age(member){if(!member?.year)return null;return new Date().getFullYear()-member.year}
+    function save(){storage.set('bloomday_v2_state',state)}
+
+    async function load(){
+      const res=await storage.get('bloomday_v2_state');
+      if(res.value){try{state=JSON.parse(res.value)}catch(e){}}
+      if(!state.groups?.length){state.groups=[{id:'g1',name:'Mon groupe',icon:'🌸',members:[]}];state.currentGroupId='g1'}
+      boot();
+    }
+
+    function boot(){
+      if(!navigator.onLine)document.getElementById('offlineBanner').classList.remove('hidden');
+      if(!state.onboardingDone){showOnboarding();} else {showApp();}
+    }
+
+    function scrollToPlans(){document.getElementById('plansAnchor').scrollIntoView({behavior:'smooth'})}
+
+    function startApp(plan){state.plan=plan||'bloom';save();if(!state.onboardingDone){showOnboarding();} else {showApp();}}
+    function goLanding(){document.getElementById('appScreen').classList.add('hidden');document.getElementById('onboardingScreen').classList.add('hidden');document.getElementById('landingScreen').classList.remove('hidden')}
+
+    function showOnboarding(){
+      document.getElementById('landingScreen').classList.add('hidden');
+      document.getElementById('appScreen').classList.add('hidden');
+      document.getElementById('onboardingScreen').classList.remove('hidden');
+      onboardingIndex=0;renderOnboarding();
+    }
+
+    function renderOnboarding(){
+      ['obStep0','obStep1','obStep2'].forEach((id,i)=>document.getElementById(id).classList.toggle('active',i<=onboardingIndex));
+      const root=document.getElementById('obContent');
+      const screens=[
+        `
+          <div class="ob-icon">🌸</div>
+          <div class="ob-title">Bienvenue sur Bloomday</div>
+          <div class="ob-desc">Une app pensée pour célébrer les personnes qui comptent, avec une vraie sensation de produit premium dès l’ouverture.</div>
+          <div class="notice">Vous allez configurer votre première expérience en moins d’une minute.</div>
+          <div style="height:14px"></div>
+          <button class="btn primary full" onclick="nextOnboarding()">Commencer →</button>
+        `,
+        `
+          <div class="ob-icon">✨</div>
+          <div class="ob-title">Exemple de message Bloomday</div>
+          <div class="ob-desc">Voilà le type de rendu que l’app peut produire avec l’IA ou le moteur local.</div>
+          <div class="demo-bubble">Joyeux anniversaire Marie 🌸\nQue cette journée soit douce, lumineuse et remplie d’amour. Aujourd’hui on prend un moment pour te célébrer comme il se doit ✨</div>
+          <div style="height:14px"></div>
+          <button class="btn primary full" onclick="nextOnboarding()">Continuer →</button>
+        `,
+        `
+          <div class="ob-icon">🚀</div>
+          <div class="ob-title">Prêt à lancer ton espace</div>
+          <div class="ob-desc">Tu peux commencer maintenant, puis brancher une vraie IA plus tard avec un backend sécurisé.</div>
+          <div class="btn-row">
+            <button class="btn primary full" onclick="finishOnboarding()">Entrer dans l’app</button>
+          </div>
+        `
+      ];
+      root.innerHTML=`<div class="fade-in">${screens[onboardingIndex]}</div>`;
+    }
+
+    function nextOnboarding(){if(onboardingIndex<2){onboardingIndex++;renderOnboarding();}}
+    function finishOnboarding(){state.onboardingDone=true;save();showApp();}
+
+    function showApp(){
+      document.getElementById('landingScreen').classList.add('hidden');
+      document.getElementById('onboardingScreen').classList.add('hidden');
+      document.getElementById('appScreen').classList.remove('hidden');
+      renderAll();
+    }
+
+    function renderAll(){
+      document.getElementById('todayLabel').textContent=now().toLocaleDateString('fr-FR',{weekday:'long',day:'numeric',month:'long'});
+      document.getElementById('planBadge').textContent=(PLANS[state.plan]?.name||'Bloom')+' ▾';
+      renderGroupBar();
+      renderHome();
+      renderMembers();
+      renderAdd();
+      renderCalendar();
+      renderMore();
+      showScreen(state.currentScreen||'home');
+    }
+
+    function showScreen(name){
+      state.currentScreen=name;
+      ['home','members','add','events','more'].forEach(id=>{
+        document.getElementById('screen-'+id).classList.toggle('hidden',id!==name);
+        document.getElementById('nav-'+id).classList.toggle('active',id===name);
+      });
+      save();
+    }
+
+    function renderGroupBar(){
+      const el=document.getElementById('groupBar');
+      el.innerHTML=state.groups.map(g=>`<button class="gc ${g.id===state.currentGroupId?'active':''}" onclick="switchGroup('${g.id}')">${g.icon} ${esc(g.name)}</button>`).join('')+`<button class="gc add" onclick="addGroup()">＋ Groupe</button>`;
+    }
+
+    function switchGroup(id){state.currentGroupId=id;state.search='';save();renderAll();}
+    function addGroup(){
+      const plan=planData();
+      if(state.groups.length>=plan.maxGroups){alert(`Le plan ${plan.name} autorise ${plan.maxGroups} groupe(s) maximum.`);return;}
+      const name=prompt('Nom du groupe ?'); if(!name) return;
+      const icon=prompt('Icône du groupe ?', '🌸')||'🌸';
+      const g={id:uid(),name:name.trim(),icon:icon.trim(),members:[]};
+      state.groups.push(g);state.currentGroupId=g.id;save();renderAll();
+    }
+
+    function renderHome(){
+      const members=currentMembers();
+      const todays=members.filter(m=>isToday(m.day,m.month));
+      const next=members.slice().sort((a,b)=>daysUntil(a.day,a.month)-daysUntil(b.day,b.month))[0];
+      const upcoming=members.filter(m=>daysUntil(m.day,m.month)>0&&daysUntil(m.day,m.month)<=7).sort((a,b)=>daysUntil(a.day,a.month)-daysUntil(b.day,b.month));
+      const el=document.getElementById('screen-home');
+      let html=`<div class="grid3"><div class="stat"><strong>${members.length}</strong><span>Membres</span></div><div class="stat"><strong>${members.filter(m=>m.month===now().getMonth()+1).length}</strong><span>Ce mois</span></div><div class="stat"><strong>${state.stats.sent||0}</strong><span>Envoyés</span></div></div>`;
+      html+=`<div class="card hero"><div class="section-title" style="margin-top:0">Version 2 active</div><div style="font-size:18px;font-weight:800;margin-bottom:6px">Onboarding ✅ Calendrier ✅ IA ready ✅</div><div class="muted">Tu as maintenant les 3 options intégrées dans une seule version propre.</div></div>`;
+      if(next){html+=`<div class="card purple"><div class="section-title" style="margin-top:0">Prochain anniversaire</div><div style="font-size:18px;font-weight:800;color:var(--b4d)">${esc(next.name)}</div><div class="muted">${next.day} ${MONTHS[next.month-1]} · dans ${daysUntil(next.day,next.month)} jour(s)</div></div>`;}
+      if(todays.length){
+        html+=`<div class="section-title">🌸 Aujourd'hui</div>`;
+        todays.forEach(m=>html+=memberCard(m));
+      } else {
+        html+=`<div class="card soft" style="text-align:center"><div style="font-size:30px;margin-bottom:8px">🌸</div><div style="font-size:16px;font-weight:800;margin-bottom:4px">Aucun anniversaire aujourd'hui</div><div class="muted">Prépare les prochains messages ou ajoute un nouveau membre.</div></div>`;
+      }
+      if(upcoming.length){
+        html+=`<div class="section-title">Dans les 7 jours</div>`;
+        upcoming.forEach(m=>html+=memberCard(m));
+      }
+      if(!members.length){html+=`<div class="empty"><div style="font-size:42px">🎂</div><div style="font-size:17px;font-weight:800;margin:8px 0 6px">Ton groupe est vide</div><div>Ajoute ton premier membre dans l’onglet <strong>Ajouter</strong>.</div></div>`;}
+      el.innerHTML=html;
+    }
+
+    function memberCard(m){
+      const d=daysUntil(m.day,m.month);
+      return `<div class="card ${isToday(m.day,m.month)?'pink':''}"><div class="member" style="border-bottom:none;padding:0"><div class="avatar">${esc(initials(m.name))}</div><div class="member-meta"><div class="member-name">🎂 ${esc(m.name)} ${isToday(m.day,m.month)?'<span class="tag today">Aujourd\'hui</span>':d<=7?`<span class="tag soon">dans ${d}j</span>`:''}</div><div class="member-sub">${m.day} ${MONTHS[m.month-1]}${m.year?' '+m.year:''}${m.phone?' · '+esc(m.phone):''}${age(m)?' · '+age(m)+' ans':''}</div>${m.note?`<div class="member-sub">${esc(m.note)}</div>`:''}<div id="msg-${m.id}"></div><div class="btn-row" style="margin-top:8px"><button class="btn green small" onclick="generateMessage('${m.id}')">✨ Message</button><button class="btn purple small" onclick="generateGiftIdeas('${m.id}')">🎁 Cadeaux</button><button class="btn orange small" onclick="generateCard('${m.id}')">💌 Carte</button></div></div></div></div>`;
+    }
+
+    function renderMembers(){
+      const el=document.getElementById('screen-members');
+      const search=(state.search||'').toLowerCase().trim();
+      let members=currentMembers().slice().sort((a,b)=>a.month-b.month||a.day-b.day||a.name.localeCompare(b.name));
+      if(search)members=members.filter(m=>(m.name||'').toLowerCase().includes(search)||(m.phone||'').includes(search));
+      let html=`<div class="search"><span class="icon">🔎</span><input value="${esc(state.search||'')}" oninput="updateSearch(this.value)" placeholder="Rechercher un membre..."></div>`;
+      html+=`<div class="notice" style="margin-bottom:12px">Tu peux maintenant générer un message en mode <strong>démonstration locale</strong> ou brancher une vraie IA via backend sécurisé.</div>`;
+      if(!members.length){html+=`<div class="empty">${currentMembers().length?'Aucun résultat pour cette recherche.':'Aucun membre pour le moment.'}</div>`;} else {
+        html+=`<div class="card">`;
+        members.forEach(m=>{
+          const d=daysUntil(m.day,m.month);
+          html+=`<div class="member"><div class="avatar">${esc(initials(m.name))}</div><div class="member-meta"><div class="member-name">${esc(m.name)} ${isToday(m.day,m.month)?'<span class="tag today">Aujourd\'hui</span>':d<=7?`<span class="tag soon">dans ${d}j</span>`:''}</div><div class="member-sub">${m.day} ${MONTHS[m.month-1]}${m.year?' '+m.year:''}${m.phone?' · '+esc(m.phone):''}</div>${m.note?`<div class="member-sub">${esc(m.note)}</div>`:''}<div id="msg-${m.id}"></div><div class="btn-row"><button class="btn green small" onclick="generateMessage('${m.id}')">✨ Message</button><button class="btn orange small" onclick="editMember('${m.id}')">✏️ Modifier</button><button class="btn red small" onclick="deleteMember('${m.id}')">✕ Supprimer</button></div></div></div>`;
+        });
+        html+=`</div>`;
+      }
+      html+=`<button class="btn secondary full" onclick="exportData()">📄 Exporter les données</button>`;
+      el.innerHTML=html;
+    }
+
+    function updateSearch(v){state.search=v;save();renderMembers();}
+
+    function renderAdd(){
+      document.getElementById('screen-add').innerHTML=`<div class="section-title" style="margin-top:0">Nouveau membre</div><div class="card"><label>Prénom & Nom</label><input id="add-name" placeholder="Ex: Marie Dupont"><div class="grid3"><div><label>Jour</label><input id="add-day" type="number" min="1" max="31" placeholder="15"></div><div><label>Mois</label><select id="add-month">${SHORT_MONTHS.map((m,i)=>`<option value="${i+1}">${m}</option>`).join('')}</select></div><div><label>Année</label><input id="add-year" type="number" placeholder="1990"></div></div><label>Téléphone</label><input id="add-phone" placeholder="+33 6 12 34 56 78"><label>Genre</label><select id="add-gender"><option value="">Non précisé</option><option value="femme">👩 Femme</option><option value="homme">👨 Homme</option><option value="enfant">👶 Enfant</option></select><label>Notes personnelles</label><textarea id="add-note" placeholder="Aime la cuisine, la lecture, le foot, la musique..."></textarea><div style="height:14px"></div><button class="btn primary full" onclick="addMember()">🌸 Ajouter au groupe</button></div>`;
+    }
+
+    function addMember(){
+      const plan=planData(), group=currentGroup();
+      if(group.members.length>=plan.maxMembers){alert(`Le plan ${plan.name} autorise ${plan.maxMembers} membres maximum.`);return;}
+      const name=document.getElementById('add-name').value.trim();
+      const day=parseInt(document.getElementById('add-day').value,10); const month=parseInt(document.getElementById('add-month').value,10);
+      const year=parseInt(document.getElementById('add-year').value,10)||null; const phone=document.getElementById('add-phone').value.trim(); const gender=document.getElementById('add-gender').value; const note=document.getElementById('add-note').value.trim();
+      if(!name||!day||!month){alert('Nom, jour et mois sont obligatoires.');return;}
+      group.members.push({id:uid(),name,day,month,year,phone,gender,note}); save(); renderAll(); showScreen('members');
+    }
+
+    function editMember(id){
+      const m=findMember(id); if(!m) return;
+      const name=prompt('Nom',m.name); if(name===null) return;
+      const day=parseInt(prompt('Jour',m.day),10); if(!day) return;
+      const month=parseInt(prompt('Mois',m.month),10); if(!month) return;
+      const yearRaw=prompt('Année',m.year||''); const phone=prompt('Téléphone',m.phone||''); if(phone===null) return; const note=prompt('Notes',m.note||''); if(note===null) return;
+      m.name=name.trim();m.day=day;m.month=month;m.year=yearRaw?parseInt(yearRaw,10):null;m.phone=phone.trim();m.note=note.trim(); save(); renderAll(); showScreen('members');
+    }
+
+    function deleteMember(id){if(!confirm('Supprimer ce membre ?'))return; currentGroup().members=currentGroup().members.filter(m=>m.id!==id); save(); renderAll();}
+
+    function fallbackMessage(m){
+      const first=(m.name||'').split(' ')[0];
+      const additions=[];
+      if(m.note)additions.push(`On pense aussi à tout ce qui te rend unique : ${m.note}.`);
+      if(age(m))additions.push(`Nous te souhaitons une très belle nouvelle année pour tes ${age(m)} ans.`);
+      const arr=[
+        `Joyeux anniversaire ${first} 🌸\nQue cette journée soit douce, lumineuse et remplie de belles attentions. ${additions.join(' ')}`,
+        `${first}, aujourd’hui on prend un moment pour te célébrer comme il se doit ✨\nNous te souhaitons beaucoup de joie, de paix et de belles surprises. ${additions.join(' ')}`,
+        `Très joyeux anniversaire ${first} 🎂\nQue cette nouvelle année t’apporte du bonheur, de la sérénité et de très beaux souvenirs. ${additions.join(' ')}`
+      ];
+      return arr[Math.floor(Math.random()*arr.length)].trim();
+    }
+
+    async function generateAIMessage(m){
+      const payload={
+        name:m.name,age:age(m),phone:m.phone||'',gender:m.gender||'',note:m.note||'',tone:'chaleureux, élégant, sincère',event:'birthday'
+      };
+      const response=await fetch('/.netlify/functions/generate-message',{
+        method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)
+      });
+      if(!response.ok) throw new Error('Backend IA indisponible');
+      const data=await response.json();
+      return data.message || fallbackMessage(m);
+    }
+
+    function renderGenerated(id,text,type,aiUsed=false){
+      const box=document.getElementById('msg-'+id); if(!box) return;
+      box.innerHTML=`<div class="msgbox">${esc(text)}</div><div class="btn-row" style="margin-top:8px"><button class="btn secondary small" onclick="copyText(${JSON.stringify(text)})">📋 Copier</button><button class="btn green small" onclick="markSent()">✓ Envoyé</button>${type==='message'?`<button class="btn red small" onclick="toggleFavorite(${JSON.stringify(text)})">⭐ Favori</button>`:''}${aiUsed?'<span class="tag ai">IA</span>':''}</div>`;
+    }
+
+    async function generateMessage(id){
+      const plan=planData(); if((state.stats.monthlyMessages||0)>=plan.maxMessages){alert(`Limite mensuelle atteinte pour le plan ${plan.name}.`);return;}
+      const m=findMember(id); if(!m) return;
+      const box=document.getElementById('msg-'+id); if(box) box.innerHTML='<div class="msgbox">Génération en cours...</div>';
+      state.stats.generated=(state.stats.generated||0)+1; state.stats.monthlyMessages=(state.stats.monthlyMessages||0)+1; save();
+      try{
+        if(state.aiMode==='live' && navigator.onLine){
+          const txt=await generateAIMessage(m);
+          renderGenerated(id,txt,'message',true);
+        } else {
+          const txt=fallbackMessage(m);
+          renderGenerated(id,txt,'message',false);
+        }
+      }catch(e){
+        renderGenerated(id,fallbackMessage(m),'message',false);
+      }
+    }
+
+    function generateGiftIdeas(id){
+      const m=findMember(id); if(!m) return;
+      const ideas=[];
+      if(age(m)) ideas.push(`Âge pris en compte : ${age(m)} ans`);
+      if(m.note) ideas.push(`Profil repéré : ${m.note}`);
+      ideas.push('1. Un coffret gourmand ou thé/café premium (15€ à 35€)');
+      ideas.push('2. Un livre ou un carnet élégant selon ses goûts (12€ à 25€)');
+      ideas.push('3. Une petite expérience : resto, cinéma, atelier (25€ à 70€)');
+      ideas.push('4. Un accessoire utile et joli pour le quotidien (20€ à 50€)');
+      ideas.push('5. Une carte cadeau personnalisée avec un mot touchant (20€ à 100€)');
+      renderGenerated(id,ideas.join('\n'),'gift',false);
+    }
+
+    function generateCard(id){
+      const m=findMember(id); if(!m) return;
+      const first=(m.name||'').split(' ')[0];
+      const txt=`🌸 Joyeux anniversaire ${first} !\n\nQue cette journée t’apporte de la paix, de la joie et de très beaux souvenirs. Aujourd’hui, on te célèbre avec beaucoup d’affection. ✨`;
+      renderGenerated(id,txt,'card',false);
+    }
+
+    function copyText(t){navigator.clipboard.writeText(t||'').then(()=>alert('Texte copié.'))}
+    function markSent(){state.stats.sent=(state.stats.sent||0)+1; save(); renderAll(); alert('Message marqué comme envoyé.')}
+    function toggleFavorite(t){if(!state.favorites.includes(t)) state.favorites.push(t); save(); alert('Ajouté aux favoris.')}
+
+    function renderCalendar(){
+      const el=document.getElementById('screen-events');
+      const y=state.calendar.year, m=state.calendar.month;
+      const first=new Date(y,m,1); const start=first.getDay(); const daysInMonth=new Date(y,m+1,0).getDate();
+      const members=currentMembers().filter(x=>x.month===m+1).sort((a,b)=>a.day-b.day);
+      let html=`<div class="section-title" style="margin-top:0">Calendrier visuel</div><div class="calendar"><div class="calendar-head"><button class="btn secondary small" onclick="changeMonth(-1)">‹</button><div class="calendar-title">${MONTHS[m]} ${y}</div><button class="btn secondary small" onclick="changeMonth(1)">›</button></div><div class="calendar-grid">${WEEKDAYS.map(d=>`<div class="calendar-w">${d}</div>`).join('')}`;
+      for(let i=0;i<start;i++) html+=`<div class="calendar-d empty"></div>`;
+      for(let d=1;d<=daysInMonth;d++){
+        const has=members.some(mem=>mem.day===d);
+        const todayMark=(now().getDate()===d && now().getMonth()===m && now().getFullYear()===y);
+        html+=`<div class="calendar-d ${todayMark?'today':''} ${has?'has':''}" ${has?`onclick="focusDay(${d})"`:''}>${d}</div>`;
+      }
+      html+=`</div><div class="calendar-list" id="calendarList">`;
+      if(members.length){
+        members.forEach(mem=>{
+          html+=`<div class="calendar-list-item" id="day-${mem.day}"><div class="dot"></div><div style="flex:1"><div style="font-size:13px;font-weight:800">${mem.day} ${MONTHS[mem.month-1]} — ${esc(mem.name)}</div><div class="tiny">${mem.phone?esc(mem.phone):'Sans téléphone'}${mem.note?' · '+esc(mem.note):''}</div></div><button class="btn green small" onclick="generateMessage('${mem.id}')">✨</button></div>`;
+        });
+      } else {
+        html+=`<div class="empty" style="padding:20px 8px">Aucun anniversaire sur ce mois pour ce groupe.</div>`;
+      }
+      html+=`</div></div>`;
+
+      const nextHolidays=HOLIDAYS.map(h=>({...h,delta:daysUntil(h.day,h.month)})).sort((a,b)=>a.delta-b.delta).slice(0,5);
+      html+=`<div class="section-title">Fêtes proches</div><div class="card">`;
+      nextHolidays.forEach(h=>{
+        html+=`<div class="member"><div class="avatar" style="background:var(--b4l);color:var(--b4d)">${h.icon}</div><div class="member-meta"><div class="member-name">${h.name} ${h.delta===0?'<span class="tag today">Aujourd\'hui</span>':h.delta<=7?`<span class="tag soon">dans ${h.delta}j</span>`:''}</div><div class="member-sub">${h.day} ${MONTHS[h.month-1]}</div></div></div>`;
+      });
+      html+=`</div>`;
+      el.innerHTML=html;
+    }
+
+    function changeMonth(offset){
+      let m=state.calendar.month+offset, y=state.calendar.year;
+      if(m<0){m=11;y--;} if(m>11){m=0;y++;}
+      state.calendar.month=m; state.calendar.year=y; save(); renderCalendar();
+    }
+    function focusDay(day){document.getElementById('day-'+day)?.scrollIntoView({behavior:'smooth',block:'center'})}
+
+    function renderMore(){
+      const favs=state.favorites||[];
+      document.getElementById('screen-more').innerHTML=`
+        <div class="section-title" style="margin-top:0">Les 3 options ont été ajoutées</div>
+        <div class="card green"><div style="font-size:15px;font-weight:800;color:var(--b3d);margin-bottom:6px">✅ Ce qui est inclus maintenant</div><div class="muted" style="color:var(--b3d)">• onboarding premium\n• calendrier visuel mensuel\n• mode IA prêt pour un backend réel\n• stockage local stable\n• export des données</div></div>
+
+        <div class="section-title">Mode IA</div>
+        <div class="card">
+          <label>Choix du moteur</label>
+          <select onchange="setAiMode(this.value)">
+            <option value="demo" ${state.aiMode==='demo'?'selected':''}>Démo locale</option>
+            <option value="live" ${state.aiMode==='live'?'selected':''}>Backend IA réel</option>
+          </select>
+          <div style="height:10px"></div>
+          <div class="notice">Le mode <strong>live</strong> appelle <code>/.netlify/functions/generate-message</code>. Il faut créer une fonction serveur Netlify et y stocker ta clé API côté serveur.</div>
+        </div>
+
+        <div class="section-title">Exemple de fonction Netlify</div>
+        <div class="codebox">Crée le fichier :\nnetlify/functions/generate-message.js\n\nPuis branche ton fournisseur IA côté serveur.\nLe frontend est déjà prêt à appeler :\nPOST /.netlify/functions/generate-message</div>
+
+        <div class="section-title">Favoris</div>
+        <div class="card">${favs.length?favs.slice().reverse().map(f=>`<div class="msgbox" style="margin-top:0;margin-bottom:8px">${esc(f)}</div>`).join(''):'<div class="muted">Aucun favori pour le moment.</div>'}</div>
+
+        <div class="section-title">Outils</div>
+        <div class="btn-row"><button class="btn secondary" onclick="exportData()">📄 Exporter</button><button class="btn secondary" onclick="replayOnboarding()">✨ Revoir l’onboarding</button><button class="btn red" onclick="resetApp()">🗑 Réinitialiser</button></div>
+      `;
+    }
+
+    function setAiMode(v){state.aiMode=v; save(); renderMore();}
+    function replayOnboarding(){state.onboardingDone=false; save(); showOnboarding();}
+
+    function exportData(){const blob=new Blob([JSON.stringify(state,null,2)],{type:'application/json'});const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download='bloomday-data.json';a.click();URL.revokeObjectURL(url);}
+    function resetApp(){if(!confirm('Supprimer toutes les données locales ?'))return; localStorage.removeItem('bloomday_v2_state'); state={plan:'bloom',currentGroupId:'g1',currentScreen:'home',groups:[{id:'g1',name:'Mon groupe',icon:'🌸',members:[]}],stats:{sent:0,generated:0,monthlyMessages:0},favorites:[],search:'',onboardingDone:false,calendar:{year:new Date().getFullYear(),month:new Date().getMonth()},aiMode:'demo'}; goLanding();}
+
+    window.addEventListener('online',()=>document.getElementById('offlineBanner').classList.add('hidden'));
+    window.addEventListener('offline',()=>document.getElementById('offlineBanner').classList.remove('hidden'));
+
+    load();
+  </script>
+</body>
+</html>
