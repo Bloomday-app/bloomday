@@ -404,40 +404,48 @@
       return arr[Math.floor(Math.random()*arr.length)].trim();
     }
 
-    async function generateAIMessage(m){
-      const payload={
-        name:m.name,age:age(m),phone:m.phone||'',gender:m.gender||'',note:m.note||'',tone:'chaleureux, élégant, sincère',event:'birthday'
-      };
-      const response=await fetch('/.netlify/functions/generate-message',{
-        method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)
-      });
-      if(!response.ok) throw new Error('Backend IA indisponible');
-      const data=await response.json();
-      return data.message || fallbackMessage(m);
-    }
+async function generateAIMessage(m){
+  const payload={
+    name:m.name,
+    age:age(m),
+    phone:m.phone||'',
+    gender:m.gender||'',
+    note:m.note||'',
+    tone:'chaleureux, élégant, sincère',
+    event:'birthday'
+  };
+
+  const response=await fetch('/.netlify/functions/generate-message',{
+    method:'POST',
+    headers:{'Content-Type':'application/json'},
+    body:JSON.stringify(payload)
+  });
+
+  const data=await response.json();
+
+  if(!response.ok){
+    throw new Error(data.details || data.error || 'Erreur backend IA');
+  }
+
+  return data;
+}
 
     function renderGenerated(id,text,type,aiUsed=false){
       const box=document.getElementById('msg-'+id); if(!box) return;
       box.innerHTML=`<div class="msgbox">${esc(text)}</div><div class="btn-row" style="margin-top:8px"><button class="btn secondary small" onclick="copyText(${JSON.stringify(text)})">📋 Copier</button><button class="btn green small" onclick="markSent()">✓ Envoyé</button>${type==='message'?`<button class="btn red small" onclick="toggleFavorite(${JSON.stringify(text)})">⭐ Favori</button>`:''}${aiUsed?'<span class="tag ai">IA</span>':''}</div>`;
     }
 
-    async function generateMessage(id){
-      const plan=planData(); if((state.stats.monthlyMessages||0)>=plan.maxMessages){alert(`Limite mensuelle atteinte pour le plan ${plan.name}.`);return;}
-      const m=findMember(id); if(!m) return;
-      const box=document.getElementById('msg-'+id); if(box) box.innerHTML='<div class="msgbox">Génération en cours...</div>';
-      state.stats.generated=(state.stats.generated||0)+1; state.stats.monthlyMessages=(state.stats.monthlyMessages||0)+1; save();
-      try{
-        if(state.aiMode==='live' && navigator.onLine){
-          const txt=await generateAIMessage(m);
-          renderGenerated(id,txt,'message',true);
-        } else {
-          const txt=fallbackMessage(m);
-          renderGenerated(id,txt,'message',false);
-        }
-      }catch(e){
-        renderGenerated(id,fallbackMessage(m),'message',false);
-      }
-    }
+try{
+  if(state.aiMode==='live' && navigator.onLine){
+    const result=await generateAIMessage(m);
+    renderGenerated(id,result.message,'message',result.source==='openai');
+  } else {
+    const txt=fallbackMessage(m);
+    renderGenerated(id,txt,'message',false);
+  }
+}catch(e){
+  renderGenerated(id,`❌ Backend IA en erreur : ${e.message}`,'message',false);
+}
 
     function generateGiftIdeas(id){
       const m=findMember(id); if(!m) return;
