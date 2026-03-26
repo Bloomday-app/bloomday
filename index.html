@@ -563,12 +563,12 @@ async function generateAIMessage(m){
     load();
 state.aiMode = 'live';
 save();
- async function generateMessage(id){
-const allMembers = (state && Array.isArray(state.groups))
-  ? state.groups.flatMap(g => g.members || [])
-  : [];
+async function generateMessage(id){
+  const allMembers = (state && Array.isArray(state.groups))
+    ? state.groups.flatMap(g => g.members || [])
+    : [];
 
-const m = allMembers.find(x => String(x.id) === String(id));
+  const m = allMembers.find(x => String(x.id) === String(id));
 
   if (!m) {
     alert("Membre introuvable");
@@ -583,13 +583,15 @@ const m = allMembers.find(x => String(x.id) === String(id));
 
   if (!holder) {
     const btn = document.querySelector(`[onclick*="generateMessage(${id})"]`);
-    const card = btn ? btn.closest('.card, .prow, div') : null;
 
-    if (card) {
+    if (btn) {
+      const container = btn.parentElement;
+
       holder = document.createElement('div');
       holder.id = `m-msg-${id}`;
-      holder.style.marginTop = '10px';
-      card.appendChild(holder);
+      holder.style.marginTop = '12px';
+
+      container.appendChild(holder);
     }
   }
 
@@ -599,9 +601,7 @@ const m = allMembers.find(x => String(x.id) === String(id));
   }
 
   holder.innerHTML = `
-    <div class="mbox">
-      ⏳ Génération du message...
-    </div>
+    <div class="mbox">⏳ Génération du message...</div>
   `;
 
   try {
@@ -628,19 +628,14 @@ const m = allMembers.find(x => String(x.id) === String(id));
     }
 
     const text = data.message || 'Aucun message généré.';
-    const badge = data.source === 'openai'
-      ? '✅ Message généré par l’IA'
-      : '⚠️ Réponse sans confirmation IA';
+    const isAI = data.source === 'openai';
 
     holder.innerHTML = `
       <div class="mbox">${text}</div>
-      <div style="margin-top:8px;font-size:12px;color:${data.source === 'openai' ? 'green' : 'orange'};font-weight:700;">
-        ${badge}
+      <div style="margin-top:8px;font-size:12px;color:${isAI ? 'green' : 'orange'};font-weight:700;">
+        ${isAI ? '✅ Message généré par l’IA' : '⚠️ Réponse sans confirmation IA'}
       </div>
-      <div class="brow" style="margin-top:8px">
-        <button class="btn sm" onclick='copyMsg(this,${JSON.stringify("TEMP_PLACEHOLDER")})'>📋 Copier</button>
-      </div>
-    `.replace("TEMP_PLACEHOLDER", text.replace(/"/g, '\\"'));
+    `;
   } catch (e) {
     holder.innerHTML = `
       <div class="mbox">❌ Backend IA en erreur : ${e.message}</div>
