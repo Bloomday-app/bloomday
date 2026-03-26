@@ -561,6 +561,8 @@ async function generateAIMessage(m){
     window.addEventListener('offline',()=>document.getElementById('offlineBanner').classList.remove('hidden'));
 
     load();
+state.aiMode = 'live';
+save();
     async function generateMessage(id){
   const allMembers = members || [];
   const m = allMembers.find(x => String(x.id) === String(id));
