@@ -561,6 +561,29 @@ async function generateAIMessage(m){
     window.addEventListener('offline',()=>document.getElementById('offlineBanner').classList.remove('hidden'));
 
     load();
+    async function generateMessage(id){
+  if (typeof genMsg === 'function') {
+    return genMsg(id);
+  } else {
+    alert("Erreur : fonction genMsg introuvable");
+  }
+}
+
+async function generateGiftIdeas(id){
+  if (typeof genGift === 'function') {
+    return genGift(id);
+  } else {
+    alert("Erreur : fonction genGift introuvable");
+  }
+}
+
+async function generateCardMessage(id){
+  if (typeof genCard === 'function') {
+    return genCard(id);
+  } else {
+    alert("Erreur : fonction genCard introuvable");
+  }
+}
   </script>
 </body>
 </html>
