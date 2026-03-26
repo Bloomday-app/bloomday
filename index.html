@@ -564,8 +564,11 @@ async function generateAIMessage(m){
 state.aiMode = 'live';
 save();
  async function generateMessage(id){
-  const allMembers = members || [];
-  const m = allMembers.find(x => String(x.id) === String(id));
+const allMembers = (state && Array.isArray(state.groups))
+  ? state.groups.flatMap(g => g.members || [])
+  : [];
+
+const m = allMembers.find(x => String(x.id) === String(id));
 
   if (!m) {
     alert("Membre introuvable");
