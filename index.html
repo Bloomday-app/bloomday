@@ -562,7 +562,7 @@ async function generateAIMessage(m){
 
     load();
     async function generateMessage(id){
-  const allMembers = (typeof allMems === 'function') ? allMems() : [];
+  const allMembers = members || [];
   const m = allMembers.find(x => String(x.id) === String(id));
 
   if (!m) {
