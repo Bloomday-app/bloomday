@@ -88,42 +88,47 @@ Génère uniquement le message final.
       })
     });
 
-    if (!openaiResponse.ok) {
-      const errorText = await openaiResponse.text();
-      return new Response(
-        JSON.stringify({
-          error: "Erreur OpenAI",
-          details: errorText
-        }),
-        {
-          status: 500,
-          headers: { "Content-Type": "application/json" }
-        }
-      );
+if (!openaiResponse.ok) {
+  const errorText = await openaiResponse.text();
+  return new Response(
+    JSON.stringify({
+      error: "Erreur OpenAI",
+      details: errorText,
+      source: "backend_error"
+    }),
+    {
+      status: 500,
+      headers: { "Content-Type": "application/json" }
     }
+  );
+}
 
     const data = await openaiResponse.json();
-    const message =
-      data.output_text ||
-      "Joyeux anniversaire ! Que cette journée soit belle et remplie de joie.";
+const message =
+  data.output_text ||
+  "Joyeux anniversaire ! Que cette journée soit belle et remplie de joie.";
 
-    return new Response(
-      JSON.stringify({ message }),
-      {
-        status: 200,
-        headers: { "Content-Type": "application/json" }
-      }
-    );
-  } catch (error) {
-    return new Response(
-      JSON.stringify({
-        error: "Erreur serveur",
-        details: error.message
-      }),
-      {
-        status: 500,
-        headers: { "Content-Type": "application/json" }
-      }
-    );
+return new Response(
+  JSON.stringify({
+    message,
+    source: "openai"
+  }),
+  {
+    status: 200,
+    headers: { "Content-Type": "application/json" }
   }
+);
+} catch (error) {
+  return new Response(
+    JSON.stringify({
+      error: "Erreur serveur",
+      details: error.message,
+      source: "server_error"
+    }),
+    {
+      status: 500,
+      headers: { "Content-Type": "application/json" }
+    }
+  );
+}
 };
