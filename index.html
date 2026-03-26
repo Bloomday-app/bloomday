@@ -435,16 +435,30 @@ async function generateAIMessage(m){
       box.innerHTML=`<div class="msgbox">${esc(text)}</div><div class="btn-row" style="margin-top:8px"><button class="btn secondary small" onclick="copyText(${JSON.stringify(text)})">📋 Copier</button><button class="btn green small" onclick="markSent()">✓ Envoyé</button>${type==='message'?`<button class="btn red small" onclick="toggleFavorite(${JSON.stringify(text)})">⭐ Favori</button>`:''}${aiUsed?'<span class="tag ai">IA</span>':''}</div>`;
     }
 
-try{
-  if(state.aiMode==='live' && navigator.onLine){
-    const result=await generateAIMessage(m);
-    renderGenerated(id,result.message,'message',result.source==='openai');
-  } else {
-    const txt=fallbackMessage(m);
-    renderGenerated(id,txt,'message',false);
+async function generateAIMessage(m){
+  const payload={
+    name:m.name,
+    age:age(m),
+    phone:m.phone||'',
+    gender:m.gender||'',
+    note:m.note||'',
+    tone:'chaleureux, élégant, sincère',
+    event:'birthday'
+  };
+
+  const response=await fetch('/.netlify/functions/generate-message',{
+    method:'POST',
+    headers:{'Content-Type':'application/json'},
+    body:JSON.stringify(payload)
+  });
+
+  const data=await response.json();
+
+  if(!response.ok){
+    throw new Error(data.details || data.error || 'Erreur backend IA');
   }
-}catch(e){
-  renderGenerated(id,`❌ Backend IA en erreur : ${e.message}`,'message',false);
+
+  return data;
 }
 
     function generateGiftIdeas(id){
