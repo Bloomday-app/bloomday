@@ -563,7 +563,7 @@ async function generateAIMessage(m){
     load();
 state.aiMode = 'live';
 save();
-    async function generateMessage(id){
+ async function generateMessage(id){
   const allMembers = members || [];
   const m = allMembers.find(x => String(x.id) === String(id));
 
@@ -595,74 +595,54 @@ save();
     return;
   }
 
-  holder.innerHTML = `<div class="mload"><span class="spin">⟳</span> Génération...</div>`;
+  holder.innerHTML = `
+    <div class="mbox">
+      ⏳ Génération du message...
+    </div>
+  `;
 
   try {
-    if (typeof state !== 'undefined' && state.aiMode === 'live' && navigator.onLine) {
-      const payload = {
-        name: m.name,
-        age: (typeof age === 'function') ? age(m) : null,
-        phone: m.phone || '',
-        gender: m.gender || '',
-        note: m.note || '',
-        tone: 'chaleureux, élégant, sincère',
-        event: 'birthday'
-      };
+    const payload = {
+      name: m.name,
+      age: m.year ? (new Date().getFullYear() - m.year) : null,
+      phone: m.phone || '',
+      gender: m.gender || '',
+      note: m.note || '',
+      tone: 'chaleureux, élégant, sincère',
+      event: m.type || 'birthday'
+    };
 
-      const response = await fetch('/.netlify/functions/generate-message', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload)
-      });
+    const response = await fetch('/.netlify/functions/generate-message', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    });
 
-      const data = await response.json();
+    const data = await response.json();
 
-      if (!response.ok) {
-        throw new Error(data.details || data.error || 'Erreur backend IA');
-      }
-
-      const text = data.message || 'Aucun message généré.';
-      const isAI = data.source === 'openai';
-
-      if (typeof renderGenerated === 'function') {
-        renderGenerated(id, text, 'message', isAI);
-      } else {
-        holder.innerHTML = `
-          <div class="mbox">${text}</div>
-          <div style="margin-top:8px;font-size:12px;color:${isAI ? 'green' : 'orange'};font-weight:700;">
-            ${isAI ? '✅ Message généré par l’IA' : '⚠️ Message non confirmé IA'}
-          </div>
-        `;
-      }
-    } else {
-      const text = (typeof fallbackMessage === 'function')
-        ? fallbackMessage(m)
-        : "Joyeux anniversaire !";
-
-      if (typeof renderGenerated === 'function') {
-        renderGenerated(id, text, 'message', false);
-      } else {
-        holder.innerHTML = `
-          <div class="mbox">${text}</div>
-          <div style="margin-top:8px;font-size:12px;color:orange;font-weight:700;">
-            ⚠️ Message local
-          </div>
-        `;
-      }
+    if (!response.ok) {
+      throw new Error(data.details || data.error || 'Erreur backend IA');
     }
+
+    const text = data.message || 'Aucun message généré.';
+    const badge = data.source === 'openai'
+      ? '✅ Message généré par l’IA'
+      : '⚠️ Réponse sans confirmation IA';
+
+    holder.innerHTML = `
+      <div class="mbox">${text}</div>
+      <div style="margin-top:8px;font-size:12px;color:${data.source === 'openai' ? 'green' : 'orange'};font-weight:700;">
+        ${badge}
+      </div>
+      <div class="brow" style="margin-top:8px">
+        <button class="btn sm" onclick='copyMsg(this,${JSON.stringify("TEMP_PLACEHOLDER")})'>📋 Copier</button>
+      </div>
+    `.replace("TEMP_PLACEHOLDER", text.replace(/"/g, '\\"'));
   } catch (e) {
     holder.innerHTML = `
       <div class="mbox">❌ Backend IA en erreur : ${e.message}</div>
     `;
   }
-}
-
-async function generateGiftIdeas(id){
-  alert("La fonction cadeaux sera reconnectée après le message IA.");
-}
-
-async function generateCardMessage(id){
-  alert("La fonction carte sera reconnectée après le message IA.");
 }
   </script>
 </body>
