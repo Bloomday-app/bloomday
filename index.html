@@ -595,10 +595,20 @@ async function generateMessage(id){
     }
   }
 
-  if (!holder) {
-    alert("Zone d'affichage introuvable");
-    return;
-  }
+if (!holder) {
+  holder = document.createElement('div');
+  holder.style.position = 'fixed';
+  holder.style.bottom = '20px';
+  holder.style.left = '20px';
+  holder.style.right = '20px';
+  holder.style.background = '#fff';
+  holder.style.padding = '16px';
+  holder.style.borderRadius = '12px';
+  holder.style.boxShadow = '0 10px 30px rgba(0,0,0,0.2)';
+  holder.style.zIndex = '9999';
+
+  document.body.appendChild(holder);
+}
 
   holder.innerHTML = `
     <div class="mbox">⏳ Génération du message...</div>
