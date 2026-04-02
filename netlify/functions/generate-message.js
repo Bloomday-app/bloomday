@@ -23,15 +23,17 @@ export default async (request) => {
     }
 
     const body = await request.json();
-    const {
-      name = "quelqu’un",
-      age = null,
-      phone = "",
-      gender = "",
-      note = "",
-      tone = "chaleureux, élégant, sincère",
-      event = "birthday"
-    } = body || {};
+    const raw = body || {};
+
+    const ALLOWED_GENDERS = ["femme", "homme", "enfant", ""];
+    const ALLOWED_EVENTS  = ["birthday", "wedding", "work", ""];
+
+    const name   = String(raw.name   || "quelqu’un").slice(0, 60).replace(/[\r\n]/g, " ");
+    const age    = Number.isInteger(raw.age) && raw.age > 0 && raw.age < 130 ? raw.age : null;
+    const phone  = String(raw.phone  || "").slice(0, 20).replace(/[^\d\s+\-().]/g, "");
+    const gender = ALLOWED_GENDERS.includes(raw.gender) ? raw.gender : "";
+    const note   = String(raw.note   || "").slice(0, 200).replace(/[\r\n]/g, " ");
+    const event  = ALLOWED_EVENTS.includes(raw.event)   ? raw.event  : "birthday";
 
     const eventLabel =
       event === "birthday"
@@ -76,24 +78,22 @@ Bonus :
 Génère uniquement le message final.
 `;
 
-    const openaiResponse = await fetch("https://api.openai.com/v1/responses", {
+    const openaiResponse = await fetch("https://api.openai.com/v1/chat/completions", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
         "Authorization": `Bearer ${apiKey}`
       },
       body: JSON.stringify({
-        model: "gpt-5.4-mini",
-        input: prompt
+        model: "gpt-4o-mini",
+        messages: [{ role: "user", content: prompt }]
       })
     });
 
 if (!openaiResponse.ok) {
-  const errorText = await openaiResponse.text();
   return new Response(
     JSON.stringify({
       error: "Erreur OpenAI",
-      details: errorText,
       source: "backend_error"
     }),
     {
@@ -105,7 +105,7 @@ if (!openaiResponse.ok) {
 
     const data = await openaiResponse.json();
 const message =
-  data.output_text ||
+  data.choices?.[0]?.message?.content ||
   "Joyeux anniversaire ! Que cette journée soit belle et remplie de joie.";
 
 return new Response(
