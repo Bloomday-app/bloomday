@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
+<meta name="theme-color" content="#E8891A">
+<meta name="description" content="Bloomday — Ne ratez plus jamais un anniversaire. Messages IA, cadeaux, fêtes mondiales.">
+<title>Bloomday — Le jour où tu fleuris</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="css/app.css">
+</head>
+<body>
+
+<!-- SVG BLOOMDAY LOGO -->
+<svg style="display:none">
+<symbol id="bi" viewBox="0 0 36 36">
+  <defs>
+    <linearGradient id="blg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#F5A623"/>
+      <stop offset="100%" stop-color="#E05C8A"/>
+    </linearGradient>
+  </defs>
+  <path d="M7 4h12c3.5 0 6 2 6 5.5 0 1.8-.8 3.2-2 4.2 2 .9 3.2 2.6 3.2 4.8C26.2 22.5 23.5 25 19.5 25H7V4z" fill="url(#blg)"/>
+  <path d="M13 11.5c0-1.4 1.1-2.5 2.5-2.5 .7 0 1.3.3 1.7.7.4-.4 1-.7 1.7-.7 1.4 0 2.5 1.1 2.5 2.5 0 .8-.4 1.5-.9 2l-3.3 3.2-3.3-3.2c-.5-.5-.9-1.2-.9-2z" fill="white"/>
+  <path d="M11 25c0 0 1-4 4-5s5 1 5 1-2 5-5 5.5-4-1.5-4-1.5z" fill="#8BC34A"/>
+</symbol>
+</svg>
+
+<!-- ═══════ OFFLINE BANNER (Axe 5) ═══════ -->
+<div id="offline-banner" class="offline-banner" data-i18n="offlineMsg2" data-i18n="offlineBanner">⚡ Mode hors-ligne — Messages de secours disponibles</div>
+
+<!-- ═══════ ONBOARDING MAGIQUE (Axe 1) ═══════ -->
+<div id="ob-screen">
+<div class="wrap" style="min-height:100vh;background:var(--bg)">
+  <div class="ob-wrap">
+    <div class="ob-steps">
+      <div class="ob-step on" id="obs0"></div>
+      <div class="ob-step" id="obs1"></div>
+      <div class="ob-step" id="obs2"></div>
+    </div>
+
+    <!-- Step 0 : DÉMO LIVE avec faux membres -->
+    <div id="ob0">
+      <div class="ob-icon">🌸</div>
+      <div class="ob-title">Voici Bloomday en action</div>
+      <div class="ob-desc">Ce message a été généré en 5 secondes par l'IA pour une vraie personne de votre groupe. C'est ça, Bloomday.</div>
+      <div class="demo-card">
+        <div class="demo-member">
+          <div class="av av1" style="width:44px;height:44px;font-size:15px">MK</div>
+          <div>
+            <div style="font-size:15px;font-weight:700" data-i18n="ob0Name">🎂 Marie Kouamé</div>
+            <div style="font-size:12px;color:var(--txt2)" data-i18n="ob0Age">38 ans aujourd'hui</div>
+            <div class="demo-badge" data-i18n="ob0Today">🌸 Aujourd'hui !</div>
+          </div>
+        </div>
+        <div class="demo-msg" id="demo-ai-msg">
+          <span class="mload"><span class="spin">⟳</span> Génération du message...</span>
+        </div>
+      </div>
+      <button class="btn P fw" style="max-width:360px" onclick="obNext()" data-i18n="ob0Next2">C'est parti ! →</button>
+      <button class="btn" style="margin-top:10px;width:100%;max-width:360px;padding:12px" onclick="skipOb()" data-i18n="ob0Skip">Passer l'intro</button>
+    </div>
+
+    <!-- Step 1 : AJOUT 1er membre -->
+    <div id="ob1" style="display:none">
+      <div class="ob-icon">👤</div>
+      <div class="ob-title" data-i18n="ob1Title" data-i18n="ob1Title">Ajoutez votre premier membre</div>
+      <div class="ob-desc" data-i18n="ob1Desc" data-i18n="ob1Desc">Commencez par une personne qui compte vraiment pour vous. Juste son prénom et sa date d'anniversaire.</div>
+      <div class="ob-form">
+        <label data-i18n="labelName" data-i18n="nameLabel">Prénom &amp; Nom</label>
+        <input type="text" id="ob-name" data-i18n-placeholder="namePlaceholder" placeholder="Ex: Maman, Jean-Pierre, Pastor David…" autocomplete="off">
+        <div class="f2" style="margin-top:8px">
+          <div><label data-i18n="ob1DayLabel" data-i18n="dayLabel">Jour</label><input type="number" id="ob-day" placeholder="15" inputmode="numeric" pattern="[0-9]*" maxlength="2"></div>
+          <div><label data-i18n="ob1MonthLabel" data-i18n="monthLabel">Mois</label><select id="ob-month">
+            <option value="1">Jan</option><option value="2">Fév</option><option value="3">Mar</option>
+            <option value="4">Avr</option><option value="5">Mai</option><option value="6">Juin</option>
+            <option value="7">Juil</option><option value="8">Aoû</option><option value="9">Sep</option>
+            <option value="10">Oct</option><option value="11">Nov</option><option value="12">Déc</option>
+          </select></div>
+        </div>
+        <button class="btn P fw" style="margin-top:14px" onclick="obAddMember()" data-i18n="ob1AddBtn">Ajouter &amp; voir la magie →</button>
+      </div>
+      <button class="btn" style="margin-top:10px;width:100%;max-width:360px;padding:12px" onclick="skipOb()" data-i18n="obSkipBtn">Passer</button>
+    </div>
+
+    <!-- Step 2 : PREMIER MESSAGE IA généré -->
+    <div id="ob2" style="display:none">
+      <div class="ob-icon">✨</div>
+      <div class="ob-title" id="ob2-title">Message généré pour <span id="ob2-name">votre membre</span> !</div>
+      <div class="ob-desc" data-i18n="ob2Subtitle">Voici ce que Bloomday crée automatiquement. Vous pouvez le copier et l'envoyer sur WhatsApp.</div>
+      <div class="ob-ai-preview" id="ob2-msg">
+        <div class="mload"><span class="spin">⟳</span> Génération en cours...</div>
+      </div>
+      <div style="margin-top:16px;width:100%;max-width:360px">
+        <button class="btn P fw" onclick="finishOb()" data-i18n="ob2StartBtn">🌸 Commencer à utiliser Bloomday</button>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- ═══════ LANDING ═══════ -->
+<div id="land">
+<div class="wrap">
+<div class="hero">
+  <div class="hb1"></div><div class="hb2"></div>
+  <div class="hi2">
+    <div class="bl" style="justify-content:center">
+      <svg width="36" height="36" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="lg1" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#F5A623"/>
+      <stop offset="50%" stop-color="#E05C8A"/>
+      <stop offset="100%" stop-color="#E05C8A"/>
+    </linearGradient>
+  </defs>
+  <!-- Lettre B -->
+  <path d="M7 4h12c3.5 0 6 2 6 5.5 0 1.8-.8 3.2-2 4.2 2 .9 3.2 2.6 3.2 4.8C26.2 22.5 23.5 25 19.5 25H7V4z" fill="url(#lg1)"/>
+  <!-- Coeur blanc découpé dans le B -->
+  <path d="M13 11.5c0-1.4 1.1-2.5 2.5-2.5 .7 0 1.3.3 1.7.7.4-.4 1-.7 1.7-.7 1.4 0 2.5 1.1 2.5 2.5 0 .8-.4 1.5-.9 2l-3.3 3.2-3.3-3.2c-.5-.5-.9-1.2-.9-2z" fill="white"/>
+  <!-- Feuille verte -->
+  <path d="M11 25c0 0 1-4 4-5s5 1 5 1-2 5-5 5.5-4-1.5-4-1.5z" fill="#8BC34A"/>
+  <!-- Tige feuille -->
+  <path d="M15 25v3" stroke="#8BC34A" stroke-width="1.5" stroke-linecap="round"/>
+</svg>
+      <div><div class="bwm" style="font-size:24px;color:#3D1A00">Bloomday</div><span class="btag" style="color:#6B3000" data-i18n="heroTagline">Le jour où tu fleuris</span></div>
+    </div>
+    <h1 data-i18n="heroTitle1">Célébrez chaque personne<br data-i18n="heroTitle2">qui compte pour vous</h1>
+    <p data-i18n="heroSub2">Messages IA personnalisés, idées cadeaux, fêtes du monde entier.</p>
+    <div class="hbdg" data-i18n="heroCta" data-i18n="heroCta">🌸 7 jours gratuits · Sans carte bancaire</div>
+    <div class="mtgl">
+      <button class="mbt on" id="lbp" onclick="selMode('perso')" data-i18n="modePerso">👤 Particulier</button>
+      <button class="mbt" id="lbb" onclick="selMode('biz')" data-i18n="modeBiz">🏢 Entreprise</button>
+    </div>
+  </div>
+</div>
+
+<!-- PERSO -->
+<div id="lperso" class="lc">
+<div class="fgrid">
+  <div class="fci"><span class="fci-i">🌸</span><div class="fci-t" data-i18n="feat1Title">Faites fleurir les vôtres</div><div class="fci-d" data-i18n="feat1Desc" data-i18n="feat1Desc">Chaque anniversaire est une fleur à faire éclore.</div></div>
+  <div class="fci"><span class="fci-i">✨</span><div class="fci-t" data-i18n="feat2Title">Messages IA uniques</div><div class="fci-d" data-i18n="feat2Desc" data-i18n="feat2Desc">Adaptés à l'âge, au profil et à l'historique.</div></div>
+  <div class="fci"><span class="fci-i">🎁</span><div class="fci-t" data-i18n="feat3Title">Idées cadeaux IA</div><div class="fci-d" data-i18n="feat3Desc" data-i18n="feat3Desc">Personnalisées selon genre, âge et budget.</div></div>
+  <div class="fci"><span class="fci-i">🌍</span><div class="fci-t">50+ pays & religions</div><div class="fci-d" data-i18n="feat4Desc">Ramadan, Diwali, Pâques, fêtes nationales.</div></div>
+  <div class="fci"><span class="fci-i">💌</span><div class="fci-t" data-i18n="feat5Title">Cartes fleuries animées</div><div class="fci-d" data-i18n="feat5Desc" data-i18n="feat5Desc">Belles cartes pour WhatsApp et email.</div></div>
+  <div class="fci"><span class="fci-i">💰</span><div class="fci-t" data-i18n="feat6Title">Programme Ambassador</div><div class="fci-d" data-i18n="feat6Desc" data-i18n="feat6Desc">Parrainez et gagnez jusqu'à 30% de commission.</div></div>
+</div>
+
+<!-- Axe 8 : Plan selector horizontal -->
+<div style="font-family:var(--ff-title);font-size:22px;font-weight:700;margin-bottom:10px" data-i18n="choosePlan" data-i18n="choosePlanTitle">Choisissez votre plan</div>
+<div class="plan-sel">
+  <div class="plan-cards" id="plan-cards-perso">
+    <!-- Rempli par renderAllPlans('perso') -->
+  </div>
+  <div style="font-size:11px;color:var(--txt3);text-align:center;margin-top:2px" data-i18n="scrollHintPlans" data-i18n="scrollHintPlans">← Glissez pour voir tous les plans →</div>
+</div>
+
+<div style="font-family:var(--ff-title);font-size:20px;font-weight:700;margin-bottom:14px" data-i18n="reviewsTitle">Ils ont fleuri avec Bloomday</div>
+<div class="tstc"><p data-i18n="review1q">Bloomday a changé la dynamique de notre groupe. Tout le monde se sent vraiment célébré.</p><div class="tstc-a" data-i18n="review1a">Marie L. — Responsable d'association</div></div>
+<div class="tstc"><p data-i18n="review2q">80 collaborateurs gérés sans effort. Les messages IA sont parfaitement adaptés.</p><div class="tstc-a" data-i18n="review2a">Thomas B. — DRH, agence de communication</div></div>
+<div class="tstc"><p data-i18n="review3q">Ambassador Bronze depuis 3 mois. Déjà 2 mois gratuits et des commissions réelles !</p><div class="tstc-a">Karim M. — Ambassador Bloomday</div></div>
+<div style="text-align:center;font-size:12px;color:var(--txt2);padding-bottom:30px;margin-top:10px" data-i18n="securePayment" data-i18n="securePayment">🔒 RGPD · Paiement sécurisé · Annulation à tout moment</div>
+</div>
+
+<!-- BIZ -->
+<div id="lbiz" class="lc" style="display:none">
+<div class="fgrid">
+  <div class="fci"><span class="fci-i">🎂</span><div class="fci-t" data-i18n="bizFeature1">Anniversaires équipe</div><div class="fci-d" data-i18n="bizFeature2" data-i18n="bizFeature2">Zéro oubli. Messages pro automatiques.</div></div>
+  <div class="fci"><span class="fci-i">📆</span><div class="fci-t">Ancienneté auto</div><div class="fci-d" data-i18n="bizFeature3" data-i18n="bizFeature3">1, 5, 10, 20 ans célébrés automatiquement.</div></div>
+  <div class="fci"><span class="fci-i">📊</span><div class="fci-t">Import CSV</div><div class="fci-d" data-i18n="bizFeature4">Importez tous vos collaborateurs en 1 clic.</div></div>
+  <div class="fci"><span class="fci-i">💼</span><div class="fci-t">Ton professionnel</div><div class="fci-d" data-i18n="bizFeature5" data-i18n="bizFeature5">Adapté à votre culture d'entreprise.</div></div>
+</div>
+<div class="plan-sel">
+  <div class="plan-cards" id="plan-cards-biz">
+    <!-- Rempli par renderAllPlans('biz') -->
+  </div>
+  <div style="font-size:11px;color:var(--txt3);text-align:center;margin-top:2px">← Glissez pour voir tous les plans →</div>
+</div>
+<div style="text-align:center;font-size:12px;color:var(--txt2);padding-bottom:30px">🔒 RGPD · Paiement sécurisé · Annulation à tout moment</div>
+</div>
+</div>
+</div>
+
+<!-- ═══════ RIPPLE PAGE (Axe 6 — destinataire) ═══════ -->
+<div id="ripple">
+<div class="rflw"><svg width="80" height="80"><use href="#bi"/></svg></div>
+<div class="rtit" id="rname" data-i18n="rippleTitle" data-i18n="rippleCardTitle">Quelqu'un a pensé à toi aujourd'hui 🌸</div>
+<p style="font-size:14px;color:var(--b1d);margin-bottom:16px;opacity:.8" data-i18n="rippleSub" data-i18n="rippleCardSub">Via Bloomday — Le jour où tu fleuris</p>
+<div class="rcrd">
+  <div class="bcrd" style="margin-top:0">
+    <div class="bcrd-n" id="rrecip" data-i18n="rippleCardHappy">🌸 Joyeux Anniversaire !</div>
+    <div class="bcrd-m" id="rmsg" data-i18n="rippleMsg" data-i18n="rippleCardMsg">Un message spécial a été créé pour toi avec amour.</div>
+    <div style="font-size:28px">🌸🌺🌷✨🌻</div>
+  </div>
+</div>
+<!-- Boucle virale : destinataire peut répondre et s'inscrire -->
+<div class="ripple-thanks">
+  <div style="font-size:13px;font-weight:700;color:var(--b3d);margin-bottom:6px">💬 Envoyer un mot de remerciement</div>
+  <textarea id="rthanks" placeholder="Merci beaucoup, ça m'a fait très plaisir..."></textarea>
+  <button class="btn G fw" style="margin-top:8px" onclick="sendRippleThanks()">💬 Envoyer via WhatsApp</button>
+</div>
+<p style="font-size:13px;color:var(--b1d);margin-bottom:14px;max-width:300px" data-i18n="rippleCta">Toi aussi, fais fleurir les personnes qui comptent pour toi !</p>
+<button class="btn P fw" style="max-width:300px" onclick="goLand()"><span data-i18n="landCta">🌸 Créer mon Bloomday gratuit</span></button>
+<p style="font-size:11px;color:var(--b1d);margin-top:12px;opacity:.6" data-i18n="rippleFooter">Créé avec Bloomday · bloomday.app</p>
+</div>
+
+<!-- ═══════ APP ═══════ -->
+<div id="app" class="scr">
+<div class="wrap" style="display:flex;flex-direction:column;min-height:100vh;width:100%">
+
+<div class="topbar">
+  <div class="tb-l">
+    <svg width="30" height="30"><use href="#bi"/></svg>
+    <div><div class="tb-t">Bloomday</div><div class="tb-s" id="tbdate"></div></div>
+  </div>
+  <div class="tb-r">
+    <div class="ptag" id="tbplan" onclick="openPlanModal()">Bloom ▾</div>
+    <button class="tb-btn" onclick="goLand()" data-i18n="backToPlans">← Plans</button>
+  </div>
+</div>
+
+<div class="gbar" id="gbar"></div>
+
+<div class="scroll" id="mscroll">
+  <div id="s-home"></div>
+  <div id="s-members" style="display:none"></div>
+  <div id="s-add" style="display:none">
+    <div class="sh" data-i18n="newMemberTitle">🌸 Nouveau membre</div>
+    <div style="display:flex;align-items:center;gap:14px;margin-bottom:12px">
+      <div class="phu" id="phuprev" onclick="document.getElementById('phinp').click()">
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="10" r="3.5" stroke="#E8891A" stroke-width="1.5"/><path d="M4 20c0-4 3.582-7 8-7s8 3 8 7" stroke="#E8891A" stroke-width="1.5" stroke-linecap="round"/><path d="M17 6h4M19 4v4" stroke="#E8891A" stroke-width="1.5" stroke-linecap="round"/></svg>
+      </div>
+      <div><div style="font-size:13px;font-weight:700;color:var(--b1d)" data-i18n="memberProfileTitle">Photo de profil</div><div style="font-size:12px;color:var(--txt2);margin-top:2px" data-i18n="photoOptional">Optionnelle</div></div>
+    </div>
+    <input type="file" id="phinp" accept="image/*" style="display:none" onchange="prevPhoto(this)">
+    <label data-i18n="eventType">Type d'événement</label>
+    <select id="inp-type"><option value="birthday" data-i18n="evtBirthday">🎂 Anniversaire</option><option value="wedding" data-i18n="evtWedding">💍 Anniversaire de mariage</option><option value="work" data-i18n="evtWork">💼 Entrée dans l'entreprise</option><option value="custom" data-i18n="evtCustom">⭐ Événement personnalisé</option></select>
+    <div class="f3">
+      <div><label>Jour</label><input type="number" id="inp-day" placeholder="15" inputmode="numeric" pattern="[0-9]*" maxlength="2"></div>
+      <div><label>Mois</label><select id="inp-month"><option value="1">Jan</option><option value="2">Fév</option><option value="3">Mar</option><option value="4">Avr</option><option value="5">Mai</option><option value="6">Juin</option><option value="7">Juil</option><option value="8">Aoû</option><option value="9">Sep</option><option value="10">Oct</option><option value="11">Nov</option><option value="12">Déc</option></select></div>
+      <div><label data-i18n="yearLabel">Année</label><input type="number" id="inp-year" placeholder="1990" inputmode="numeric" pattern="[0-9]*" maxlength="4"></div>
+    </div>
+    <label>Prénom &amp; Nom</label><input type="text" id="inp-name" placeholder="Marie Dupont" autocomplete="off">
+    <label data-i18n="labelPhone" data-i18n="phoneLabel">Téléphone (WhatsApp)</label><input type="tel" id="inp-phone" placeholder="+33 6 12 34 56 78">
+    <label data-i18n="genderLabel2">Genre (pour idées cadeaux)</label>
+    <select id="inp-gender"><option value="" data-i18n="genderNone">Non précisé</option><option value="femme" data-i18n="genderF">👩 Femme</option><option value="homme" data-i18n="genderM">👨 Homme</option><option value="enfant" data-i18n="genderKid">👶 Enfant</option></select>
+    <label data-i18n="notesLabel2">Notes personnelles</label>
+    <textarea id="inp-note" placeholder="Aime la cuisine, responsable louange, passionné de sport..."></textarea>
+    <label data-i18n="importVcf2">Importer contact (.vcf)</label>
+    <input type="file" id="inp-vcf" accept=".vcf,.vcard" style="font-size:14px;padding:8px;background:var(--bg2);color:var(--txt)" onchange="impVCard(this)">
+    <label data-i18n="importCsv">Importer CSV entreprise</label>
+    <input type="file" id="inp-csv" accept=".csv" style="font-size:14px;padding:8px;background:var(--bg2);color:var(--txt)" onchange="impCSV(this)">
+    <div style="font-size:11px;color:var(--txt2);margin:3px 0 16px">Format : nom,jour,mois,année,téléphone</div>
+    <!-- Guide import contacts (Axe 10) -->
+    <div style="background:var(--b4l);border:1px solid var(--b4);border-radius:12px;padding:12px;margin-bottom:16px">
+      <div style="font-size:13px;font-weight:700;color:var(--b4d);margin-bottom:6px">📱 Exporter vos contacts iPhone en .vcf</div>
+      <div style="font-size:12px;color:var(--b4d);line-height:1.7">1. Ouvrez <strong>Contacts</strong> sur iPhone → sélectionnez un contact<br>2. Faites défiler → appuyez sur <strong>"Partager le contact"</strong><br>3. Choisissez <strong>"Copier"</strong> <span data-i18n="vcfStep3b">ou envoyez-vous le fichier .vcf</span><br data-i18n="vcfStep4b">4. Importez-le ici avec le bouton ci-dessus</div>
+    </div>
+    <button class="btn P fw" onclick="addMember()" data-i18n="addToGroupBtn">🌸 Ajouter au groupe</button>
+  </div>
+  <div id="s-events" style="display:none"></div>
+  <div id="s-cal" style="display:none"></div>
+  <div id="s-more" style="display:none"></div>
+</div>
+
+<div class="nav">
+  <button class="nb on" id="nb0" onclick="showSec('home',0)">
+    <svg viewBox="0 0 22 22" fill="none"><rect x="3" y="10" width="16" height="10" rx="2" stroke="currentColor" stroke-width="1.4"/><path d="M1 11L11 3l10 8" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg><span class="nbl" data-i18n="navHome">Accueil</span>
+  </button>
+  <button class="nb" id="nb1" onclick="showSec('members',1)">
+    <svg viewBox="0 0 22 22" fill="none"><circle cx="8" cy="7" r="3.5" stroke="currentColor" stroke-width="1.4"/><path d="M2 19c0-3.314 2.686-6 6-6s6 2.686 6 6" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/><circle cx="16" cy="8" r="2.5" stroke="currentColor" stroke-width="1.4"/><path d="M19 19c0-2.21-1.343-4-3-4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg><span class="nbl" data-i18n="navMembers">Membres</span>
+  </button>
+  <button class="nb" id="nb2" onclick="showSec('add',2)">
+    <svg viewBox="0 0 22 22" fill="none"><circle cx="11" cy="11" r="8.5" stroke="currentColor" stroke-width="1.4"/><path d="M11 7v8M7 11h8" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg><span class="nbl" data-i18n="navAdd">Ajouter</span>
+  </button>
+  <button class="nb" id="nb3" onclick="showSec('events',3)">
+    <svg viewBox="0 0 22 22" fill="none"><path d="M11 3C7.686 3 5 5.686 5 9c0 5 6 10 6 10s6-5 6-10c0-3.314-2.686-6-6-6z" stroke="currentColor" stroke-width="1.4"/><circle cx="11" cy="9" r="2" stroke="currentColor" stroke-width="1.4"/></svg><span class="nbl" data-i18n="navEvents">Fêtes</span>
+  </button>
+  <button class="nb" id="nb4" onclick="showSec('more',4)">
+    <svg viewBox="0 0 22 22" fill="none"><circle cx="11" cy="5" r="1.5" fill="currentColor"/><circle cx="11" cy="11" r="1.5" fill="currentColor"/><circle cx="11" cy="17" r="1.5" fill="currentColor"/></svg><span class="nbl" data-i18n="navMore">Plus</span>
+  </button>
+</div>
+</div>
+</div>
+
+<!-- MODAL GROUPE — création sans prompt() -->
+<div id="mgrp" class="ov">
+<div class="mbox2">
+  <div class="mt" data-i18n="groupModalTitle">🌸 Nouveau groupe</div>
+  <label data-i18n="labelGroupName">Nom du groupe</label>
+  <input type="text" id="grp-name-inp" data-i18n-placeholder="groupNamePlaceholder" placeholder="Ex: Famille, Église, Équipe…"
+    autocomplete="off" autocorrect="off" style="font-size:16px"
+    onkeydown="if(event.key==='Enter'){confirmAddGroup();}">
+  <label style="margin-top:14px" data-i18n="groupIconLabel" data-i18n="modalGroupIcon">Choisir une icône</label>
+  <div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:6px;margin-bottom:16px" id="grp-icons">
+    <button class="icon-sel on" data-icon="🌸" onclick="selGrpIcon(this)">🌸</button>
+    <button class="icon-sel" data-icon="👨‍👩‍👧" onclick="selGrpIcon(this)">👨‍👩‍👧</button>
+    <button class="icon-sel" data-icon="💼" onclick="selGrpIcon(this)">💼</button>
+    <button class="icon-sel" data-icon="⛪" onclick="selGrpIcon(this)">⛪</button>
+    <button class="icon-sel" data-icon="🎓" onclick="selGrpIcon(this)">🎓</button>
+    <button class="icon-sel" data-icon="🎵" onclick="selGrpIcon(this)">🎵</button>
+    <button class="icon-sel" data-icon="🌍" onclick="selGrpIcon(this)">🌍</button>
+    <button class="icon-sel" data-icon="🏥" onclick="selGrpIcon(this)">🏥</button>
+    <button class="icon-sel" data-icon="🕌" onclick="selGrpIcon(this)">🕌</button>
+    <button class="icon-sel" data-icon="✝️" onclick="selGrpIcon(this)">✝️</button>
+    <button class="icon-sel" data-icon="🏆" onclick="selGrpIcon(this)">🏆</button>
+    <button class="icon-sel" data-icon="❤️" onclick="selGrpIcon(this)">❤️</button>
+    <button class="icon-sel" data-icon="🦁" onclick="selGrpIcon(this)">🦁</button>
+    <button class="icon-sel" data-icon="🎪" onclick="selGrpIcon(this)">🎪</button>
+    <button class="icon-sel" data-icon="💫" onclick="selGrpIcon(this)">💫</button>
+  </div>
+  <div class="brow">
+    <button class="btn G fw" id="grp-ok" style="flex:1;padding:13px" onclick="confirmAddGroup()"><span data-i18n="groupConfirmBtn">✓ Créer le groupe</span></button>
+    <button class="btn" style="padding:13px" onclick="closeOv('mgrp')" data-i18n="cancel" data-i18n="groupCancelBtn">Annuler</button>
+  </div>
+</div>
+</div>
+<style>
+.icon-sel{font-size:22px;padding:8px 10px;border-radius:10px;border:2px solid var(--brd2);background:var(--card);cursor:pointer;transition:all .15s;line-height:1}
+.icon-sel:hover{background:var(--bg2);transform:scale(1.1)}
+.icon-sel.on{border-color:var(--b1);background:var(--b1l);transform:scale(1.15);box-shadow:0 2px 8px rgba(245,166,35,.3)}
+</style>
+
+<!-- MODAL NOTE -->
+<div id="mnote" class="ov">
+<div class="mbox2">
+  <div class="mt" data-i18n="addNoteBtn">✏️ Ajouter une note personnelle</div>
+  <textarea id="ntxt" placeholder="Ex: Mentionne son nouveau travail..." style="min-height:90px"></textarea>
+  <div class="brow" style="margin-top:14px">
+    <button class="btn G fw" id="nok" style="flex:1;padding:13px">✓ Valider</button>
+    <button class="btn" style="padding:13px" onclick="closeOv('mnote')">Annuler</button>
+  </div>
+</div>
+</div>
+
+<!-- MODAL PLANS -->
+<div id="mplan" class="ov">
+<div class="mbox2">
+  <div class="mt" data-i18n="changePlanBtn">🌸 Changer de plan</div>
+  <div id="mplan-c"></div>
+  <button class="btn fw" style="margin-top:12px;padding:12px" onclick="closeOv('mplan')" data-i18n="closeBtn">Fermer</button>
+</div>
+</div>
+
+
+
+<!-- Sélecteur langue -->
+<div class="lang-sel" id="lang-sel" onclick="toggleLangDd()">
+  <span>🌍</span><span id="lang-cur">FR</span>
+</div>
+<div class="lang-dd" id="lang-dd">
+  <div class="lang-opt on" data-lang="fr" data-i18n-langname="fr" onclick="pickLang('fr')">🇫🇷 Français</div>
+  <div class="lang-opt" data-lang="en" data-i18n-langname="en" onclick="pickLang('en')">🇬🇧 English</div>
+  <div class="lang-opt" data-lang="es" data-i18n-langname="es" onclick="pickLang('es')">🇪🇸 Español</div>
+  <div class="lang-opt" data-lang="ar" data-i18n-langname="ar" onclick="pickLang('ar')">🇸🇦 العربية</div>
+  <div class="lang-opt" data-lang="hi" data-i18n-langname="hi" onclick="pickLang('hi')">🇮🇳 हिन्दी</div>
+  <div class="lang-opt" data-lang="zh" data-i18n-langname="zh" onclick="pickLang('zh')">🇨🇳 中文</div>
+  <div class="lang-opt" data-lang="pt" data-i18n-langname="pt" onclick="pickLang('pt')">🇧🇷 Português</div>
+</div>
+<!-- Modale Inscription -->
+<div id="m-auth" class="ov">
+<div class="mbox2">
+  <div class="mt" id="auth-title" data-i18n="authTitle">🌸 Créer mon compte</div>
+  <div style="display:flex;gap:8px;margin-bottom:14px">
+    <button class="ptab on" id="auth-tab-s" onclick="switchAuthTab('signup')" data-i18n="authCreate">Créer</button>
+    <button class="ptab" id="auth-tab-l" onclick="switchAuthTab('login')" data-i18n="authLogin">Connexion</button>
+  </div>
+  <div id="auth-form-s">
+    <label>Prénom & Nom *</label>
+    <input type="text" id="auth-name" placeholder="Sophie Martin" autocomplete="name">
+    <label data-i18n="labelEmail">Email *</label>
+    <input type="email" id="auth-email" placeholder="sophie@exemple.com" autocomplete="email">
+    <label>Téléphone (WhatsApp)</label>
+    <input type="tel" id="auth-phone" placeholder="+33 6 12 34 56 78" autocomplete="tel">
+    <label data-i18n="labelPass">Mot de passe * (8 caractères min.)</label>
+    <input type="password" id="auth-pass" placeholder="••••••••" autocomplete="new-password">
+    <div style="font-size:11px;color:var(--txt2);margin-top:6px;line-height:1.5">
+      🔒 Vos données sont stockées localement sur votre appareil.
+    </div>
+    <button class="btn P fw" style="margin-top:14px" onclick="doSignup()"><span data-i18n="btnSignup">🌸 Créer mon compte gratuit</span></button>
+    <p style="text-align:center;font-size:11px;color:var(--txt2);margin-top:8px">
+      ✅ Gratuit · 5 membres · Sans carte bancaire
+    </p>
+  </div>
+  <div id="auth-form-l" style="display:none">
+    <label>Email</label>
+    <input type="email" id="auth-login-email" placeholder="sophie@exemple.com" autocomplete="email">
+    <label>Mot de passe</label>
+    <input type="password" id="auth-login-pass" placeholder="Votre mot de passe" autocomplete="current-password">
+    <button class="btn P fw" style="margin-top:14px" onclick="doLogin()" data-i18n="authConnectBtn">Se connecter</button>
+  </div>
+  <div style="text-align:center;margin-top:10px">
+    <button class="btn" style="padding:9px 18px;font-size:13px" onclick="closeOv('m-auth')" data-i18n="btnSkip">Continuer sans compte</button>
+  </div>
+</div>
+</div>
+<!-- Modale Paiement -->
+<div id="m-payment" class="ov">
+<div class="mbox2">
+  <div class="mt" data-i18n="payTitle">💳 Plan <span id="pay-plan-name">Bloom</span></div>
+  <div style="background:var(--bg2);border-radius:14px;padding:14px;margin-bottom:14px;text-align:center">
+    <div class="price-font" id="pay-price">4,99€</div>
+    <div style="font-size:12px;color:var(--txt2)">/mois · Sans engagement · 7 jours gratuits</div>
+    <div style="font-size:12px;color:var(--b3d);margin-top:6px" id="pay-features"></div>
+  </div>
+  <label data-i18n="payEmail" data-i18n="payEmailLabel" data-i18n="payEmailLabel">Email de facturation</label>
+  <input type="email" id="pay-email" placeholder="votre@email.com" autocomplete="email">
+  <div style="display:flex;gap:8px;margin-top:12px">
+    <button class="btn P fw" style="flex:1" onclick="doPayment()">🔒 Payer</button>
+    <button class="btn" onclick="closeOv('m-payment')">Annuler</button>
+  </div>
+  <div style="text-align:center;font-size:11px;color:var(--txt2);margin-top:10px">🔒 Stripe · RGPD · 7 jours essai</div>
+</div>
+</div>
+<!-- Modale Confirmation -->
+<div id="m-confirm" class="ov">
+<div class="mbox2" style="text-align:center">
+  <div style="font-size:56px;margin-bottom:10px">🌸</div>
+  <div class="mt">Bienvenue en plan <span id="confirm-plan">Bloom</span> !</div>
+  <div style="font-size:13px;color:var(--txt2);margin-bottom:14px">Email envoyé à <span id="confirm-email" style="font-weight:700">votre email</span>.</div>
+  <button class="btn P fw" onclick="closeOv('m-confirm');refresh()">🌸 Commencer</button>
+</div>
+</div>
+  <!-- Scripts Bloomday — ordre important -->
+  <script src="js/data.js"></script>
+  <script src="js/i18n.js"></script>
+  <script src="js/helpers.js"></script>
+  <script src="js/features.js"></script>
+  <script src="js/render.js"></script>
+  <script src="js/core.js"></script>
+</body>
+</html>

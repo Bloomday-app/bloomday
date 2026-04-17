@@ -1,0 +1,13 @@
+{
+  "name": "bloomday",
+  "version": "1.0.0",
+  "description": "Bloomday — Célébrez chaque personne qui compte",
+  "scripts": {
+    "dev": "npx live-server --port=3000 --open=index.html",
+    "build": "echo 'Static site — no build needed'",
+    "netlify": "netlify dev"
+  },
+  "devDependencies": {
+    "live-server": "^1.2.2"
+  }
+}
