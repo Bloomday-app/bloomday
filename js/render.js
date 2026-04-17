@@ -532,9 +532,9 @@ RÈGLES ABSOLUES : 4-5 phrases maximum. Invite le groupe à célébrer cette per
   }
 
   try{
-    const resp=await fetch("/.netlify/functions/generate-message",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({model:"claude-sonnet-4-20250514",max_tokens:1000,messages:[{role:"user",content:prompt}]})});
+    const resp=await fetch("/.netlify/functions/generate-message",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({prompt:prompt})});
     if(!resp.ok)throw new Error('API '+resp.status);
-    const data=await resp.json(),text=(data.content||[]).map(c=>c.text||'').join('')||t('errGeneration');
+    const data=await resp.json(),text=data.message||t('errGeneration');
     const enc=encodeURIComponent(text);
     // Axe 6 : générer lien Ripple
     const ripNameKey=_c(p.name.split(' ')[0]);const ripSnipKey=_c(text.substring(0,200));
@@ -568,7 +568,7 @@ async function genUrgence(id,cid){
   el.innerHTML=`<div class="mload"><span class="spin">⟳</span> Message de rattrapage...</div>`;
   const age=ageBday(p.day,p.month,p.year);
   const prompt=`Hier c'était l'anniversaire de ${p.name}${age?' qui a eu '+age+' '+t('yearsOld'):''}. On l'a oublié. Rédige un message de rattrapage chaleureux qui reconnaît l'oubli avec humour bienveillant et beaucoup d'amour. 3-4 phrases joyeuses.${p.phone?` WhatsApp : ${p.phone}.`:''}`;
-  try{const resp=await fetch("/.netlify/functions/generate-message",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({model:"claude-sonnet-4-20250514",max_tokens:600,messages:[{role:"user",content:prompt}]})});if(!resp.ok)throw new Error();const data=await resp.json(),text=(data.content||[]).map(c=>c.text||'').join('')||'Erreur.';el.innerHTML=`<div class="mbox">${esc(text)}</div><div class="brow"><button class="btn sm" onclick="copyMsgCached(this,'"+_c(text)+"')">📋 Copier</button><button class="btn G sm" onclick="saveMsgCached(${id},'"+_c(text)+"')">✓ Envoyé</button></div>`;}catch(e){el.innerHTML=`<div class="mbox offline">${getFallback('birthday')}</div>`;}
+  try{const resp=await fetch("/.netlify/functions/generate-message",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({prompt:prompt})});if(!resp.ok)throw new Error();const data=await resp.json(),text=data.message||'Erreur.';el.innerHTML=`<div class="mbox">${esc(text)}</div><div class="brow"><button class="btn sm" onclick="copyMsgCached(this,'"+_c(text)+"')">📋 Copier</button><button class="btn G sm" onclick="saveMsgCached(${id},'"+_c(text)+"')">✓ Envoyé</button></div>`;}catch(e){el.innerHTML=`<div class="mbox offline">${getFallback('birthday')}</div>`;}
 }
 
 async function genCard(id,cid){
@@ -579,7 +579,7 @@ async function genCard(id,cid){
   el.innerHTML=`<div class="mload"><span class="spin">⟳</span> Création de la carte...</div>`;
   const age=ageBday(p.day,p.month,p.year);
   const prompt=`Rédige un message poétique très court (2 phrases belles) pour une carte d'anniversaire fleurie pour ${p.name}${age?' qui fête ses '+age+' '+t('yearsOld'):''}.${p.note?` Profil : "${p.note}".`:''} Style : poétique, floral, lumineux. Commence directement par le message.`;
-  try{const resp=await fetch("/.netlify/functions/generate-message",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({model:"claude-sonnet-4-20250514",max_tokens:200,messages:[{role:"user",content:prompt}]})});if(!resp.ok)throw new Error();const data=await resp.json(),text=(data.content||[]).map(c=>c.text||'').join('')||'Joyeux anniversaire !';const cardMsg=`🌸🎂 Joyeux Anniversaire, ${p.name.split(' ')[0]} !\n\n${text}`;el.innerHTML=`<div class="bcrd"><div class="bcrd-n">🌸 Joyeux Anniversaire, ${esc(p.name.split(' ')[0])} !</div><div class="bcrd-m">${esc(text)}</div><div style="font-size:28px">🌸🌺🌷✨🌻</div></div><div class="brow"><button class="btn sm" onclick="copyMsgCached(this,'"+_c(cardMsg)+"')">📋 Copier</button>${p.phone?`<a href="https://wa.me/${p.phone.replace(/[^0-9]/g,'')}?text=${encodeURIComponent(cardMsg)}" target="_blank"><button class="btn G sm">💬 WhatsApp</button></a>`:''}</div>`;}catch(e){el.innerHTML=`<div class="mbox offline">Erreur — réessayez.</div>`;}
+  try{const resp=await fetch("/.netlify/functions/generate-message",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({prompt:prompt})});if(!resp.ok)throw new Error();const data=await resp.json(),text=data.message||'Joyeux anniversaire !';const cardMsg=`🌸🎂 Joyeux Anniversaire, ${p.name.split(' ')[0]} !\n\n${text}`;el.innerHTML=`<div class="bcrd"><div class="bcrd-n">🌸 Joyeux Anniversaire, ${esc(p.name.split(' ')[0])} !</div><div class="bcrd-m">${esc(text)}</div><div style="font-size:28px">🌸🌺🌷✨🌻</div></div><div class="brow"><button class="btn sm" onclick="copyMsgCached(this,'"+_c(cardMsg)+"')">📋 Copier</button>${p.phone?`<a href="https://wa.me/${p.phone.replace(/[^0-9]/g,'')}?text=${encodeURIComponent(cardMsg)}" target="_blank"><button class="btn G sm">💬 WhatsApp</button></a>`:''}</div>`;}catch(e){el.innerHTML=`<div class="mbox offline">Erreur — réessayez.</div>`;}
 }
 
 async function genGift(id,cid){
