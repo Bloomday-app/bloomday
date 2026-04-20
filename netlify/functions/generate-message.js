@@ -1,8 +1,18 @@
 const https = require('https');
 
+const ALLOWED_ORIGINS = [
+  'https://rococo-chimera-459249.netlify.app',
+  'https://bloomday.app',
+];
+
 exports.handler = async function(event) {
   if (event.httpMethod !== 'POST') {
     return { statusCode: 405, body: 'Method Not Allowed' };
+  }
+
+  const origin = event.headers.origin || event.headers.Origin || '';
+  if (process.env.NODE_ENV !== 'development' && !ALLOWED_ORIGINS.includes(origin)) {
+    return { statusCode: 403, body: JSON.stringify({ error: 'Forbidden' }) };
   }
 
   const apiKey = process.env.ANTHROPIC_API_KEY;
@@ -17,10 +27,16 @@ exports.handler = async function(event) {
     return { statusCode: 400, body: JSON.stringify({ error: 'Invalid JSON' }) };
   }
 
+  // Only accept a prompt string — model/messages/max_tokens are server-controlled
+  const userPrompt = typeof body.prompt === 'string' ? body.prompt.substring(0, 3000) : '';
+  if (!userPrompt) {
+    return { statusCode: 400, body: JSON.stringify({ error: 'Missing prompt' }) };
+  }
+
   const payload = JSON.stringify({
-    model: body.model || 'claude-sonnet-4-6',
-    max_tokens: body.max_tokens || 500,
-    messages: body.messages,
+    model: 'claude-sonnet-4-6',
+    max_tokens: 500,
+    messages: [{ role: 'user', content: userPrompt }],
   });
 
   return new Promise((resolve) => {
@@ -40,19 +56,26 @@ exports.handler = async function(event) {
       let data = '';
       res.on('data', (chunk) => { data += chunk; });
       res.on('end', () => {
-        resolve({
-          statusCode: res.statusCode,
-          headers: { 'Content-Type': 'application/json' },
-          body: data,
-        });
+        try {
+          const parsed = JSON.parse(data);
+          const message = (parsed.content || []).map(c => c.text || '').join('');
+          if (!message) {
+            resolve({ statusCode: 502, body: JSON.stringify({ error: 'Empty response from AI' }) });
+            return;
+          }
+          resolve({
+            statusCode: 200,
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ message }),
+          });
+        } catch (e) {
+          resolve({ statusCode: 502, body: JSON.stringify({ error: 'Invalid API response' }) });
+        }
       });
     });
 
     req.on('error', (e) => {
-      resolve({
-        statusCode: 502,
-        body: JSON.stringify({ error: e.message }),
-      });
+      resolve({ statusCode: 502, body: JSON.stringify({ error: e.message }) });
     });
 
     req.write(payload);

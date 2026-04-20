@@ -72,107 +72,39 @@ function showUpgradeModal(targetPlan){
   ov.className='upg-overlay';
   ov.style.cssText='position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:9999;display:flex;align-items:center;justify-content:center;padding:16px';
   var md=document.createElement('div');
-  md.style.cssText='background:var(--card);border-radius:20px;padding:24px 20px;width:100%;max-width:400px';
+  md.style.cssText='background:var(--card);border-radius:20px;padding:24px 20px;width:100%;max-width:400px;text-align:center';
 
-  function addTxt(tag,txt,css){
-    var el=document.createElement(tag);el.textContent=txt;
-    if(css) el.style.cssText=css;md.appendChild(el);return el;
-  }
-  function addInp(id2,ph,maxl,typeName){
-    var wrap=document.createElement('div');wrap.style.marginBottom='10px';
-    var inp=document.createElement('input');
-    inp.id=id2;inp.type=typeName||'tel';inp.placeholder=ph;inp.maxLength=maxl;
-    inp.style.cssText='width:100%;padding:10px 12px;border:1.5px solid var(--bd);border-radius:10px;font-size:15px;background:var(--bg);color:var(--txt);box-sizing:border-box';
-    wrap.appendChild(inp);md.appendChild(wrap);return inp;
-  }
+  var icon=document.createElement('div');
+  icon.style.cssText='font-size:40px;margin-bottom:12px';
+  icon.textContent='🌸';
+  md.appendChild(icon);
 
-  addTxt('div',t('upgradeConfirmTitle'),'font-size:18px;font-weight:800;margin-bottom:4px');
-  addTxt('div',planName+' — '+price+t('perMonth'),'font-size:13px;color:var(--txt2);margin-bottom:8px');
-  addTxt('div',t('upgradeConfirmMsg'),'font-size:13px;color:var(--txt2);margin-bottom:16px');
+  var ttl=document.createElement('div');
+  ttl.style.cssText='font-size:18px;font-weight:800;margin-bottom:6px';
+  ttl.textContent=planName+' — '+price+t('perMonth');
+  md.appendChild(ttl);
 
-  var cardLbl=document.createElement('div');
-  cardLbl.style.cssText='font-size:12px;font-weight:600;color:var(--txt2);margin-bottom:4px';
-  cardLbl.textContent=t('upgradeCardLabel');
-  md.appendChild(cardLbl);
-  var cardInp=addInp('upg-card','1234 5678 9012 3456',19,'tel');
-  // formatage carte sans regex inline — géré par event
-  cardInp.addEventListener('input',function(){
-    var raw='';
-    for(var i2=0;i2<this.value.length;i2++){
-      var ch=this.value.charCodeAt(i2);
-      if(ch>=48&&ch<=57) raw+=this.value[i2];
-    }
-    var out='';
-    for(var j=0;j<raw.length&&j<16;j++){
-      if(j>0&&j%4===0) out+=' ';
-      out+=raw[j];
-    }
-    this.value=out;
-  });
+  var sub=document.createElement('div');
+  sub.style.cssText='font-size:14px;color:var(--txt2);margin-bottom:20px;line-height:1.5';
+  sub.textContent=t('upgradeContactMsg')||'Le paiement en ligne arrive bientôt. Pour activer votre plan, contactez-nous par email.';
+  md.appendChild(sub);
 
-  var row=document.createElement('div');row.style.cssText='display:flex;gap:10px;margin-bottom:12px';
-  function addRowInp(labelKey,id2,ph,maxl){
-    var w=document.createElement('div');w.style.flex='1';
-    var lbl=document.createElement('div');
-    lbl.style.cssText='font-size:12px;font-weight:600;color:var(--txt2);margin-bottom:4px';
-    lbl.textContent=t(labelKey);
-    var inp=document.createElement('input');
-    inp.id=id2;inp.type='tel';inp.placeholder=ph;inp.maxLength=maxl;
-    inp.style.cssText='width:100%;padding:10px 12px;border:1.5px solid var(--bd);border-radius:10px;font-size:15px;background:var(--bg);color:var(--txt);box-sizing:border-box';
-    w.appendChild(lbl);w.appendChild(inp);row.appendChild(w);return inp;
-  }
-  var expInp=addRowInp('upgradeExpiryLabel','upg-exp','MM/AA',5);
-  expInp.addEventListener('input',function(){
-    var raw='';
-    for(var i3=0;i3<this.value.length;i3++){
-      var ch2=this.value.charCodeAt(i3);
-      if(ch2>=48&&ch2<=57) raw+=this.value[i3];
-    }
-    this.value=raw.length>2?raw.slice(0,2)+'/'+raw.slice(2,4):raw;
-  });
-  var cvvInp=addRowInp('upgradeCvvLabel','upg-cvv','CVV',4);
-  cvvInp.addEventListener('input',function(){
-    var raw2='';
-    for(var i4=0;i4<this.value.length;i4++){
-      var ch3=this.value.charCodeAt(i4);
-      if(ch3>=48&&ch3<=57) raw2+=this.value[i4];
-    }
-    this.value=raw2;
-  });
-  md.appendChild(row);
+  var mailBtn=document.createElement('a');
+  mailBtn.href='mailto:contact@bloomday.app?subject='+encodeURIComponent('Activation plan '+planName);
+  mailBtn.style.cssText='display:block;margin-bottom:10px;text-decoration:none';
+  var mailBtnInner=document.createElement('button');
+  mailBtnInner.className='btn P fw';
+  mailBtnInner.textContent='✉ Contacter pour activer';
+  mailBtn.appendChild(mailBtnInner);
+  md.appendChild(mailBtn);
 
-  var payBtn=document.createElement('button');
-  payBtn.id='upg-pay-btn';payBtn.className='btn P fw';
-  payBtn.textContent=t('upgradePayBtn');
-  payBtn.onclick=function(){processUpgrade(targetPlan,ov);};
-  md.appendChild(payBtn);
   var cancelBtn=document.createElement('button');
-  cancelBtn.className='btn fw';cancelBtn.style.marginTop='8px';
+  cancelBtn.className='btn fw';
   cancelBtn.textContent=t('downgradeCancelBtn');
   cancelBtn.onclick=function(){ov.remove();};
   md.appendChild(cancelBtn);
-  ov.appendChild(md);document.body.appendChild(ov);
-  setTimeout(function(){if(cardInp) cardInp.focus();},100);
-}
 
-async function processUpgrade(targetPlan,overlay){
-  var cardVal=document.getElementById('upg-card');
-  var expVal=document.getElementById('upg-exp');
-  var cvvVal=document.getElementById('upg-cvv');
-  var cv=cardVal?cardVal.value.replace(/\s/g,''):'';
-  var ev=expVal?expVal.value:'';
-  var vv=cvvVal?cvvVal.value:'';
-  if(cv.length<15||ev.length<5||vv.length<3){
-    showToast(t('errPassShort')||'Informations incompletes');return;
-  }
-  var btn=document.getElementById('upg-pay-btn');
-  if(btn){btn.disabled=true;btn.textContent='...';}
-  await new Promise(function(r){setTimeout(r,1200);});
-  plan=targetPlan;
-  localStorage.setItem('bdg16_plan',plan);
-  if(overlay) overlay.remove();
-  showToast(t('upgradeSuccessMsg'));
-  updateTopbar();refresh();
+  ov.appendChild(md);document.body.appendChild(ov);
 }
 
 function showDowngradeModal(targetPlan){
@@ -225,7 +157,7 @@ async function confirmDowngrade(targetPlan,overlay){
   var sel=document.querySelector('[name="dg-reason"]:checked');
   if(!sel){showToast(t('downgradeQ1'));return;}
   plan=targetPlan;
-  localStorage.setItem('bdg16_plan',plan);
+  safeLsSet('bdg16_plan',plan);
   if(overlay) overlay.remove();
   showToast(t('downgradeSuccessMsg'));
   updateTopbar();refresh();
@@ -399,7 +331,7 @@ function doSignup(){
   if(pass.length<8){showToast(t('errPassShort'),'error');return;}
   // Créer le compte
   currentUser={name:name,email:email,phone:phone,uid:getOrCreateUID(),plan:plan,createdAt:new Date().toISOString()};
-  localStorage.setItem('bdg16_user',JSON.stringify(currentUser));
+  safeLsSet('bdg16_user',JSON.stringify(currentUser));
   profile.userName=name;profile.userEmail=email;
   if(phone)profile.userPhone=phone;
   savePr();
@@ -453,7 +385,7 @@ function doPayment(){
   if(!currentUser) currentUser={email:email,uid:getOrCreateUID(),plan:planKey,createdAt:new Date().toISOString()};
   else currentUser.plan=planKey;
   currentUser.planActivatedAt=new Date().toISOString();
-  localStorage.setItem('bdg16_user',JSON.stringify(currentUser));
+  safeLsSet('bdg16_user',JSON.stringify(currentUser));
   localStorage.setItem('bdg16_plan',planKey);
   if(profile){profile.userEmail=email;savePr();}
   closeOv('m-payment');

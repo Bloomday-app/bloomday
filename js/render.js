@@ -18,7 +18,7 @@ function rHome(){
     h+='<div style="font-size:12px;color:var(--b3d);margin-top:2px">Activez les alertes du matin.</div>';
     h+='<div class="brow" style="margin-top:8px">';
     h+='<button class="btn G sm" onclick="requestPush().then(function(){rHome();})">🔔 Activer</button>';
-    h+='<button class="btn sm" onclick="localStorage.setItem(\'bdg16_push_dismissed\',\'1\');rHome()">Plus tard</button>';
+    h+='<button class="btn sm" onclick="safeLsSet(\'bdg16_push_dismissed\',\'1\');rHome()">Plus tard</button>';
     h+='</div></div></div>';
   }
 
@@ -516,10 +516,13 @@ async function genMsg(id,cid){
   // Axe 7 : contexte historique pour récurrence intelligente
   const histCtx=buildHistCtx(id,3);
   const tc=p.type==='wedding'?`Anniversaire de mariage${age?' — '+age+' an(s) ensemble':''}.`:isBiz?`Entrée dans l'entreprise${age?' — '+age+' an(s) ancienneté':''}.`:'';
-  const prompt=`Tu aides le responsable d'un groupe ${isBiz?'professionnel':'convivial'} à rédiger un message pour ${p.name}.
+  const safeName=(p.name||'').substring(0,100);
+  const safeNote=(p.note||'').substring(0,500);
+  const safePhone=(p.phone||'').replace(/[^0-9+\s\-]/g,'').substring(0,25);
+  const prompt=`Tu aides le responsable d'un groupe ${isBiz?'professionnel':'convivial'} à rédiger un message pour ${safeName}.
 ${tc||(age?`Fête ses ${age} ans.`:'')+(ms?` Âge symbolique important : ${ms}. Mentionne-le chaleureusement.`:'')}
-${p.note?`Informations personnelles importantes : "${p.note}".`:'Tu ne la/le connais pas très bien, reste chaleureux et universel.'}
-${p.phone?`Son WhatsApp : ${p.phone}. Mentionne-le à la fin pour que les membres puissent lui écrire.`:''}${histCtx}
+${safeNote?`Informations personnelles importantes : "${safeNote}".`:'Tu ne la/le connais pas très bien, reste chaleureux et universel.'}
+${safePhone?`Son WhatsApp : ${safePhone}. Mentionne-le à la fin pour que les membres puissent lui écrire.`:''}${histCtx}
 Ton SOUHAITÉ (respecte-le) : ${getTone()}.
 RÈGLES ABSOLUES : 4-5 phrases maximum. Invite le groupe à célébrer cette personne. Sois créatif et original.`;
 
@@ -545,7 +548,7 @@ RÈGLES ABSOLUES : 4-5 phrases maximum. Invite le groupe à célébrer cette per
     <div class="brow">
       <button class="btn sm" onclick="copyMsgCached(this,'"+_c(text)+"')">📋 Copier</button>
       <button class="btn O sm" onclick="noteMsgCached(${id},'${cid}','"+_c(text)+"')">✏️ Note</button>
-      <button class="btn R sm" onclick="favMsgCached(${id},'"+_c(text)+"','"+(p.name||"")+"')">⭐</button>
+      <button class="btn R sm" onclick="favMsgCached(${id},'"+_c(text)+"','"+_c(p.name||'')+"')">⭐</button>
       <button class="btn G sm" onclick="saveMsgCached(${id},'"+_c(text)+"')">✓ Envoyé</button>
       <button class="btn sm" onclick='genMsg(${id},"${cid}")'>↺</button>
     </div>
@@ -567,7 +570,9 @@ async function genUrgence(id,cid){
   if(!isOnline){el.innerHTML=`<div class="mbox offline">${getFallback('birthday')}</div>`;return;}
   el.innerHTML=`<div class="mload"><span class="spin">⟳</span> Message de rattrapage...</div>`;
   const age=ageBday(p.day,p.month,p.year);
-  const prompt=`Hier c'était l'anniversaire de ${p.name}${age?' qui a eu '+age+' '+t('yearsOld'):''}. On l'a oublié. Rédige un message de rattrapage chaleureux qui reconnaît l'oubli avec humour bienveillant et beaucoup d'amour. 3-4 phrases joyeuses.${p.phone?` WhatsApp : ${p.phone}.`:''}`;
+  const safeName=(p.name||'').substring(0,100);
+  const safePhone=(p.phone||'').replace(/[^0-9+\s\-]/g,'').substring(0,25);
+  const prompt=`Hier c'était l'anniversaire de ${safeName}${age?' qui a eu '+age+' '+t('yearsOld'):''}. On l'a oublié. Rédige un message de rattrapage chaleureux qui reconnaît l'oubli avec humour bienveillant et beaucoup d'amour. 3-4 phrases joyeuses.${safePhone?` WhatsApp : ${safePhone}.`:''}`;
   try{const resp=await fetch("/.netlify/functions/generate-message",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({prompt:prompt})});if(!resp.ok)throw new Error();const data=await resp.json(),text=data.message||'Erreur.';el.innerHTML=`<div class="mbox">${esc(text)}</div><div class="brow"><button class="btn sm" onclick="copyMsgCached(this,'"+_c(text)+"')">📋 Copier</button><button class="btn G sm" onclick="saveMsgCached(${id},'"+_c(text)+"')">✓ Envoyé</button></div>`;}catch(e){el.innerHTML=`<div class="mbox offline">${getFallback('birthday')}</div>`;}
 }
 
@@ -578,8 +583,11 @@ async function genCard(id,cid){
   if(!isOnline){el.innerHTML=`<div class="mbox offline">Mode hors-ligne — cartes indisponibles.</div>`;return;}
   el.innerHTML=`<div class="mload"><span class="spin">⟳</span> Création de la carte...</div>`;
   const age=ageBday(p.day,p.month,p.year);
-  const prompt=`Rédige un message poétique très court (2 phrases belles) pour une carte d'anniversaire fleurie pour ${p.name}${age?' qui fête ses '+age+' '+t('yearsOld'):''}.${p.note?` Profil : "${p.note}".`:''} Style : poétique, floral, lumineux. Commence directement par le message.`;
-  try{const resp=await fetch("/.netlify/functions/generate-message",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({prompt:prompt})});if(!resp.ok)throw new Error();const data=await resp.json(),text=data.message||'Joyeux anniversaire !';const cardMsg=`🌸🎂 Joyeux Anniversaire, ${p.name.split(' ')[0]} !\n\n${text}`;el.innerHTML=`<div class="bcrd"><div class="bcrd-n">🌸 Joyeux Anniversaire, ${esc(p.name.split(' ')[0])} !</div><div class="bcrd-m">${esc(text)}</div><div style="font-size:28px">🌸🌺🌷✨🌻</div></div><div class="brow"><button class="btn sm" onclick="copyMsgCached(this,'"+_c(cardMsg)+"')">📋 Copier</button>${p.phone?`<a href="https://wa.me/${p.phone.replace(/[^0-9]/g,'')}?text=${encodeURIComponent(cardMsg)}" target="_blank"><button class="btn G sm">💬 WhatsApp</button></a>`:''}</div>`;}catch(e){el.innerHTML=`<div class="mbox offline">Erreur — réessayez.</div>`;}
+  const safeName=(p.name||'').substring(0,100);
+  const safeNote=(p.note||'').substring(0,300);
+  const safePhone=(p.phone||'').replace(/[^0-9]/g,'');
+  const prompt=`Rédige un message poétique très court (2 phrases belles) pour une carte d'anniversaire fleurie pour ${safeName}${age?' qui fête ses '+age+' '+t('yearsOld'):''}.${safeNote?` Profil : "${safeNote}".`:''} Style : poétique, floral, lumineux. Commence directement par le message.`;
+  try{const resp=await fetch("/.netlify/functions/generate-message",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({prompt:prompt})});if(!resp.ok)throw new Error();const data=await resp.json(),text=data.message||'Joyeux anniversaire !';const cardMsg=`🌸🎂 Joyeux Anniversaire, ${safeName.split(' ')[0]} !\n\n${text}`;el.innerHTML=`<div class="bcrd"><div class="bcrd-n">🌸 Joyeux Anniversaire, ${esc(safeName.split(' ')[0])} !</div><div class="bcrd-m">${esc(text)}</div><div style="font-size:28px">🌸🌺🌷✨🌻</div></div><div class="brow"><button class="btn sm" onclick="copyMsgCached(this,'"+_c(cardMsg)+"')">📋 Copier</button>${safePhone?`<a href="https://wa.me/${safePhone}?text=${encodeURIComponent(cardMsg)}" target="_blank"><button class="btn G sm">💬 WhatsApp</button></a>`:''}</div>`;}catch(e){el.innerHTML=`<div class="mbox offline">Erreur — réessayez.</div>`;}
 }
 
 async function genGift(id,cid){
@@ -589,8 +597,10 @@ async function genGift(id,cid){
   if(!isOnline){el.innerHTML=`<div class="mbox offline">Mode hors-ligne — cadeaux indisponibles.</div>`;return;}
   el.innerHTML=`<div class="mload"><span class="spin">⟳</span> Recherche d'idées cadeaux...</div>`;
   const age=ageBday(p.day,p.month,p.year);
-  const prompt=`Propose 5 idées de cadeaux originaux pour ${p.name}${age?', '+age+' '+t('yearsOld'):''}${p.gender?', '+p.gender:''}.${p.note?` Profil : "${p.note}".`:''} Budget varié 10€-100€. Une idée par ligne avec budget entre parenthèses. Pas d'introduction.`;
-  try{const resp=await fetch("/.netlify/functions/generate-message",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({model:"claude-sonnet-4-20250514",max_tokens:400,messages:[{role:"user",content:prompt}]})});if(!resp.ok)throw new Error();const data=await resp.json(),text=(data.content||[]).map(c=>c.text||'').join('')||'Erreur.';const items=text.split('\n').filter(l=>l.trim());let gh=`<div style="background:var(--b4l);border:1px solid var(--b4);border-radius:14px;padding:14px;margin-top:8px"><div style="font-size:13px;font-weight:700;color:var(--b4d);margin-bottom:8px">🎁 Idées cadeaux pour ${esc(p.name.split(' ')[0])}</div>`;items.forEach(it=>gh+=`<div style="font-size:13px;padding:5px 0;border-bottom:1px solid var(--brd);display:flex;gap:6px"><span>🎁</span><span>${esc(it.replace(/^[-•*\d\.]+\s*/,''))}</span></div>`);gh+=`<div class="brow" style="margin-top:8px"><button class="btn sm" onclick="copyMsgCached(this,'"+_c(items.join('\\n'))+"')">📋 Copier</button><button class="btn V sm" onclick='genGift(${id},"${cid}")'>↺ Nouvelles</button></div></div>`;el.innerHTML=gh;}catch(e){el.innerHTML=`<div class="mbox offline">Erreur — réessayez.</div>`;}
+  const safeName=(p.name||'').substring(0,100);
+  const safeNote=(p.note||'').substring(0,300);
+  const prompt=`Propose 5 idées de cadeaux originaux pour ${safeName}${age?', '+age+' '+t('yearsOld'):''}${p.gender?', '+p.gender:''}.${safeNote?` Profil : "${safeNote}".`:''} Budget varié 10€-100€. Une idée par ligne avec budget entre parenthèses. Pas d'introduction.`;
+  try{const resp=await fetch("/.netlify/functions/generate-message",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({prompt:prompt})});if(!resp.ok)throw new Error();const data=await resp.json(),text=data.message||'Erreur.';const items=text.split('\n').filter(l=>l.trim());let gh=`<div style="background:var(--b4l);border:1px solid var(--b4);border-radius:14px;padding:14px;margin-top:8px"><div style="font-size:13px;font-weight:700;color:var(--b4d);margin-bottom:8px">🎁 Idées cadeaux pour ${esc(safeName.split(' ')[0])}</div>`;items.forEach(it=>gh+=`<div style="font-size:13px;padding:5px 0;border-bottom:1px solid var(--brd);display:flex;gap:6px"><span>🎁</span><span>${esc(it.replace(/^[-•*\d\.]+\s*/,''))}</span></div>`);gh+=`<div class="brow" style="margin-top:8px"><button class="btn sm" onclick="copyMsgCached(this,'"+_c(items.join('\\n'))+"')">📋 Copier</button><button class="btn V sm" onclick='genGift(${id},"${cid}")'>↺ Nouvelles</button></div></div>`;el.innerHTML=gh;}catch(e){el.innerHTML=`<div class="mbox offline">Erreur — réessayez.</div>`;}
 }
 
 // ── COMMUNS ──
@@ -936,7 +946,7 @@ function rHome(){
     h+='<div style="font-size:12px;color:var(--b3d);margin-top:2px">Activez les alertes du matin.</div>';
     h+='<div class="brow" style="margin-top:8px">';
     h+='<button class="btn G sm" onclick="requestPush().then(function(){rHome();})">🔔 Activer</button>';
-    h+='<button class="btn sm" onclick="localStorage.setItem(\'bdg16_push_dismissed\',\'1\');rHome()">Plus tard</button>';
+    h+='<button class="btn sm" onclick="safeLsSet(\'bdg16_push_dismissed\',\'1\');rHome()">Plus tard</button>';
     h+='</div></div></div>';
   }
 
@@ -1266,8 +1276,6 @@ function sendEmail(type, data){
   var tpl = EMAIL_TEMPLATES[type];
   if(!tpl) return;
   var email = tpl(data);
-  // Log simulé (en An 2 = vrai envoi via Resend API)
-  console.log('[EMAIL] To:', data.email, '| Subject:', email.subject);
   showToast(t('emailSentTo')+' '+data.email, 'success');
 }
 
@@ -1281,7 +1289,7 @@ function checkRenewalEmail(){
   var daysLeft = Math.ceil((expires-now)/86400000);
   if(daysLeft<=3&&daysLeft>0&&!localStorage.getItem('bdg16_renewal_notif')){
     sendEmail('renewal_reminder',{email:currentUser.email,plan:PLANS[plan]?PLANS[plan].name:'Bloom'});
-    localStorage.setItem('bdg16_renewal_notif','1');
+    safeLsSet('bdg16_renewal_notif','1');
   }
 }
 
@@ -1292,7 +1300,7 @@ function checkAnniversaryEmail(){
   var days = Math.floor((now-created)/86400000);
   if(days===365&&!localStorage.getItem('bdg16_anniv_notif')){
     sendEmail('anniversary',{email:currentUser.email,name:currentUser.name||'',plan:PLANS[plan]?PLANS[plan].name:'Bloom'});
-    localStorage.setItem('bdg16_anniv_notif','1');
+    safeLsSet('bdg16_anniv_notif','1');
   }
 }
 

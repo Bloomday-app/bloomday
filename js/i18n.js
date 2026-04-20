@@ -3579,7 +3579,7 @@ function tArr(key){
 function setLang(lang){
   if(!I18N[lang]) return;
   appLang=lang;
-  localStorage.setItem('bdg16_lang',lang);
+  safeLsSet('bdg16_lang',lang);
   var li=I18N[lang];
   if(li.months){for(var i=0;i<12;i++) MN[i]=li.months[i];}
   if(li.monthsShort){for(var i=0;i<12;i++) MNS[i]=li.monthsShort[i];}
@@ -3647,7 +3647,7 @@ function cny(y){return({2025:{m:1,d:29},2026:{m:2,d:17},2027:{m:2,d:6},2028:{m:1
 const tIco=t=>({birthday:'🎂',wedding:'💍',work:'💼',custom:'⭐'})[t]||'🎂';
 const tLbl=t=>({birthday:t('evtBirthday'),wedding:'Anniversaire de mariage',work:'Entrée entreprise',custom:'Événement'})[t]||t('evtBirthday');
 const ini=n=>(n||'').trim().split(' ').filter(Boolean).map(w=>w[0]).slice(0,2).join('').toUpperCase()||'?';
-const esc=s=>(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/"/g,'&quot;');
+const esc=s=>(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#x27;');
 
 // Axe 7 : Contexte historique pour récurrence intelligente
 function buildHistCtx(memberId,maxItems=3){
@@ -3658,6 +3658,7 @@ function buildHistCtx(memberId,maxItems=3){
 }
 
 // ── STORAGE ──
+const safeLsSet=(k,v)=>{try{localStorage.setItem(k,v);}catch(e){}};
 const sg=async(k,v)=>{try{await window.storage.set(k,JSON.stringify(v));}catch(e){}};
 const gg=async(k,d)=>{try{const r=await window.storage.get(k);if(r&&r.value)return JSON.parse(r.value);}catch(e){}return d;};
 const saveG=()=>sg('bdg16_groups',groups);
@@ -3696,7 +3697,7 @@ function schedulePushForToday(){
 function checkPushNeeded(){
   if(pushGranted||Notification.permission==='denied')return;
   if(!localStorage.getItem('bdg16_push_asked')){
-    localStorage.setItem('bdg16_push_asked','1');
+    safeLsSet('bdg16_push_asked','1');
     // Afficher le prompt push dans l'UI (render home le fera)
   }
 }

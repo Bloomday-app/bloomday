@@ -198,14 +198,14 @@ async function obAddMember(){
   }catch(e){msgEl.innerHTML=`<div style="font-size:13px;line-height:1.8;color:var(--b4d)">${getFallback('birthday')}</div>`;}
 }
 function finishOb(){
-  localStorage.setItem('bdg16_ob','1');
+  safeLsSet('bdg16_ob','1');
   document.getElementById('ob-screen').classList.remove('on');
   document.getElementById('app').classList.add('on');
   requestPush();
   refresh();
 }
 function skipOb(){
-  localStorage.setItem('bdg16_ob','1');
+  safeLsSet('bdg16_ob','1');
   document.getElementById('ob-screen').classList.remove('on');
   document.getElementById('app').classList.add('on');
   load();
@@ -259,7 +259,7 @@ function renderPlanDetail(){}
 // ── GROUPES ──
 function rGbar(){
   const b=document.getElementById('gbar');if(!b)return;
-  b.innerHTML=groups.map(g=>`<button class="gc${g.id===curG?' on':''}" onclick="switchG('${g.id}')">${g.icon} ${g.name}</button>`).join('')+`<button class="gc add" onclick="addGroup()" title="Nouveau groupe">＋</button>`;
+  b.innerHTML=groups.map(g=>`<button class="gc${g.id===curG?' on':''}" onclick="switchG('${esc(g.id)}')">${esc(g.icon)} ${esc(g.name)}</button>`).join('')+`<button class="gc add" onclick="addGroup()" title="Nouveau groupe">＋</button>`;
 }
 function switchG(id){curG=id;fMonth=0;searchInput='';searchFiltered=null;editId=null;refresh();}
 function addGroup(){
