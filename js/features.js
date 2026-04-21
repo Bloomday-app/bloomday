@@ -281,7 +281,7 @@ function showToast(msg,type){
   var ex=document.getElementById('bd-toast');if(ex)ex.remove();
   var t2=document.createElement('div');t2.id='bd-toast';
   t2.style.cssText='position:fixed;bottom:88px;left:50%;transform:translateX(-50%);'+
-    'background:'+(type==='success'?'#18A86B':'#E05C8A')+';color:#fff;'+
+    'background:'+(type==='success'?'#18A86B':'#FF8C7A')+';color:#fff;'+
     'padding:10px 20px;border-radius:20px;font-size:13px;font-weight:700;'+
     'z-index:9999;animation:bdFadeIn .3s ease;box-shadow:0 4px 16px rgba(0,0,0,.2);'+
     'max-width:90vw;text-align:center;pointer-events:none';

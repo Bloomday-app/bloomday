@@ -228,7 +228,7 @@ function renderAllPlans(mode){
       feats:[t('planFeatUnlimCollab'),t('planFeatGroupUnlim'),t('planFeatMsgUnlim'),t('planFeatCSV')],
       nope:[],cta:'Nous contacter',ctaCls:'B'}
   };
-  var BBGC={pop:'linear-gradient(135deg,#F5A623,#E05C8A)',biz:'#1A6FC4',fre:'#18A86B',p:'#7C6EE0'};
+  var BBGC={pop:'linear-gradient(135deg,#D4A843,#FF8C7A)',biz:'#1A6FC4',fre:'#18A86B',p:'#7C6EE0'};
   var pKeys=['free','bloom','pro']; var bKeys=['pro','enterprise'];
   var keys=mode==='biz'?bKeys:pKeys;
   var cId=mode==='biz'?'plan-cards-biz':'plan-cards-perso';
@@ -315,7 +315,7 @@ function addMember(){
   m.sort((a,b)=>a.month-b.month||a.day-b.day);setMems(m);ppPhoto='';saveG();
   ['inp-day','inp-year','inp-name','inp-phone','inp-note'].forEach(id=>{const e=document.getElementById(id);if(e)e.value='';});
   const pp=document.getElementById('phuprev');
-  if(pp)pp.innerHTML='<svg width="28" height="28" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="10" r="3.5" stroke="#E8891A" stroke-width="1.5"/><path d="M4 20c0-4 3.582-7 8-7s8 3 8 7" stroke="#E8891A" stroke-width="1.5" stroke-linecap="round"/><path d="M17 6h4M19 4v4" stroke="#E8891A" stroke-width="1.5" stroke-linecap="round"/></svg>';
+  if(pp)pp.innerHTML='<svg width="28" height="28" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="10" r="3.5" stroke="#D4A843" stroke-width="1.5"/><path d="M4 20c0-4 3.582-7 8-7s8 3 8 7" stroke="#D4A843" stroke-width="1.5" stroke-linecap="round"/><path d="M17 6h4M19 4v4" stroke="#D4A843" stroke-width="1.5" stroke-linecap="round"/></svg>';
   refresh();showSec('members',1);
 }
 function removeMem(id){if(!confirm('Retirer ce membre ?'))return;setMems(mems().filter(p=>p.id!==id));saveG();refresh();}

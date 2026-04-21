@@ -3690,7 +3690,7 @@ function schedulePushForToday(){
     const msg=`🌸 C'est l'anniversaire de ${p.name} aujourd'hui ! Ouvrez Bloomday pour générer un message.`;
     // Notification immédiate si la permission est accordée
     if(Notification.permission==='granted'){
-      new Notification('Bloomday 🌸',{body:msg,icon:'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48"><circle cx="24" cy="24" r="24" fill="%23F5A623"/></svg>'});
+      new Notification('Bloomday 🌸',{body:msg,icon:'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48"><circle cx="24" cy="24" r="24" fill="%23D4A843"/></svg>'});
     }
   });
 }
