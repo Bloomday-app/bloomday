@@ -5,6 +5,18 @@ const ALLOWED_ORIGINS = [
   'https://bloomday.app',
 ];
 
+// In-memory rate limiter per IP — resets on cold start but enforced server-side.
+// Replace with Upstash Redis or Netlify Blobs for persistent enforcement.
+const _rl = {};
+function checkRateLimit(ip) {
+  const now = Date.now();
+  const window = 60 * 60 * 1000; // 1 hour
+  const max = 20; // 20 requests / hour / IP (generous for legitimate use)
+  if (!_rl[ip] || now - _rl[ip].t > window) _rl[ip] = { n: 0, t: now };
+  _rl[ip].n++;
+  return _rl[ip].n <= max;
+}
+
 exports.handler = async function(event) {
   if (event.httpMethod !== 'POST') {
     return { statusCode: 405, body: 'Method Not Allowed' };
@@ -13,6 +25,13 @@ exports.handler = async function(event) {
   const origin = event.headers.origin || event.headers.Origin || '';
   if (process.env.NODE_ENV !== 'development' && !ALLOWED_ORIGINS.includes(origin)) {
     return { statusCode: 403, body: JSON.stringify({ error: 'Forbidden' }) };
+  }
+
+  const clientIp = event.headers['x-forwarded-for']?.split(',')[0]?.trim()
+    || event.headers['client-ip']
+    || 'unknown';
+  if (!checkRateLimit(clientIp)) {
+    return { statusCode: 429, body: JSON.stringify({ error: 'Too many requests. Please wait before generating more messages.' }) };
   }
 
   const apiKey = process.env.ANTHROPIC_API_KEY;

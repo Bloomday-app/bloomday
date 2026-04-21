@@ -536,6 +536,7 @@ RÈGLES ABSOLUES : 4-5 phrases maximum. Invite le groupe à célébrer cette per
 
   try{
     const resp=await fetch("/.netlify/functions/generate-message",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({prompt:prompt})});
+    if(resp.status===429){el.innerHTML=`<div class="mbox offline"><div style="font-size:11px;font-weight:700;color:var(--b1d);margin-bottom:4px">⏳ Limite atteinte</div>Trop de messages générés récemment. Réessayez dans une heure.</div>`;return;}
     if(!resp.ok)throw new Error('API '+resp.status);
     const data=await resp.json(),text=data.message||t('errGeneration');
     const enc=encodeURIComponent(text);
