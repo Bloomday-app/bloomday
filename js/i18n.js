@@ -3659,8 +3659,8 @@ function buildHistCtx(memberId,maxItems=3){
 
 // ── STORAGE ──
 const safeLsSet=(k,v)=>{try{localStorage.setItem(k,v);}catch(e){}};
-const sg=async(k,v)=>{try{await window.storage.set(k,JSON.stringify(v));}catch(e){}};
-const gg=async(k,d)=>{try{const r=await window.storage.get(k);if(r&&r.value)return JSON.parse(r.value);}catch(e){}return d;};
+const sg=async(k,v)=>{try{if(window.storage)await window.storage.set(k,JSON.stringify(v));else localStorage.setItem(k,JSON.stringify(v));}catch(e){}};
+const gg=async(k,d)=>{try{if(window.storage){const r=await window.storage.get(k);if(r&&r.value)return JSON.parse(r.value);}else{const r=localStorage.getItem(k);if(r)return JSON.parse(r);}}catch(e){}return d;};
 const saveG=()=>sg('bdg16_groups',groups);
 const saveA=()=>sg('bdg16_admins',admins);
 const saveH=()=>sg('bdg16_hist',hist);
