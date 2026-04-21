@@ -70,7 +70,7 @@ const I18N = {
     modePerso:'👤 Particulier',
     modeBiz:'🏢 Entreprise',
     ob1Title:'Ajoutez votre premier membre',
-    ob1Desc:'',
+    ob1Desc:'Commencez par une personne qui compte vraiment pour vous.',
     save:'Enregistrer',
     delete:'Supprimer',
     close:'Fermer',

@@ -11,7 +11,7 @@ async function openContactPicker(mode){
         var cname=(c.name&&c.name[0])||'';
         var cphone=(c.tel&&c.tel[0])||'';
         if(!cname) continue;
-        var nm={id:'m'+Date.now()+'_'+Math.random().toString(36).slice(2,6),
+        var _nmA=new Uint32Array(1);crypto.getRandomValues(_nmA);var nm={id:'m'+Date.now()+'_'+_nmA[0].toString(36).slice(0,6),
           name:cname,phone:cphone,type:'birthday',day:0,month:0,year:0};
         if(!groups.length) groups=[{id:'g1',name:t('myGroup'),icon:'🌸',members:[]}];
         groups[0].members.push(nm);
@@ -386,7 +386,7 @@ function doPayment(){
   else currentUser.plan=planKey;
   currentUser.planActivatedAt=new Date().toISOString();
   safeLsSet('bdg16_user',JSON.stringify(currentUser));
-  localStorage.setItem('bdg16_plan',planKey);
+  safeLsSet('bdg16_plan',planKey);
   if(profile){profile.userEmail=email;savePr();}
   closeOv('m-payment');
   // Confirmation

@@ -8,7 +8,7 @@ async function load(){
   favs=await gg('bdg16_favs',[]);
   utpls=await gg('bdg16_tpls',[]);
   ['totalSent','totalGen','refs','celeb','msgsM'].forEach(k=>{if(!stats[k])stats[k]=0;});
-  if(!stats.code)stats.code='BLD-'+Math.random().toString(36).substring(2,7).toUpperCase();
+  if(!stats.code){const a=new Uint32Array(1);crypto.getRandomValues(a);stats.code='BLD-'+a[0].toString(36).toUpperCase().substring(0,5);}
   if(!profile.live)profile.live='fr';
   if(!profile.religion)profile.religion='christian';
   buildCats();

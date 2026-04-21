@@ -28,7 +28,7 @@
 </svg>
 
 <!-- ═══════ OFFLINE BANNER (Axe 5) ═══════ -->
-<div id="offline-banner" class="offline-banner" data-i18n="offlineMsg2" data-i18n="offlineBanner">⚡ Mode hors-ligne — Messages de secours disponibles</div>
+<div id="offline-banner" class="offline-banner" data-i18n="offlineBanner">⚡ Mode hors-ligne — Messages de secours disponibles</div>
 
 <!-- ═══════ ONBOARDING MAGIQUE (Axe 1) ═══════ -->
 <div id="ob-screen">
@@ -65,14 +65,14 @@
     <!-- Step 1 : AJOUT 1er membre -->
     <div id="ob1" style="display:none">
       <div class="ob-icon">👤</div>
-      <div class="ob-title" data-i18n="ob1Title" data-i18n="ob1Title">Ajoutez votre premier membre</div>
-      <div class="ob-desc" data-i18n="ob1Desc" data-i18n="ob1Desc">Commencez par une personne qui compte vraiment pour vous. Juste son prénom et sa date d'anniversaire.</div>
+      <div class="ob-title" data-i18n="ob1Title">Ajoutez votre premier membre</div>
+      <div class="ob-desc" data-i18n="ob1Desc">Commencez par une personne qui compte vraiment pour vous. Juste son prénom et sa date d'anniversaire.</div>
       <div class="ob-form">
-        <label data-i18n="labelName" data-i18n="nameLabel">Prénom &amp; Nom</label>
+        <label data-i18n="nameLabel">Prénom &amp; Nom</label>
         <input type="text" id="ob-name" data-i18n-placeholder="namePlaceholder" placeholder="Ex: Maman, Jean-Pierre, Pastor David…" autocomplete="off">
         <div class="f2" style="margin-top:8px">
-          <div><label data-i18n="ob1DayLabel" data-i18n="dayLabel">Jour</label><input type="number" id="ob-day" placeholder="15" inputmode="numeric" pattern="[0-9]*" maxlength="2"></div>
-          <div><label data-i18n="ob1MonthLabel" data-i18n="monthLabel">Mois</label><select id="ob-month">
+          <div><label data-i18n="dayLabel">Jour</label><input type="number" id="ob-day" placeholder="15" inputmode="numeric" pattern="[0-9]*" maxlength="2"></div>
+          <div><label data-i18n="monthLabel">Mois</label><select id="ob-month">
             <option value="1">Jan</option><option value="2">Fév</option><option value="3">Mar</option>
             <option value="4">Avr</option><option value="5">Mai</option><option value="6">Juin</option>
             <option value="7">Juil</option><option value="8">Aoû</option><option value="9">Sep</option>
@@ -126,9 +126,9 @@
 </svg>
       <div><div class="bwm" style="font-size:24px;color:#3D1A00">Bloomday</div><span class="btag" style="color:#6B3000" data-i18n="heroTagline">Le jour où tu fleuris</span></div>
     </div>
-    <h1 data-i18n="heroTitle1">Célébrez chaque personne<br data-i18n="heroTitle2">qui compte pour vous</h1>
+    <h1><span data-i18n="heroTitle1">Célébrez chaque personne</span><br><span data-i18n="heroTitle2">qui compte pour vous</span></h1>
     <p data-i18n="heroSub2">Messages IA personnalisés, idées cadeaux, fêtes du monde entier.</p>
-    <div class="hbdg" data-i18n="heroCta" data-i18n="heroCta">🌸 7 jours gratuits · Sans carte bancaire</div>
+    <div class="hbdg" data-i18n="heroCta">🌸 7 jours gratuits · Sans carte bancaire</div>
     <div class="mtgl">
       <button class="mbt on" id="lbp" onclick="selMode('perso')" data-i18n="modePerso">👤 Particulier</button>
       <button class="mbt" id="lbb" onclick="selMode('biz')" data-i18n="modeBiz">🏢 Entreprise</button>
@@ -404,7 +404,7 @@
     <div style="font-size:12px;color:var(--txt2)">/mois · Sans engagement · 7 jours gratuits</div>
     <div style="font-size:12px;color:var(--b3d);margin-top:6px" id="pay-features"></div>
   </div>
-  <label data-i18n="payEmail" data-i18n="payEmailLabel" data-i18n="payEmailLabel">Email de facturation</label>
+  <label data-i18n="payEmailLabel">Email de facturation</label>
   <input type="email" id="pay-email" placeholder="votre@email.com" autocomplete="email">
   <div style="display:flex;gap:8px;margin-top:12px">
     <button class="btn P fw" style="flex:1" onclick="doPayment()">🔒 Payer</button>

@@ -494,7 +494,7 @@ function exportPDF(){
   const now=new Date();
   let h=`<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Bloomday — Export</title><style>body{font-family:Georgia,serif;max-width:720px;margin:40px auto;color:#1A1510;font-size:14px}.header{display:flex;align-items:center;gap:16px;margin-bottom:24px;padding-bottom:16px;border-bottom:3px solid #E8891A}.logo{font-size:32px;font-weight:800;color:#E8891A}h2{font-size:16px;color:#7A4E00;margin:22px 0 8px;border-bottom:2px solid #E8891A;padding-bottom:4px}table{width:100%;border-collapse:collapse}th{background:#FEF3DC;color:#7A4E00;font-size:11px;padding:8px 10px;text-align:left;text-transform:uppercase}td{padding:8px 10px;border-bottom:1px solid #EDE6D8;font-size:12px}.tod{background:#FDEDF5;font-weight:bold}.footer{margin-top:40px;font-size:11px;color:#A89E90;text-align:center;border-top:1px solid #EDE6D8;padding-top:12px}</style></head><body>`;
   h+=`<div class="header"><div class="logo">🌸 Bloomday</div><div><div style="font-size:13px;color:#E05C8A;font-style:italic">Le jour où tu fleuris</div><div style="font-size:12px;color:#7A6E5F;margin-top:4px">Exporté le ${now.toLocaleDateString('fr-FR',{weekday:'long',day:'numeric',month:'long',year:'numeric'})}</div></div></div>`;
-  groups.forEach(g=>{const gm=(g.members||[]).sort((a,b)=>a.month-b.month||a.day-b.day);if(!gm.length)return;h+=`<h2>${g.icon} ${g.name} (${gm.length})</h2><table><tr><th>Nom</th><th>Type</th><th>Date</th><th>Âge</th><th>Tél</th><th>Notes</th></tr>`;gm.forEach(p=>{const age=ageBday(p.day,p.month,p.year),tod=isToday(p.day,p.month);h+=`<tr${tod?' class="tod"':''}><td><strong>${p.name}</strong>${tod?' 🌸':''}</td><td>${tLbl(p.type)}</td><td>${p.day} ${MN[p.month-1]}${p.year?' '+p.year:''}</td><td>${age?age+' '+t('yearsOld'):'—'}</td><td>${p.phone||'—'}</td><td>${p.note||'—'}</td></tr>`;});h+=`</table>`;});
+  groups.forEach(g=>{const gm=(g.members||[]).sort((a,b)=>a.month-b.month||a.day-b.day);if(!gm.length)return;h+=`<h2>${esc(g.icon)} ${esc(g.name)} (${gm.length})</h2><table><tr><th>Nom</th><th>Type</th><th>Date</th><th>Âge</th><th>Tél</th><th>Notes</th></tr>`;gm.forEach(p=>{const age=ageBday(p.day,p.month,p.year),tod=isToday(p.day,p.month);h+=`<tr${tod?' class="tod"':''}><td><strong>${esc(p.name)}</strong>${tod?' 🌸':''}</td><td>${esc(tLbl(p.type))}</td><td>${p.day} ${esc(MN[p.month-1])}${p.year?' '+p.year:''}</td><td>${age?age+' '+t('yearsOld'):'—'}</td><td>${esc(p.phone||'—')}</td><td>${esc(p.note||'—')}</td></tr>`;});h+=`</table>`;});
   h+=`<div class="footer">🌸 Bloomday · bloomday.app</div></body></html>`;
   const blob=new Blob([h],{type:'text/html'});const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download='Bloomday_Export.html';document.body.appendChild(a);a.click();document.body.removeChild(a);URL.revokeObjectURL(url);
 }
@@ -541,8 +541,8 @@ RÈGLES ABSOLUES : 4-5 phrases maximum. Invite le groupe à célébrer cette per
     const enc=encodeURIComponent(text);
     // Axe 6 : générer lien Ripple
     const ripNameKey=_c(p.name.split(' ')[0]);const ripSnipKey=_c(text.substring(0,200));
-    const ripId=Math.random().toString(36).substring(2,8).toUpperCase();
-    const ripUrl=`#ripple/${ripId}/${encodeURIComponent(p.name)}/${enc.substring(0,300)}`;
+    const _ripA=new Uint32Array(1);crypto.getRandomValues(_ripA);const ripId=_ripA[0].toString(36).toUpperCase().substring(0,6);
+    const ripUrl=`#ripple/${ripId}`;
     const adBtns=admins.map(a=>`${a.email?`<a href="mailto:${a.email}?subject=${encodeURIComponent(tLbl(p.type)+' de '+p.name)}&body=${enc}"><button class="btn V sm">✉ ${esc(a.name.split(' ')[0])}</button></a>`:''}${a.phone?`<a href="https://wa.me/${a.phone.replace(/[^0-9]/g,'')}?text=${enc}" target="_blank"><button class="btn G sm">💬 ${esc(a.name.split(' ')[0])}</button></a>`:''}`).join('');
     el.innerHTML=`<div class="mbox">${esc(text)}</div>
     <div class="brow">
@@ -634,7 +634,7 @@ function sendRippleThanks(){
 // ── INIT ROUTING ──
 function handleHash(){
   const h=window.location.hash;
-  if(h.startsWith('#ripple/')){const pts=h.split('/');if(pts.length>=4){showRipple(decodeURIComponent(pts[2]||''),decodeURIComponent(pts[3]||''));return;}}
+  if(h.startsWith('#ripple/')){document.getElementById('land').style.display='block';return;}
   document.getElementById('land').style.display='block';
 }
 

@@ -28,14 +28,14 @@
   --brd:#2C2618;--brd2:#3C3426;--card:#1C1810;
   --sh:0 2px 20px rgba(0,0,0,.5);
 }}
-body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(--txt);font-size:15px;overflow-x:hidden;width:100%;min-height:100vh;margin:0;padding:0}
+body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(--txt);font-size:15px;overflow-x:hidden;width:100%;min-height:100vh;min-height:-webkit-fill-available;margin:0;padding:0}
 a{text-decoration:none;color:inherit}
 button{cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif}
 ::-webkit-scrollbar{width:4px;height:4px}
 ::-webkit-scrollbar-thumb{background:var(--brd2);border-radius:2px}
 
 /* ── RESPONSIVE LAYOUT (Axe 11) ── */
-.wrap{width:100%;max-width:440px;margin:0 auto;min-height:100vh;position:relative;box-sizing:border-box}
+.wrap{width:100%;max-width:440px;margin:0 auto;min-height:100vh;min-height:-webkit-fill-available;position:relative;box-sizing:border-box}
 @media(min-width:768px){
   .wrap{max-width:600px;box-shadow:0 0 60px rgba(0,0,0,.12)}
   body{background:var(--bg3)}
