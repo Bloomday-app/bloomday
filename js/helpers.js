@@ -122,3 +122,34 @@ function buildMonthSelect(){
   }
   if(current) sel.value=current;
 }
+
+function getOrCreateUID(){
+  var k='bdg16_uid';
+  var uid=localStorage.getItem(k);
+  if(!uid){
+    var arr=new Uint32Array(2);
+    crypto.getRandomValues(arr);
+    uid='u-'+arr[0].toString(36)+arr[1].toString(36);
+    localStorage.setItem(k,uid);
+  }
+  return uid;
+}
+
+function initUID(){
+  getOrCreateUID();
+}
+
+function buildCats(){
+  var sel=document.getElementById('inp-type');
+  if(!sel) return;
+  var cats=[['birthday',t('evtBirthday')||'Anniversaire'],['wedding','Mariage'],['work','Entrée entreprise'],['custom','Autre']];
+  var cur=sel.value||'birthday';
+  sel.innerHTML='';
+  cats.forEach(function(c){
+    var opt=document.createElement('option');
+    opt.value=c[0];
+    opt.textContent=c[1];
+    if(c[0]===cur) opt.selected=true;
+    sel.appendChild(opt);
+  });
+}

@@ -338,7 +338,7 @@ document.querySelectorAll('.ov').forEach(m=>m.addEventListener('click',e=>{if(e.
 function openNoteModal(cb){document.getElementById('ntxt').value='';openOv('mnote');document.getElementById('nok').onclick=()=>{const n=document.getElementById('ntxt').value.trim();closeOv('mnote');if(cb)cb(n);};}
 function openPlanModal(){
   const c=document.getElementById('mplan-c');
-  c.innerHTML=[['free','0€'],['solo','1,99€/mois'],['bloom','4,99€/mois'],['premium','7,99€/mois'],['pro','19,99€/mois']].map(([k,pr])=>`
+  c.innerHTML=[['free','0€'],['bloom','4,99€/mois'],['pro','19,99€/mois']].map(([k,pr])=>`
   <div class="pmc${k===plan?' sel':''}" onclick="changePlan('${k}')">
     ${k===plan?'<div class="pmbdg">Actuel ✓</div>':''}
     <div class="pmn">${PLANS[k].name}</div>

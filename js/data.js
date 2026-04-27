@@ -74,6 +74,14 @@ const DTPL=[
 ];
 
 
+// ── CONSTANTES GLOBALES D'AFFICHAGE ──
+var JRS=['Dim','Lun','Mar','Mer','Jeu','Ven','Sam'];
+var MN=['Janvier','Février','Mars','Avril','Mai','Juin','Juillet','Août','Septembre','Octobre','Novembre','Décembre'];
+var MNS=['Jan','Fév','Mar','Avr','Mai','Jun','Jul','Aoû','Sep','Oct','Nov','Déc'];
+var AV=['av1','av2','av3','av4'];
+var MS={1:'1 an 🎊',10:'10 ans 🎉',18:'Majeur·e 🥂',20:'20 ans ✨',30:'30 ans 🌸',40:'40 ans 💫',50:'50 ans 🌟',60:'60 ans 🏆',70:'70 ans 👑',80:'80 ans 💎',90:'90 ans 🌺',100:'100 ans 🎊'};
+var AMB=[{m:3,label:'Bronze',badge:'🥉',reward:1},{m:10,label:'Silver',badge:'🥈',reward:2},{m:30,label:'Gold',badge:'🥇',reward:5}];
+
 // ═══════════════════════════════════════════════════════
 // i18n Bloomday — 7 langues — TOUTES VALEURS LITTÉRALES
 // ═══════════════════════════════════════════════════════
