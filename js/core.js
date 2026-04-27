@@ -143,16 +143,15 @@ async function regenObMsg(){
       headers:{"Content-Type":"application/json"},
       body:JSON.stringify({prompt:"Génère en "+(window.__aiLang||'français')+" un NOUVEAU message d'anniversaire différent pour Léa (33 ans, aime les fleurs et le chocolat). Maximum 3 phrases. Commence par quelque chose d'original."})
     });
-    if(resp.ok){
-      var data=await resp.json();
-      var aiMsg=data.message||window.__obFallback;
-      window.__obAiMsg=aiMsg;
-      demoEl.innerHTML='<div class="ob-msg">'+esc(aiMsg)+'</div>'+
-        '<div style="display:flex;gap:8px;margin-top:12px">'+
-        '<button class="btn G fw" onclick="copyObMsg()">📋 Copier</button>'+
-        '<button class="btn sm" onclick="regenObMsg()">↺ Autre message</button>'+
-        '</div>';
-    }
+    if(!resp.ok) throw new Error('Erreur serveur');
+    var data=await resp.json();
+    var aiMsg=data.message||window.__obFallback;
+    window.__obAiMsg=aiMsg;
+    demoEl.innerHTML='<div class="ob-msg">'+esc(aiMsg)+'</div>'+
+      '<div style="display:flex;gap:8px;margin-top:12px">'+
+      '<button class="btn G fw" onclick="copyObMsg()">📋 Copier</button>'+
+      '<button class="btn sm" onclick="regenObMsg()">↺ Autre message</button>'+
+      '</div>';
   } catch(e){
     var fallbacks=['Léa, que cette journée soit aussi lumineuse que ton sourire ! Joyeux anniversaire 🌸','Les 33 ans te vont à merveille ! Profite de chaque pétale de cette journée. 🌺'];
     var msg=fallbacks[Math.floor(Math.random()*fallbacks.length)];
@@ -353,7 +352,14 @@ function openPlanModal(){
   </div>`).join('');
   openOv('mplan');
 }
-function changePlan(p){plan=p;document.getElementById('tbplan').textContent=((PLANS[p]&&PLANS[p].name)||'Bloom')+' ▾';closeOv('mplan');refresh();}
+function changePlan(p){
+  var planOrder={free:0,bloom:1,pro:2,enterprise:3};
+  var curOrder=planOrder[plan]||0;
+  var tgtOrder=planOrder[p]||0;
+  closeOv('mplan');
+  if(tgtOrder>curOrder){showUpgradeModal(p);return;}
+  if(tgtOrder<curOrder){showDowngradeModal(p);return;}
+}
 
 // ── NAVIGATION SECTIONS ──
 function showSec(name,idx){
