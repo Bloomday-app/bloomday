@@ -357,6 +357,7 @@ function showSec(name,idx){
   ['home','members','add','events','cal','more'].forEach(s=>{const e=document.getElementById('s-'+s);if(e)e.style.display=s===name?'block':'none';});
   document.querySelectorAll('.nb').forEach((b,i)=>{b.classList.toggle('on',i===idx);});
   const ms=document.getElementById('mscroll');if(ms)ms.scrollTo(0,0);
+  if(name==='home')rHome();
   if(name==='events')rEvents();
   if(name==='cal')rCal();
   if(name==='more')rMore();

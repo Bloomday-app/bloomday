@@ -68,43 +68,81 @@ function showToast(msg){
 function showUpgradeModal(targetPlan){
   var planName=PLANS[targetPlan]?PLANS[targetPlan].name:targetPlan;
   var price=targetPlan==='bloom'?'4,99':targetPlan==='pro'?'19,99':'?';
-  var ov=document.createElement('div');
-  ov.className='upg-overlay';
-  ov.style.cssText='position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:9999;display:flex;align-items:center;justify-content:center;padding:16px';
+  var trialDays=7;
+  function mk(tag,css,txt){var e=document.createElement(tag);if(css)e.style.cssText=css;if(txt!==undefined)e.textContent=txt;return e;}
+
+  var existing=document.getElementById('stripe-modal-ov');if(existing)existing.remove();
+  var ov=document.createElement('div');ov.id='stripe-modal-ov';
+  ov.style.cssText='position:fixed;inset:0;background:rgba(20,12,8,.65);z-index:9999;display:flex;align-items:flex-end;justify-content:center;-webkit-backdrop-filter:blur(4px);backdrop-filter:blur(4px)';
+
   var md=document.createElement('div');
-  md.style.cssText='background:var(--card);border-radius:20px;padding:24px 20px;width:100%;max-width:400px;text-align:center';
+  md.style.cssText='background:var(--card);border-radius:28px 28px 0 0;padding:28px 20px calc(28px + env(safe-area-inset-bottom));width:100%;max-width:440px;max-height:90vh;overflow-y:auto;animation:su .25s ease';
 
-  var icon=document.createElement('div');
-  icon.style.cssText='font-size:40px;margin-bottom:12px';
-  icon.textContent='🌸';
-  md.appendChild(icon);
+  // Header
+  var hdr=mk('div','text-align:center;margin-bottom:20px');
+  hdr.appendChild(mk('div','font-size:36px;margin-bottom:8px','🌸'));
+  hdr.appendChild(mk('div','font-family:var(--ff-title);font-size:22px;font-weight:800;color:var(--txt);margin-bottom:6px',planName+' — '+trialDays+' jours gratuits'));
+  var sub=mk('div','font-size:13px;color:var(--txt2);line-height:1.65');
+  sub.textContent='Carte enregistrée mais non débitée pendant l\'essai. '+price+t('perMonth')+' après '+trialDays+' jours. Annulable à tout moment.';
+  hdr.appendChild(sub);
+  md.appendChild(hdr);
 
-  var ttl=document.createElement('div');
-  ttl.style.cssText='font-size:18px;font-weight:800;margin-bottom:6px';
-  ttl.textContent=planName+' — '+price+t('perMonth');
-  md.appendChild(ttl);
+  // Email
+  var ew=mk('div','margin-bottom:14px');
+  ew.appendChild(mk('label','font-size:11px;font-weight:700;color:var(--txt2);text-transform:uppercase;letter-spacing:.05em;display:block;margin-bottom:6px','Email (optionnel)'));
+  var ei=document.createElement('input');ei.type='email';ei.id='stripe-email';ei.placeholder='vous@exemple.com';
+  ei.style.cssText='width:100%;border:1.5px solid var(--brd);border-radius:10px;padding:11px 14px;font-size:15px;background:var(--bg);color:var(--txt);box-sizing:border-box';
+  ew.appendChild(ei);md.appendChild(ew);
 
-  var sub=document.createElement('div');
-  sub.style.cssText='font-size:14px;color:var(--txt2);margin-bottom:20px;line-height:1.5';
-  sub.textContent=t('upgradeContactMsg')||'Le paiement en ligne arrive bientôt. Pour activer votre plan, contactez-nous par email.';
-  md.appendChild(sub);
+  // Card mount
+  var cw=mk('div','margin-bottom:20px');
+  cw.appendChild(mk('label','font-size:11px;font-weight:700;color:var(--txt2);text-transform:uppercase;letter-spacing:.05em;display:block;margin-bottom:6px','Carte bancaire'));
+  var cm=mk('div','border:1.5px solid var(--brd);border-radius:10px;padding:13px 14px;background:var(--bg);transition:border .2s');cm.id='stripe-card-el';
+  var ce=mk('div','color:#c0392b;font-size:12px;margin-top:6px;display:none');ce.id='stripe-card-err';
+  cw.appendChild(cm);cw.appendChild(ce);md.appendChild(cw);
 
-  var mailBtn=document.createElement('a');
-  mailBtn.href='mailto:contact@bloomday.app?subject='+encodeURIComponent('Activation plan '+planName);
-  mailBtn.style.cssText='display:block;margin-bottom:10px;text-decoration:none';
-  var mailBtnInner=document.createElement('button');
-  mailBtnInner.className='btn P fw';
-  mailBtnInner.textContent='✉ Contacter pour activer';
-  mailBtn.appendChild(mailBtnInner);
-  md.appendChild(mailBtn);
-
-  var cancelBtn=document.createElement('button');
-  cancelBtn.className='btn fw';
-  cancelBtn.textContent=t('downgradeCancelBtn');
-  cancelBtn.onclick=function(){ov.remove();};
-  md.appendChild(cancelBtn);
+  // Buttons
+  var sb=mk('button','padding:15px;font-size:15px;font-weight:700;border-radius:14px;margin-bottom:10px','🔒 Démarrer l\'essai gratuit');
+  sb.id='stripe-submit-btn';sb.className='btn P fw';md.appendChild(sb);
+  var cb=mk('button','font-size:14px','Annuler');cb.className='btn fw';
+  cb.onclick=function(){ov.remove();};md.appendChild(cb);
+  md.appendChild(mk('div','margin-top:16px;text-align:center;font-size:11px;color:var(--txt3)','🔒 Paiement sécurisé par Stripe · Données chiffrées'));
 
   ov.appendChild(md);document.body.appendChild(ov);
+
+  // Stripe Elements
+  var STRIPE_PK=window.STRIPE_PUBLISHABLE_KEY||'';
+  if(!STRIPE_PK||!window.Stripe){
+    ce.textContent='Configuration Stripe manquante. Contactez-nous : contact@bloomday.app';ce.style.display='block';
+    return;
+  }
+  var stripe=Stripe(STRIPE_PK);
+  var els=stripe.elements();
+  var cardEl=els.create('card',{style:{base:{fontFamily:'\'DM Sans\', sans-serif',fontSize:'15px',color:'#2D1B14',iconColor:'#D4A843','::placeholder':{color:'#C8B0A4'}},invalid:{color:'#c0392b'}},hidePostalCode:true});
+  cardEl.mount('#stripe-card-el');
+  cardEl.on('focus',function(){cm.style.borderColor='var(--b1)';});
+  cardEl.on('blur',function(){cm.style.borderColor='var(--brd)';});
+  cardEl.on('change',function(ev){if(ev.error){ce.textContent=ev.error.message;ce.style.display='block';}else{ce.style.display='none';}});
+
+  sb.onclick=async function(){
+    sb.disabled=true;sb.textContent='⏳ Enregistrement...';ce.style.display='none';
+    try{
+      var resp=await fetch('/.netlify/functions/create-setup-intent',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({plan:targetPlan,email:ei.value.trim()})});
+      var data=await resp.json();
+      if(!resp.ok||!data.clientSecret)throw new Error(data.error||'Erreur serveur');
+      var res=await stripe.confirmCardSetup(data.clientSecret,{payment_method:{card:cardEl,billing_details:{email:ei.value.trim()||undefined}}});
+      if(res.error)throw new Error(res.error.message);
+      safeLsSet('bdg16_plan',targetPlan);
+      safeLsSet('bdg16_customer',data.customerId||'');
+      safeLsSet('bdg16_since',new Date().getFullYear()+'');
+      plan=targetPlan;ov.remove();
+      showToast('🌸 Essai démarré ! Bienvenue sur '+planName,'success');
+      refresh();
+    }catch(e){
+      ce.textContent=e.message||'Une erreur est survenue. Réessayez.';ce.style.display='block';
+      sb.disabled=false;sb.textContent='🔒 Démarrer l\'essai gratuit';
+    }
+  };
 }
 
 function showDowngradeModal(targetPlan){

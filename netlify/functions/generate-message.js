@@ -2,6 +2,7 @@ const https = require('https');
 
 const ALLOWED_ORIGINS = [
   'https://rococo-chimera-459249.netlify.app',
+  'https://bloomday-day.netlify.app',
   'https://bloomday.app',
 ];
 

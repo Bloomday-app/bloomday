@@ -7,7 +7,7 @@
 <meta name="description" content="Bloomday — Ne ratez plus jamais un anniversaire. Messages IA, cadeaux, fêtes mondiales.">
 <title>Bloomday — Le jour où tu fleuris</title>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700;800&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
-
+<script src="https://js.stripe.com/v3/"></script>
   <link rel="stylesheet" href="css/app.css">
 </head>
 <body>
@@ -422,6 +422,8 @@
   <button class="btn P fw" onclick="closeOv('m-confirm');refresh()">🌸 Commencer</button>
 </div>
 </div>
+  <!-- Clé publique Stripe — remplacer par votre clé pk_live_... ou pk_test_... -->
+  <script>window.STRIPE_PUBLISHABLE_KEY = '';</script>
   <!-- Scripts Bloomday — ordre important -->
   <script src="js/data.js"></script>
   <script src="js/i18n.js"></script>
