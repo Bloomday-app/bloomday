@@ -18,13 +18,16 @@ async function load(){
 }
 
 function startApp(m,p){
-  mode=m;plan=p||'bloom';
+  mode=m;
+  var chosenPlan=p||'free';
+  var savedPlan=localStorage.getItem('bdg16_plan');
+  var planOrder={free:0,bloom:1,pro:2,enterprise:3};
+  // Restaurer le plan payant uniquement si supérieur au choix actuel (utilisateur déjà abonné)
+  plan=(savedPlan&&PLANS[savedPlan]&&(planOrder[savedPlan]||0)>(planOrder[chosenPlan]||0))?savedPlan:chosenPlan;
   var landEl=document.getElementById('land');if(landEl)landEl.style.display='none';
   var tbp=document.getElementById('tbplan');
-  if(tbp)tbp.textContent=((PLANS[plan]&&PLANS[plan].name)||'Bloom')+' ▾';
+  if(tbp)tbp.textContent=((PLANS[plan]&&PLANS[plan].name)||'Free')+' ▾';
   loadUser();
-  var savedPlan=localStorage.getItem('bdg16_plan');
-  if(savedPlan&&PLANS[savedPlan])plan=savedPlan;
   var firstLaunch=!localStorage.getItem('bdg16_ob');
   if(firstLaunch){
     var obs=document.getElementById('ob-screen');if(obs)obs.classList.add('on');

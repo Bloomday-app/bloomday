@@ -305,6 +305,19 @@ function refresh(){
   ['members','events','cal','more'].forEach(s=>{const e=document.getElementById('s-'+s);if(e&&e.style.display!=='none'){if(s==='members')rMembers();else if(s==='events')rEvents();else if(s==='cal')rCal();else if(s==='more')rMore();}});
 }
 
+function handleHash(){
+  var h=window.location.hash;
+  if(h.startsWith('#app')){
+    var m=h.includes('biz')?'biz':'perso';
+    startApp(m,'free');
+  }
+}
+
+function startFromBtn(btn){
+  var m=(btn&&btn.getAttribute('data-mode'))||'perso';
+  startApp(m,'free');
+}
+
 document.addEventListener('DOMContentLoaded',function(){
   handleHash();
   window.addEventListener('hashchange',handleHash);

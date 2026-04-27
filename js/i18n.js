@@ -3624,7 +3624,7 @@ function initLang(){
 let groups=[],curG='g1',admins=[],hist={},stats={},profile={},favs=[],utpls=[];
 let editId=null,editAdm=null,fMonth=0;
 let searchInput='',searchFiltered=null; // Axe 2 : état séparé
-let ppPhoto='',mode='perso',plan='bloom';
+let ppPhoto='',mode='perso',plan='free';
 let calY=new Date().getFullYear(),calM=new Date().getMonth();
 let actTpl='t1',obStep=0;
 let isOnline=navigator.onLine;
@@ -3708,6 +3708,4 @@ window.addEventListener('offline',()=>{isOnline=false;document.getElementById('o
 if(!navigator.onLine)document.getElementById('offline-banner').classList.add('show');
 
 // ── NAVIGATION ──
-function selMode(m){mode=m;document.getElementById('lbp').classList.toggle('on',m==='perso');document.getElementById('lbb').classList.toggle('on',m==='biz');document.getElementById('lperso').style.display=m==='perso'?'block':'none';document.getElementById('lbiz').style.display=m==='biz'?'block':'none';renderPlanDetail(m==='biz'?'pro':'bloom',m);}
 function goLand(){document.getElementById('land').style.display='block';document.getElementById('app').classList.remove('on');document.getElementById('ripple').classList.remove('on');document.getElementById('ob-screen').classList.remove('on');}
-async
