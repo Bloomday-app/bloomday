@@ -89,31 +89,31 @@ function showUpgradeModal(targetPlan){
 
   // Email
   var ew=mk('div','margin-bottom:14px');
-  ew.appendChild(mk('label','font-size:11px;font-weight:700;color:var(--txt2);text-transform:uppercase;letter-spacing:.05em;display:block;margin-bottom:6px','Email (optionnel)'));
+  ew.appendChild(mk('label','font-size:11px;font-weight:700;color:var(--txt2);text-transform:uppercase;letter-spacing:.05em;display:block;margin-bottom:6px',t('emailOptional')));
   var ei=document.createElement('input');ei.type='email';ei.id='stripe-email';ei.placeholder='vous@exemple.com';
   ei.style.cssText='width:100%;border:1.5px solid var(--brd);border-radius:10px;padding:11px 14px;font-size:15px;background:var(--bg);color:var(--txt);box-sizing:border-box';
   ew.appendChild(ei);md.appendChild(ew);
 
   // Card mount
   var cw=mk('div','margin-bottom:20px');
-  cw.appendChild(mk('label','font-size:11px;font-weight:700;color:var(--txt2);text-transform:uppercase;letter-spacing:.05em;display:block;margin-bottom:6px','Carte bancaire'));
+  cw.appendChild(mk('label','font-size:11px;font-weight:700;color:var(--txt2);text-transform:uppercase;letter-spacing:.05em;display:block;margin-bottom:6px',t('cardLabel')));
   var cm=mk('div','border:1.5px solid var(--brd);border-radius:10px;padding:13px 14px;background:var(--bg);transition:border .2s');cm.id='stripe-card-el';
   var ce=mk('div','color:#c0392b;font-size:12px;margin-top:6px;display:none');ce.id='stripe-card-err';
   cw.appendChild(cm);cw.appendChild(ce);md.appendChild(cw);
 
   // Buttons
-  var sb=mk('button','padding:15px;font-size:15px;font-weight:700;border-radius:14px;margin-bottom:10px','🔒 Démarrer l\'essai gratuit');
+  var sb=mk('button','padding:15px;font-size:15px;font-weight:700;border-radius:14px;margin-bottom:10px',t('startTrialBtn'));
   sb.id='stripe-submit-btn';sb.className='btn P fw';md.appendChild(sb);
-  var cb=mk('button','font-size:14px','Annuler');cb.className='btn fw';
+  var cb=mk('button','font-size:14px',t('cancelBtn'));cb.className='btn fw';
   cb.onclick=function(){ov.remove();};md.appendChild(cb);
-  md.appendChild(mk('div','margin-top:16px;text-align:center;font-size:11px;color:var(--txt3)','🔒 Paiement sécurisé par Stripe · Données chiffrées'));
+  md.appendChild(mk('div','margin-top:16px;text-align:center;font-size:11px;color:var(--txt3)',t('stripeSecure')));
 
   ov.appendChild(md);document.body.appendChild(ov);
 
   // Stripe Elements
   var STRIPE_PK=window.STRIPE_PUBLISHABLE_KEY||'';
   if(!STRIPE_PK||!window.Stripe){
-    ce.textContent='Configuration Stripe manquante. Contactez-nous : contact@bloomday.app';ce.style.display='block';
+    ce.textContent=t('stripeConfigError');ce.style.display='block';
     return;
   }
   var stripe=Stripe(STRIPE_PK);
@@ -125,22 +125,22 @@ function showUpgradeModal(targetPlan){
   cardEl.on('change',function(ev){if(ev.error){ce.textContent=ev.error.message;ce.style.display='block';}else{ce.style.display='none';}});
 
   sb.onclick=async function(){
-    sb.disabled=true;sb.textContent='⏳ Enregistrement...';ce.style.display='none';
+    sb.disabled=true;sb.textContent=t('registeringText');ce.style.display='none';
     try{
       var resp=await fetch('/.netlify/functions/create-setup-intent',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({plan:targetPlan,email:ei.value.trim()})});
       var data=await resp.json();
-      if(!resp.ok||!data.clientSecret)throw new Error(data.error||'Erreur serveur');
+      if(!resp.ok||!data.clientSecret)throw new Error(data.error||t('serverError'));
       var res=await stripe.confirmCardSetup(data.clientSecret,{payment_method:{card:cardEl,billing_details:{email:ei.value.trim()||undefined}}});
       if(res.error)throw new Error(res.error.message);
       safeLsSet('bdg16_plan',targetPlan);
       safeLsSet('bdg16_customer',data.customerId||'');
       safeLsSet('bdg16_since',new Date().getFullYear()+'');
       plan=targetPlan;ov.remove();
-      showToast('🌸 Essai démarré ! Bienvenue sur '+planName,'success');
+      showToast(t('trialStarted')+' '+planName,'success');
       refresh();
     }catch(e){
-      ce.textContent=e.message||'Une erreur est survenue. Réessayez.';ce.style.display='block';
-      sb.disabled=false;sb.textContent='🔒 Démarrer l\'essai gratuit';
+      ce.textContent=e.message||t('errorRetry');ce.style.display='block';
+      sb.disabled=false;sb.textContent=t('startTrialBtn');
     }
   };
 }
@@ -269,7 +269,7 @@ function showAccountPage(){
   // Sélecteur langue
   var lcard=document.createElement('div');lcard.className='card';lcard.style.cssText='margin-top:16px;padding:14px';
   var ltit=document.createElement('div');ltit.style.cssText='font-size:13px;font-weight:700;margin-bottom:10px';
-  ltit.textContent='Langue';lcard.appendChild(ltit);
+  ltit.textContent=t('languageLabel');lcard.appendChild(ltit);
   var lrow=document.createElement('div');lrow.style.cssText='display:flex;flex-wrap:wrap;gap:8px';
   var langs2=['fr','en','es','ar','hi','zh','pt'];
   var fgs={fr:'????',en:'????',es:'????',
@@ -401,8 +401,8 @@ function doLogin(){
   if(!email||!pass){showToast('Remplissez tous les champs','error');return;}
   var saved=localStorage.getItem('bdg16_user');
   if(saved){try{currentUser=JSON.parse(saved);}catch(e){currentUser=null;}}
-  if(currentUser){closeOv('m-auth');showToast('Bienvenue '+currentUser.name+' !','success');}
-  else{showToast('Aucun compte trouvé','error');switchAuthTab('signup');}
+  if(currentUser){closeOv('m-auth');showToast(t('welcomeUser')+' '+currentUser.name+' !','success');}
+  else{showToast(t('noAccountFound'),'error');switchAuthTab('signup');}
 }
 function loadUser(){
   var saved=localStorage.getItem('bdg16_user');

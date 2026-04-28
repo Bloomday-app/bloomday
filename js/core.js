@@ -91,8 +91,8 @@ async function startOnboarding(){
   if(demoEl){
     demoEl.innerHTML='<div class="ob-msg">'+esc(fallbackMsg)+'</div>'+
       '<div style="display:flex;gap:8px;margin-top:12px">'+
-      '<button class="btn G fw" onclick="copyObMsg()">📋 Copier</button>'+
-      '<button class="btn sm" onclick="regenObMsg()">↺ Autre message</button>'+
+      '<button class="btn G fw" onclick="copyObMsg()">'+t('obCopyBtn2')+'</button>'+
+      '<button class="btn sm" onclick="regenObMsg()">'+t('obRetryBtn2')+'</button>'+
       '</div>';
     window.__obFallback=fallbackMsg;
   }
@@ -111,8 +111,8 @@ async function startOnboarding(){
       if(demoEl){
         demoEl.innerHTML='<div class="ob-msg">'+esc(aiMsg)+'</div>'+
           '<div style="display:flex;gap:8px;margin-top:12px">'+
-          '<button class="btn G fw" onclick="copyObMsg()">📋 Copier</button>'+
-          '<button class="btn sm" onclick="regenObMsg()">↺ Autre message</button>'+
+          '<button class="btn G fw" onclick="copyObMsg()">'+t('obCopyBtn2')+'</button>'+
+          '<button class="btn sm" onclick="regenObMsg()">'+t('obRetryBtn2')+'</button>'+
           '</div>';
       }
     }
@@ -149,8 +149,8 @@ async function regenObMsg(){
     window.__obAiMsg=aiMsg;
     demoEl.innerHTML='<div class="ob-msg">'+esc(aiMsg)+'</div>'+
       '<div style="display:flex;gap:8px;margin-top:12px">'+
-      '<button class="btn G fw" onclick="copyObMsg()">📋 Copier</button>'+
-      '<button class="btn sm" onclick="regenObMsg()">↺ Autre message</button>'+
+      '<button class="btn G fw" onclick="copyObMsg()">'+t('obCopyBtn2')+'</button>'+
+      '<button class="btn sm" onclick="regenObMsg()">'+t('obRetryBtn2')+'</button>'+
       '</div>';
   } catch(e){
     var fallbacks=['Léa, que cette journée soit aussi lumineuse que ton sourire ! Joyeux anniversaire 🌸','Les 33 ans te vont à merveille ! Profite de chaque pétale de cette journée. 🌺'];
@@ -158,8 +158,8 @@ async function regenObMsg(){
     window.__obAiMsg=msg;
     demoEl.innerHTML='<div class="ob-msg">'+esc(msg)+'</div>'+
       '<div style="display:flex;gap:8px;margin-top:12px">'+
-      '<button class="btn G fw" onclick="copyObMsg()">📋 Copier</button>'+
-      '<button class="btn sm" onclick="regenObMsg()">↺ Autre</button>'+
+      '<button class="btn G fw" onclick="copyObMsg()">'+t('obCopyBtn2')+'</button>'+
+      '<button class="btn sm" onclick="regenObMsg()">'+t('retryBtn')+'</button>'+
       '</div>';
   }
 }
@@ -177,7 +177,7 @@ async function obAddMember(){
   const name=(document.getElementById('ob-name').value||'').trim();
   const day=parseInt(document.getElementById('ob-day').value)||0;
   const month=parseInt(document.getElementById('ob-month').value)||0;
-  if(!name||!day||!month){alert('Prénom, jour et mois requis.');return;}
+  if(!name||!day||!month){alert(t('requiredFields'));return;}
   // Ajouter dans le premier groupe
   if(!groups.length)groups=[{id:'g1',name:t('myGroup'),icon:'🌸',members:[]}];
   const nm={id:Date.now(),day,month,year:null,name,phone:'',note:'',photo:'',type:'birthday',gender:''};
@@ -267,7 +267,7 @@ function switchG(id){curG=id;fMonth=0;searchInput='';searchFiltered=null;editId=
 function addGroup(){
   const pl=PL();
   if(groups.length>=pl.mg){
-    alert(t('planLabel')||'Plan '+PLANS[plan].name+' : maximum '+pl.mg+' groupe'+(pl.mg>1?'s':'')+'.\nPassez à un plan supérieur.');
+    alert('Plan '+PLANS[plan].name+' : '+pl.mg+' '+t('groupLimitAlert'));
     return;
   }
   // Ouvrir la modale de création (pas de prompt() → marche sur iOS PWA)
@@ -303,16 +303,16 @@ function updateTopbar(){const e=document.getElementById('tbdate');if(e)e.textCon
 
 // ── PHOTO / IMPORT ──
 function prevPhoto(i){if(!i.files||!i.files[0])return;const r=new FileReader();r.onload=e=>{ppPhoto=e.target.result;const p=document.getElementById('phuprev');if(p)p.innerHTML=`<img src="${ppPhoto}" alt="">`;};r.readAsDataURL(i.files[0]);}
-function impVCard(i){if(!i.files||!i.files[0])return;const r=new FileReader();r.onload=e=>{const t=e.target.result,nm=t.match(/FN:(.*)/),tm=t.match(/TEL[^:]*:(.*)/),bm=t.match(/BDAY:(\d{4})(\d{2})(\d{2})/);if(nm)document.getElementById('inp-name').value=nm[1].trim();if(tm)document.getElementById('inp-phone').value=tm[1].trim();if(bm){document.getElementById('inp-year').value=bm[1];document.getElementById('inp-month').value=parseInt(bm[2]);document.getElementById('inp-day').value=parseInt(bm[3]);}alert('✓ Contact importé !');};r.readAsText(i.files[0]);}
+function impVCard(i){if(!i.files||!i.files[0])return;const r=new FileReader();r.onload=e=>{const t=e.target.result,nm=t.match(/FN:(.*)/),tm=t.match(/TEL[^:]*:(.*)/),bm=t.match(/BDAY:(\d{4})(\d{2})(\d{2})/);if(nm)document.getElementById('inp-name').value=nm[1].trim();if(tm)document.getElementById('inp-phone').value=tm[1].trim();if(bm){document.getElementById('inp-year').value=bm[1];document.getElementById('inp-month').value=parseInt(bm[2]);document.getElementById('inp-day').value=parseInt(bm[3]);}alert(t('contactImported'));};r.readAsText(i.files[0]);}
 function impCSV(i){if(!i.files||!i.files[0])return;const r=new FileReader();r.onload=e=>{const ls=e.target.result.split('\n').filter(l=>l.trim());let cnt=0;const m=mems();ls.forEach(line=>{const p=line.split(',').map(x=>x.trim().replace(/^"|"$/g,''));if(p.length<3)return;const name=p[0],day=parseInt(p[1]),month=parseInt(p[2]);if(!name||!day||isNaN(day)||!month||isNaN(month)||day<1||day>31||month<1||month>12)return;m.push({id:Date.now()+cnt,day,month,year:p[3]?parseInt(p[3]):null,name,phone:p[4]||'',note:'',photo:'',type:'birthday',gender:''});cnt++;});m.sort((a,b)=>a.month-b.month||a.day-b.day);setMems(m);saveG();refresh();alert(`✓ ${cnt} membre${cnt>1?'s':''} importé${cnt>1?'s':''} !`);};r.readAsText(i.files[0]);}
 
 // ── ADD MEMBER ──
 function addMember(){
   const pl=PL(),m=mems();
-  if(m.length>=pl.mm){alert(`Plan ${PLANS[plan].name} : maximum ${pl.mm} membres.\nPassez à un plan supérieur.`);return;}
+  if(m.length>=pl.mm){alert('Plan '+PLANS[plan].name+' : '+pl.mm+' '+t('memberLimitAlert'));return;}
   const day=parseInt(document.getElementById('inp-day').value)||0,month=parseInt(document.getElementById('inp-month').value)||0,yv=document.getElementById('inp-year').value,name=(document.getElementById('inp-name').value||'').trim();
-  if(!day||!month||!name){alert('Jour, mois et nom sont requis.');return;}
-  if(day<1||day>31||month<1||month>12){alert('Date invalide.');return;}
+  if(!day||!month||!name){alert(t('requiredFieldsFull'));return;}
+  if(day<1||day>31||month<1||month>12){alert(t('invalidDate'));return;}
   m.push({id:Date.now(),day,month,year:yv?parseInt(yv):null,name,phone:(document.getElementById('inp-phone').value||'').trim(),note:(document.getElementById('inp-note').value||'').trim(),photo:ppPhoto,type:document.getElementById('inp-type').value,gender:document.getElementById('inp-gender').value});
   m.sort((a,b)=>a.month-b.month||a.day-b.day);setMems(m);ppPhoto='';saveG();
   ['inp-day','inp-year','inp-name','inp-phone','inp-note'].forEach(id=>{const e=document.getElementById(id);if(e)e.value='';});
@@ -320,12 +320,12 @@ function addMember(){
   if(pp)pp.innerHTML='<svg width="28" height="28" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="10" r="3.5" stroke="#D4A843" stroke-width="1.5"/><path d="M4 20c0-4 3.582-7 8-7s8 3 8 7" stroke="#D4A843" stroke-width="1.5" stroke-linecap="round"/><path d="M17 6h4M19 4v4" stroke="#D4A843" stroke-width="1.5" stroke-linecap="round"/></svg>';
   refresh();showSec('members',1);
 }
-function removeMem(id){if(!confirm('Retirer ce membre ?'))return;setMems(mems().filter(p=>p.id!==id));saveG();refresh();}
+function removeMem(id){if(!confirm(t('removeMemberConfirm')))return;setMems(mems().filter(p=>p.id!==id));saveG();refresh();}
 function togEdit(id){editId=editId===id?null:id;rMembers();}
 function saveEdit(id){
   const m=mems(),p=m.find(x=>x.id===id);if(!p)return;
   const name=(document.getElementById('em-name').value||'').trim(),day=parseInt(document.getElementById('em-day').value)||0,month=parseInt(document.getElementById('em-month').value)||0;
-  if(!name||!day||!month||day<1||day>31||month<1||month>12){alert('Données invalides.');return;}
+  if(!name||!day||!month||day<1||day>31||month<1||month>12){alert(t('invalidData'));return;}
   const yv=document.getElementById('em-year').value;
   Object.assign(p,{name,day,month,year:yv?parseInt(yv):null,phone:(document.getElementById('em-phone').value||'').trim(),note:(document.getElementById('em-note').value||'').trim(),gender:(document.getElementById('em-gender')&&document.getElementById('em-gender').value)||p.gender});
   m.sort((a,b)=>a.month-b.month||a.day-b.day);setMems(m);editId=null;saveG();rMembers();
