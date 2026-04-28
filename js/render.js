@@ -14,11 +14,11 @@ function rHome(){
   // --- Prompt push notifs ---
   if(!pushGranted&&window.Notification&&Notification.permission==='default'&&!localStorage.getItem('bdg16_push_dismissed')&&m.length>0){
     h+='<div class="push-prompt"><div style="font-size:26px">🔔</div>';
-    h+='<div style="flex:1"><div style="font-size:13px;font-weight:700;color:var(--b3d)">Ne jamais rater un anniversaire</div>';
-    h+='<div style="font-size:12px;color:var(--b3d);margin-top:2px">Activez les alertes du matin.</div>';
+    h+='<div style="flex:1"><div style="font-size:13px;font-weight:700;color:var(--b3d)">'+t('pushNeverMiss')+'</div>';
+    h+='<div style="font-size:12px;color:var(--b3d);margin-top:2px">'+t('pushAlerts')+'</div>';
     h+='<div class="brow" style="margin-top:8px">';
-    h+='<button class="btn G sm" onclick="requestPush().then(function(){rHome();})">🔔 Activer</button>';
-    h+='<button class="btn sm" onclick="safeLsSet(\'bdg16_push_dismissed\',\'1\');rHome()">Plus tard</button>';
+    h+='<button class="btn G sm" onclick="requestPush().then(function(){rHome();})">'+t('pushBtn')+'</button>';
+    h+='<button class="btn sm" onclick="safeLsSet(\'bdg16_push_dismissed\',\'1\');rHome()">'+t('pushLater')+'</button>';
     h+='</div></div></div>';
   }
 
@@ -34,15 +34,15 @@ function rHome(){
     const left=Math.max(0,pl.msgs-(stats.msgsM||0));
     h+='<div class="plb">';
     h+='<div><div style="font-size:13px;font-weight:700;color:var(--b4d)">Plan '+PLANS[plan].name+'</div>';
-    h+='<div style="font-size:12px;color:var(--b4)">'+m.length+'/'+pl.mm+' membres · '+left+' msg restant'+(left!==1?'s':'')+'</div></div>';
-    h+='<button class="btn V sm" onclick="goLand()">Upgrader →</button></div>';
+    h+='<div style="font-size:12px;color:var(--b4)">'+m.length+'/'+pl.mm+' '+t('membersPlanInfo')+' '+PLANS[plan].name+' · '+left+' '+(left!==1?t('planLeftPlural'):t('planLeft'))+'</div></div>';
+    h+='<button class="btn V sm" onclick="goLand()">'+t('upgradeBtn')+'</button></div>';
   }
 
   // --- Urgence (raté hier) ---
   missed.forEach(function(p){
     h+='<div class="card curg">';
-    h+='<div style="font-size:14px;font-weight:700;color:var(--b2d);margin-bottom:4px">⚡ Anniversaire raté hier !</div>';
-    h+='<div style="font-size:13px;color:var(--b2);margin-bottom:8px">C\'était l\'anniversaire de <strong>'+esc(p.name)+'</strong>. Il n\'est pas trop tard !</div>';
+    h+='<div style="font-size:14px;font-weight:700;color:var(--b2d);margin-bottom:4px">⚡ '+t('missedBday')+'</div>';
+    h+='<div style="font-size:13px;color:var(--b2);margin-bottom:8px">'+t('urgentSub')+' <strong>'+esc(p.name)+'</strong></div>';
     h+='<div id="urg-'+p.id+'"><button class="btn R sm" onclick="genUrgence('+p.id+',\'urg-'+p.id+'\')">'+t('urgentBtn')+'</button></div>';
     h+='</div>';
   });
@@ -54,9 +54,9 @@ function rHome(){
     const idx=m.indexOf(nextEv);
     h+='<div class="card cp" style="display:flex;align-items:center;gap:14px;margin-bottom:16px">';
     h+='<div style="text-align:center;min-width:58px"><div style="font-family:var(--ff-title);font-size:42px;font-weight:800;color:var(--b4d);line-height:1">'+d+'</div>';
-    h+='<div style="font-size:10px;color:var(--b4);margin-top:1px;font-weight:700">jour'+(d>1?'s':'')+'</div></div>';
+    h+='<div style="font-size:10px;color:var(--b4);margin-top:1px;font-weight:700">'+(d>1?t('daysUnit'):t('dayUnit'))+'</div></div>';
     h+='<div style="flex:1;min-width:0">';
-    h+='<div style="font-size:11px;font-weight:700;color:var(--b4);text-transform:uppercase;letter-spacing:.06em;margin-bottom:4px">Prochain '+tLbl(nextEv.type)+'</div>';
+    h+='<div style="font-size:11px;font-weight:700;color:var(--b4);text-transform:uppercase;letter-spacing:.06em;margin-bottom:4px">'+t('nextEventLabel')+' '+tLbl(nextEv.type)+'</div>';
     h+='<div style="display:flex;align-items:center;gap:8px">';
     h+='<div class="av '+AV[idx%4]+'" style="width:34px;height:34px;font-size:11px">'+(nextEv.photo?'<img src="'+nextEv.photo+'" alt="">':ini(nextEv.name))+'</div>';
     h+='<div><div style="font-size:15px;font-weight:700;color:var(--b4d)">'+esc(nextEv.name.split(' ')[0])+'</div>';
@@ -66,7 +66,7 @@ function rHome(){
   }
 
   // --- Semaine ---
-  h+='<div class="sh">Cette semaine</div><div class="wrow">';
+  h+='<div class="sh">'+t('thisWeek')+'</div><div class="wrow">';
   for(let i=0;i<7;i++){
     const d=new Date(now);d.setDate(now.getDate()+i);
     const dd=d.getDate(),mm=d.getMonth()+1;
@@ -81,10 +81,10 @@ function rHome(){
 
   // --- Aujourd'hui ---
   if(todays.length>0){
-    h+='<div class="sh" style="color:var(--b2)">🌸 Aujourd\'hui</div>';
+    h+='<div class="sh" style="color:var(--b2)">'+t('todaySec')+'</div>';
     // Sélecteur ton
     const allTpl=[].concat(DTPL,utpls);
-    h+='<div style="margin-bottom:12px"><label style="margin-top:0">Ton du message :</label><div class="chips" style="margin-bottom:0">';
+    h+='<div style="margin-bottom:12px"><label style="margin-top:0">'+t('messageTone')+' :</label><div class="chips" style="margin-bottom:0">';
     allTpl.forEach(function(t){
       h+='<button class="chip'+(actTpl===t.id?' on':'')+'" onclick="setTpl(\''+t.id+'\',this)">'+t.e+' '+t.n+'</button>';
     });
@@ -109,23 +109,23 @@ function rHome(){
       h+='<div id="h-gift-'+p.id+'"></div><div id="h-card-'+p.id+'"></div>';
       h+='</div>';
     });
-    if(todays.length>1)h+='<button class="btn P fw" onclick="prepAll()" style="margin-bottom:12px">🌸 Préparer tous les messages</button>';
+    if(todays.length>1)h+='<button class="btn P fw" onclick="prepAll()" style="margin-bottom:12px">'+t('prepareAllBtn')+'</button>';
   } else if(m.length===0){
     h+='<div class="es"><div style="margin-bottom:14px"><svg width="64" height="64"><use href="#bi"/></svg></div>';
-    h+='<div style="font-family:var(--ff-title);font-size:18px;font-weight:700;margin-bottom:10px">Bienvenue sur Bloomday !</div>';
-    h+='<div style="margin-bottom:16px">Ajoutez vos premiers membres pour commencer à célébrer.</div>';
-    h+='<button class="btn P" onclick="showSec(\'add\',2)">🌸 Ajouter un membre</button>';
+    h+='<div style="font-family:var(--ff-title);font-size:18px;font-weight:700;margin-bottom:10px">'+t('welcomeBloom')+'</div>';
+    h+='<div style="margin-bottom:16px">'+t('addFirstMembers')+'</div>';
+    h+='<button class="btn P" onclick="showSec(\'add\',2)">'+t('addMemberCTA')+'</button>';
     h+='</div>';
   } else {
     // Pas d'anniv aujourd'hui — afficher les prochains
     const nextFew=m.filter(function(p){return daysTill(p.day,p.month)>0;}).sort(function(a,b){return daysTill(a.day,a.month)-daysTill(b.day,b.month);}).slice(0,3);
     h+='<div class="card" style="background:linear-gradient(135deg,var(--b4l),var(--b1l));border:1.5px solid var(--b4);padding:20px;text-align:center;margin-bottom:12px">';
     h+='<div style="font-size:32px;margin-bottom:8px">🌸</div>';
-    h+='<div style="font-family:var(--ff-title);font-size:17px;font-weight:700;color:var(--b4d);margin-bottom:5px">Aucun anniversaire aujourd\'hui</div>';
-    h+='<div style="font-size:13px;color:var(--b4d);opacity:.75">Profitez-en pour préparer les prochains</div>';
+    h+='<div style="font-family:var(--ff-title);font-size:17px;font-weight:700;color:var(--b4d);margin-bottom:5px">'+t('noBirthdaysToday')+'</div>';
+    h+='<div style="font-size:13px;color:var(--b4d);opacity:.75">'+t('prepareUpcoming')+'</div>';
     h+='</div>';
     if(nextFew.length>0){
-      h+='<div class="sh">🎯 À préparer</div>';
+      h+='<div class="sh">'+t('toPrepare')+'</div>';
       nextFew.forEach(function(p){
         const d=daysTill(p.day,p.month);
         const age=ageBday(p.day,p.month,p.year);
@@ -135,9 +135,9 @@ function rHome(){
         h+='<div style="flex:1;min-width:0">';
         h+='<div style="font-size:15px;font-weight:700;color:var(--b1d)">'+tIco(p.type)+' '+esc(p.name)+'</div>';
         h+='<div style="font-size:12px;color:var(--b1d);margin-top:2px">'+p.day+' '+MN[p.month-1]+(age?' · '+age+' '+t('yearsOld'):'')+'</div>';
-        h+='<div style="font-size:11px;font-weight:700;color:var(--b1);margin-top:3px">dans '+d+' jour'+(d>1?'s':'')+'</div>';
+        h+='<div style="font-size:11px;font-weight:700;color:var(--b1);margin-top:3px">'+t('inDays')+' '+d+' '+(d>1?t('daysUnit'):t('dayUnit'))+'</div>';
         h+='</div>';
-        h+='<div id="prep-'+p.id+'"><button class="btn O sm" onclick="genMsg('+p.id+',\'prep-'+p.id+'\')">Préparer →</button></div>';
+        h+='<div id="prep-'+p.id+'"><button class="btn O sm" onclick="genMsg('+p.id+',\'prep-'+p.id+'\')">'+t('prepareBtn')+'</button></div>';
         h+='</div>';
       });
     }
@@ -145,7 +145,7 @@ function rHome(){
 
   // --- 7 jours ---
   if(upcoming.length>0){
-    h+='<div class="sh" style="margin-top:14px">Dans les 7 jours</div>';
+    h+='<div class="sh" style="margin-top:14px">'+t('next7Days')+'</div>';
     upcoming.forEach(function(p){
       const d=daysTill(p.day,p.month);
       const age=ageBday(p.day,p.month,p.year);
@@ -154,10 +154,10 @@ function rHome(){
       h+='<div style="display:flex;align-items:center;gap:10px">';
       h+='<div class="av '+AV[idx%4]+'">'+(p.photo?'<img src="'+p.photo+'" alt="">':ini(p.name))+'</div>';
       h+='<div style="flex:1;min-width:0">';
-      h+='<div style="font-size:14px;font-weight:700;color:var(--b1d)">'+tIco(p.type)+' '+esc(p.name)+'<span class="pbdg pbs">dans '+d+'j</span></div>';
+      h+='<div style="font-size:14px;font-weight:700;color:var(--b1d)">'+tIco(p.type)+' '+esc(p.name)+'<span class="pbdg pbs">'+t('inDays')+' '+d+'j</span></div>';
       h+='<div style="font-size:12px;color:var(--b1d)">'+tLbl(p.type)+' · '+p.day+' '+MN[p.month-1]+(age?' — '+age+' '+t('yearsOld'):'')+'</div>';
       h+='</div></div>';
-      h+='<div id="up-'+p.id+'"><div class="brow" style="margin-top:8px"><button class="btn sm" onclick="genMsg('+p.id+',\'up-'+p.id+'\')">Préparer →</button></div></div>';
+      h+='<div id="up-'+p.id+'"><div class="brow" style="margin-top:8px"><button class="btn sm" onclick="genMsg('+p.id+',\'up-'+p.id+'\')">'+t('prepareBtn')+'</button></div></div>';
       h+='</div>';
     });
   }
@@ -165,7 +165,7 @@ function rHome(){
   // --- Vue mensuelle ---
   const monthAll=m.filter(function(p){return p.month===now.getMonth()+1;}).sort(function(a,b){return a.day-b.day;});
   if(monthAll.length>0){
-    h+='<div class="sh" style="margin-top:16px">Tout '+MN[now.getMonth()]+'</div>';
+    h+='<div class="sh" style="margin-top:16px">'+t('allThisMonth')+' '+MN[now.getMonth()]+'</div>';
     h+='<div class="card" style="padding:8px 14px">';
     monthAll.forEach(function(p){
       const age=ageBday(p.day,p.month,p.year);
@@ -177,7 +177,7 @@ function rHome(){
       h+='<div style="font-size:13px;font-weight:'+(isTod?700:500)+';color:'+(isTod?'var(--b2d)':'var(--txt)')+'">'+tIco(p.type)+' '+esc(p.name)+'</div>';
       h+='<div style="font-size:11px;color:var(--txt2)">'+tLbl(p.type)+(age?' · '+age+' '+t('yearsOld'):'')+'</div>';
       h+='</div>';
-      if(isTod)h+='<span class="pbdg pbt">Aujourd\'hui</span>';
+      if(isTod)h+='<span class="pbdg pbt">'+t('todayLabel')+'</span>';
       h+='</div>';
     });
     h+='</div>';
@@ -191,11 +191,11 @@ function rHome(){
       m.filter(function(p){return p.day===d.getDate()&&p.month===d.getMonth()+1;}).forEach(function(p){wb.push({p:p,o:i});});
     }
     if(wb.length>0){
-      const lines=wb.map(function(x){return(x.o===0?t('todayLabel'):x.o===1?t('tomorrowLabel'):'Dans '+x.o+'j')+' : '+x.p.name;}).join('\n');
-      const subj=encodeURIComponent('Bloomday — Rappels');
+      const lines=wb.map(function(x){return(x.o===0?t('todayLabel'):x.o===1?t('tomorrowLabel'):t('inDays')+' '+x.o+'j')+' : '+x.p.name;}).join('\n');
+      const subj=encodeURIComponent('Bloomday — '+t('remindersTitle'));
       const body=encodeURIComponent(lines);
-      h+='<div class="sh" style="margin-top:16px">Rappels</div>';
-      h+='<div class="nb2"><div style="font-size:13px;font-weight:700;color:var(--b3d);margin-bottom:8px">🌸 Cette semaine : '+wb.map(function(x){return esc(x.p.name.split(' ')[0]);}).join(', ')+'</div>';
+      h+='<div class="sh" style="margin-top:16px">'+t('remindersTitle')+'</div>';
+      h+='<div class="nb2"><div style="font-size:13px;font-weight:700;color:var(--b3d);margin-bottom:8px">'+t('remindersWeek')+' '+wb.map(function(x){return esc(x.p.name.split(' ')[0]);}).join(', ')+'</div>';
       h+='<div class="brow">';
       admins.forEach(function(a){
         if(a.email)h+='<a href="mailto:'+a.email+'?subject='+subj+'&body='+body+'"><button class="btn V sm">✉ '+esc(a.name.split(' ')[0])+'</button></a>';
@@ -214,7 +214,7 @@ function rHome(){
     {i:'🎁',t:'Cadeaux IA',d:'Plan Bloom : idées cadeaux personnalisées selon l\'âge et les goûts.'},
   ];
   const tip=(tArr('tips')[new Date().getDate()%5]||tArr('tips')[0]);
-  h+='<div class="sh" style="margin-top:16px">✨ Conseil du jour</div>';
+  h+='<div class="sh" style="margin-top:16px">'+t('tipOfDay')+'</div>';
   h+='<div style="background:linear-gradient(135deg,var(--b3l),var(--b4l));border:1px solid var(--b3);border-radius:18px;padding:16px;display:flex;gap:12px;align-items:flex-start">';
   h+='<div style="font-size:28px;flex-shrink:0">'+tip.i+'</div>';
   h+='<div><div style="font-size:12px;font-weight:700;color:var(--b3d);text-transform:uppercase;letter-spacing:.06em;margin-bottom:4px">'+tip.t+'</div>';
@@ -234,35 +234,35 @@ function rMembers(){
   // → le clavier reste ouvert sur mobile
   let h=`<div class="sw">
     <svg width="16" height="16" viewBox="0 0 20 20" fill="none"><circle cx="9" cy="9" r="6" stroke="currentColor" stroke-width="1.5"/><path d="M13.5 13.5L17 17" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
-    <input type="text" id="search-inp" placeholder="Rechercher un membre…" value="${esc(searchInput)}"
+    <input type="text" id="search-inp" placeholder="${t('searchMember')}" value="${esc(searchInput)}"
       autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
       inputmode="search"
       oninput="onSearchInput(this.value)" onkeydown="if(event.key==='Enter'){this.blur();}">
     <button id="srch-clr" class="clear-btn" style="display:${searchInput?'flex':'none'}" onclick="clearSearch()">✕</button>
   </div>`;
-  h+=`<div class="chips"><button class="chip${fMonth===0?' on':''}" onclick="fMonth=0;rMembers()">Tous</button>`;
+  h+=`<div class="chips"><button class="chip${fMonth===0?' on':''}" onclick="fMonth=0;rMembers()">${t('allMonths')}</button>`;
   for(let mo=1;mo<=12;mo++){if(m.some(p=>p.month===mo))h+=`<button class="chip${fMonth===mo?' on':''}" onclick="fMonth=${mo};rMembers()">${MNS[mo-1]}</button>`;}
   h+=`</div>`;
-  if(!filtered.length){h+=`<div class="es">${m.length===0?t('noMembersYet'):'Aucun résultat pour cette recherche.'}</div>`;el.innerHTML=h;return;}
-  h+=`<div style="font-size:12px;color:var(--txt2);margin-bottom:10px;font-weight:600">${filtered.length} membre${filtered.length!==1?'s':''} · Plan ${PLANS[plan].name}</div>`;
+  if(!filtered.length){h+=`<div class="es">${m.length===0?t('noMembersYet'):t('noSearchResults')}</div>`;el.innerHTML=h;return;}
+  h+=`<div style="font-size:12px;color:var(--txt2);margin-bottom:10px;font-weight:600">${filtered.length} ${filtered.length!==1?t('membersCount'):t('memberCount')} · Plan ${PLANS[plan].name}</div>`;
   filtered.forEach(p=>{
     const idx=m.indexOf(p),tod=isToday(p.day,p.month),days=daysTill(p.day,p.month),soon=days>0&&days<=7;
     const age=ageBday(p.day,p.month,p.year),ms=MS[age],isEd=editId===p.id;
     const h2=hist[String(p.id)]||[];const isBiz=p.type==='work',ancOk=isBiz&&age&&[1,3,5,10,15,20,25,30].includes(age);
     h+=`<div class="prow"><div class="av ${isBiz?'av4':AV[idx%4]}">${p.photo?`<img src="${p.photo}" alt="">`:ini(p.name)}</div>
-    <div class="pinfo"><div class="pname">${tIco(p.type)} ${esc(p.name)}${tod?'<span class="pbdg pbt">Aujourd\'hui !</span>':''}${soon&&!tod?`<span class="pbdg pbs">dans ${days}j</span>`:''}${ms&&(tod||soon)&&!isBiz?'<span class="pbdg pbk">Âge clé</span>':''}</div>
-    <div class="pmeta">${p.day} ${MN[p.month-1]}${p.year?' '+p.year:''}${age&&!isBiz?' — '+age+' '+t('yearsOld'):isBiz&&age?' — '+age+' an(s)':''}</div>
-    ${ancOk?`<div style="font-size:11px;color:var(--bizd);margin-top:2px;font-weight:700">🏆 ${age} an${age>1?'s':''} d'ancienneté !</div>`:''}
+    <div class="pinfo"><div class="pname">${tIco(p.type)} ${esc(p.name)}${tod?'<span class="pbdg pbt">'+t('todayLabel')+'</span>':''}${soon&&!tod?`<span class="pbdg pbs">${t('inDays')} ${days}j</span>`:''}${ms&&(tod||soon)&&!isBiz?'<span class="pbdg pbk">'+t('yearsOld')+'</span>':''}</div>
+    <div class="pmeta">${p.day} ${MN[p.month-1]}${p.year?' '+p.year:''}${age&&!isBiz?' — '+age+' '+t('yearsOld'):isBiz&&age?' — '+age+' '+t('yearsOld'):''}</div>
+    ${ancOk?`<div style="font-size:11px;color:var(--bizd);margin-top:2px;font-weight:700">🏆 ${age} ${t('yearsOld')}</div>`:''}
     ${ms&&!isBiz?`<div style="font-size:11px;color:var(--b4d);margin-top:2px;font-weight:600">${ms}</div>`:''}
     ${p.phone?`<div class="pmeta">📞 ${esc(p.phone)}</div>`:''}
-    ${h2.length>0?`<details><summary>${h2.length} message${h2.length>1?'s':''} envoyé${h2.length>1?'s':''}</summary><div style="margin-top:6px">${h2.slice(-3).reverse().map(x=>`<div class="hi"><div class="hid">${x.date}</div><div style="font-size:12px;color:var(--txt2);margin-top:2px;line-height:1.5">${esc((x.text||'').substring(0,140))}${(x.text||'').length>140?'…':''}</div></div>`).join('')}</div></details>`:''}
-    ${isEd?`<div class="ef"><div style="font-size:13px;font-weight:700;color:var(--b1d);margin-bottom:8px">✏️ Modifier</div>
-    <div class="f3"><div><label>Jour</label><input id="em-day" type="text" inputmode="numeric" pattern="[0-9]*" maxlength="2" value="${p.day}" inputmode="numeric"></div><div><label>Mois</label><select id="em-month">${[1,2,3,4,5,6,7,8,9,10,11,12].map(mo=>`<option value="${mo}"${p.month===mo?' selected':''}>${MNS[mo-1]}</option>`).join('')}</select></div><div><label>Année</label><input id="em-year" type="text" inputmode="numeric" pattern="[0-9]*" maxlength="4" value="${p.year||''}" inputmode="numeric"></div></div>
-    <label>Nom</label><input id="em-name" value="${esc(p.name)}">
-    <label>Téléphone</label><input id="em-phone" type="tel" value="${esc(p.phone||'')}">
-    <label>Genre</label><select id="em-gender"><option value=""${!p.gender?' selected':''}>Non précisé</option><option value="femme"${p.gender==='femme'?' selected':''}>👩 Femme</option><option value="homme"${p.gender==='homme'?' selected':''}>👨 Homme</option><option value="enfant"${p.gender==='enfant'?' selected':''}>👶 Enfant</option></select>
-    <label>Notes</label><textarea id="em-note">${esc(p.note||'')}</textarea>
-    <div class="brow" style="margin-top:10px"><button class="btn G" style="flex:1" onclick="saveEdit(${p.id})">✓ Enregistrer</button><button class="btn" onclick="togEdit(${p.id})">Annuler</button></div></div>`:''}
+    ${h2.length>0?`<details><summary>${h2.length} ${h2.length>1?t('membersCount'):t('memberCount')}</summary><div style="margin-top:6px">${h2.slice(-3).reverse().map(x=>`<div class="hi"><div class="hid">${x.date}</div><div style="font-size:12px;color:var(--txt2);margin-top:2px;line-height:1.5">${esc((x.text||'').substring(0,140))}${(x.text||'').length>140?'…':''}</div></div>`).join('')}</div></details>`:''}
+    ${isEd?`<div class="ef"><div style="font-size:13px;font-weight:700;color:var(--b1d);margin-bottom:8px">${t('editMember')}</div>
+    <div class="f3"><div><label>${t('dayLabel')||'Jour'}</label><input id="em-day" type="text" inputmode="numeric" pattern="[0-9]*" maxlength="2" value="${p.day}" inputmode="numeric"></div><div><label>${t('monthLabel')||'Mois'}</label><select id="em-month">${[1,2,3,4,5,6,7,8,9,10,11,12].map(mo=>`<option value="${mo}"${p.month===mo?' selected':''}>${MNS[mo-1]}</option>`).join('')}</select></div><div><label>${t('yearLabel')||'Année'}</label><input id="em-year" type="text" inputmode="numeric" pattern="[0-9]*" maxlength="4" value="${p.year||''}" inputmode="numeric"></div></div>
+    <label>${t('namePlaceholder')||'Nom'}</label><input id="em-name" value="${esc(p.name)}">
+    <label>${t('labelPhone')||'Téléphone'}</label><input id="em-phone" type="tel" value="${esc(p.phone||'')}">
+    <label>${t('genderLabel')||'Genre'}</label><select id="em-gender"><option value=""${!p.gender?' selected':''}>${t('genderNone')}</option><option value="femme"${p.gender==='femme'?' selected':''}>${t('genderF')}</option><option value="homme"${p.gender==='homme'?' selected':''}>${t('genderM')}</option><option value="enfant"${p.gender==='enfant'?' selected':''}>${t('genderKid')}</option></select>
+    <label>${t('notesLabel')||'Notes'}</label><textarea id="em-note">${esc(p.note||'')}</textarea>
+    <div class="brow" style="margin-top:10px"><button class="btn G" style="flex:1" onclick="saveEdit(${p.id})">${t('saveBtn')}</button><button class="btn" onclick="togEdit(${p.id})">${t('cancelBtn')}</button></div></div>`:''}
     <div id="m-msg-${p.id}"></div><div id="m-gift-${p.id}"></div></div>
     <div style="display:flex;flex-direction:column;gap:5px;flex-shrink:0">
     <button class="btn O sm" onclick="togEdit(${p.id})">${isEd?'✕':'✏'}</button>
@@ -270,7 +270,7 @@ function rMembers(){
     ${pl.gifts?`<button class="btn V sm" onclick="genGift(${p.id},'m-gift-${p.id}')">🎁</button>`:''}
     <button class="btn D sm" onclick="removeMem(${p.id})">✕</button></div></div>`;
   });
-  h+=`<button class="exbtn" onclick="exportPDF()">📄 Exporter en PDF</button>`;
+  h+=`<button class="exbtn" onclick="exportPDF()">${t('exportPDFBtn')}</button>`;
   el.innerHTML=h;
   // Refocaliser le champ si recherche active (sans provoquer de scroll)
   if(searchInput){
@@ -281,8 +281,8 @@ function rMembers(){
 function rEvents(){
   const el=document.getElementById('s-events');if(!el)return;
   const fetes=getActiveFetes(),up=fetes.filter(f=>f.dl<=90);
-  let h=`<div class="sh">Prochaines fêtes & célébrations</div><div style="font-size:12px;color:var(--txt2);margin-bottom:12px">Personnalisez dans <strong style="color:var(--txt)">Plus → Mon profil</strong></div><div class="card" style="padding:6px 14px">`;
-  if(!up.length)h+=`<div style="font-size:13px;color:var(--txt2);padding:10px 0">Aucune fête dans les 90 prochains jours.</div>`;
+  let h=`<div class="sh">${t('nextCelebrations')}</div><div style="font-size:12px;color:var(--txt2);margin-bottom:12px">${t('personalizeProfile')}</div><div class="card" style="padding:6px 14px">`;
+  if(!up.length)h+=`<div style="font-size:13px;color:var(--txt2);padding:10px 0">${t('noCelebrations')}</div>`;
   up.forEach(f=>{
     const nom=tFete(f.n)||f.n;
     const lbl=f.dl===0?t('today')||'Aujourd\'hui !':f.dl===1?t('tomorrowLabel')||'Demain':`${t('inDays')||'dans'} ${f.dl}j`;
