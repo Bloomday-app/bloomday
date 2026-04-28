@@ -471,3 +471,195 @@ if(!tbAcctBtn){
 
 
 // Traductions des noms de fêtes
+
+// ── FÊTES ──
+function getActiveFetes(){
+  var now=new Date();
+  var live=(profile&&profile.live)||'fr';
+  var rel=(profile&&profile.religion)||'';
+  return FETES.map(function(f){
+    var m=f.m,d=f.d;
+    var ok=f.c.includes('universal')||f.c.includes(live)||(rel&&f.c.includes(rel));
+    if(!ok)return null;
+    var x=new Date(now.getFullYear(),m-1,d);
+    var dl=Math.round((x-now)/86400000);
+    if(dl<0){x.setFullYear(now.getFullYear()+1);dl=Math.round((x-now)/86400000);}
+    return {n:f.n,i:f.i,m:m,d:d,dl:dl};
+  }).filter(Boolean).sort(function(a,b){return a.dl-b.dl;});
+}
+
+// ── CALENDRIER ──
+function rCal(){
+  var el=document.getElementById('s-cal');if(!el)return;
+  var m=mems();
+  var h='<div class="sh">Calendrier des anniversaires</div>';
+  var found=false;
+  for(var mo=1;mo<=12;mo++){
+    var inM=m.filter(function(p){return p.month===mo;});
+    if(!inM.length)continue;
+    found=true;
+    h+='<div class="sh" style="font-size:12px;margin-top:12px;color:var(--b1d)">'+MN[mo-1]+'</div>';
+    inM.forEach(function(p){
+      var age=ageBday(p.day,p.month,p.year);
+      var tod=isToday(p.day,p.month);
+      h+='<div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--brd)">';
+      h+='<div style="min-width:32px;text-align:center;font-size:14px;font-weight:700;color:'+(tod?'var(--b2d)':'var(--b1d)')+'">'+p.day+'</div>';
+      h+='<div style="flex:1"><div style="font-size:14px;font-weight:600">'+tIco(p.type)+' '+esc(p.name)+(tod?'<span class="pbdg pbt" style="margin-left:6px">Aujourd\'hui !</span>':'')+'</div>';
+      if(age)h+='<div style="font-size:12px;color:var(--txt2)">'+age+' '+t('yearsOld')+'</div>';
+      h+='</div></div>';
+    });
+  }
+  if(!found)h+='<div style="font-size:13px;color:var(--txt2);padding:20px 0">Ajoutez des membres pour voir le calendrier.</div>';
+  el.innerHTML=h;
+}
+
+// ── PLUS ──
+function rMore(){
+  var el=document.getElementById('s-more');if(!el)return;
+  var h='';
+  h+='<div class="sh">👤 Mon profil</div>';
+  h+='<div class="card" style="padding:16px">';
+  h+='<label>'+t('liveCountry')+'</label><select id="prof-live" onchange="profile.live=this.value;savePr();rEvents()"></select>';
+  h+='<label style="margin-top:12px">'+t('originCountry')+'</label><select id="prof-origin" onchange="profile.origin=this.value;savePr()"></select>';
+  h+='<label style="margin-top:12px">'+t('religionLabel')+'</label><select id="prof-rel" onchange="profile.religion=this.value;savePr();rEvents()"></select>';
+  h+='</div>';
+  h+='<div class="sh" style="margin-top:16px">💳 Plan actuel</div>';
+  h+='<div class="card" style="padding:16px">';
+  h+='<div style="font-size:15px;font-weight:700">'+((PLANS[plan]&&PLANS[plan].name)||'Starter')+'</div>';
+  h+='<div style="font-size:12px;color:var(--txt2);margin-top:4px">'+mems().length+'/'+PL().mm+' membres · '+PL().msgs+' msgs/mois</div>';
+  h+='<button class="btn P fw" style="margin-top:12px" onclick="goLand()">🌸 Voir tous les plans</button>';
+  h+='</div>';
+  h+='<div class="sh" style="margin-top:16px">⚙️ Compte</div>';
+  h+='<div class="card" style="padding:16px;display:flex;flex-direction:column;gap:10px">';
+  h+='<button class="btn fw" onclick="openPlanModal()">💳 Changer de plan</button>';
+  h+='<button class="btn D fw" onclick="signOut()">'+t('signOutBtn')+'</button>';
+  h+='</div>';
+  h+='<div style="text-align:center;font-size:11px;color:var(--txt3);margin:24px 0 8px">Bloomday v2 · bloomday.app</div>';
+  el.innerHTML=h;
+  buildCountrySelect('prof-live',profile.live||'fr');
+  buildCountrySelect('prof-origin',profile.origin||'');
+  updateAllTexts();
+}
+
+// ── GÉNÉRATION MESSAGES ──
+async function genMsg(id,elId){
+  var el=document.getElementById(elId);if(!el)return;
+  var p=mems().find(function(x){return x.id===id;});if(!p)return;
+  var pl=PL();
+  if((stats.msgsM||0)>=pl.msgs){
+    el.innerHTML='<div style="color:var(--b2d);font-size:12px;padding:8px">'+t('msgLimitReached')+'</div>';return;
+  }
+  el.innerHTML='<div style="text-align:center;padding:12px"><div class="ld"></div></div>';
+  var tpl=DTPL.find(function(x){return x.id===actTpl;})||DTPL[0];
+  var age=ageBday(p.day,p.month,p.year);
+  var isTod=isToday(p.day,p.month);
+  var prompt='Génère en '+(window.__aiLang||'français')+' un message '+tpl.t+' pour '+p.name+(age?' ('+age+' ans'+(isTod?' aujourd\'hui':'')+')':''+(isTod?" dont c'est l'événement aujourd'hui":''))+(p.note?'. Notes personnelles : '+p.note:'')+'. Maximum 3-4 phrases.';
+  try{
+    var resp=await fetch('/.netlify/functions/generate-message',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({prompt:prompt})});
+    if(!resp.ok)throw new Error();
+    var data=await resp.json();
+    var msg=data.message||'';
+    stats.msgsM=(stats.msgsM||0)+1;sg('bdg16_stats',stats);
+    var h2=hist[String(id)]||[];h2.push({date:new Date().toLocaleDateString('fr'),text:msg});hist[String(id)]=h2.slice(-20);sg('bdg16_hist',hist);
+    stats.celeb=(stats.celeb||0)+1;
+    el.innerHTML='<div class="ob-msg" style="font-size:13px">'+esc(msg)+'</div>'+
+      '<div style="display:flex;gap:6px;margin-top:8px">'+
+      '<button class="btn G sm" onclick="copyMsg(\''+elId+'\')">📋 Copier</button>'+
+      (p.phone?'<button class="btn sm" onclick="sendWA(\''+esc(p.phone)+'\',\''+elId+'\')">📱 WhatsApp</button>':'')+
+      '</div>';
+  }catch(e){
+    el.innerHTML='<div style="font-size:12px;color:var(--txt2);padding:8px;white-space:pre-wrap">'+esc(getFallback('birthday'))+'</div>';
+  }
+}
+
+async function genGift(id,elId){
+  var el=document.getElementById(elId);if(!el)return;
+  var p=mems().find(function(x){return x.id===id;});if(!p)return;
+  el.innerHTML='<div style="text-align:center;padding:12px"><div class="ld"></div></div>';
+  var age=ageBday(p.day,p.month,p.year);
+  var prompt='Génère en '+(window.__aiLang||'français')+' 3 idées cadeaux concrètes pour '+p.name+(age?' ('+age+' ans)':'')+(p.note?', intérêts : '+p.note:'')+'. Format : liste avec emoji et prix estimé. Court.';
+  try{
+    var resp=await fetch('/.netlify/functions/generate-message',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({prompt:prompt})});
+    if(!resp.ok)throw new Error();
+    var data=await resp.json();
+    el.innerHTML='<div class="ob-msg" style="font-size:13px">'+esc(data.message||'')+'</div>'+
+      '<button class="btn G sm" style="margin-top:8px" onclick="copyMsg(\''+elId+'\')">📋 Copier</button>';
+  }catch(e){el.innerHTML='';}
+}
+
+async function genUrgence(id,elId){
+  var el=document.getElementById(elId);if(!el)return;
+  var p=mems().find(function(x){return x.id===id;});if(!p)return;
+  el.innerHTML='<div style="text-align:center;padding:12px"><div class="ld"></div></div>';
+  var prompt='Génère en '+(window.__aiLang||'français')+' un message de rattrapage bienveillant pour '+p.name+" dont c'était l'anniversaire hier. Chaleureux, légèrement humoristique sur le retard. 2-3 phrases.";
+  try{
+    var resp=await fetch('/.netlify/functions/generate-message',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({prompt:prompt})});
+    if(!resp.ok)throw new Error();
+    var data=await resp.json();
+    el.innerHTML='<div class="ob-msg" style="font-size:13px">'+esc(data.message||'')+'</div>'+
+      '<button class="btn G sm" style="margin-top:8px" onclick="copyMsg(\''+elId+'\')">📋 Copier</button>';
+  }catch(e){el.innerHTML='';}
+}
+
+function copyMsg(elId){
+  var el=document.getElementById(elId);if(!el)return;
+  var msg=el.querySelector('.ob-msg');if(!msg)return;
+  navigator.clipboard.writeText(msg.textContent).then(function(){showToast('📋 Copié !','success');}).catch(function(){showToast(msg.textContent.substring(0,60)+'…','success');});
+}
+
+function sendWA(phone,elId){
+  var el=document.getElementById(elId);if(!el)return;
+  var msg=el.querySelector('.ob-msg');if(!msg)return;
+  window.open('https://wa.me/'+phone.replace(/\D/g,'')+'?text='+encodeURIComponent(msg.textContent),'_blank');
+}
+
+// ── RECHERCHE ──
+function onSearchInput(val){
+  searchInput=val;
+  clearTimeout(searchDebounceTimer);
+  searchDebounceTimer=setTimeout(function(){
+    var v=(val||'').trim().toLowerCase();
+    searchFiltered=v?mems().filter(function(p){return p.name.toLowerCase().includes(v)||(p.note||'').toLowerCase().includes(v);}):null;
+    rMembers();
+  },300);
+}
+
+function clearSearch(){
+  searchInput='';searchFiltered=null;
+  var inp=document.getElementById('search-inp');if(inp)inp.value='';
+  rMembers();
+}
+
+// ── TEMPLATE & EXPORT ──
+function setTpl(id,btn){
+  actTpl=id;
+  document.querySelectorAll('.chip').forEach(function(c){c.classList.remove('on');});
+  if(btn)btn.classList.add('on');
+}
+
+function exportPDF(){
+  var m=mems();
+  if(!m.length){showToast('Aucun membre à exporter','error');return;}
+  var rows=m.map(function(p){
+    var age=ageBday(p.day,p.month,p.year);
+    return '<tr><td>'+esc(p.name)+'</td><td>'+p.day+'/'+p.month+(p.year?'/'+p.year:'')+'</td><td>'+(age!==null?age:'—')+'</td><td>'+(p.phone||'—')+'</td><td>'+(p.note||'—')+'</td></tr>';
+  }).join('');
+  var html='<html><head><title>Bloomday Export</title><style>body{font-family:sans-serif;padding:20px}table{border-collapse:collapse;width:100%}th,td{border:1px solid #ccc;padding:8px;font-size:13px}th{background:#f5f5f5}@media print{button{display:none}}</style></head><body><h1>🌸 Bloomday — '+m.length+' membres</h1><button onclick="window.print()">Imprimer</button><table><thead><tr><th>Nom</th><th>Date</th><th>Âge</th><th>Téléphone</th><th>Notes</th></tr></thead><tbody>'+rows+'</tbody></table></body></html>';
+  var blob=new Blob([html],{type:'text/html'});
+  var url=URL.createObjectURL(blob);
+  var a=document.createElement('a');a.href=url;a.target='_blank';a.click();
+  setTimeout(function(){URL.revokeObjectURL(url);},5000);
+}
+
+function signOut(){
+  if(!confirm("Se déconnecter et revenir à l'accueil ?"))return;
+  plan='free';
+  localStorage.removeItem('bdg16_plan');
+  localStorage.removeItem('bdg16_customer');
+  goLand();
+  showToast('À bientôt ! 🌸','success');
+}
+
+function showAccountPage(){
+  showSec('more',4);
+}
