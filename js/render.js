@@ -283,7 +283,12 @@ function rEvents(){
   const fetes=getActiveFetes(),up=fetes.filter(f=>f.dl<=90);
   let h=`<div class="sh">Prochaines fêtes & célébrations</div><div style="font-size:12px;color:var(--txt2);margin-bottom:12px">Personnalisez dans <strong style="color:var(--txt)">Plus → Mon profil</strong></div><div class="card" style="padding:6px 14px">`;
   if(!up.length)h+=`<div style="font-size:13px;color:var(--txt2);padding:10px 0">Aucune fête dans les 90 prochains jours.</div>`;
-  up.forEach(f=>{const lbl=f.dl===0?'Aujourd\'hui !':f.dl===1?t('tomorrowLabel'):`dans ${f.dl}j`;const st=f.dl===0?'background:var(--b2l);color:var(--b2d)':f.dl<=7?'background:var(--b1l);color:var(--b1d)':'background:var(--bg2);color:var(--txt2)';h+=`<div class="fr"><div class="fi">${f.i}</div><div style="flex:1"><div class="fn">${f.n}</div><div class="fd">${f.d} ${MN[f.m-1]}</div></div><div class="fpill" style="${st}">${lbl}</div></div>`;});
+  up.forEach(f=>{
+    const nom=tFete(f.n)||f.n;
+    const lbl=f.dl===0?t('today')||'Aujourd\'hui !':f.dl===1?t('tomorrowLabel')||'Demain':`${t('inDays')||'dans'} ${f.dl}j`;
+    const st=f.dl===0?'background:var(--b2l);color:var(--b2d)':f.dl<=7?'background:var(--b1l);color:var(--b1d)':'background:var(--bg2);color:var(--txt2)';
+    h+=`<div class="fr"><div class="fi">${f.i}</div><div style="flex:1"><div class="fn">${esc(nom)}</div><div class="fd">${f.d} ${MN[f.m-1]}</div></div><div class="fpill" style="${st}">${esc(lbl)}</div></div>`;
+  });
   h+=`</div>`;
   el.innerHTML=h;
 }
