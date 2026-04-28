@@ -270,13 +270,8 @@ function rMembers(){
     ${pl.gifts?`<button class="btn V sm" onclick="genGift(${p.id},'m-gift-${p.id}')">🎁</button>`:''}
     <button class="btn D sm" onclick="removeMem(${p.id})">✕</button></div></div>`;
   });
-  // Div séparé pour la liste — mis à jour sans recréer le champ
-  h+=`<div id="members-result"></div>`;
   h+=`<button class="exbtn" onclick="exportPDF()">📄 Exporter en PDF</button>`;
   el.innerHTML=h;
-  // Rendre la liste immédiatement
-  const listEl2=document.getElementById('members-result');
-  if(listEl2)renderMembersList(listEl2);
   // Refocaliser le champ si recherche active (sans provoquer de scroll)
   if(searchInput){
     const inp=document.getElementById('search-inp');
