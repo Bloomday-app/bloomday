@@ -556,6 +556,10 @@ const I18N = {
     pushNeverMiss:'Ne jamais rater un anniversaire',
     pushAlerts:'Activez les alertes du matin.',
     membersPlanInfo:'membres · Plan',
+    giftAmazonBtn:'Voir sur Amazon',
+    floristTitle:'Livraison de fleurs',
+    floristDesc:'Envoyez un bouquet le jour de son anniversaire',
+    floristBtn:'🌸 Commander des fleurs',
 
   },
     bizFeature6:'Ancienneté auto',
@@ -1147,6 +1151,10 @@ const I18N = {
     pushNeverMiss:'Never miss a birthday',
     pushAlerts:'Enable morning alerts.',
     membersPlanInfo:'members · Plan',
+    giftAmazonBtn:'View on Amazon',
+    floristTitle:'Flower delivery',
+    floristDesc:'Send a bouquet on their birthday',
+    floristBtn:'🌸 Order flowers',
 
   },
     bizFeature6:'Auto seniority',
@@ -1697,6 +1705,10 @@ const I18N = {
     obDemoNote:'Le encantan las flores y el chocolate negro',
     filterAllMembers:'Todos',
     msgCountLabel:'mensaje(s)',
+    giftAmazonBtn:'Ver en Amazon',
+    floristTitle:'Entrega de flores',
+    floristDesc:'Envía un ramo el día de su cumpleaños',
+    floristBtn:'🌸 Pedir flores',
 
   },
     missedBday:'¡Cumpleaños perdido ayer!',
@@ -2278,6 +2290,10 @@ const I18N = {
     obDemoNote:'تحب الزهور والشوكولاتة الداكنة',
     filterAllMembers:'الكل',
     msgCountLabel:'رسالة (رسائل)',
+    giftAmazonBtn:'عرض على أمازون',
+    floristTitle:'توصيل الزهور',
+    floristDesc:'أرسل باقة في يوم عيد ميلاده',
+    floristBtn:'🌸 طلب زهور',
 
   },
     missedBday:'عيد ميلاد فُقد أمس!',
@@ -2859,6 +2875,10 @@ const I18N = {
     obDemoNote:'फूल और डार्क चॉकलेट पसंद है',
     filterAllMembers:'सभी',
     msgCountLabel:'संदेश',
+    giftAmazonBtn:'Amazon पर देखें',
+    floristTitle:'फूल डिलीवरी',
+    floristDesc:'उनके जन्मदिन पर एक गुलदस्ता भेजें',
+    floristBtn:'🌸 फूल ऑर्डर करें',
 
   },
     missedBday:'कल जन्मदिन छूट गया!',
@@ -3440,6 +3460,10 @@ const I18N = {
     obDemoNote:'喜欢鲜花和黑巧克力',
     filterAllMembers:'全部',
     msgCountLabel:'条消息',
+    giftAmazonBtn:'在亚马逊查看',
+    floristTitle:'鲜花配送',
+    floristDesc:'在他们生日那天送一束花',
+    floristBtn:'🌸 订花',
 
   },
     missedBday:'昨天错过的生日！',
@@ -4091,6 +4115,10 @@ const I18N = {
     contactImported:'✓ Contato importado!',
     memberLimitAlert:'membros máx para este plano. Faça upgrade.',
     groupLimitAlert:'grupos máx para este plano. Faça upgrade.',
+    giftAmazonBtn:'Ver na Amazon',
+    floristTitle:'Entrega de flores',
+    floristDesc:'Envie um buquê no aniversário deles',
+    floristBtn:'🌸 Encomendar flores',
 
   },
 };
