@@ -206,13 +206,6 @@ function rHome(){
   }
 
   // --- Conseil du jour ---
-  const tips=[
-    {i:'💡',t:'Astuce',d:'Ajoutez des notes sur chaque membre pour des messages encore plus personnalisés.'},
-    {i:'🌍',t:'50+ pays',d:'Configurez votre pays dans l\'onglet Plus pour voir vos fêtes locales.'},
-    {i:'🌸',t:t('rippleTitle2')||'Bloomday Ripple',d:'Chaque message crée une belle page pour le destinataire — il peut s\'inscrire en 1 clic !'},
-    {i:'💰',t:'Programme Ambassador',d:'Parrainez 3 amis = 1 mois gratuit. Jusqu\'à 30% de commission.'},
-    {i:'🎁',t:'Cadeaux IA',d:'Plan Bloom : idées cadeaux personnalisées selon l\'âge et les goûts.'},
-  ];
   const tip=(tArr('tips')[new Date().getDate()%5]||tArr('tips')[0]);
   h+='<div class="sh" style="margin-top:16px">'+t('tipOfDay')+'</div>';
   h+='<div style="background:linear-gradient(135deg,var(--b3l),var(--b4l));border:1px solid var(--b3);border-radius:18px;padding:16px;display:flex;gap:12px;align-items:flex-start">';
@@ -497,7 +490,7 @@ function getActiveFetes(){
 function rCal(){
   var el=document.getElementById('s-cal');if(!el)return;
   var m=mems();
-  var h='<div class="sh">Calendrier des anniversaires</div>';
+  var h='<div class="sh">'+t('calendarTitle')+'</div>';
   var found=false;
   for(var mo=1;mo<=12;mo++){
     var inM=m.filter(function(p){return p.month===mo;});
@@ -509,12 +502,12 @@ function rCal(){
       var tod=isToday(p.day,p.month);
       h+='<div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--brd)">';
       h+='<div style="min-width:32px;text-align:center;font-size:14px;font-weight:700;color:'+(tod?'var(--b2d)':'var(--b1d)')+'">'+p.day+'</div>';
-      h+='<div style="flex:1"><div style="font-size:14px;font-weight:600">'+tIco(p.type)+' '+esc(p.name)+(tod?'<span class="pbdg pbt" style="margin-left:6px">Aujourd\'hui !</span>':'')+'</div>';
+      h+='<div style="flex:1"><div style="font-size:14px;font-weight:600">'+tIco(p.type)+' '+esc(p.name)+(tod?'<span class="pbdg pbt" style="margin-left:6px">'+t('calendarToday')+'</span>':'')+'</div>';
       if(age)h+='<div style="font-size:12px;color:var(--txt2)">'+age+' '+t('yearsOld')+'</div>';
       h+='</div></div>';
     });
   }
-  if(!found)h+='<div style="font-size:13px;color:var(--txt2);padding:20px 0">Ajoutez des membres pour voir le calendrier.</div>';
+  if(!found)h+='<div style="font-size:13px;color:var(--txt2);padding:20px 0">'+t('calendarEmpty')+'</div>';
   el.innerHTML=h;
 }
 
@@ -522,21 +515,21 @@ function rCal(){
 function rMore(){
   var el=document.getElementById('s-more');if(!el)return;
   var h='';
-  h+='<div class="sh">👤 Mon profil</div>';
+  h+='<div class="sh">'+t('monProfil')+'</div>';
   h+='<div class="card" style="padding:16px">';
   h+='<label>'+t('liveCountry')+'</label><select id="prof-live" onchange="profile.live=this.value;savePr();rEvents()"></select>';
   h+='<label style="margin-top:12px">'+t('originCountry')+'</label><select id="prof-origin" onchange="profile.origin=this.value;savePr()"></select>';
   h+='<label style="margin-top:12px">'+t('religionLabel')+'</label><select id="prof-rel" onchange="profile.religion=this.value;savePr();rEvents()"></select>';
   h+='</div>';
-  h+='<div class="sh" style="margin-top:16px">💳 Plan actuel</div>';
+  h+='<div class="sh" style="margin-top:16px">'+t('planActuel')+'</div>';
   h+='<div class="card" style="padding:16px">';
   h+='<div style="font-size:15px;font-weight:700">'+((PLANS[plan]&&PLANS[plan].name)||'Starter')+'</div>';
-  h+='<div style="font-size:12px;color:var(--txt2);margin-top:4px">'+mems().length+'/'+PL().mm+' membres · '+PL().msgs+' msgs/mois</div>';
-  h+='<button class="btn P fw" style="margin-top:12px" onclick="goLand()">🌸 Voir tous les plans</button>';
+  h+='<div style="font-size:12px;color:var(--txt2);margin-top:4px">'+mems().length+'/'+PL().mm+' '+t('membresLabel')+' · '+PL().msgs+' '+t('msgsLabel')+'</div>';
+  h+='<button class="btn P fw" style="margin-top:12px" onclick="goLand()">'+t('voirTousPlans')+'</button>';
   h+='</div>';
-  h+='<div class="sh" style="margin-top:16px">⚙️ Compte</div>';
+  h+='<div class="sh" style="margin-top:16px">'+t('sectionCompte')+'</div>';
   h+='<div class="card" style="padding:16px;display:flex;flex-direction:column;gap:10px">';
-  h+='<button class="btn fw" onclick="openPlanModal()">💳 Changer de plan</button>';
+  h+='<button class="btn fw" onclick="openPlanModal()">'+t('changerPlan')+'</button>';
   h+='<button class="btn D fw" onclick="signOut()">'+t('signOutBtn')+'</button>';
   h+='</div>';
   h+='<div style="text-align:center;font-size:11px;color:var(--txt3);margin:24px 0 8px">Bloomday v2 · bloomday.app</div>';
@@ -560,7 +553,9 @@ async function genMsg(id,elId){
   var isTod=isToday(p.day,p.month);
   var prompt='Génère en '+(window.__aiLang||'français')+' un message '+tpl.t+' pour '+p.name+(age?' ('+age+' ans'+(isTod?' aujourd\'hui':'')+')':''+(isTod?" dont c'est l'événement aujourd'hui":''))+(p.note?'. Notes personnelles : '+p.note:'')+'. Maximum 3-4 phrases.';
   try{
-    var resp=await fetch('/.netlify/functions/generate-message',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({prompt:prompt})});
+    var ac=new AbortController();var tid=setTimeout(function(){ac.abort();},15000);
+    var resp=await fetch('/.netlify/functions/generate-message',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({prompt:prompt}),signal:ac.signal});
+    clearTimeout(tid);
     if(!resp.ok)throw new Error();
     var data=await resp.json();
     var msg=data.message||'';
@@ -586,7 +581,9 @@ async function genGift(id,elId){
   var genderTxt=p.gender==='F'?'femme':p.gender==='M'?'homme':p.gender==='Kid'?'enfant':'';
   var prompt='Tu es un assistant cadeaux. Génère en '+lang+' exactement 3 idées cadeaux pour '+p.name+(age?' ('+age+' ans)':'')+(genderTxt?', '+genderTxt:'')+(p.note?', intérêts : '+p.note:'')+'. Réponds UNIQUEMENT en JSON valide, format : [{"emoji":"...","nom":"...","desc":"courte description","prix":"fourchette prix","search":"mot-clé court pour Amazon"}]. Juste le JSON, sans explication.';
   try{
-    var resp=await fetch('/.netlify/functions/generate-message',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({prompt:prompt})});
+    var ac2=new AbortController();var tid2=setTimeout(function(){ac2.abort();},15000);
+    var resp=await fetch('/.netlify/functions/generate-message',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({prompt:prompt}),signal:ac2.signal});
+    clearTimeout(tid2);
     if(!resp.ok)throw new Error();
     var data=await resp.json();
     var raw=(data.message||'').trim();
@@ -613,7 +610,7 @@ async function genGift(id,elId){
       el.innerHTML='<div class="ob-msg" style="font-size:13px">'+esc(raw)+'</div>'+
         '<button class="btn G sm" style="margin-top:8px" onclick="copyMsg(\''+elId+'\')">'+t('copyBtn')+'</button>';
     }
-  }catch(e){el.innerHTML='';}
+  }catch(e){el.innerHTML='<div style="font-size:12px;color:var(--txt2);padding:8px">'+t('errorRetry')+'</div>';}
 }
 
 function openFlorist(elId,name){
@@ -627,12 +624,14 @@ async function genUrgence(id,elId){
   el.innerHTML='<div style="text-align:center;padding:12px"><div class="ld"></div></div>';
   var prompt='Génère en '+(window.__aiLang||'français')+' un message de rattrapage bienveillant pour '+p.name+" dont c'était l'anniversaire hier. Chaleureux, légèrement humoristique sur le retard. 2-3 phrases.";
   try{
-    var resp=await fetch('/.netlify/functions/generate-message',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({prompt:prompt})});
+    var ac3=new AbortController();var tid3=setTimeout(function(){ac3.abort();},15000);
+    var resp=await fetch('/.netlify/functions/generate-message',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({prompt:prompt}),signal:ac3.signal});
+    clearTimeout(tid3);
     if(!resp.ok)throw new Error();
     var data=await resp.json();
     el.innerHTML='<div class="ob-msg" style="font-size:13px">'+esc(data.message||'')+'</div>'+
       '<button class="btn G sm" style="margin-top:8px" onclick="copyMsg(\''+elId+'\')">'+t('copyBtn')+'</button>';
-  }catch(e){el.innerHTML='';}
+  }catch(e){el.innerHTML='<div style="font-size:12px;color:var(--txt2);padding:8px">'+t('errorRetry')+'</div>';}
 }
 
 function copyMsg(elId){

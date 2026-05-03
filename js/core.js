@@ -81,7 +81,7 @@ async function startOnboarding(){
 
   // Afficher le chargement
   if(demoEl){
-    demoEl.innerHTML='<div style="text-align:center;padding:20px;color:var(--txt2)"><div class="ld"></div><div style="margin-top:8px;font-size:13px">Génération du message IA...</div></div>';
+    demoEl.innerHTML='<div style="text-align:center;padding:20px;color:var(--txt2)"><div class="ld"></div><div style="margin-top:8px;font-size:13px">'+t('generatingAI')+'</div></div>';
   }
 
   // Message de secours immédiat (affiché pendant le chargement)
