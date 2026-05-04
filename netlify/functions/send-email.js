@@ -5,8 +5,19 @@ const CORS = {
   'Content-Type': 'application/json'
 };
 
+const ALLOWED_ORIGINS = [
+  'https://rococo-chimera-459249.netlify.app',
+  'https://bloomday-day.netlify.app',
+  'https://bloomday.app',
+  'https://mybloomday.app',
+];
+
 function err(status, msg) {
   return { statusCode: status, headers: CORS, body: JSON.stringify({ error: msg }) };
+}
+
+function esc(s) {
+  return String(s || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 }
 
 const VALID_TYPES = ['welcome', 'subscription', 'renewal_reminder', 'anniversary'];
@@ -16,6 +27,9 @@ exports.handler = async function(event) {
     return { statusCode: 204, headers: CORS, body: '' };
   }
   if (event.httpMethod !== 'POST') return err(405, 'Method Not Allowed');
+
+  const origin = (event.headers && (event.headers.origin || event.headers.Origin)) || '';
+  if (origin && !ALLOWED_ORIGINS.includes(origin)) return err(403, 'Forbidden');
 
   let type, data;
   try {
@@ -44,14 +58,14 @@ exports.handler = async function(event) {
 };
 
 function buildTemplate(type, d) {
-  const firstName = (d.name || '').split(' ')[0] || 'vous';
+  const firstName = esc((d.name || '').split(' ')[0]) || 'vous';
 
   const templates = {
     welcome: {
       subject: `Bienvenue sur Bloomday, ${firstName} ! 🌸`,
       text: `Bonjour ${firstName},\n\nVotre compte Bloomday est créé !\n• 7 jours d'essai offerts sur le plan Bloom\n• Ajoutez vos premiers membres et générez votre premier message\n\nBienvenue dans la communauté 🌸\nL'équipe Bloomday\nmybloomday.app`,
       html: `<div style="font-family:sans-serif;max-width:520px;margin:auto;padding:32px">
-        <h2 style="color:#e85d9a">Bienvenue sur Bloomday, ${firstName} ! 🌸</h2>
+        <h2 style="color:#e85d9a">Bienvenue sur Bloomday, ${esc(firstName)} ! 🌸</h2>
         <p>Votre compte est créé. Voici ce qui vous attend :</p>
         <ul>
           <li>7 jours d'essai gratuits sur le plan Bloom</li>
@@ -66,7 +80,7 @@ function buildTemplate(type, d) {
       subject: `Confirmation — Plan ${d.plan || 'Bloom'} activé ✓`,
       text: `Bonjour,\n\nVotre plan Bloomday ${d.plan || 'Bloom'} est actif.\n• 7 jours d'essai gratuits\n• Premier prélèvement dans 7 jours\n• Annulable à tout moment\n\nMerci de nous faire confiance 🌸\nmybloomday.app`,
       html: `<div style="font-family:sans-serif;max-width:520px;margin:auto;padding:32px">
-        <h2 style="color:#e85d9a">Plan ${d.plan || 'Bloom'} activé ✓</h2>
+        <h2 style="color:#e85d9a">Plan ${esc(d.plan || 'Bloom')} activé ✓</h2>
         <p>Votre abonnement Bloomday est maintenant actif.</p>
         <ul>
           <li>7 jours d'essai gratuits</li>
@@ -82,7 +96,7 @@ function buildTemplate(type, d) {
       text: `Bonjour,\n\nVotre abonnement Bloomday ${d.plan || 'Bloom'} expire dans 3 jours.\n\nCode fidélité -10% : MERCI10\n\n→ Renouveler sur mybloomday.app\n\nL'équipe Bloomday`,
       html: `<div style="font-family:sans-serif;max-width:520px;margin:auto;padding:32px">
         <h2 style="color:#e85d9a">Votre abonnement expire dans 3 jours ⏳</h2>
-        <p>Votre plan <strong>${d.plan || 'Bloom'}</strong> arrive à expiration.</p>
+        <p>Votre plan <strong>${esc(d.plan || 'Bloom')}</strong> arrive à expiration.</p>
         <p>Continuez à célébrer vos proches sans interruption.</p>
         <p style="background:#fff3f8;padding:12px;border-radius:8px">Code fidélité <strong>-10%</strong> : <code>MERCI10</code></p>
         <a href="https://mybloomday.app" style="display:inline-block;margin-top:16px;padding:12px 24px;background:#e85d9a;color:#fff;border-radius:8px;text-decoration:none">Renouveler mon abonnement</a>
@@ -93,7 +107,7 @@ function buildTemplate(type, d) {
       subject: `Ça fait 1 an ensemble 🎉`,
       text: `Bonjour ${firstName},\n\nAujourd'hui, ça fait exactement 1 an que vous utilisez Bloomday !\n\nMerci d'être là. Pour vous : -20% sur le plan supérieur avec le code BLOOM1AN.\n\nL'équipe Bloomday 🌸`,
       html: `<div style="font-family:sans-serif;max-width:520px;margin:auto;padding:32px">
-        <h2 style="color:#e85d9a">Ça fait 1 an ensemble, ${firstName} 🎉</h2>
+        <h2 style="color:#e85d9a">Ça fait 1 an ensemble, ${esc(firstName)} 🎉</h2>
         <p>Aujourd'hui, ça fait exactement <strong>1 an</strong> que vous utilisez Bloomday.</p>
         <p>Merci d'être là. En cadeau :</p>
         <p style="background:#fff3f8;padding:12px;border-radius:8px"><strong>-20%</strong> sur le plan supérieur : <code>BLOOM1AN</code></p>
@@ -130,7 +144,7 @@ function sendViaBrevo(apiKey, toEmail, subject, htmlContent, textContent) {
       res.on('data', chunk => raw += chunk);
       res.on('end', () => {
         if (res.statusCode >= 200 && res.statusCode < 300) {
-          resolve(JSON.parse(raw));
+          try { resolve(JSON.parse(raw)); } catch (e) { resolve({}); }
         } else {
           reject(new Error(`Brevo ${res.statusCode}: ${raw}`));
         }
