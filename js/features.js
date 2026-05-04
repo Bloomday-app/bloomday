@@ -365,48 +365,12 @@ function switchAuthTab(tab){
   document.getElementById('auth-tab-s').classList.toggle('on',tab==='signup');
   document.getElementById('auth-tab-l').classList.toggle('on',tab==='login');
 }
-function doSignup(){
-  var nameEl=document.getElementById('auth-name');
-  var emailEl=document.getElementById('auth-email');
-  var phoneEl=document.getElementById('auth-phone');
-  var passEl=document.getElementById('auth-pass');
-  var name=(nameEl&&nameEl.value||'').trim();
-  var email=(emailEl&&emailEl.value||'').trim().toLowerCase();
-  var phone=(phoneEl&&phoneEl.value||'').trim();
-  var pass=(passEl&&passEl.value||'').trim();
-  // Validation
-  if(!name){showToast('Votre prénom est requis','error');return;}
-  // Validation email stricte
-  var emailReg=/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
-  if(!email||!emailReg.test(email)){showToast(t('errEmailInvalid'),'error');return;}
-  if(pass.length<8){showToast(t('errPassShort'),'error');return;}
-  // Créer le compte
-  currentUser={name:name,email:email,phone:phone,uid:getOrCreateUID(),plan:plan,createdAt:new Date().toISOString()};
-  safeLsSet('bdg16_user',JSON.stringify(currentUser));
-  profile.userName=name;profile.userEmail=email;
-  if(phone)profile.userPhone=phone;
-  savePr();
-  closeOv('m-auth');
-  showToast(t('welcomeUser')+' '+name.split(' ')[0]+' !','success');
-  // Email bienvenue simulé
-  sendEmail('welcome',{name:name,email:email});
-  updateTopbar();
-  refresh();
-}
-function doLogin(){
-  var emailEl=document.getElementById('auth-login-email');
-  var passEl=document.getElementById('auth-login-pass');
-  var email=(emailEl&&emailEl.value||'').trim();
-  var pass=(passEl&&passEl.value||'').trim();
-  if(!email||!pass){showToast('Remplissez tous les champs','error');return;}
-  var saved=localStorage.getItem('bdg16_user');
-  if(saved){try{currentUser=JSON.parse(saved);}catch(e){currentUser=null;}}
-  if(currentUser){closeOv('m-auth');showToast(t('welcomeUser')+' '+currentUser.name+' !','success');}
-  else{showToast(t('noAccountFound'),'error');switchAuthTab('signup');}
-}
+function doSignup(){ doSignupSupabase(); }
+function doLogin(){ doLoginSupabase(); }
 function loadUser(){
   var saved=localStorage.getItem('bdg16_user');
   if(saved){try{currentUser=JSON.parse(saved);}catch(e){currentUser=null;}}
+  // Supabase session restored by initAuth() called in core.js
 }
 // ── PAIEMENT ──
 function openPayment(planKey){

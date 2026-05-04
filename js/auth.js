@@ -20,6 +20,8 @@ function initAuth() {
       safeLsSet('bdg16_user', JSON.stringify(currentUser));
       updateTopbar();
     }
+    var logoutBtn = document.getElementById('tb-logout');
+    if (logoutBtn) logoutBtn.style.display = session ? 'inline-block' : 'none';
   });
 
   supabase.auth.onAuthStateChange(function(event, session) {
@@ -33,11 +35,15 @@ function initAuth() {
         sendEmail('welcome', { name: currentUser.name, email: currentUser.email });
       }
       updateTopbar();
+      var logoutBtnIn = document.getElementById('tb-logout');
+      if (logoutBtnIn) logoutBtnIn.style.display = 'inline-block';
       refresh();
     } else if (event === 'SIGNED_OUT') {
       currentUser = null;
       localStorage.removeItem('bdg16_user');
       updateTopbar();
+      var logoutBtnOut = document.getElementById('tb-logout');
+      if (logoutBtnOut) logoutBtnOut.style.display = 'none';
       refresh();
     }
   });
