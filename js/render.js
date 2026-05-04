@@ -338,10 +338,12 @@ var EMAIL_TEMPLATES = {
 };
 
 function sendEmail(type, data){
-  var tpl = EMAIL_TEMPLATES[type];
-  if(!tpl) return;
-  var email = tpl(data);
-  showToast(t('emailSentTo')+' '+data.email, 'success');
+  if(!data||!data.email) return;
+  fetch('/.netlify/functions/send-email', {
+    method: 'POST',
+    headers: {'Content-Type':'application/json'},
+    body: JSON.stringify({type, data})
+  }).catch(function(){});
 }
 
 function checkRenewalEmail(){
