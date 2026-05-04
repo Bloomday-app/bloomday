@@ -57,63 +57,97 @@ exports.handler = async function(event) {
   }
 };
 
+const APP_URL = 'https://bloomday-day.netlify.app';
+const LOGO_URL = 'https://bloomday-day.netlify.app/img/logo.png';
+
+function header() {
+  return `<div style="background:#5b2d8e;padding:28px 32px;text-align:center;border-radius:12px 12px 0 0">
+    <img src="${LOGO_URL}" alt="Bloomday" width="64" height="64" style="border-radius:14px;display:block;margin:0 auto 12px">
+    <span style="color:#fff;font-family:Georgia,serif;font-size:22px;font-weight:bold;letter-spacing:1px">Bloomday</span>
+  </div>`;
+}
+
+function footer() {
+  return `<div style="padding:20px 32px;background:#f9f4ff;border-radius:0 0 12px 12px;text-align:center">
+    <p style="margin:0;color:#888;font-size:12px">L'équipe Bloomday · <a href="${APP_URL}" style="color:#5b2d8e;text-decoration:none">${APP_URL.replace('https://','')}</a></p>
+  </div>`;
+}
+
+function btn(label, url) {
+  return `<div style="text-align:center;margin:28px 0">
+    <a href="${url}" style="display:inline-block;padding:14px 32px;background:linear-gradient(135deg,#e85d9a,#5b2d8e);color:#fff;border-radius:10px;text-decoration:none;font-weight:bold;font-size:15px;letter-spacing:0.3px">${label}</a>
+  </div>`;
+}
+
+function wrap(content) {
+  return `<div style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;max-width:520px;margin:auto;border-radius:12px;overflow:hidden;box-shadow:0 4px 24px rgba(91,45,142,0.10)">
+    ${header()}
+    <div style="padding:32px;background:#fff">${content}</div>
+    ${footer()}
+  </div>`;
+}
+
 function buildTemplate(type, d) {
   const firstName = esc((d.name || '').split(' ')[0]) || 'vous';
 
   const templates = {
     welcome: {
-      subject: `Bienvenue sur Bloomday, ${firstName} ! 🌸`,
-      text: `Bonjour ${firstName},\n\nVotre compte Bloomday est créé !\n• 7 jours d'essai offerts sur le plan Bloom\n• Ajoutez vos premiers membres et générez votre premier message\n\nBienvenue dans la communauté 🌸\nL'équipe Bloomday\nmybloomday.app`,
-      html: `<div style="font-family:sans-serif;max-width:520px;margin:auto;padding:32px">
-        <h2 style="color:#e85d9a">Bienvenue sur Bloomday, ${esc(firstName)} ! 🌸</h2>
-        <p>Votre compte est créé. Voici ce qui vous attend :</p>
-        <ul>
-          <li>7 jours d'essai gratuits sur le plan Bloom</li>
-          <li>Ajoutez vos premiers membres</li>
-          <li>Générez votre premier message IA</li>
-        </ul>
-        <a href="https://mybloomday.app" style="display:inline-block;margin-top:16px;padding:12px 24px;background:#e85d9a;color:#fff;border-radius:8px;text-decoration:none">Ouvrir Bloomday</a>
-        <p style="margin-top:32px;color:#888;font-size:13px">L'équipe Bloomday · mybloomday.app</p>
-      </div>`
+      subject: `🌸 Bienvenue dans la famille Bloomday, ${firstName} !`,
+      text: `Bonjour ${firstName} !\n\nWaouh, vous êtes là ! Bienvenue dans Bloomday 🌸\n\nVotre compte est créé et 7 jours d'essai gratuits vous attendent.\n\nCe que vous pouvez faire dès maintenant :\n• Ajoutez vos proches et leurs dates importantes\n• Générez des messages personnalisés avec l'IA\n• Ne ratez plus jamais un anniversaire !\n\nOn est tellement contents de vous avoir parmi nous.\n\nÀ tout de suite sur Bloomday 🎉\nL'équipe Bloomday`,
+      html: wrap(`
+        <h2 style="margin:0 0 8px;color:#5b2d8e;font-size:22px">Waouh, vous êtes là, ${esc(firstName)} ! 🎉</h2>
+        <p style="color:#444;font-size:15px;line-height:1.6;margin:0 0 20px">Bienvenue dans <strong>Bloomday</strong> — l'appli qui vous aide à ne jamais rater un moment important pour les gens que vous aimez. On est <em>vraiment</em> contents de vous avoir ici !</p>
+        <div style="background:#f9f4ff;border-radius:10px;padding:20px;margin-bottom:24px">
+          <p style="margin:0 0 10px;font-weight:bold;color:#5b2d8e">Vos 7 jours d'essai gratuits commencent maintenant ✨</p>
+          <p style="margin:4px 0;color:#555;font-size:14px">✅ Ajoutez vos proches et leurs dates importantes</p>
+          <p style="margin:4px 0;color:#555;font-size:14px">✅ Générez des messages touchants avec l'IA</p>
+          <p style="margin:4px 0;color:#555;font-size:14px">✅ Ne ratez plus jamais un anniversaire 🎂</p>
+        </div>
+        ${btn('Découvrir Bloomday maintenant 🌸', APP_URL)}
+        <p style="text-align:center;color:#888;font-size:13px;margin-top:8px">Prêt·e à faire sourire vos proches ?</p>
+      `)
     },
     subscription: {
-      subject: `Confirmation — Plan ${d.plan || 'Bloom'} activé ✓`,
-      text: `Bonjour,\n\nVotre plan Bloomday ${d.plan || 'Bloom'} est actif.\n• 7 jours d'essai gratuits\n• Premier prélèvement dans 7 jours\n• Annulable à tout moment\n\nMerci de nous faire confiance 🌸\nmybloomday.app`,
-      html: `<div style="font-family:sans-serif;max-width:520px;margin:auto;padding:32px">
-        <h2 style="color:#e85d9a">Plan ${esc(d.plan || 'Bloom')} activé ✓</h2>
-        <p>Votre abonnement Bloomday est maintenant actif.</p>
-        <ul>
-          <li>7 jours d'essai gratuits</li>
-          <li>Premier prélèvement dans 7 jours</li>
-          <li>Annulable à tout moment</li>
-        </ul>
-        <a href="https://mybloomday.app" style="display:inline-block;margin-top:16px;padding:12px 24px;background:#e85d9a;color:#fff;border-radius:8px;text-decoration:none">Accéder à mon compte</a>
-        <p style="margin-top:32px;color:#888;font-size:13px">L'équipe Bloomday · mybloomday.app</p>
-      </div>`
+      subject: `🎊 Plan ${d.plan || 'Bloom'} activé — Merci de nous faire confiance !`,
+      text: `Bonjour ${firstName} !\n\nVotre plan Bloomday ${d.plan || 'Bloom'} est maintenant actif.\n• 7 jours d'essai gratuits\n• Premier prélèvement dans 7 jours\n• Annulable à tout moment\n\nMerci infiniment de nous faire confiance 🌸\nL'équipe Bloomday`,
+      html: wrap(`
+        <h2 style="margin:0 0 8px;color:#5b2d8e;font-size:22px">C'est officiel, ${esc(firstName)} ! 🎊</h2>
+        <p style="color:#444;font-size:15px;line-height:1.6;margin:0 0 20px">Votre plan <strong>${esc(d.plan || 'Bloom')}</strong> est actif. Merci infiniment de nous faire confiance — on va tout faire pour que vous ne soyez jamais déçu·e !</p>
+        <div style="background:#f9f4ff;border-radius:10px;padding:20px;margin-bottom:24px">
+          <p style="margin:4px 0;color:#555;font-size:14px">🎁 7 jours d'essai gratuits</p>
+          <p style="margin:4px 0;color:#555;font-size:14px">📅 Premier prélèvement dans 7 jours</p>
+          <p style="margin:4px 0;color:#555;font-size:14px">❌ Annulable à tout moment</p>
+        </div>
+        ${btn('Accéder à mon compte', APP_URL)}
+      `)
     },
     renewal_reminder: {
-      subject: `Votre abonnement Bloomday expire dans 3 jours ⏳`,
-      text: `Bonjour,\n\nVotre abonnement Bloomday ${d.plan || 'Bloom'} expire dans 3 jours.\n\nCode fidélité -10% : MERCI10\n\n→ Renouveler sur mybloomday.app\n\nL'équipe Bloomday`,
-      html: `<div style="font-family:sans-serif;max-width:520px;margin:auto;padding:32px">
-        <h2 style="color:#e85d9a">Votre abonnement expire dans 3 jours ⏳</h2>
-        <p>Votre plan <strong>${esc(d.plan || 'Bloom')}</strong> arrive à expiration.</p>
-        <p>Continuez à célébrer vos proches sans interruption.</p>
-        <p style="background:#fff3f8;padding:12px;border-radius:8px">Code fidélité <strong>-10%</strong> : <code>MERCI10</code></p>
-        <a href="https://mybloomday.app" style="display:inline-block;margin-top:16px;padding:12px 24px;background:#e85d9a;color:#fff;border-radius:8px;text-decoration:none">Renouveler mon abonnement</a>
-        <p style="margin-top:32px;color:#888;font-size:13px">L'équipe Bloomday · mybloomday.app</p>
-      </div>`
+      subject: `⏳ Plus que 3 jours — Ne perdez pas votre accès Bloomday`,
+      text: `Bonjour ${firstName},\n\nVotre abonnement Bloomday ${d.plan || 'Bloom'} expire dans 3 jours.\n\nPour continuer à célébrer vos proches sans interruption, renouvelez dès maintenant.\n\nCode fidélité -10% : MERCI10\n\n→ ${APP_URL}\n\nL'équipe Bloomday`,
+      html: wrap(`
+        <h2 style="margin:0 0 8px;color:#5b2d8e;font-size:22px">Plus que 3 jours, ${esc(firstName)} ⏳</h2>
+        <p style="color:#444;font-size:15px;line-height:1.6;margin:0 0 20px">Votre plan <strong>${esc(d.plan || 'Bloom')}</strong> arrive à expiration dans 3 jours. Tous vos proches, vos rappels, vos messages… continuez à les chérir sans interruption !</p>
+        <div style="background:#fff3f8;border-radius:10px;padding:20px;margin-bottom:24px;border-left:4px solid #e85d9a">
+          <p style="margin:0 0 6px;font-weight:bold;color:#e85d9a">Cadeau fidélité 🎁</p>
+          <p style="margin:0;color:#555;font-size:14px"><strong>-10%</strong> sur votre renouvellement avec le code <code style="background:#f0e0ff;padding:2px 6px;border-radius:4px">MERCI10</code></p>
+        </div>
+        ${btn('Renouveler mon abonnement', APP_URL)}
+      `)
     },
     anniversary: {
-      subject: `Ça fait 1 an ensemble 🎉`,
-      text: `Bonjour ${firstName},\n\nAujourd'hui, ça fait exactement 1 an que vous utilisez Bloomday !\n\nMerci d'être là. Pour vous : -20% sur le plan supérieur avec le code BLOOM1AN.\n\nL'équipe Bloomday 🌸`,
-      html: `<div style="font-family:sans-serif;max-width:520px;margin:auto;padding:32px">
-        <h2 style="color:#e85d9a">Ça fait 1 an ensemble, ${esc(firstName)} 🎉</h2>
-        <p>Aujourd'hui, ça fait exactement <strong>1 an</strong> que vous utilisez Bloomday.</p>
-        <p>Merci d'être là. En cadeau :</p>
-        <p style="background:#fff3f8;padding:12px;border-radius:8px"><strong>-20%</strong> sur le plan supérieur : <code>BLOOM1AN</code></p>
-        <a href="https://mybloomday.app" style="display:inline-block;margin-top:16px;padding:12px 24px;background:#e85d9a;color:#fff;border-radius:8px;text-decoration:none">Découvrir les plans</a>
-        <p style="margin-top:32px;color:#888;font-size:13px">L'équipe Bloomday · mybloomday.app</p>
-      </div>`
+      subject: `🎂 1 an ensemble — Vous êtes incroyable, ${firstName} !`,
+      text: `Bonjour ${firstName} !\n\nAujourd'hui ça fait exactement 1 an que vous utilisez Bloomday. UN AN ! 🎉\n\nMerci du fond du cœur d'être là depuis le début.\n\nPour fêter ça : -20% sur le plan supérieur avec le code BLOOM1AN.\n\nL'équipe Bloomday 🌸`,
+      html: wrap(`
+        <h2 style="margin:0 0 8px;color:#5b2d8e;font-size:22px">1 an ensemble, ${esc(firstName)} ! 🎂🎉</h2>
+        <p style="color:#444;font-size:15px;line-height:1.6;margin:0 0 16px">Aujourd'hui ça fait exactement <strong>un an</strong> que vous utilisez Bloomday. <em>Un an !</em> On voulait juste vous dire que vous comptez énormément pour nous 💜</p>
+        <p style="color:#444;font-size:15px;line-height:1.6;margin:0 0 20px">Grâce à vous et à toute notre communauté, Bloomday continue de grandir. Merci du fond du cœur d'être là depuis le début.</p>
+        <div style="background:#f9f4ff;border-radius:10px;padding:20px;margin-bottom:24px;text-align:center">
+          <p style="margin:0 0 6px;font-weight:bold;color:#5b2d8e;font-size:16px">Cadeau anniversaire 🎁</p>
+          <p style="margin:0;color:#555;font-size:14px"><strong>-20%</strong> sur le plan supérieur avec le code</p>
+          <p style="margin:8px 0 0;font-size:20px;font-weight:bold;color:#e85d9a;letter-spacing:2px">BLOOM1AN</p>
+        </div>
+        ${btn('Découvrir les plans', APP_URL)}
+      `)
     }
   };
 
