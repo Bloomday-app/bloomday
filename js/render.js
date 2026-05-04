@@ -339,6 +339,7 @@ var EMAIL_TEMPLATES = {
 
 function sendEmail(type, data){
   if(!data||!data.email) return;
+  if(!EMAIL_TEMPLATES[type]) return;
   fetch('/.netlify/functions/send-email', {
     method: 'POST',
     headers: {'Content-Type':'application/json'},
