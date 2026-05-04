@@ -556,8 +556,8 @@ async function genMsg(id,elId){
     var ac=new AbortController();var tid=setTimeout(function(){ac.abort();},15000);
     var resp=await fetch('/.netlify/functions/generate-message',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({prompt:prompt}),signal:ac.signal});
     clearTimeout(tid);
-    if(!resp.ok)throw new Error();
     var data=await resp.json();
+    if(!resp.ok){console.error('[AI]',resp.status,data.error);throw new Error(data.error||'HTTP '+resp.status);}
     var msg=data.message||'';
     stats.msgsM=(stats.msgsM||0)+1;sg('bdg16_stats',stats);
     var h2=hist[String(id)]||[];h2.push({date:new Date().toLocaleDateString('fr'),text:msg});hist[String(id)]=h2.slice(-20);sg('bdg16_hist',hist);
@@ -584,8 +584,8 @@ async function genGift(id,elId){
     var ac2=new AbortController();var tid2=setTimeout(function(){ac2.abort();},15000);
     var resp=await fetch('/.netlify/functions/generate-message',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({prompt:prompt}),signal:ac2.signal});
     clearTimeout(tid2);
-    if(!resp.ok)throw new Error();
     var data=await resp.json();
+    if(!resp.ok){console.error('[AI]',resp.status,data.error);throw new Error(data.error||'HTTP '+resp.status);}
     var raw=(data.message||'').trim();
     var gifts=null;
     try{var m=raw.match(/\[[\s\S]*\]/);if(m)gifts=JSON.parse(m[0]);}catch(e2){}
@@ -627,8 +627,8 @@ async function genUrgence(id,elId){
     var ac3=new AbortController();var tid3=setTimeout(function(){ac3.abort();},15000);
     var resp=await fetch('/.netlify/functions/generate-message',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({prompt:prompt}),signal:ac3.signal});
     clearTimeout(tid3);
-    if(!resp.ok)throw new Error();
     var data=await resp.json();
+    if(!resp.ok){console.error('[AI]',resp.status,data.error);throw new Error(data.error||'HTTP '+resp.status);}
     el.innerHTML='<div class="ob-msg" style="font-size:13px">'+esc(data.message||'')+'</div>'+
       '<button class="btn G sm" style="margin-top:8px" onclick="copyMsg(\''+elId+'\')">'+t('copyBtn')+'</button>';
   }catch(e){el.innerHTML='<div style="font-size:12px;color:var(--txt2);padding:8px">'+t('errorRetry')+'</div>';}

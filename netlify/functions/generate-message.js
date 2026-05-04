@@ -6,6 +6,12 @@ const ALLOWED_ORIGINS = [
   'https://bloomday.app',
 ];
 
+const CORS = { 'Access-Control-Allow-Origin': '*', 'Content-Type': 'application/json' };
+
+function err(status, msg) {
+  return { statusCode: status, headers: CORS, body: JSON.stringify({ error: msg }) };
+}
+
 // In-memory rate limiter per IP
 const _rl = {};
 function checkRateLimit(ip) {
@@ -19,32 +25,32 @@ function checkRateLimit(ip) {
 
 exports.handler = async function(event) {
   if (event.httpMethod !== 'POST') {
-    return { statusCode: 405, body: 'Method Not Allowed' };
+    return err(405, 'Method Not Allowed');
   }
 
   // Origin check — Safari peut envoyer une origin vide, on accepte dans ce cas
   const origin = event.headers.origin || event.headers.Origin || '';
   if (origin && process.env.NODE_ENV !== 'development' && !ALLOWED_ORIGINS.includes(origin)) {
-    return { statusCode: 403, body: JSON.stringify({ error: 'Forbidden' }) };
+    return err(403, 'Forbidden');
   }
 
   const clientIp = (event.headers['x-forwarded-for'] || '').split(',')[0].trim()
     || event.headers['client-ip']
     || 'unknown';
   if (!checkRateLimit(clientIp)) {
-    return { statusCode: 429, body: JSON.stringify({ error: 'Too many requests. Please wait before generating more messages.' }) };
+    return err(429, 'Too many requests. Please wait before generating more messages.');
   }
 
   const apiKey = process.env.ANTHROPIC_API_KEY;
   if (!apiKey) {
-    return { statusCode: 500, body: JSON.stringify({ error: 'API key not configured' }) };
+    return err(500, 'API key not configured');
   }
 
   let body;
   try {
     body = JSON.parse(event.body);
   } catch (e) {
-    return { statusCode: 400, body: JSON.stringify({ error: 'Invalid JSON' }) };
+    return err(400, 'Invalid JSON');
   }
 
   // Accepte soit body.prompt (string) soit body.messages (array)
@@ -57,7 +63,7 @@ exports.handler = async function(event) {
   }
 
   if (!userPrompt) {
-    return { statusCode: 400, body: JSON.stringify({ error: 'Missing prompt' }) };
+    return err(400, 'Missing prompt');
   }
 
   const systemPrompt = 'Tu es un assistant qui rédige des messages de célébration bienveillants. ' +
@@ -93,27 +99,28 @@ exports.handler = async function(event) {
       res.on('end', function() {
         try {
           const parsed = JSON.parse(data);
+          if (parsed.error) {
+            resolve(err(502, parsed.error.message || 'Anthropic API error'));
+            return;
+          }
           const message = (parsed.content || []).map(function(c) { return c.text || ''; }).join('');
           if (!message) {
-            resolve({ statusCode: 502, body: JSON.stringify({ error: 'Empty response from AI' }) });
+            resolve(err(502, 'Empty response from AI'));
             return;
           }
           resolve({
             statusCode: 200,
-            headers: {
-              'Content-Type': 'application/json',
-              'Access-Control-Allow-Origin': '*',
-            },
+            headers: CORS,
             body: JSON.stringify({ message: message }),
           });
         } catch (e) {
-          resolve({ statusCode: 502, body: JSON.stringify({ error: 'Invalid API response' }) });
+          resolve(err(502, 'Invalid API response'));
         }
       });
     });
 
     req.on('error', function(e) {
-      resolve({ statusCode: 502, body: JSON.stringify({ error: e.message }) });
+      resolve(err(502, e.message));
     });
 
     req.write(payload);
