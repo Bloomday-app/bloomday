@@ -1,3 +1,14 @@
+const FALLBACK={
+  birthday:[
+    'Joyeux anniversaire ! Que cette journée soit pleine de joie, de rires et de bons moments partagés. 🎂🌸',
+    'En ce jour spécial, toutes mes pensées se tournent vers toi pour te souhaiter un anniversaire inoubliable ! ✨🎉',
+    'Que cette nouvelle année de vie t\'apporte santé, bonheur et tout ce dont tu rêves. Joyeux anniversaire ! 🌺💫',
+  ],
+  fete:[
+    'À l\'occasion de cette belle fête, je te souhaite une journée lumineuse et pleine de bonheur. 🎊',
+    'Que cette célébration t\'apporte joie et sérénité. Profite pleinement de chaque instant ! 🌸✨',
+  ],
+};
 function getFallback(type){const m=FALLBACK[type]||FALLBACK.birthday;return m[Math.floor(Math.random()*m.length)];}
 
 const PLANS={
