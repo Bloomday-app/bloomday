@@ -557,7 +557,7 @@ async function genMsg(id,elId){
   var prompt='Génère en '+(window.__aiLang||'français')+' un message '+tpl.t+' pour '+p.name+(age?' ('+age+' ans'+(isTod?' aujourd\'hui':'')+')':''+(isTod?" dont c'est l'événement aujourd'hui":''))+(p.note?'. Notes personnelles : '+p.note:'')+'. Maximum 3-4 phrases.';
   try{
     var ac=new AbortController();var tid=setTimeout(function(){ac.abort();},15000);
-    var resp=await fetch('/.netlify/functions/generate-message',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({prompt:prompt}),signal:ac.signal});
+    var resp=await fetch('/.netlify/functions/generate-message',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({prompt:prompt,uid:getOrCreateUID(),plan:plan}),signal:ac.signal});
     clearTimeout(tid);
     var data=await resp.json();
     if(!resp.ok){console.error('[AI]',resp.status,data.error);throw new Error(data.error||'HTTP '+resp.status);}
@@ -585,7 +585,7 @@ async function genGift(id,elId){
   var prompt='Tu es un assistant cadeaux. Génère en '+lang+' exactement 3 idées cadeaux pour '+p.name+(age?' ('+age+' ans)':'')+(genderTxt?', '+genderTxt:'')+(p.note?', intérêts : '+p.note:'')+'. Réponds UNIQUEMENT en JSON valide, format : [{"emoji":"...","nom":"...","desc":"courte description","prix":"fourchette prix","search":"mot-clé court pour Amazon"}]. Juste le JSON, sans explication.';
   try{
     var ac2=new AbortController();var tid2=setTimeout(function(){ac2.abort();},15000);
-    var resp=await fetch('/.netlify/functions/generate-message',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({prompt:prompt}),signal:ac2.signal});
+    var resp=await fetch('/.netlify/functions/generate-message',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({prompt:prompt,uid:getOrCreateUID(),plan:plan}),signal:ac2.signal});
     clearTimeout(tid2);
     var data=await resp.json();
     if(!resp.ok){console.error('[AI]',resp.status,data.error);throw new Error(data.error||'HTTP '+resp.status);}
@@ -628,7 +628,7 @@ async function genUrgence(id,elId){
   var prompt='Génère en '+(window.__aiLang||'français')+' un message de rattrapage bienveillant pour '+p.name+" dont c'était l'anniversaire hier. Chaleureux, légèrement humoristique sur le retard. 2-3 phrases.";
   try{
     var ac3=new AbortController();var tid3=setTimeout(function(){ac3.abort();},15000);
-    var resp=await fetch('/.netlify/functions/generate-message',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({prompt:prompt}),signal:ac3.signal});
+    var resp=await fetch('/.netlify/functions/generate-message',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({prompt:prompt,uid:getOrCreateUID(),plan:plan}),signal:ac3.signal});
     clearTimeout(tid3);
     var data=await resp.json();
     if(!resp.ok){console.error('[AI]',resp.status,data.error);throw new Error(data.error||'HTTP '+resp.status);}
