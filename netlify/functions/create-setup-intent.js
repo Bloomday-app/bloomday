@@ -28,6 +28,7 @@ exports.handler = async function(event) {
 
   const email = (body.email || '').substring(0, 254);
   const planId = (body.plan || 'bloom').substring(0, 20);
+  const userId = (body.userId || '').substring(0, 36);
 
   // Créer un Customer Stripe
   const customer = await stripePost('/v1/customers', secretKey, {
@@ -36,6 +37,20 @@ exports.handler = async function(event) {
   });
   if (customer.error) {
     return { statusCode: 502, body: JSON.stringify({ error: customer.error.message }) };
+  }
+
+  // Store stripe_customer_id in Supabase profiles if userId provided
+  if (userId) {
+    try {
+      const { createClient } = require('@supabase/supabase-js');
+      const sbAdmin = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_SERVICE_ROLE_KEY);
+      await sbAdmin.from('profiles').upsert({
+        id: userId,
+        plan: planId,
+        stripe_customer_id: customer.id,
+        plan_activated_at: new Date().toISOString()
+      });
+    } catch (e) {}
   }
 
   // Créer un SetupIntent attaché au customer
