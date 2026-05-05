@@ -435,18 +435,25 @@
   <button class="btn P fw" onclick="closeOv('m-confirm');refresh()" data-i18n="startBtn">🌸 Commencer</button>
 </div>
 </div>
+<!-- Écran de déconnexion -->
+<div id="logout-screen" style="display:none;position:fixed;inset:0;z-index:9500;background:linear-gradient(160deg,#FFF8F0 0%,#FFE8D0 40%,#E3F9F0 100%);flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:40px 32px">
+  <img src="img/logo.png" style="width:88px;height:88px;border-radius:22px;object-fit:contain;margin-bottom:24px;box-shadow:0 8px 24px rgba(0,0,0,.10)">
+  <div style="font-family:'Playfair Display',serif;font-size:28px;font-weight:800;color:#2D1B14;margin-bottom:10px" id="logout-greeting"></div>
+  <div style="font-size:16px;color:#8B6F60;margin-bottom:36px;max-width:280px;line-height:1.65" id="logout-subtext"></div>
+  <button onclick="closeLogoutScreen()" id="logout-reconnect-btn" style="background:#18A86B;color:#fff;border:none;border-radius:50px;padding:14px 32px;font-size:15px;font-weight:700;font-family:'DM Sans',sans-serif;cursor:pointer;box-shadow:0 4px 16px rgba(24,168,107,.35)"></button>
+</div>
   <!-- Clé publique Stripe — remplacer par votre clé pk_live_... ou pk_test_... -->
   <script>window.STRIPE_PUBLISHABLE_KEY = 'pk_live_51Owaf7PFAPmeysygjWLCsUNwx2FXqnAeoubpIlwLsZCSvjJ4qMrzCJyXalhGxffwqwupUG0h4mo2G4VqdmrQYAU800GcRVvRJA';</script>
   <!-- Scripts Bloomday — ordre important -->
   <script src="js/data.js?v=20260504a"></script>
-  <script src="js/i18n.js?v=20260504a"></script>
+  <script src="js/i18n.js?v=20260505c"></script>
   <script src="js/helpers.js?v=20260504a"></script>
   <script src="js/supabase-client.js?v=20260505a"></script>
   <script src="js/db.js?v=20260505b"></script>
   <script src="js/migration.js?v=20260505b"></script>
-  <script src="js/auth.js?v=20260505a"></script>
+  <script src="js/auth.js?v=20260505d"></script>
   <script src="js/features.js?v=20260504a"></script>
-  <script src="js/render.js?v=20260504a"></script>
+  <script src="js/render.js?v=20260505d"></script>
   <script src="js/core.js?v=20260504a"></script>
 </body>
 </html>

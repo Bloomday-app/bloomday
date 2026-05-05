@@ -530,10 +530,24 @@ function rMore(){
   h+='<div style="font-size:12px;color:var(--txt2);margin-top:4px">'+mems().length+'/'+PL().mm+' '+t('membresLabel')+' · '+PL().msgs+' '+t('msgsLabel')+'</div>';
   h+='<button class="btn P fw" style="margin-top:12px" onclick="goLand()">'+t('voirTousPlans')+'</button>';
   h+='</div>';
+  if(currentUser){
+    var ini=(currentUser.name||currentUser.email||'?')[0].toUpperCase();
+    h+='<div class="sh" style="margin-top:16px">'+t('sectionMonCompte')+'</div>';
+    h+='<div class="card" style="padding:16px">';
+    h+='<div style="display:flex;align-items:center;gap:14px;margin-bottom:14px">';
+    h+='<div style="width:50px;height:50px;border-radius:50%;background:var(--b3l);color:var(--b3d);display:flex;align-items:center;justify-content:center;font-size:21px;font-weight:800;flex-shrink:0">'+esc(ini)+'</div>';
+    h+='<div style="min-width:0"><div style="font-weight:700;font-size:15px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+esc(currentUser.name)+'</div>';
+    h+='<div style="font-size:12px;color:var(--txt2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+esc(currentUser.email)+'</div></div>';
+    h+='</div>';
+    h+='<div style="font-size:11px;color:var(--txt3);margin-bottom:14px;background:var(--bg2);padding:7px 10px;border-radius:8px;font-family:monospace">ID: '+currentUser.uid.substring(0,8)+'•••</div>';
+    h+='<button class="btn fw" style="margin-bottom:8px" onclick="doResetPassword()">'+t('resetPasswordBtn')+'</button>';
+    h+='<button class="btn D fw" onclick="doDeleteAccount()">'+t('deleteAccountBtn')+'</button>';
+    h+='</div>';
+  }
   h+='<div class="sh" style="margin-top:16px">'+t('sectionCompte')+'</div>';
   h+='<div class="card" style="padding:16px;display:flex;flex-direction:column;gap:10px">';
   h+='<button class="btn fw" onclick="openPlanModal()">'+t('changerPlan')+'</button>';
-  h+='<button class="btn D fw" onclick="signOut()">'+t('signOutBtn')+'</button>';
+  h+='<button class="btn D fw" onclick="doLogoutSupabase()">'+t('signOutBtn')+'</button>';
   h+='</div>';
   h+='<div style="text-align:center;font-size:11px;color:var(--txt3);margin:24px 0 8px">Bloomday v2 · bloomday.app</div>';
   el.innerHTML=h;
