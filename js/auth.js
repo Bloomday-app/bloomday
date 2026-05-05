@@ -114,3 +114,10 @@ async function getAuthToken() {
   var session = result.data.session;
   return session ? session.access_token : null;
 }
+
+async function getAuthHeaders() {
+  var token = await getAuthToken();
+  var h = { 'Content-Type': 'application/json' };
+  if (token) h['Authorization'] = 'Bearer ' + token;
+  return h;
+}
