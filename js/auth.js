@@ -70,7 +70,10 @@ async function doSignupSupabase() {
   var result = await supabase.auth.signUp({
     email: email,
     password: pass,
-    options: { data: { full_name: name, phone: phone } }
+    options: {
+      data: { full_name: name, phone: phone },
+      emailRedirectTo: 'https://bloomday-day.netlify.app'
+    }
   });
 
   if (btn) { btn.disabled = false; btn.textContent = t('authCreateBtn') || '🌸 Créer mon compte gratuit'; }
@@ -79,7 +82,14 @@ async function doSignupSupabase() {
     showToast(result.error.message, 'error');
     return;
   }
-  // onAuthStateChange SIGNED_IN handles the rest
+
+  // Email confirmation required — session is null until user clicks the link
+  if (result.data.user && !result.data.session) {
+    showToast(t('checkYourEmail') || 'Vérifiez votre boîte mail pour confirmer votre compte !', 'success');
+    closeOv('m-auth');
+    return;
+  }
+  // onAuthStateChange SIGNED_IN handles the rest (auto-confirm disabled)
 }
 
 async function doLoginSupabase() {
