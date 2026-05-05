@@ -24,11 +24,31 @@ function initAuth() {
     if (logoutBtn) logoutBtn.style.display = session ? 'inline-block' : 'none';
   });
 
-  supabase.auth.onAuthStateChange(function(event, session) {
+  supabase.auth.onAuthStateChange(async function(event, session) {
     if (event === 'SIGNED_IN' && session) {
       var isNew = !currentUser;
       currentUser = buildUserFromSession(session);
       safeLsSet('bdg16_user', JSON.stringify(currentUser));
+
+      await migrateIfNeeded(currentUser.uid);
+
+      var sbGroups = await dbLoadGroups(currentUser.uid);
+      if (sbGroups && sbGroups.length) {
+        groups = sbGroups;
+        sg('bdg16_groups', groups);
+      }
+      var sbStats = await dbLoadStats(currentUser.uid);
+      if (sbStats) {
+        Object.assign(stats, sbStats);
+        sg('bdg16_stats', stats);
+      }
+      var sbProfile = await dbLoadProfile(currentUser.uid);
+      if (sbProfile) {
+        profile.live = sbProfile.live || profile.live;
+        profile.religion = sbProfile.religion || profile.religion;
+        sg('bdg16_profile', profile);
+      }
+
       if (isNew) {
         closeOv('m-auth');
         showToast(t('welcomeUser') + ' ' + currentUser.name.split(' ')[0] + ' !', 'success');
@@ -39,12 +59,14 @@ function initAuth() {
       if (logoutBtnIn) logoutBtnIn.style.display = 'inline-block';
       refresh();
     } else if (event === 'SIGNED_OUT') {
+      var wasUser = currentUser;
       currentUser = null;
       localStorage.removeItem('bdg16_user');
       updateTopbar();
       var logoutBtnOut = document.getElementById('tb-logout');
       if (logoutBtnOut) logoutBtnOut.style.display = 'none';
       refresh();
+      showLogoutScreen(wasUser);
     }
   });
 }
@@ -101,8 +123,14 @@ async function doLoginSupabase() {
 
   var result = await supabase.auth.signInWithPassword({ email: email, password: pass });
   if (result.error) {
-    showToast(t('noAccountFound'), 'error');
-    switchAuthTab('signup');
+    var msg = result.error.message || '';
+    if (msg.toLowerCase().includes('email not confirmed')) {
+      showToast('Confirmez votre email avant de vous connecter.', 'error');
+    } else if (msg.toLowerCase().includes('invalid login') || msg.toLowerCase().includes('invalid credentials')) {
+      showToast('Email ou mot de passe incorrect.', 'error');
+    } else {
+      showToast(msg || t('noAccountFound'), 'error');
+    }
     return;
   }
   // onAuthStateChange SIGNED_IN handles the rest
@@ -117,6 +145,64 @@ async function doGoogleLogin() {
 
 async function doLogoutSupabase() {
   await supabase.auth.signOut();
+}
+
+function showLogoutScreen(wasUser) {
+  var screen = document.getElementById('logout-screen');
+  if (!screen) return;
+  var firstName = wasUser && wasUser.name ? wasUser.name.split(' ')[0] : '';
+  var greeting = document.getElementById('logout-greeting');
+  var subtext = document.getElementById('logout-subtext');
+  var reconnectBtn = document.getElementById('logout-reconnect-btn');
+  if (greeting) greeting.textContent = (t('logoutTitle') || 'A bientot') + (firstName ? ', ' + firstName + ' !' : ' !');
+  if (subtext) subtext.textContent = t('logoutSubtext') || 'Votre journee nous manquera. On se retrouve bientot !';
+  if (reconnectBtn) reconnectBtn.textContent = t('logoutReconnect') || 'Se reconnecter';
+  screen.style.display = 'flex';
+  screen.style.animation = 'fi .4s ease';
+  setTimeout(function() { closeLogoutScreen(); }, 3000);
+}
+
+function closeLogoutScreen() {
+  var screen = document.getElementById('logout-screen');
+  if (!screen) return;
+  screen.style.opacity = '0';
+  screen.style.transition = 'opacity .5s ease';
+  setTimeout(function() {
+    screen.style.display = 'none';
+    screen.style.opacity = '';
+    screen.style.transition = '';
+    openOv('m-auth');
+  }, 500);
+}
+
+async function doResetPassword() {
+  if (!currentUser || !currentUser.email) return;
+  var result = await supabase.auth.resetPasswordForEmail(currentUser.email, {
+    redirectTo: window.location.origin
+  });
+  if (result.error) {
+    showToast(result.error.message, 'error');
+  } else {
+    showToast(t('resetPasswordSent') || 'Email envoye ! Verifiez votre boite mail.', 'success');
+  }
+}
+
+async function doDeleteAccount() {
+  var msg = t('deleteAccountConfirmMsg') || 'Etes-vous sur ? Toutes vos donnees seront definitvement perdues.';
+  if (!confirm(msg)) return;
+  var headers = await getAuthHeaders();
+  var resp = await fetch('/.netlify/functions/delete-account', {
+    method: 'POST',
+    headers: headers,
+    body: JSON.stringify({ confirm: true })
+  });
+  if (resp.ok) {
+    showToast(t('deleteAccountSuccess') || 'Compte supprime. A bientot !', 'success');
+    await supabase.auth.signOut();
+  } else {
+    var data = await resp.json().catch(function() { return {}; });
+    showToast(data.error || t('deleteAccountError') || 'Erreur.', 'error');
+  }
 }
 
 async function getAuthToken() {

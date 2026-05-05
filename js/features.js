@@ -127,7 +127,7 @@ function showUpgradeModal(targetPlan){
   sb.onclick=async function(){
     sb.disabled=true;sb.textContent=t('registeringText');ce.style.display='none';
     try{
-      var resp=await fetch('/.netlify/functions/create-setup-intent',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({plan:targetPlan,email:ei.value.trim()})});
+      var resp=await fetch('/.netlify/functions/create-setup-intent',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({plan:targetPlan,email:ei.value.trim(),userId:currentUser?currentUser.uid:''})});
       var data=await resp.json();
       if(!resp.ok||!data.clientSecret)throw new Error(data.error||t('serverError'));
       var res=await stripe.confirmCardSetup(data.clientSecret,{payment_method:{card:cardEl,billing_details:{email:ei.value.trim()||undefined}}});
