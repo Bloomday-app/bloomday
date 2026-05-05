@@ -1,5 +1,6 @@
 const https = require('https');
 const { getStore } = require('@netlify/blobs');
+const { verifyJwt } = require('./lib/verify-jwt');
 
 const ALLOWED_ORIGINS = [
   'https://rococo-chimera-459249.netlify.app',
@@ -22,6 +23,7 @@ const PLAN_QUOTAS = {
   pro:        Infinity,
   enterprise: Infinity,
 };
+const ANON_QUOTA = 3; // anonymous (no JWT) users
 
 // In-memory rate limiter per IP (last-resort backstop)
 const _rl = {};
@@ -84,14 +86,22 @@ exports.handler = async function(event) {
     return err(400, 'Invalid JSON');
   }
 
-  // Extract uid and plan for quota enforcement (client-supplied, best-effort)
-  const uid = (typeof body.uid === 'string' && /^[a-z0-9_-]{4,40}$/i.test(body.uid))
-    ? body.uid
-    : ('ip:' + clientIp);
-  const plan = (typeof body.plan === 'string' && PLAN_QUOTAS[body.plan] !== undefined)
-    ? body.plan
-    : 'free';
-  const quota = PLAN_QUOTAS[plan];
+  // Verify JWT — authenticated users get real user.id and their plan quota
+  const authHeader = event.headers['authorization'] || event.headers['Authorization'] || '';
+  const token = authHeader.startsWith('Bearer ') ? authHeader.slice(7) : null;
+  const jwtUser = token ? await verifyJwt(token) : null;
+
+  let uid, quota;
+  if (jwtUser) {
+    uid = 'user:' + jwtUser.id;
+    const clientPlan = (typeof body.plan === 'string' && PLAN_QUOTAS[body.plan] !== undefined)
+      ? body.plan : 'free';
+    quota = PLAN_QUOTAS[clientPlan];
+  } else {
+    // Anonymous user — strict quota by IP
+    uid = 'ip:' + clientIp;
+    quota = ANON_QUOTA;
+  }
 
   // Enforce monthly quota for limited plans
   if (quota !== Infinity) {

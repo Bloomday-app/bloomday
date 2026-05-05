@@ -28,6 +28,7 @@ function startApp(m,p){
   var tbp=document.getElementById('tbplan');
   if(tbp)tbp.textContent=((PLANS[plan]&&PLANS[plan].name)||'Free')+' ▾';
   loadUser();
+  initAuth();
   var firstLaunch=!localStorage.getItem('bdg16_ob');
   if(firstLaunch){
     var obs=document.getElementById('ob-screen');if(obs)obs.classList.add('on');
@@ -101,8 +102,8 @@ async function startOnboarding(){
   try{
     var resp=await fetch("/.netlify/functions/generate-message",{
       method:"POST",
-      headers:{"Content-Type":"application/json"},
-      body:JSON.stringify({prompt:"Génère en "+(window.__aiLang||'français')+" un message d'anniversaire chaleureux et personnalisé pour Léa (33 ans aujourd'hui, aime les fleurs et le chocolat). Maximum 3 phrases. Sans majuscule de début, commence directement par quelque chose de chaleureux.",uid:getOrCreateUID(),plan:plan})
+      headers:await getAuthHeaders(),
+      body:JSON.stringify({prompt:"Génère en "+(window.__aiLang||'français')+" un message d'anniversaire chaleureux et personnalisé pour Léa (33 ans aujourd'hui, aime les fleurs et le chocolat). Maximum 3 phrases. Sans majuscule de début, commence directement par quelque chose de chaleureux.",plan:plan})
     });
     if(resp.ok){
       var data=await resp.json();
@@ -140,8 +141,8 @@ async function regenObMsg(){
   try{
     var resp=await fetch("/.netlify/functions/generate-message",{
       method:"POST",
-      headers:{"Content-Type":"application/json"},
-      body:JSON.stringify({prompt:"Génère en "+(window.__aiLang||'français')+" un NOUVEAU message d'anniversaire différent pour Léa (33 ans, aime les fleurs et le chocolat). Maximum 3 phrases. Commence par quelque chose d'original.",uid:getOrCreateUID(),plan:plan})
+      headers:await getAuthHeaders(),
+      body:JSON.stringify({prompt:"Génère en "+(window.__aiLang||'français')+" un NOUVEAU message d'anniversaire différent pour Léa (33 ans, aime les fleurs et le chocolat). Maximum 3 phrases. Commence par quelque chose d'original.",plan:plan})
     });
     if(!resp.ok) throw new Error('Erreur serveur');
     var data=await resp.json();
@@ -194,7 +195,7 @@ async function obAddMember(){
   const msgEl=document.getElementById('ob2-msg');
   const isTod=isToday(day,month);
   try{
-    const resp=await fetch("/.netlify/functions/generate-message",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({prompt:"Génère un message d'anniversaire chaleureux pour "+name+(isTod?" dont c'est l'anniversaire aujourd'hui!":".")+". Ton : chaleureux, festif, sincère. 3-4 phrases. Commence directement par le message.",uid:getOrCreateUID(),plan:plan})});
+    const resp=await fetch("/.netlify/functions/generate-message",{method:"POST",headers:await getAuthHeaders(),body:JSON.stringify({prompt:"Génère un message d'anniversaire chaleureux pour "+name+(isTod?" dont c'est l'anniversaire aujourd'hui!":".")+". Ton : chaleureux, festif, sincère. 3-4 phrases. Commence directement par le message.",plan:plan})});
     if(resp.ok){const data=await resp.json();const text=data.message||'';msgEl.innerHTML=`<div style="font-size:13px;font-weight:600;color:var(--b4d);margin-bottom:8px">✨ Message généré pour ${esc(name.split(' ')[0])} :</div><div style="font-size:13px;line-height:1.8;color:var(--b4d)">${esc(text)}</div><div class="brow" style="margin-top:10px"><button class="btn sm G" onclick="copyMsgCached(this,'"+_c(text)+"')">📋 Copier</button></div>`;}
     else throw new Error();
   }catch(e){msgEl.innerHTML=`<div style="font-size:13px;line-height:1.8;color:var(--b4d)">${getFallback('birthday')}</div>`;}
