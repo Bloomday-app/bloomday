@@ -4302,11 +4302,11 @@ function buildHistCtx(memberId,maxItems=3){
 const safeLsSet=(k,v)=>{try{localStorage.setItem(k,v);}catch(e){}};
 const sg=async(k,v)=>{try{if(window.storage)await window.storage.set(k,JSON.stringify(v));else localStorage.setItem(k,JSON.stringify(v));}catch(e){}};
 const gg=async(k,d)=>{try{if(window.storage){const r=await window.storage.get(k);if(r&&r.value)return JSON.parse(r.value);}else{const r=localStorage.getItem(k);if(r)return JSON.parse(r);}}catch(e){}return d;};
-const saveG=()=>sg('bdg16_groups',groups);
+const saveG=()=>{sg('bdg16_groups',groups);if(currentUser)dbSaveGroups(currentUser.uid,groups);};
 const saveA=()=>sg('bdg16_admins',admins);
 const saveH=()=>sg('bdg16_hist',hist);
-const saveSt=()=>sg('bdg16_stats',stats);
-const savePr=()=>{buildCats();sg('bdg16_profile',profile);};
+const saveSt=()=>{sg('bdg16_stats',stats);if(currentUser)dbSaveStats(currentUser.uid,stats);};
+const savePr=()=>{buildCats();sg('bdg16_profile',profile);if(currentUser)dbSaveProfile(currentUser.uid,profile);};
 const saveF=()=>sg('bdg16_favs',favs);
 const saveTp=()=>sg('bdg16_tpls',utpls);
 // buildCats définie plus bas
