@@ -37,6 +37,7 @@ exports.handler = async function(event) {
   );
 
   // Supprime toutes les données utilisateur
+  await sbAdmin.from('members').delete().eq('user_id', user.id);
   await sbAdmin.from('groups').delete().eq('user_id', user.id);
   await sbAdmin.from('stats').delete().eq('user_id', user.id);
   await sbAdmin.from('profiles').delete().eq('id', user.id);

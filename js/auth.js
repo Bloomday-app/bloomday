@@ -35,18 +35,18 @@ function initAuth() {
       var sbGroups = await dbLoadGroups(currentUser.uid);
       if (sbGroups && sbGroups.length) {
         groups = sbGroups;
-        sg('bdg16_groups', groups);
+        await sg('bdg16_groups', groups);
       }
       var sbStats = await dbLoadStats(currentUser.uid);
       if (sbStats) {
         Object.assign(stats, sbStats);
-        sg('bdg16_stats', stats);
+        await sg('bdg16_stats', stats);
       }
       var sbProfile = await dbLoadProfile(currentUser.uid);
       if (sbProfile) {
         profile.live = sbProfile.live || profile.live;
         profile.religion = sbProfile.religion || profile.religion;
-        sg('bdg16_profile', profile);
+        await sg('bdg16_profile', profile);
       }
 
       if (isNew) {
