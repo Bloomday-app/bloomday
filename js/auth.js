@@ -24,11 +24,31 @@ function initAuth() {
     if (logoutBtn) logoutBtn.style.display = session ? 'inline-block' : 'none';
   });
 
-  supabase.auth.onAuthStateChange(function(event, session) {
+  supabase.auth.onAuthStateChange(async function(event, session) {
     if (event === 'SIGNED_IN' && session) {
       var isNew = !currentUser;
       currentUser = buildUserFromSession(session);
       safeLsSet('bdg16_user', JSON.stringify(currentUser));
+
+      await migrateIfNeeded(currentUser.uid);
+
+      var sbGroups = await dbLoadGroups(currentUser.uid);
+      if (sbGroups && sbGroups.length) {
+        groups = sbGroups;
+        sg('bdg16_groups', groups);
+      }
+      var sbStats = await dbLoadStats(currentUser.uid);
+      if (sbStats) {
+        Object.assign(stats, sbStats);
+        sg('bdg16_stats', stats);
+      }
+      var sbProfile = await dbLoadProfile(currentUser.uid);
+      if (sbProfile) {
+        profile.live = sbProfile.live || profile.live;
+        profile.religion = sbProfile.religion || profile.religion;
+        sg('bdg16_profile', profile);
+      }
+
       if (isNew) {
         closeOv('m-auth');
         showToast(t('welcomeUser') + ' ' + currentUser.name.split(' ')[0] + ' !', 'success');
