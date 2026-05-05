@@ -28,6 +28,7 @@ function startApp(m,p){
   var tbp=document.getElementById('tbplan');
   if(tbp)tbp.textContent=((PLANS[plan]&&PLANS[plan].name)||'Free')+' ▾';
   loadUser();
+  initAuth();
   var firstLaunch=!localStorage.getItem('bdg16_ob');
   if(firstLaunch){
     var obs=document.getElementById('ob-screen');if(obs)obs.classList.add('on');
