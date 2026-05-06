@@ -319,7 +319,13 @@ function startFromBtn(btn){
 }
 
 document.addEventListener('DOMContentLoaded',function(){
-  handleHash();
+  // Google OAuth callback : Supabase place #access_token= dans l'URL au lieu de #app
+  if(window.location.hash.includes('access_token=')){
+    history.replaceState(null,'',window.location.pathname);
+    startApp('perso','free');
+  } else {
+    handleHash();
+  }
   window.addEventListener('hashchange',handleHash);
   document.getElementById('s-home').style.display='block';
   // Rendre tous les plans en cartes scrollables (adaptatif iOS/Android/iPad/desktop)
