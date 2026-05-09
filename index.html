@@ -237,6 +237,7 @@
       <div><div style="font-size:13px;font-weight:700;color:var(--b1d)" data-i18n="memberProfileTitle">Photo de profil</div><div style="font-size:12px;color:var(--txt2);margin-top:2px" data-i18n="photoOptional">Optionnelle</div></div>
     </div>
     <input type="file" id="phinp" accept="image/*" style="display:none" onchange="prevPhoto(this)">
+    <button id="btn-import-contacts" class="btn fw" style="display:none;margin-bottom:16px;background:var(--b4l);color:var(--b4d);border:1px solid var(--b4)" onclick="importFromContacts()" data-i18n="importFromContacts">📲 Importer depuis mes contacts</button>
     <label data-i18n="eventType">Type d'événement</label>
     <select id="inp-type" onchange="document.getElementById('inp-other-wrap').style.display=this.value==='other'?'block':'none'"><option value="birthday" data-i18n="evtBirthday">🎂 Anniversaire</option><option value="wedding" data-i18n="evtWedding">💍 Anniversaire de mariage</option><option value="work" data-i18n="evtWork">💼 Entrée dans l'entreprise</option><option value="custom" data-i18n="evtCustom">⭐ Événement personnalisé</option><option value="other" data-i18n="evtOther">✏️ Autre (préciser)</option></select>
     <div id="inp-other-wrap" style="display:none"><input type="text" id="inp-other-text" maxlength="40" placeholder="Ex: Baptême, remise de diplôme…" autocomplete="off"></div>
