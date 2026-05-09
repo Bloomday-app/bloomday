@@ -3,7 +3,7 @@
 // Capture referral code from URL on page load
 (function(){
   var urlRef=new URLSearchParams(window.location.search).get('ref');
-  if(urlRef)sessionStorage.setItem('bdg16_pending_ref',urlRef.slice(0,10).toUpperCase());
+  if(urlRef)localStorage.setItem('bdg16_pending_ref',urlRef.slice(0,10).toUpperCase());
 })();
 
 function buildUserFromSession(session) {
@@ -49,7 +49,7 @@ function initAuth() {
         await sg('bdg16_stats', stats);
       }
       await ensureRefCode();
-      var isNewUser = (Date.now() - new Date(session.user.created_at).getTime()) < 30000;
+      var isNewUser = (Date.now() - new Date(session.user.created_at).getTime()) < 86400000;
       if(isNewUser) await trackPendingReferral(session.user.id);
       var sbProfile = await dbLoadProfile(currentUser.uid);
       if (sbProfile) {
@@ -116,7 +116,6 @@ async function doSignupSupabase() {
 
   // Email confirmation required — session is null until user clicks the link
   if (result.data.user && !result.data.session) {
-    if(result.data.user) await trackPendingReferral(result.data.user.id);
     showToast(t('checkYourEmail') || 'Vérifiez votre boîte mail pour confirmer votre compte !', 'success');
     closeOv('m-auth');
     return;
@@ -216,9 +215,9 @@ async function doDeleteAccount() {
 }
 
 async function trackPendingReferral(newUserId){
-  var ref=sessionStorage.getItem('bdg16_pending_ref');
+  var ref=localStorage.getItem('bdg16_pending_ref');
   if(!ref||!newUserId)return;
-  sessionStorage.removeItem('bdg16_pending_ref');
+  localStorage.removeItem('bdg16_pending_ref');
   try{
     var headers=await getAuthHeaders();
     await fetch('/.netlify/functions/track-referral',{
