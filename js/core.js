@@ -303,26 +303,14 @@ function selGrpIcon(btn){
 function updateTopbar(){const e=document.getElementById('tbdate');if(e)e.textContent=formatDateLocal(new Date());}
 
 // ── REFERRAL ──
-function genRefCode(uid){
-  var base=(uid||'').replace(/-/g,'').slice(0,6).toUpperCase();
-  var suffix=Math.random().toString(36).slice(2,4).toUpperCase();
-  return base+suffix;
-}
-
 async function ensureRefCode(){
   if(stats.code)return stats.code;
   var uid=currentUser&&currentUser.uid;
   if(!uid)return null;
-  var code=genRefCode(uid);
-  stats.code=code;
+  var a=new Uint32Array(1);crypto.getRandomValues(a);
+  stats.code='BLD-'+a[0].toString(36).toUpperCase().substring(0,5);
   await sg('bdg16_stats',stats);
-  try{
-    var sb=window.supabase||supabase;
-    if(sb){
-      await sb.from('stats').upsert({user_id:uid,code:code},{onConflict:'user_id'});
-    }
-  }catch(e){}
-  return code;
+  return stats.code;
 }
 
 // ── PHOTO / IMPORT ──

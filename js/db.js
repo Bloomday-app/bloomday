@@ -124,6 +124,7 @@ async function dbSaveStats(userId, stats) {
       total_sent: stats.totalSent || 0,
       total_gen: stats.totalGen || 0,
       code: stats.code || '',
+      refs_count: stats.refsCount || 0,
       updated_at: new Date().toISOString()
     });
   } catch (e) {
