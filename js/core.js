@@ -314,7 +314,9 @@ function addMember(){
   const day=parseInt(document.getElementById('inp-day').value)||0,month=parseInt(document.getElementById('inp-month').value)||0,yv=document.getElementById('inp-year').value,name=(document.getElementById('inp-name').value||'').trim();
   if(!day||!month||!name){alert(t('requiredFieldsFull'));return;}
   if(day<1||day>31||month<1||month>12){alert(t('invalidDate'));return;}
-  m.push({id:Date.now(),day,month,year:yv?parseInt(yv):null,name,phone:(document.getElementById('inp-phone').value||'').trim(),note:(document.getElementById('inp-note').value||'').trim(),photo:ppPhoto,type:document.getElementById('inp-type').value,gender:document.getElementById('inp-gender').value});
+  var rawType=document.getElementById('inp-type').value;
+  var memberType=rawType==='other'?(document.getElementById('inp-other-text').value||'').trim().slice(0,40)||'other':rawType;
+  m.push({id:Date.now(),day,month,year:yv?parseInt(yv):null,name,phone:(document.getElementById('inp-phone').value||'').trim(),note:(document.getElementById('inp-note').value||'').trim(),photo:ppPhoto,type:memberType,gender:document.getElementById('inp-gender').value});
   m.sort((a,b)=>a.month-b.month||a.day-b.day);setMems(m);ppPhoto='';saveG();
   ['inp-day','inp-year','inp-name','inp-phone','inp-note'].forEach(id=>{const e=document.getElementById(id);if(e)e.value='';});
   const pp=document.getElementById('phuprev');

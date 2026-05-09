@@ -103,7 +103,7 @@ function rHome(){
       if(p.phone)h+='<div style="font-size:12px;color:var(--b2);margin-bottom:8px">📞 '+esc(p.phone)+'</div>';
       h+='<div id="h-msg-'+p.id+'"><div class="brow">';
       h+='<button class="btn G" onclick="genMsg('+p.id+',\'h-msg-'+p.id+'\')">'+t('msgBtn')+'</button>';
-      if(pl.gifts)h+='<button class="btn V" onclick="genGift('+p.id+',\'h-gift-'+p.id+'\')">'+t('giftBtn')+'</button>';
+      h+='<button class="btn V" onclick="genGiftModal('+p.id+')">'+t('giftBtn')+'</button>';
       if(pl.cards)h+='<button class="btn O" onclick="genCard('+p.id+',\'h-card-'+p.id+'\')">'+t('cardBtn')+'</button>';
       h+='</div></div>';
       h+='<div id="h-gift-'+p.id+'"></div><div id="h-card-'+p.id+'"></div>';
@@ -260,7 +260,7 @@ function rMembers(){
     <div style="display:flex;flex-direction:column;gap:5px;flex-shrink:0">
     <button class="btn O sm" onclick="togEdit(${p.id})">${isEd?'✕':'✏'}</button>
     <button class="btn G sm" onclick="genMsg(${p.id},'m-msg-${p.id}')">✨</button>
-    ${pl.gifts?`<button class="btn V sm" onclick="genGift(${p.id},'m-gift-${p.id}')">🎁</button>`:''}
+    <button class="btn V sm" onclick="genGiftModal(${p.id})">💡</button>
     <button class="btn D sm" onclick="removeMem(${p.id})">✕</button></div></div>`;
   });
   h+=`<button class="exbtn" onclick="exportPDF()">${t('exportPDFBtn')}</button>`;
@@ -633,6 +633,63 @@ async function genGift(id,elId){
 function openFlorist(elId,name){
   var q='livraison fleurs anniversaire '+name;
   window.open('https://www.google.fr/search?q='+encodeURIComponent(q),'_blank');
+}
+
+window.__giftData={};
+
+async function genGiftModal(id){
+  var p=mems().find(function(x){return x.id===id;});if(!p)return;
+  var nameEl=document.getElementById('mgift-name');
+  var el=document.getElementById('mgift-c');
+  if(!el||!nameEl)return;
+  nameEl.textContent=p.name;
+  el.innerHTML='<div style="text-align:center;padding:24px"><div class="ld"></div></div>';
+  openOv('mgift');
+  var age=ageBday(p.day,p.month,p.year);
+  var rel=tLbl(p.type)||'';
+  var lang=window.__aiLang||'français';
+  var genderTxt=p.gender==='femme'?'femme':p.gender==='homme'?'homme':p.gender==='enfant'?'enfant':'';
+  var ctx=[p.name,age?age+' ans':'',rel,genderTxt,p.note?'intérêts: '+p.note:''].filter(Boolean).join(', ');
+  var prompt='Tu es un assistant cadeaux. Génère en '+lang+' exactement 6 idées cadeaux créatives et personnalisées pour '+ctx+'. Réponds UNIQUEMENT en JSON valide, format : [{"emoji":"...","nom":"...","desc":"courte description","prix":"fourchette prix","search":"mot-clé court pour Amazon"}]. Juste le JSON, sans explication.';
+  try{
+    var ac=new AbortController();var tid=setTimeout(function(){ac.abort();},15000);
+    var resp=await fetch('/.netlify/functions/generate-message',{method:'POST',headers:await getAuthHeaders(),body:JSON.stringify({prompt:prompt,plan:plan}),signal:ac.signal});
+    clearTimeout(tid);
+    var data=await resp.json();
+    if(!resp.ok)throw new Error(data.error||'HTTP '+resp.status);
+    var raw=(data.message||'').trim();
+    var gifts=null;
+    try{var mx=raw.match(/\[[\s\S]*\]/);if(mx)gifts=JSON.parse(mx[0]);}catch(e2){}
+    if(gifts&&gifts.length){
+      window.__giftData[id]={name:p.name,gifts:gifts};
+      var h='<div style="display:flex;flex-direction:column;gap:10px;margin-top:2px">';
+      gifts.forEach(function(g,i){
+        var amazonUrl='https://www.amazon.fr/s?k='+encodeURIComponent(g.search||g.nom)+'&tag=bloomday-21';
+        var gid='gsi-'+id+'-'+i;
+        h+='<div style="background:var(--bg2,#f7f7f7);border-radius:12px;padding:12px 14px">';
+        h+='<div style="font-size:15px;margin-bottom:3px">'+esc(g.emoji||'🎁')+' <strong>'+esc(g.nom)+'</strong> <span style="color:var(--b2,#e8a0b0);font-size:12px">'+esc(g.prix)+'</span></div>';
+        h+='<div style="font-size:12px;color:var(--txt2,#888);margin-bottom:8px">'+esc(g.desc)+'</div>';
+        h+='<div style="display:flex;gap:8px;flex-wrap:wrap">';
+        h+='<a href="'+amazonUrl+'" target="_blank" rel="noopener noreferrer" style="font-size:12px;color:var(--b2,#e8a0b0);text-decoration:none;background:var(--bg3,#fff);border:1px solid var(--brd,#eee);padding:4px 10px;border-radius:6px">🛒 '+t('giftAmazonBtn')+'</a>';
+        h+='<button id="'+gid+'" class="btn sm" style="font-size:12px;padding:4px 10px" onclick="saveGiftIdea('+Number(id)+','+Number(i)+',\''+gid+'\')">'+t('saveBtn')+'</button>';
+        h+='</div></div>';
+      });
+      h+='</div>';
+      el.innerHTML=h;
+    }else{
+      el.innerHTML='<div style="font-size:13px;padding:12px">'+esc(raw)+'</div>';
+    }
+  }catch(e){el.innerHTML='<div style="font-size:12px;color:var(--txt2);padding:12px">'+t('errorRetry')+'</div>';}
+}
+
+function saveGiftIdea(memberId,idx,btnId){
+  var d=window.__giftData[memberId];if(!d)return;
+  var g=d.gifts[idx];if(!g)return;
+  var saved=JSON.parse(localStorage.getItem('bdg16_saved_gifts')||'[]');
+  saved.push({memberId:memberId,memberName:d.name,gift:g,savedAt:Date.now()});
+  localStorage.setItem('bdg16_saved_gifts',JSON.stringify(saved));
+  var btn=document.getElementById(btnId);
+  if(btn){btn.textContent='✓ Sauvegardé';btn.disabled=true;btn.style.opacity='0.6';}
 }
 
 async function genUrgence(id,elId){

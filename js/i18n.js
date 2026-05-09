@@ -217,7 +217,7 @@ const I18N = {
     evtBirthday:'🎂 Anniversaire',
     evtWedding:'💍 Anniversaire de mariage',
     evtWork:'💼 Entrée dans l\'entreprise',
-    evtCustom:'⭐ Événement personnalisé',
+    evtCustom:'⭐ Événement personnalisé',evtOther:'✏️ Autre (préciser)',
     dayLabel:'Jour',
     monthLabel:'Mois',
     yearLabel:'Année',
@@ -834,7 +834,7 @@ const I18N = {
     evtBirthday:'🎂 Birthday',
     evtWedding:'💍 Wedding anniversary',
     evtWork:'💼 Company anniversary',
-    evtCustom:'⭐ Custom event',
+    evtCustom:'⭐ Custom event',evtOther:'✏️ Other (specify)',
     dayLabel:'Day',
     monthLabel:'Month',
     yearLabel:'Year',
@@ -1441,7 +1441,7 @@ const I18N = {
     evtBirthday:'🎂 Cumpleanos',
     evtWedding:'💍 Aniversario de boda',
     evtWork:'💼 Aniversario en la empresa',
-    evtCustom:'Evento personalizado',
+    evtCustom:'Evento personalizado',evtOther:'✏️ Otro (especificar)',
     dayLabel:'Dia',
     monthLabel:'Mes',
     yearLabel:'Ano',
@@ -2048,7 +2048,7 @@ const I18N = {
     evtBirthday:'عيد ميلاد',
     evtWedding:'ذكرى الزواج',
     evtWork:'ذكرى في الشركة',
-    evtCustom:'حدث مخصص',
+    evtCustom:'حدث مخصص',evtOther:'✏️ أخرى (تحديد)',
     dayLabel:'اليوم',
     monthLabel:'الشهر',
     yearLabel:'السنة',
@@ -2655,7 +2655,7 @@ const I18N = {
     evtBirthday:'जन्मदिन',
     evtWedding:'विवाह वर्षगांठ',
     evtWork:'कंपनी वर्षगांठ',
-    evtCustom:'कस्टम इवेंट',
+    evtCustom:'कस्टम इवेंट',evtOther:'✏️ अन्य (निर्दिष्ट करें)',
     dayLabel:'दिन',
     monthLabel:'महीना',
     yearLabel:'साल',
@@ -3262,7 +3262,7 @@ const I18N = {
     evtBirthday:'生日',
     evtWedding:'结婚纪念日',
     evtWork:'公司周年',
-    evtCustom:'自定义活动',
+    evtCustom:'自定义活动',evtOther:'✏️ 其他（请注明）',
     dayLabel:'日',
     monthLabel:'月',
     yearLabel:'年',
@@ -3869,7 +3869,7 @@ const I18N = {
     evtBirthday:'Aniversario',
     evtWedding:'Aniversario de casamento',
     evtWork:'Aniversario na empresa',
-    evtCustom:'Evento personalizado',
+    evtCustom:'Evento personalizado',evtOther:'✏️ Outro (especificar)',
     dayLabel:'Dia',
     monthLabel:'Mes',
     yearLabel:'Ano',
@@ -4355,8 +4355,8 @@ function daysTill(d,m){const n=new Date(),x=new Date(n.getFullYear(),m-1,d);if(x
 function easter(y){const a=y%19,b=Math.floor(y/100),c=y%100,d=Math.floor(b/4),e=b%4,f=Math.floor((b+8)/25),g=Math.floor((b-f+1)/3),h=(19*a+b-d-g+15)%30,i=Math.floor(c/4),k=c%4,l=(32+2*e+2*i-h-k)%7,mm=Math.floor((a+11*h+22*l)/451);return{m:Math.floor((h+l-7*mm+114)/31),d:((h+l-7*mm+114)%31)+1};}
 function ramadan(y){return({2025:{m:3,d:1},2026:{m:2,d:18},2027:{m:2,d:8},2028:{m:1,d:28}})[y]||{m:3,d:1};}
 function cny(y){return({2025:{m:1,d:29},2026:{m:2,d:17},2027:{m:2,d:6},2028:{m:1,d:26}})[y]||{m:2,d:1};}
-const tIco=tp=>({birthday:'🎂',wedding:'💍',work:'💼',custom:'⭐'})[tp]||'🎂';
-const tLbl=tp=>({birthday:t('evtBirthday'),wedding:t('evtWedding'),work:t('evtWork'),custom:t('evtCustom')})[tp]||t('evtBirthday');
+const tIco=tp=>({birthday:'🎂',wedding:'💍',work:'💼',custom:'⭐',other:'✏️'})[tp]||'✏️';
+const tLbl=tp=>({birthday:t('evtBirthday'),wedding:t('evtWedding'),work:t('evtWork'),custom:t('evtCustom')})[tp]||(tp&&tp!=='other'?tp:t('evtOther'));
 const ini=n=>(n||'').trim().split(' ').filter(Boolean).map(w=>w[0]).slice(0,2).join('').toUpperCase()||'?';
 const esc=s=>(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#x27;');
 

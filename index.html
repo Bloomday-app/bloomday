@@ -238,7 +238,8 @@
     </div>
     <input type="file" id="phinp" accept="image/*" style="display:none" onchange="prevPhoto(this)">
     <label data-i18n="eventType">Type d'événement</label>
-    <select id="inp-type"><option value="birthday" data-i18n="evtBirthday">🎂 Anniversaire</option><option value="wedding" data-i18n="evtWedding">💍 Anniversaire de mariage</option><option value="work" data-i18n="evtWork">💼 Entrée dans l'entreprise</option><option value="custom" data-i18n="evtCustom">⭐ Événement personnalisé</option></select>
+    <select id="inp-type" onchange="document.getElementById('inp-other-wrap').style.display=this.value==='other'?'block':'none'"><option value="birthday" data-i18n="evtBirthday">🎂 Anniversaire</option><option value="wedding" data-i18n="evtWedding">💍 Anniversaire de mariage</option><option value="work" data-i18n="evtWork">💼 Entrée dans l'entreprise</option><option value="custom" data-i18n="evtCustom">⭐ Événement personnalisé</option><option value="other" data-i18n="evtOther">✏️ Autre (préciser)</option></select>
+    <div id="inp-other-wrap" style="display:none"><input type="text" id="inp-other-text" maxlength="40" placeholder="Ex: Baptême, remise de diplôme…" autocomplete="off"></div>
     <div class="f3">
       <div><label data-i18n="dayLabel">Jour</label><input type="number" id="inp-day" placeholder="15" inputmode="numeric" pattern="[0-9]*" maxlength="2"></div>
       <div><label data-i18n="monthLabel">Mois</label><select id="inp-month"><option value="1">Jan</option><option value="2">Fév</option><option value="3">Mar</option><option value="4">Avr</option><option value="5">Mai</option><option value="6">Juin</option><option value="7">Juil</option><option value="8">Aoû</option><option value="9">Sep</option><option value="10">Oct</option><option value="11">Nov</option><option value="12">Déc</option></select></div>
@@ -433,6 +434,14 @@
   <div class="mt"><span data-i18n="welcomePlanMsg">Bienvenue en plan</span> <span id="confirm-plan">Bloom</span> !</div>
   <div style="font-size:13px;color:var(--txt2);margin-bottom:14px"><span data-i18n="emailSentTo">Email envoyé à</span> <span id="confirm-email" style="font-weight:700">votre email</span>.</div>
   <button class="btn P fw" onclick="closeOv('m-confirm');refresh()" data-i18n="startBtn">🌸 Commencer</button>
+</div>
+</div>
+<!-- MODAL IDÉES CADEAUX IA -->
+<div id="mgift" class="ov">
+<div class="mbox2">
+  <div class="mt">💡 <span id="mgift-name"></span></div>
+  <div id="mgift-c" style="min-height:80px;max-height:55vh;overflow-y:auto;padding-right:2px"></div>
+  <button class="btn fw" style="margin-top:12px;padding:12px" onclick="closeOv('mgift')" data-i18n="closeBtn">Fermer</button>
 </div>
 </div>
 <!-- Écran de déconnexion -->
