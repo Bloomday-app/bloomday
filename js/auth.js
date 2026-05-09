@@ -42,6 +42,7 @@ function initAuth() {
         Object.assign(stats, sbStats);
         await sg('bdg16_stats', stats);
       }
+      await ensureRefCode();
       var sbProfile = await dbLoadProfile(currentUser.uid);
       if (sbProfile) {
         profile.live = sbProfile.live || profile.live;

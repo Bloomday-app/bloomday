@@ -302,6 +302,29 @@ function selGrpIcon(btn){
 // ── TOPBAR ──
 function updateTopbar(){const e=document.getElementById('tbdate');if(e)e.textContent=formatDateLocal(new Date());}
 
+// ── REFERRAL ──
+function genRefCode(uid){
+  var base=(uid||'').replace(/-/g,'').slice(0,6).toUpperCase();
+  var suffix=Math.random().toString(36).slice(2,4).toUpperCase();
+  return base+suffix;
+}
+
+async function ensureRefCode(){
+  if(stats.code)return stats.code;
+  var uid=currentUser&&currentUser.uid;
+  if(!uid)return null;
+  var code=genRefCode(uid);
+  stats.code=code;
+  await sg('bdg16_stats',stats);
+  try{
+    var sb=window.supabase||supabase;
+    if(sb){
+      await sb.from('stats').upsert({user_id:uid,code:code},{onConflict:'user_id'});
+    }
+  }catch(e){}
+  return code;
+}
+
 // ── PHOTO / IMPORT ──
 function prevPhoto(i){if(!i.files||!i.files[0])return;const r=new FileReader();r.onload=e=>{ppPhoto=e.target.result;const p=document.getElementById('phuprev');if(p)p.innerHTML=`<img src="${ppPhoto}" alt="">`;};r.readAsDataURL(i.files[0]);}
 function impVCard(i){if(!i.files||!i.files[0])return;const r=new FileReader();r.onload=e=>{const t=e.target.result,nm=t.match(/FN:(.*)/),tm=t.match(/TEL[^:]*:(.*)/),bm=t.match(/BDAY:(\d{4})(\d{2})(\d{2})/);if(nm)document.getElementById('inp-name').value=nm[1].trim();if(tm)document.getElementById('inp-phone').value=tm[1].trim();if(bm){document.getElementById('inp-year').value=bm[1];document.getElementById('inp-month').value=parseInt(bm[2]);document.getElementById('inp-day').value=parseInt(bm[3]);}alert(t('contactImported'));};r.readAsText(i.files[0]);}

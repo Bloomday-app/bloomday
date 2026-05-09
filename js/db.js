@@ -107,7 +107,8 @@ async function dbLoadStats(userId) {
       celeb: d.celeb,
       totalSent: d.total_sent,
       totalGen: d.total_gen,
-      code: d.code
+      code: d.code,
+      refsCount: d.refs_count || 0
     };
   } catch (e) {
     return null;
