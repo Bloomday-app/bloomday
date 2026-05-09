@@ -1,5 +1,11 @@
 // ── SUPABASE AUTH ──
 
+// Capture referral code from URL on page load
+(function(){
+  var urlRef=new URLSearchParams(window.location.search).get('ref');
+  if(urlRef)sessionStorage.setItem('bdg16_pending_ref',urlRef.slice(0,10).toUpperCase());
+})();
+
 function buildUserFromSession(session) {
   var meta = session.user.user_metadata || {};
   return {
@@ -43,6 +49,8 @@ function initAuth() {
         await sg('bdg16_stats', stats);
       }
       await ensureRefCode();
+      var isNewUser = (Date.now() - new Date(session.user.created_at).getTime()) < 30000;
+      if(isNewUser) await trackPendingReferral(session.user.id);
       var sbProfile = await dbLoadProfile(currentUser.uid);
       if (sbProfile) {
         profile.live = sbProfile.live || profile.live;
@@ -108,6 +116,7 @@ async function doSignupSupabase() {
 
   // Email confirmation required — session is null until user clicks the link
   if (result.data.user && !result.data.session) {
+    if(result.data.user) await trackPendingReferral(result.data.user.id);
     showToast(t('checkYourEmail') || 'Vérifiez votre boîte mail pour confirmer votre compte !', 'success');
     closeOv('m-auth');
     return;
@@ -204,6 +213,20 @@ async function doDeleteAccount() {
     var data = await resp.json().catch(function() { return {}; });
     showToast(data.error || t('deleteAccountError') || 'Erreur.', 'error');
   }
+}
+
+async function trackPendingReferral(newUserId){
+  var ref=sessionStorage.getItem('bdg16_pending_ref');
+  if(!ref||!newUserId)return;
+  sessionStorage.removeItem('bdg16_pending_ref');
+  try{
+    var headers=await getAuthHeaders();
+    await fetch('/.netlify/functions/track-referral',{
+      method:'POST',
+      headers:Object.assign({'Content-Type':'application/json'},headers),
+      body:JSON.stringify({ref_code:ref,new_user_id:newUserId})
+    });
+  }catch(e){}
 }
 
 async function getAuthToken() {
