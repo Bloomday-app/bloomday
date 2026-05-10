@@ -524,6 +524,55 @@ function rMore(){
   h+='<label style="margin-top:12px">'+t('originCountry')+'</label><select id="prof-origin" onchange="profile.origin=this.value;savePr()"></select>';
   h+='<label style="margin-top:12px">'+t('religionLabel')+'</label><select id="prof-rel" onchange="profile.religion=this.value;savePr();rEvents()"></select>';
   h+='</div>';
+  // ── SECTION PARRAINAGE ──
+  var refs = (stats && stats.refsCount) || 0;
+  var refCode = (stats && stats.code) || '';
+  var refUrl = refCode ? 'https://bloomday.app/?ref=' + refCode : '';
+  var tier = ambTier(refs);
+
+  var tierColors = {
+    bronze: {bg:'#FFF3E0', border:'#E0A070', text:'#8B4513', glow:'rgba(224,160,112,0.3)'},
+    argent: {bg:'#F0F4FF', border:'#8FA8D8', text:'#2D4A8A', glow:'rgba(143,168,216,0.3)'},
+    or:     {bg:'#FFFBEA', border:'#D4AF37', text:'#7B5A00', glow:'rgba(212,175,55,0.35)'}
+  };
+  var tc = tier ? tierColors[tier] : null;
+  var tierLabel = tier ? t('refTier' + tier.charAt(0).toUpperCase() + tier.slice(1)) : t('refTierNone');
+  var nextCount = refs < 3 ? 3 : refs < 10 ? 10 : refs < 25 ? 25 : null;
+
+  h += '<div style="background:var(--bg2);border-radius:16px;padding:16px;margin-bottom:14px">';
+  h += '<div style="font-size:15px;font-weight:700;color:var(--b1d);margin-bottom:4px">' + t('refTitle') + '</div>';
+  h += '<div style="font-size:12px;color:var(--txt2);margin-bottom:12px">' + t('refSub') + '</div>';
+
+  if (tc) {
+    h += '<div style="background:' + tc.bg + ';border:2px solid ' + tc.border + ';border-radius:14px;padding:14px;margin-bottom:12px;box-shadow:0 0 18px ' + tc.glow + ';position:relative;overflow:hidden">';
+    h += '<div style="position:absolute;top:-18px;right:-18px;font-size:60px;opacity:0.12;transform:rotate(-15deg)">🌸</div>';
+    h += '<div style="font-size:17px;font-weight:800;color:' + tc.text + '">' + tierLabel + '</div>';
+    h += '<div style="font-size:12px;color:' + tc.text + ';opacity:0.8;margin-top:2px">' + refs + ' ' + t('refStatsLabel') + '</div>';
+    h += '</div>';
+  } else {
+    h += '<div style="background:var(--bg3,#f0f0f0);border-radius:12px;padding:12px;margin-bottom:12px;text-align:center;font-size:13px;color:var(--txt2)">' + tierLabel + ' — 0 ' + t('refStatsLabel') + '</div>';
+  }
+
+  if (nextCount) {
+    var progress = Math.min(100, Math.round(refs / nextCount * 100));
+    h += '<div style="background:var(--bg3,#eee);border-radius:99px;height:6px;margin-bottom:6px">';
+    h += '<div style="background:var(--b1);border-radius:99px;height:6px;width:' + progress + '%;transition:width 0.5s"></div></div>';
+    var remaining = nextCount - refs;
+    h += '<div style="font-size:11px;color:var(--txt2);margin-bottom:10px">' + remaining + ' ' + t('refNextTier') + '</div>';
+  }
+
+  h += '<div style="font-size:11px;color:var(--txt2);margin-bottom:10px;line-height:1.8">' + t('refBenefit3') + '<br>' + t('refBenefit10') + '<br>' + t('refBenefit25') + '</div>';
+
+  if (refUrl) {
+    h += '<div style="display:flex;gap:8px">';
+    h += '<button class="btn G" style="flex:1;font-size:12px" onclick="copyRefLink(\'' + esc(refUrl) + '\')">' + t('refCopyBtn') + '</button>';
+    if (navigator.share) {
+      h += '<button class="btn P" style="flex:1;font-size:12px" onclick="shareRefLink(\'' + esc(refUrl) + '\')">' + t('refShareBtn') + '</button>';
+    }
+    h += '</div>';
+  }
+  h += '</div>';
+
   h+='<div class="sh" style="margin-top:16px">'+t('planActuel')+'</div>';
   h+='<div class="card" style="padding:16px">';
   h+='<div style="font-size:15px;font-weight:700">'+((PLANS[plan]&&PLANS[plan].name)||'Starter')+'</div>';
@@ -769,4 +818,17 @@ function signOut(){
 
 function showAccountPage(){
   showSec('more',4);
+}
+
+function copyRefLink(url){
+  navigator.clipboard.writeText(url).then(function(){
+    showToast(t('refCopied'));
+  }).catch(function(){
+    prompt('Copiez ce lien :', url);
+  });
+}
+
+function shareRefLink(url){
+  if(!navigator.share)return;
+  navigator.share({title:'Bloomday',text:t('refSub'),url:url}).catch(function(){});
 }
