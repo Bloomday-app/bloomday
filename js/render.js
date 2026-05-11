@@ -315,7 +315,7 @@ var EMAIL_TEMPLATES = {
         'Votre compte Bloomday est créé !\n'+
         '• 7 jours d\'essai offerts sur le plan Bloom\n'+
         '• Ajoutez vos premiers membres et générez votre premier message\n\n'+
-        'Bienvenue dans la communauté 🌸\nL\'équipe Bloomday\nbloomday.app'
+        'Bienvenue dans la communauté 🌸\nL\'équipe Bloomday\nmybloomday.app'
     };
   },
   subscription: function(d){
@@ -326,7 +326,7 @@ var EMAIL_TEMPLATES = {
         '• 7 jours d\'essai gratuits\n'+
         '• Premier prélèvement dans 7 jours\n'+
         '• Annulable à tout moment\n\n'+
-        'Merci de nous faire confiance 🌸\nbloomday.app'
+        'Merci de nous faire confiance 🌸\nmybloomday.app'
     };
   },
   renewal_reminder: function(d){
@@ -335,7 +335,7 @@ var EMAIL_TEMPLATES = {
       body: 'Bonjour,\n\n'+
         'Votre abonnement Bloomday '+d.plan+' expire dans 3 jours.\n\n'+
         'Continuez à célébrer vos proches sans interruption.\n'+
-        '→ Renouveler sur bloomday.app\n\n'+
+        '→ Renouveler sur mybloomday.app\n\n'+
         'Code fidélité -10% : MERCI10\n\nL\'équipe Bloomday'
     };
   },
@@ -614,7 +614,7 @@ function rMore(){
   h+='<button class="btn fw" onclick="openPlanModal()">'+t('changerPlan')+'</button>';
   h+='<button class="btn D fw" onclick="doLogoutSupabase()">'+t('signOutBtn')+'</button>';
   h+='</div>';
-  h+='<div style="text-align:center;font-size:11px;color:var(--txt3);margin:24px 0 8px">Bloomday v2 · bloomday.app</div>';
+  h+='<div style="text-align:center;font-size:11px;color:var(--txt3);margin:24px 0 8px">Bloomday v2 · mybloomday.app</div>';
   el.innerHTML=h;
   buildCountrySelect('prof-live',profile.live||'fr');
   buildCountrySelect('prof-origin',profile.origin||'');
