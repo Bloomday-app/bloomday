@@ -1,6 +1,10 @@
 async function load(){
   groups=await gg('bdg16_groups',[]);
-  if(!groups.length)groups=[{id:'g1',name:mode==='biz'?'Mon équipe':t('myGroup'),icon:mode==='biz'?'💼':'🌸',members:[]}];
+  var _defNames=['Mon groupe','My group','Mi grupo','\u0645\u062c\u0645\u0648\u0639\u062a\u064a','\u092e\u0947\u0930\u093e \u0938\u092e\u0942\u0939','\u6211\u7684\u7fa4\u7ec4','Meu grupo'];
+  var _migrated=false;
+  groups.forEach(function(g){if(!g.isDefault&&_defNames.indexOf(g.name)!==-1){g.isDefault=true;_migrated=true;}});
+  if(_migrated)saveG();
+  if(!groups.length)groups=[{id:'g1',name:mode==='biz'?'Mon équipe':t('myGroup'),icon:mode==='biz'?'💼':'🌸',members:[],isDefault:mode!=='biz'}];
   admins=await gg('bdg16_admins',[]);
   hist=await gg('bdg16_hist',{});
   stats=await gg('bdg16_stats',{});
@@ -168,7 +172,7 @@ async function obAddMember(){
   const month=parseInt(document.getElementById('ob-month').value)||0;
   if(!name||!day||!month){alert(t('requiredFields'));return;}
   // Ajouter dans le premier groupe
-  if(!groups.length)groups=[{id:'g1',name:t('myGroup'),icon:'🌸',members:[]}];
+  if(!groups.length)groups=[{id:'g1',name:t('myGroup'),icon:'🌸',members:[],isDefault:true}];
   const nm={id:Date.now(),day,month,year:null,name,phone:'',note:'',photo:'',type:'birthday',gender:''};
   groups[0].members.push(nm);
   saveG();
@@ -251,7 +255,7 @@ function renderPlanDetail(){}
 // ── GROUPES ──
 function rGbar(){
   const b=document.getElementById('gbar');if(!b)return;
-  b.innerHTML=groups.map(g=>`<button class="gc${g.id===curG?' on':''}" onclick="switchG('${esc(g.id)}')">${esc(g.icon)} ${esc(g.name)}</button>`).join('')+`<button class="gc add" onclick="addGroup()" title="Nouveau groupe">＋</button>`;
+  b.innerHTML=groups.map(g=>`<button class="gc${g.id===curG?' on':''}" onclick="switchG('${esc(g.id)}')">${esc(g.icon)} ${esc(g.isDefault?t('myGroup'):g.name)}</button>`).join('')+`<button class="gc add" onclick="addGroup()" title="${esc(t('groupModalTitle')||'Nouveau groupe')}">＋</button>`;
 }
 function switchG(id){curG=id;fMonth=0;fType='';searchInput='';searchFiltered=null;editId=null;refresh();}
 function addGroup(){
