@@ -543,7 +543,7 @@ function rMore(){
   // ── SECTION PARRAINAGE ──
   var refs = (stats && stats.refsCount) || 0;
   var refCode = (stats && stats.code) || '';
-  var refUrl = refCode ? 'https://bloomday.app/?ref=' + refCode : '';
+  var refUrl = refCode ? window.location.origin + '/?ref=' + refCode : '';
   var tier = ambTier(refs);
 
   var tierColors = {
