@@ -222,6 +222,10 @@ function rMembers(){
   // Axe 2 : filtre appliqué uniquement sur searchFiltered (état local)
   let filtered=searchFiltered!==null?searchFiltered:m;
   if(fMonth>0)filtered=filtered.filter(p=>p.month===fMonth);
+  if(fType){
+    if(fType==='other')filtered=filtered.filter(p=>p.type!=='birthday'&&p.type!=='wedding'&&p.type!=='work'&&p.type!=='custom');
+    else filtered=filtered.filter(p=>p.type===fType);
+  }
   const pl=PL();
   // Champ de recherche FIXE — ne se recrée pas à chaque frappe
   // → le clavier reste ouvert sur mobile
@@ -236,6 +240,17 @@ function rMembers(){
   h+=`<div class="chips"><button class="chip${fMonth===0?' on':''}" onclick="fMonth=0;rMembers()">${t('allMonths')}</button>`;
   for(let mo=1;mo<=12;mo++){if(m.some(p=>p.month===mo))h+=`<button class="chip${fMonth===mo?' on':''}" onclick="fMonth=${mo};rMembers()">${MNS[mo-1]}</button>`;}
   h+=`</div>`;
+  const typeOpts=[{v:'',l:'🎯 '+t('allTypes')},{v:'birthday',l:'🎂'},{v:'wedding',l:'💍'},{v:'work',l:'💼'},{v:'custom',l:'⭐'},{v:'other',l:'✏️'}];
+  const typeLabels={birthday:t('evtBirthday'),wedding:t('evtWedding'),work:t('evtWork'),custom:t('evtCustom'),other:t('evtOther')};
+  const usedTypes=new Set(m.map(p=>['birthday','wedding','work','custom'].includes(p.type)?p.type:'other'));
+  if(usedTypes.size>1){
+    h+=`<div class="chips" style="margin-top:4px">`;
+    typeOpts.forEach(o=>{
+      if(o.v===''||usedTypes.has(o.v))
+        h+=`<button class="chip${fType===o.v?' on':''}" onclick="fType='${o.v}';rMembers()">${o.v?typeLabels[o.v]||o.l:o.l}</button>`;
+    });
+    h+=`</div>`;
+  }
   if(!filtered.length){h+=`<div class="es">${m.length===0?t('noMembersYet'):t('noSearchResults')}</div>`;el.innerHTML=h;return;}
   h+=`<div style="font-size:12px;color:var(--txt2);margin-bottom:10px;font-weight:600">${filtered.length} ${filtered.length!==1?t('membersCount'):t('memberCount')} · Plan ${PLANS[plan].name}</div>`;
   filtered.forEach(p=>{
@@ -255,6 +270,7 @@ function rMembers(){
     <label>${t('labelPhone')||'Téléphone'}</label><input id="em-phone" type="tel" value="${esc(p.phone||'')}">
     <label>${t('genderLabel')||'Genre'}</label><select id="em-gender"><option value=""${!p.gender?' selected':''}>${t('genderNone')}</option><option value="femme"${p.gender==='femme'?' selected':''}>${t('genderF')}</option><option value="homme"${p.gender==='homme'?' selected':''}>${t('genderM')}</option><option value="enfant"${p.gender==='enfant'?' selected':''}>${t('genderKid')}</option></select>
     <label>${t('notesLabel')||'Notes'}</label><textarea id="em-note">${esc(p.note||'')}</textarea>
+    <label>${t('customMsgLabel')||'Message personnalisé'}</label><textarea id="em-custom-msg" style="min-height:70px">${esc(p.customMsg||'')}</textarea>
     <div class="brow" style="margin-top:10px"><button class="btn G" style="flex:1" onclick="saveEdit(${p.id})">${t('saveBtn')}</button><button class="btn" onclick="togEdit(${p.id})">${t('cancelBtn')}</button></div></div>`:''}
     <div id="m-msg-${p.id}"></div><div id="m-gift-${p.id}"></div></div>
     <div style="display:flex;flex-direction:column;gap:5px;flex-shrink:0">
@@ -606,12 +622,26 @@ function rMore(){
 }
 
 // ── GÉNÉRATION MESSAGES ──
+function _renderMsgActions(elId,msg,phone){
+  return '<div style="display:flex;gap:6px;margin-top:8px;flex-wrap:wrap">'+
+    '<button class="btn G sm" onclick="copyMsg(\''+elId+'\')">'+t('copyBtn')+'</button>'+
+    (phone?'<button class="btn sm" onclick="sendWA(\''+esc(phone)+'\',\''+elId+'\')">'+t('sendWhatsApp')+'</button>':'')+
+    '<button class="btn sm" style="font-size:11px" onclick="openRipple(\''+_c(msg)+'\',\''+elId+'\')" title="Bloomday Ripple">🌊</button>'+
+    '</div>';
+}
 async function genMsg(id,elId){
   var el=document.getElementById(elId);if(!el)return;
   var p=mems().find(function(x){return x.id===id;});if(!p)return;
   var pl=PL();
   if((stats.msgsM||0)>=pl.msgs){
     el.innerHTML='<div style="color:var(--b2d);font-size:12px;padding:8px">'+t('msgLimitReached')+'</div>';return;
+  }
+  if(p.customMsg){
+    var cm=p.customMsg;
+    el.innerHTML='<div class="ob-msg" style="font-size:13px">'+esc(cm)+'</div>'+
+      _renderMsgActions(elId,cm,p.phone)+
+      '<button class="btn sm" style="font-size:11px;color:var(--txt2);margin-top:4px" onclick="genMsgAI('+id+',\''+elId+'\')">✨ '+t('generateAIInstead')+'</button>';
+    return;
   }
   el.innerHTML='<div style="text-align:center;padding:12px"><div class="ld"></div></div>';
   var tpl=DTPL.find(function(x){return x.id===actTpl;})||DTPL[0];
@@ -628,14 +658,14 @@ async function genMsg(id,elId){
     stats.msgsM=(stats.msgsM||0)+1;sg('bdg16_stats',stats);
     var h2=hist[String(id)]||[];h2.push({date:new Date().toLocaleDateString('fr'),text:msg});hist[String(id)]=h2.slice(-20);sg('bdg16_hist',hist);
     stats.celeb=(stats.celeb||0)+1;
-    el.innerHTML='<div class="ob-msg" style="font-size:13px">'+esc(msg)+'</div>'+
-      '<div style="display:flex;gap:6px;margin-top:8px">'+
-      '<button class="btn G sm" onclick="copyMsg(\''+elId+'\')">'+t('copyBtn')+'</button>'+
-      (p.phone?'<button class="btn sm" onclick="sendWA(\''+esc(p.phone)+'\',\''+elId+'\')">'+t('sendWhatsApp')+'</button>':'')+
-      '</div>';
+    el.innerHTML='<div class="ob-msg" style="font-size:13px">'+esc(msg)+'</div>'+_renderMsgActions(elId,msg,p.phone);
   }catch(e){
     el.innerHTML='<div style="font-size:12px;color:var(--txt2);padding:8px;white-space:pre-wrap">'+esc(getFallback('birthday'))+'</div>';
   }
+}
+async function genMsgAI(id,elId){
+  var p=mems().find(function(x){return x.id===id;});
+  if(p){var orig=p.customMsg;p.customMsg=undefined;await genMsg(id,elId);p.customMsg=orig;}
 }
 
 async function genGift(id,elId){
@@ -807,6 +837,23 @@ function exportPDF(){
   setTimeout(function(){URL.revokeObjectURL(url);},5000);
 }
 
+function openRipple(encodedMsg,elId){
+  var msg='';
+  try{msg=atob(encodedMsg);}catch(e){msg=encodedMsg;}
+  if(!msg)return;
+  var mid=elId?elId.replace('m-msg-',''):null;
+  var p=mid?mems().find(function(x){return String(x.id)===String(mid);}):null;
+  var recipient=p?p.name.split(' ')[0]:'';
+  var data={m:msg,n:recipient};
+  var encoded=btoa(unescape(encodeURIComponent(JSON.stringify(data))));
+  var base=window.location.origin+window.location.pathname.replace(/[^/]*$/,'');
+  var rippleUrl=base+'ripple.html?d='+encoded;
+  navigator.clipboard.writeText(rippleUrl).then(function(){
+    showToast('🌊 Lien Ripple copié !','success');
+  }).catch(function(){
+    showToast(rippleUrl,'success');
+  });
+}
 function signOut(){
   if(!confirm("Se déconnecter et revenir à l'accueil ?"))return;
   plan='free';

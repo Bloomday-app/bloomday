@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+  <title>Bloomday Ripple 🌸</title>
+  <meta name="description" content="Tu as reçu un message Bloomday">
+  <link rel="icon" href="img/logo.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;800&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    *{margin:0;padding:0;box-sizing:border-box;}
+    body{min-height:100vh;background:linear-gradient(160deg,#FFF8F0 0%,#FFE8D0 40%,#E3F9F0 100%);font-family:'DM Sans',sans-serif;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px;overflow-x:hidden;}
+    .petals{position:fixed;inset:0;pointer-events:none;overflow:hidden;z-index:0;}
+    .petal{position:absolute;top:-60px;font-size:24px;animation:fall linear infinite;opacity:0;}
+    @keyframes fall{0%{transform:translateY(0) rotate(0deg);opacity:0;}10%{opacity:.8;}90%{opacity:.4;}100%{transform:translateY(110vh) rotate(360deg);opacity:0;}}
+    .card{position:relative;z-index:1;background:#fff;border-radius:28px;padding:36px 28px 32px;max-width:400px;width:100%;box-shadow:0 20px 60px rgba(210,160,80,.18),0 4px 20px rgba(0,0,0,.06);animation:cardIn .7s cubic-bezier(.22,1,.36,1) both;text-align:center;}
+    @keyframes cardIn{from{opacity:0;transform:translateY(32px) scale(.96);}to{opacity:1;transform:none;}}
+    .logo{width:56px;height:56px;border-radius:14px;object-fit:contain;margin:0 auto 18px;box-shadow:0 4px 16px rgba(210,160,80,.25);}
+    .to{font-size:13px;color:#b08040;font-weight:600;letter-spacing:.06em;text-transform:uppercase;margin-bottom:6px;}
+    .name{font-family:'Playfair Display',serif;font-size:30px;font-weight:800;color:#2D1B14;margin-bottom:20px;animation:fadeUp .6s .3s both;}
+    .divider{width:48px;height:3px;border-radius:4px;background:linear-gradient(90deg,#F5A623,#E87040);margin:0 auto 20px;}
+    .msg{font-size:16px;line-height:1.75;color:#4A3728;background:linear-gradient(135deg,#FFF8F0,#FFF3E8);border-radius:16px;padding:20px 18px;border-left:3px solid #F5A623;text-align:left;animation:fadeUp .5s .5s both;}
+    .bloom-cta{margin-top:24px;animation:fadeUp .5s .8s both;}
+    .cta-label{font-size:12px;color:#a08060;margin-bottom:10px;}
+    .cta-btn{display:inline-block;background:linear-gradient(135deg,#F5A623,#E87040);color:#fff;border:none;border-radius:50px;padding:14px 32px;font-size:15px;font-weight:700;font-family:'DM Sans',sans-serif;cursor:pointer;text-decoration:none;box-shadow:0 4px 18px rgba(232,112,64,.35);transition:transform .15s,box-shadow .15s;}
+    .cta-btn:hover{transform:translateY(-2px);box-shadow:0 6px 24px rgba(232,112,64,.45);}
+    .footer{position:relative;z-index:1;margin-top:20px;font-size:12px;color:#c0a080;animation:fadeUp .5s 1s both;}
+    .footer strong{color:#E87040;}
+    #copy-btn{background:none;border:1px solid #e0c8a0;border-radius:8px;padding:6px 14px;font-size:12px;color:#b08040;cursor:pointer;margin-top:10px;font-family:'DM Sans',sans-serif;}
+    #copy-btn:hover{background:#FFF8F0;}
+    .err{font-size:15px;color:#b08040;padding:40px 0;}
+    @keyframes fadeUp{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:none;}}
+  </style>
+</head>
+<body>
+<div class="petals" id="petals"></div>
+<div class="card" id="card">
+  <img class="logo" src="img/logo.png" alt="Bloomday">
+  <div id="content"><div class="err">Chargement…</div></div>
+</div>
+<div class="footer" id="footer" style="display:none">
+  Créé avec <strong>Bloomday</strong> 🌸 — <a href="https://bloomday-day.netlify.app" style="color:#E87040;text-decoration:none">Le jour où tu fleuris</a>
+</div>
+<script>
+(function(){
+  var raw=new URLSearchParams(window.location.search).get('d');
+  if(!raw){showError('Lien invalide.');return;}
+  var data;
+  try{data=JSON.parse(decodeURIComponent(escape(atob(raw))));}
+  catch(e){showError('Impossible de lire ce message.');return;}
+  var msg=data.m||'';
+  var name=data.n||'';
+  if(!msg){showError('Message vide.');return;}
+
+  var content=document.getElementById('content');
+  if(name){
+    var toDiv=document.createElement('div');toDiv.className='to';toDiv.textContent='Pour';content.appendChild(toDiv);
+    var nameDiv=document.createElement('div');nameDiv.className='name';nameDiv.textContent=name+' 🌸';content.appendChild(nameDiv);
+  } else {
+    var flowerDiv=document.createElement('div');flowerDiv.style.cssText='margin-bottom:16px;font-size:28px';flowerDiv.textContent='🌸';content.appendChild(flowerDiv);
+  }
+  var divider=document.createElement('div');divider.className='divider';content.appendChild(divider);
+  var msgDiv=document.createElement('div');msgDiv.className='msg';msgDiv.textContent=msg;content.appendChild(msgDiv);
+  var ctaWrap=document.createElement('div');ctaWrap.className='bloom-cta';
+  var ctaLabel=document.createElement('div');ctaLabel.className='cta-label';ctaLabel.textContent='Tu veux ne jamais oublier les anniversaires de ceux que tu aimes ?';ctaWrap.appendChild(ctaLabel);
+  var ctaBtn=document.createElement('a');ctaBtn.className='cta-btn';ctaBtn.href='https://bloomday-day.netlify.app';ctaBtn.target='_blank';ctaBtn.textContent='Découvrir Bloomday 🌸';ctaWrap.appendChild(ctaBtn);
+  var br=document.createElement('br');ctaWrap.appendChild(br);
+  var copyBtn=document.createElement('button');copyBtn.id='copy-btn';copyBtn.textContent='📋 Copier le message';
+  copyBtn.onclick=function(){navigator.clipboard.writeText(msg).then(function(){copyBtn.textContent='✓ Copié !';setTimeout(function(){copyBtn.textContent='📋 Copier le message';},2000);});};
+  ctaWrap.appendChild(copyBtn);
+  content.appendChild(ctaWrap);
+  document.getElementById('footer').style.display='block';
+  startPetals();
+})();
+
+function showError(txt){var el=document.getElementById('content');el.textContent='';var d=document.createElement('div');d.className='err';d.textContent=txt;el.appendChild(d);}
+
+function startPetals(){
+  var container=document.getElementById('petals');
+  var emojis=['🌸','🌺','🌼','✨','🍀','🌷'];
+  function addPetal(){
+    var el=document.createElement('div');el.className='petal';
+    el.textContent=emojis[Math.floor(Math.random()*emojis.length)];
+    el.style.left=Math.random()*100+'%';
+    el.style.fontSize=(16+Math.random()*16)+'px';
+    var dur=4+Math.random()*5;
+    el.style.animationDuration=dur+'s';
+    el.style.animationDelay='0s';
+    container.appendChild(el);
+    setTimeout(function(){if(el.parentNode)el.parentNode.removeChild(el);},dur*1100);
+  }
+  for(var i=0;i<12;i++){setTimeout(addPetal,i*250);}
+  setInterval(addPetal,700);
+}
+</script>
+</body>
+</html>

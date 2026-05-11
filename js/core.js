@@ -67,7 +67,14 @@ async function startOnboarding(){
     }
   }
 
-  // Animer l'écriture dans les champs ob1
+  // Afficher le fallback immédiatement (avant les animations)
+  var fallbackMsg = 'Léa, en ce jour si particulier, toute notre communauté se joint à moi pour te souhaiter un anniversaire aussi épanoui que tu l\'es. Que cette nouvelle année t\'apporte des fleurs plein les bras et du bonheur à chaque instant ! 🌸✨';
+  if(demoEl){
+    demoEl.innerHTML='<div class="ob-msg">'+esc(fallbackMsg)+'</div>'+'<div style="display:flex;gap:8px;margin-top:12px">'+'<button class="btn G fw" onclick="copyObMsg()">'+t('obCopyBtn2')+'</button>'+'<button class="btn sm" onclick="regenObMsg()">'+t('obRetryBtn2')+'</button>'+'</div>';
+    window.__obFallback=fallbackMsg;
+  }
+
+  // Animer l'écriture dans les champs ob1 (en arrière-plan)
   var obName=document.getElementById('ob-name');
   var obDay=document.getElementById('ob-day');
   var obMonth=document.getElementById('ob-month');
@@ -78,24 +85,6 @@ async function startOnboarding(){
   if(obMonth) await typeText(obMonth,''+(today.getMonth()+1),80);
   if(obYear) await typeText(obYear,'1992',60);
   if(obNote) await typeText(obNote,t('obDemoNote'),30);
-
-  // Afficher le chargement
-  if(demoEl){
-    demoEl.innerHTML='<div style="text-align:center;padding:20px;color:var(--txt2)"><div class="ld"></div><div style="margin-top:8px;font-size:13px">'+t('generatingAI')+'</div></div>';
-  }
-
-  // Message de secours immédiat (affiché pendant le chargement)
-  var fallbackMsg = 'Léa, en ce jour si particulier, toute notre communauté se joint à moi pour te souhaiter un anniversaire aussi épanoui que tu l\'es. Que cette nouvelle année t\'apporte des fleurs plein les bras et du bonheur à chaque instant ! 🌸✨';
-
-  // Afficher le fallback pendant qu'on tente l'IA
-  if(demoEl){
-    demoEl.innerHTML='<div class="ob-msg">'+esc(fallbackMsg)+'</div>'+
-      '<div style="display:flex;gap:8px;margin-top:12px">'+
-      '<button class="btn G fw" onclick="copyObMsg()">'+t('obCopyBtn2')+'</button>'+
-      '<button class="btn sm" onclick="regenObMsg()">'+t('obRetryBtn2')+'</button>'+
-      '</div>';
-    window.__obFallback=fallbackMsg;
-  }
 
   // Tenter l'API IA en arrière-plan
   try{
@@ -190,14 +179,15 @@ async function obAddMember(){
   document.getElementById('obs1').classList.replace('on','done');
   document.getElementById('obs2').classList.add('on');
   document.getElementById('ob2-name').textContent=name.split(' ')[0];
-  // Générer le message IA
+  // Afficher un fallback immédiatement, puis tenter l'IA
   const msgEl=document.getElementById('ob2-msg');
   const isTod=isToday(day,month);
+  const ob2Fallback=getFallback('birthday');
+  msgEl.innerHTML='<div style="font-size:13px;line-height:1.8;color:var(--b4d)">'+esc(ob2Fallback)+'</div>'+'<div class="brow" style="margin-top:10px"><button class="btn sm G" onclick="copyMsgCached(this,\''+_c(ob2Fallback)+'\')">📋 Copier</button></div>';
   try{
     const resp=await fetch("/.netlify/functions/generate-message",{method:"POST",headers:await getAuthHeaders(),body:JSON.stringify({prompt:"Génère un message d'anniversaire chaleureux pour "+name+(isTod?" dont c'est l'anniversaire aujourd'hui!":".")+". Ton : chaleureux, festif, sincère. 3-4 phrases. Commence directement par le message.",plan:plan})});
-    if(resp.ok){const data=await resp.json();const text=data.message||'';msgEl.innerHTML=`<div style="font-size:13px;font-weight:600;color:var(--b4d);margin-bottom:8px">✨ Message généré pour ${esc(name.split(' ')[0])} :</div><div style="font-size:13px;line-height:1.8;color:var(--b4d)">${esc(text)}</div><div class="brow" style="margin-top:10px"><button class="btn sm G" onclick="copyMsgCached(this,'"+_c(text)+"')">📋 Copier</button></div>`;}
-    else throw new Error();
-  }catch(e){msgEl.innerHTML=`<div style="font-size:13px;line-height:1.8;color:var(--b4d)">${getFallback('birthday')}</div>`;}
+    if(resp.ok){const data=await resp.json();const text=data.message||'';if(text)msgEl.innerHTML='<div style="font-size:13px;font-weight:600;color:var(--b4d);margin-bottom:8px">✨ Message généré pour '+esc(name.split(' ')[0])+' :</div><div style="font-size:13px;line-height:1.8;color:var(--b4d)">'+esc(text)+'</div><div class="brow" style="margin-top:10px"><button class="btn sm G" onclick="copyMsgCached(this,\''+_c(text)+'\')">📋 Copier</button></div>';}
+  }catch(e){}
 }
 function finishOb(){
   safeLsSet('bdg16_ob','1');
@@ -263,7 +253,7 @@ function rGbar(){
   const b=document.getElementById('gbar');if(!b)return;
   b.innerHTML=groups.map(g=>`<button class="gc${g.id===curG?' on':''}" onclick="switchG('${esc(g.id)}')">${esc(g.icon)} ${esc(g.name)}</button>`).join('')+`<button class="gc add" onclick="addGroup()" title="Nouveau groupe">＋</button>`;
 }
-function switchG(id){curG=id;fMonth=0;searchInput='';searchFiltered=null;editId=null;refresh();}
+function switchG(id){curG=id;fMonth=0;fType='';searchInput='';searchFiltered=null;editId=null;refresh();}
 function addGroup(){
   const pl=PL();
   if(groups.length>=pl.mg){
@@ -354,9 +344,10 @@ function addMember(){
   if(day<1||day>31||month<1||month>12){alert(t('invalidDate'));return;}
   var rawType=document.getElementById('inp-type').value;
   var memberType=rawType==='other'?(document.getElementById('inp-other-text').value||'').trim().slice(0,40)||'other':rawType;
-  m.push({id:Date.now(),day,month,year:yv?parseInt(yv):null,name,phone:(document.getElementById('inp-phone').value||'').trim(),note:(document.getElementById('inp-note').value||'').trim(),photo:ppPhoto,type:memberType,gender:document.getElementById('inp-gender').value});
+  var customMsg=(document.getElementById('inp-custom-msg').value||'').trim();
+  m.push({id:Date.now(),day,month,year:yv?parseInt(yv):null,name,phone:(document.getElementById('inp-phone').value||'').trim(),note:(document.getElementById('inp-note').value||'').trim(),customMsg:customMsg||undefined,photo:ppPhoto,type:memberType,gender:document.getElementById('inp-gender').value});
   m.sort((a,b)=>a.month-b.month||a.day-b.day);setMems(m);ppPhoto='';saveG();
-  ['inp-day','inp-year','inp-name','inp-phone','inp-note'].forEach(id=>{const e=document.getElementById(id);if(e)e.value='';});
+  ['inp-day','inp-year','inp-name','inp-phone','inp-note','inp-custom-msg'].forEach(id=>{const e=document.getElementById(id);if(e)e.value='';});
   const pp=document.getElementById('phuprev');
   if(pp)pp.innerHTML='<svg width="28" height="28" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="10" r="3.5" stroke="#D4A843" stroke-width="1.5"/><path d="M4 20c0-4 3.582-7 8-7s8 3 8 7" stroke="#D4A843" stroke-width="1.5" stroke-linecap="round"/><path d="M17 6h4M19 4v4" stroke="#D4A843" stroke-width="1.5" stroke-linecap="round"/></svg>';
   refresh();showSec('members',1);
@@ -368,7 +359,8 @@ function saveEdit(id){
   const name=(document.getElementById('em-name').value||'').trim(),day=parseInt(document.getElementById('em-day').value)||0,month=parseInt(document.getElementById('em-month').value)||0;
   if(!name||!day||!month||day<1||day>31||month<1||month>12){alert(t('invalidData'));return;}
   const yv=document.getElementById('em-year').value;
-  Object.assign(p,{name,day,month,year:yv?parseInt(yv):null,phone:(document.getElementById('em-phone').value||'').trim(),note:(document.getElementById('em-note').value||'').trim(),gender:(document.getElementById('em-gender')&&document.getElementById('em-gender').value)||p.gender});
+  var emCustomMsg=(document.getElementById('em-custom-msg').value||'').trim();
+  Object.assign(p,{name,day,month,year:yv?parseInt(yv):null,phone:(document.getElementById('em-phone').value||'').trim(),note:(document.getElementById('em-note').value||'').trim(),customMsg:emCustomMsg||undefined,gender:(document.getElementById('em-gender')&&document.getElementById('em-gender').value)||p.gender});
   m.sort((a,b)=>a.month-b.month||a.day-b.day);setMems(m);editId=null;saveG();rMembers();
 }
 
