@@ -86,6 +86,9 @@ button{cursor:pointer;font-family:'DM Sans',sans-serif}
 .nb.on::after{content:'';position:absolute;top:0;left:25%;right:25%;height:2.5px;background:var(--grad);border-radius:0 0 3px 3px}
 .nb svg{width:20px;height:20px;transition:transform .2s}
 .nb.on svg{transform:scale(1.1)}
+.nb-avatar{width:24px;height:24px;border-radius:50%;background:linear-gradient(135deg,#FFB6D9,#D4A843);display:flex;align-items:center;justify-content:center;border:2px solid var(--b1,#D4A843);overflow:hidden;flex-shrink:0}
+.nb-avatar img{width:100%;height:100%;object-fit:cover;border-radius:50%}
+.nb-avatar span{font-size:11px;color:white;font-weight:800;line-height:1}
 
 /* ── CARDS ── */
 .card{background:var(--card);border:1px solid var(--brd);border-radius:var(--rad);padding:16px;margin-bottom:10px;box-shadow:var(--sh);transition:box-shadow .2s}

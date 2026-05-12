@@ -389,6 +389,24 @@ function checkAnniversaryEmail(){
 }
 
 
+function updateNavAvatar(){
+  var av=document.getElementById('nb4-avatar');
+  if(!av) return;
+  var photo=localStorage.getItem('bdg16_user_photo')||'';
+  if(photo){
+    av.textContent='';
+    var img=document.createElement('img');
+    img.src=photo;
+    img.alt='profil';
+    av.appendChild(img);
+    return;
+  }
+  var sp=document.getElementById('nb4-initials');
+  if(!sp) return;
+  var name=(profile&&profile.name)||'';
+  sp.textContent=name?name.trim()[0].toUpperCase():'\uD83C\uDF38';
+}
+
 function updateAllTexts(){
   // 1. Éléments [data-i18n]
   var els=document.querySelectorAll('[data-i18n]');
@@ -403,9 +421,10 @@ function updateAllTexts(){
     var pVal=t(pKey);if(pVal&&pVal!==pKey) pEl.placeholder=pVal;
   }
   // 3. Nav bas
-  var navKeys=['navHome','navMembers','navAdd','navEvents','navMore'];
+  var navKeys=['navHome','navMembers','navAdd','navEvents','navProfile'];
   var nbls=document.querySelectorAll('.nbl');
   for(var n=0;n<nbls.length;n++){if(navKeys[n]) nbls[n].textContent=t(navKeys[n]);}
+  updateNavAvatar();
   // 4. Slogan topbar
   var slogan=document.getElementById('tbsub-lang');
   if(slogan) slogan.textContent=t('appSlogan');

@@ -1,7 +1,7 @@
 const I18N = {
   fr:{
     appSlogan:'Le jour où tu fleuris',
-    navHome:'Accueil',navMembers:'Membres',navAdd:'Ajouter',navEvents:'Fêtes',navMore:'Plus',
+    navHome:'Accueil',navMembers:'Membres',navAdd:'Ajouter',navEvents:'Fêtes',navMore:'Plus',navProfile:'Profil',
     today:"Aujourd'hui",tomorrow:'Demain',in7days:'Cette semaine',
     prepareNow:'À préparer',prepare:'Préparer →',
     noEventToday:'Aucun anniversaire aujourd\'hui',
@@ -624,7 +624,7 @@ const I18N = {
   },
   en:{
     appSlogan:'The day you blossom',
-    navHome:'Home',navMembers:'Members',navAdd:'Add',navEvents:'Events',navMore:'More',
+    navHome:'Home',navMembers:'Members',navAdd:'Add',navEvents:'Events',navMore:'More',navProfile:'Profile',
     today:'Today',tomorrow:'Tomorrow',in7days:'This week',
     prepareNow:'Coming up',prepare:'Prepare →',
     noEventToday:'No birthday today',noEventSub:'Use this time to prepare upcoming ones',
@@ -1245,7 +1245,7 @@ const I18N = {
   },
   es:{
     appSlogan:'El día en que floreces',
-    navHome:'Inicio',navMembers:'Miembros',navAdd:'Añadir',navEvents:'Fiestas',navMore:'Más',
+    navHome:'Inicio',navMembers:'Miembros',navAdd:'Añadir',navEvents:'Fiestas',navMore:'Más',navProfile:'Perfil',
     today:'Hoy',tomorrow:'Mañana',in7days:'Esta semana',
     prepareNow:'Próximamente',prepare:'Preparar →',
     noEventToday:'Sin cumpleaños hoy',noEventSub:'Aprovecha para preparar los próximos',
@@ -1856,7 +1856,7 @@ const I18N = {
   },
   ar:{
     appSlogan:'اليوم الذي تزهر فيه',
-    navHome:'الرئيسية',navMembers:'الأعضاء',navAdd:'إضافة',navEvents:'أعياد',navMore:'المزيد',
+    navHome:'الرئيسية',navMembers:'الأعضاء',navAdd:'إضافة',navEvents:'أعياد',navMore:'المزيد',navProfile:'الملف',
     today:'اليوم',tomorrow:'غداً',in7days:'هذا الأسبوع',
     prepareNow:'استعد الآن',prepare:'تحضير ←',
     noEventToday:'لا أعياد ميلاد اليوم',noEventSub:'استخدم هذا الوقت للتحضير',
@@ -2467,7 +2467,7 @@ const I18N = {
   },
   hi:{
     appSlogan:'वह दिन जब आप खिलते हैं',
-    navHome:'होम',navMembers:'सदस्य',navAdd:'जोड़ें',navEvents:'त्योहार',navMore:'अधिक',
+    navHome:'होम',navMembers:'सदस्य',navAdd:'जोड़ें',navEvents:'त्योहार',navMore:'अधिक',navProfile:'प्रोयाइल',
     today:'आज',tomorrow:'कल',in7days:'इस सप्ताह',
     prepareNow:'जल्द आ रहा है',prepare:'तैयार करें →',
     noEventToday:'आज कोई जन्मदिन नहीं',noEventSub:'अगले जन्मदिन तैयार करें',
@@ -3078,7 +3078,7 @@ const I18N = {
   },
   zh:{
     appSlogan:'你绽放的那一天',
-    navHome:'首页',navMembers:'成员',navAdd:'添加',navEvents:'节日',navMore:'更多',
+    navHome:'首页',navMembers:'成员',navAdd:'添加',navEvents:'节日',navMore:'更多',navProfile:'我的',
     today:'今天',tomorrow:'明天',in7days:'本周',
     prepareNow:'即将到来',prepare:'准备 →',
     noEventToday:'今天没有生日',noEventSub:'趁此机会准备即将到来的生日',
@@ -3689,7 +3689,7 @@ const I18N = {
   },
   pt:{
     appSlogan:'O dia em que você floresce',
-    navHome:'Início',navMembers:'Membros',navAdd:'Adicionar',navEvents:'Festas',navMore:'Mais',
+    navHome:'Início',navMembers:'Membros',navAdd:'Adicionar',navEvents:'Festas',navMore:'Mais',navProfile:'Perfil',
     today:'Hoje',tomorrow:'Amanhã',in7days:'Esta semana',
     prepareNow:'Em breve',prepare:'Preparar →',
     noEventToday:'Nenhum aniversário hoje',noEventSub:'Aproveite para preparar os próximos',
