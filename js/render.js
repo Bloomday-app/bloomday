@@ -844,12 +844,12 @@ function setTpl(id,btn){
 
 function exportPDF(){
   var m=mems();
-  if(!m.length){showToast('Aucun membre à exporter','error');return;}
+  if(!m.length){showToast(t('noMembersExport'),'error');return;}
   var rows=m.map(function(p){
     var age=ageBday(p.day,p.month,p.year);
     return '<tr><td>'+esc(p.name)+'</td><td>'+p.day+'/'+p.month+(p.year?'/'+p.year:'')+'</td><td>'+(age!==null?age:'—')+'</td><td>'+(p.phone||'—')+'</td><td>'+(p.note||'—')+'</td></tr>';
   }).join('');
-  var html='<html><head><title>Bloomday Export</title><style>body{font-family:sans-serif;padding:20px}table{border-collapse:collapse;width:100%}th,td{border:1px solid #ccc;padding:8px;font-size:13px}th{background:#f5f5f5}@media print{button{display:none}}</style></head><body><h1>🌸 Bloomday — '+m.length+' membres</h1><button onclick="window.print()">Imprimer</button><table><thead><tr><th>Nom</th><th>Date</th><th>Âge</th><th>Téléphone</th><th>Notes</th></tr></thead><tbody>'+rows+'</tbody></table></body></html>';
+  var html='<html><head><title>Bloomday Export</title><style>body{font-family:sans-serif;padding:20px}table{border-collapse:collapse;width:100%}th,td{border:1px solid #ccc;padding:8px;font-size:13px}th{background:#f5f5f5}@media print{button{display:none}}</style></head><body><h1>🌸 Bloomday — '+m.length+' '+t('membresLabel')+'</h1><button onclick="window.print()">'+t('pdfPrint')+'</button><table><thead><tr><th>'+t('pdfColName')+'</th><th>'+t('pdfColDate')+'</th><th>'+t('pdfColAge')+'</th><th>'+t('pdfColPhone')+'</th><th>'+t('pdfColNotes')+'</th></tr></thead><tbody>'+rows+'</tbody></table></body></html>';
   var blob=new Blob([html],{type:'text/html'});
   var url=URL.createObjectURL(blob);
   var a=document.createElement('a');a.href=url;a.target='_blank';a.click();
@@ -868,7 +868,7 @@ function openRipple(encodedMsg,elId){
   var base=window.location.origin+window.location.pathname.replace(/[^/]*$/,'');
   var rippleUrl=base+'ripple.html?d='+encoded;
   navigator.clipboard.writeText(rippleUrl).then(function(){
-    showToast('🌊 Lien Ripple copié !','success');
+    showToast(t('rippleCopied'),'success');
   }).catch(function(){
     showToast(rippleUrl,'success');
   });
@@ -879,7 +879,7 @@ function signOut(){
   localStorage.removeItem('bdg16_plan');
   localStorage.removeItem('bdg16_customer');
   goLand();
-  showToast('À bientôt ! 🌸','success');
+  showToast(t('logoutBye'),'success');
 }
 
 function showAccountPage(){

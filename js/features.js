@@ -395,12 +395,12 @@ function doPayment(){
   var email=(pe&&pe.value||'').trim().toLowerCase();
   var emailReg=/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
   if(!email||!emailReg.test(email)){
-    showToast('Entrez un email valide (ex: nom@domaine.fr)','error');
+    showToast(t('errEmailInvalid'),'error');
     return;
   }
   var planKey=window.__pendingPlan||plan;
   var pn=PLANS[planKey];
-  if(!pn){showToast('Plan introuvable','error');return;}
+  if(!pn){showToast(t('planNotFound'),'error');return;}
   // Activer le plan
   plan=planKey;
   if(!currentUser) currentUser={email:email,uid:getOrCreateUID(),plan:planKey,createdAt:new Date().toISOString()};
@@ -414,8 +414,7 @@ function doPayment(){
   var cnPlan=document.getElementById('confirm-plan');if(cnPlan)cnPlan.textContent=pn.name;
   var cnEmail=document.getElementById('confirm-email');if(cnEmail)cnEmail.textContent=email;
   var d=new Date();d.setDate(d.getDate()+7);
-  var months=['janv.','fév.','mars','avr.','mai','juin','juil.','août','sep.','oct.','nov.','déc.'];
-  var cnDate=document.getElementById('confirm-date');if(cnDate)cnDate.textContent='le '+d.getDate()+' '+months[d.getMonth()];
+  var cnDate=document.getElementById('confirm-date');if(cnDate)cnDate.textContent=d.getDate()+' '+MNS[d.getMonth()];
   openOv('m-confirm');
   // Topbar + emails
   var tbp=document.getElementById('tbplan');if(tbp)tbp.textContent=pn.name+' ▾';

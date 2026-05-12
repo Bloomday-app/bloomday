@@ -119,7 +119,7 @@ function copyObMsg(){
   var msg=window.__obAiMsg||window.__obFallback||'';
   if(!msg) return;
   navigator.clipboard.writeText(msg).then(function(){
-    showToast('📋 Message copié !','success');
+    showToast(t('copied'),'success');
   }).catch(function(){
     showToast(msg.substring(0,50)+'...','success');
   });
@@ -377,14 +377,14 @@ function openPlanModal(){
   const c=document.getElementById('mplan-c');
   c.innerHTML=[['free','0€'],['bloom','4,99€/mois'],['pro','19,99€/mois']].map(([k,pr])=>`
   <div class="pmc${k===plan?' sel':''}" onclick="changePlan('${k}')">
-    ${k===plan?'<div class="pmbdg">Actuel ✓</div>':''}
+    ${k===plan?'<div class="pmbdg">'+t('planCurrentBadge')+'</div>':''}
     <div class="pmn">${PLANS[k].name}</div>
     <div class="pmp">${pr}</div>
     <div class="pmf">
-      <span class="${PLANS[k].mm>10?'on':'off'}">${PLANS[k].mm<999?PLANS[k].mm+' membres':'∞ membres'}</span>
-      <span class="${PLANS[k].gifts?'on':'off'}">${PLANS[k].gifts?'Cadeaux ✓':'Cadeaux ✗'}</span>
-      <span class="${PLANS[k].cards?'on':'off'}">${PLANS[k].cards?'Cartes ✓':'Cartes ✗'}</span>
-      <span class="${PLANS[k].amb?'on':'off'}">${PLANS[k].amb?'Ambassador ✓':'Ambassador ✗'}</span>
+      <span class="${PLANS[k].mm>10?'on':'off'}">${PLANS[k].mm<999?PLANS[k].mm+' '+t('membersCount'):'∞ '+t('membersCount')}</span>
+      <span class="${PLANS[k].gifts?'on':'off'}">${PLANS[k].gifts?t('planFeatGiftsYes'):t('planFeatGiftsNo')}</span>
+      <span class="${PLANS[k].cards?'on':'off'}">${PLANS[k].cards?t('planFeatCardsYes'):t('planFeatCardsNo')}</span>
+      <span class="${PLANS[k].amb?'on':'off'}">${PLANS[k].amb?t('planFeatAmbYes'):t('planFeatAmbNo')}</span>
     </div>
   </div>`).join('');
   openOv('mplan');
