@@ -84,28 +84,52 @@ function formatDateLocal(date){
 
 
 var COUNTRIES={
-  fr:['Non précisé','France','Belgique','Suisse','Canada','Maroc','Algérie','Tunisie','Sénégal','Côte d\'Ivoire','Cameroun','Congo','Bénin','Togo','Burkina Faso','Mali','Guinée','Madagascar','Rwanda','Burundi','Gabon','Niger','Tchad','Mauritanie','Djibouti','Comores','Cap-Vert','São Tomé','Haïti','Guadeloupe','Martinique','Réunion','Guyane','Polynésie','Autre'],
-  en:['Not specified','France','Belgium','Switzerland','Canada','Morocco','Algeria','Tunisia','Senegal','Ivory Coast','Cameroon','Congo','Benin','Togo','Burkina Faso','Mali','Guinea','Madagascar','Rwanda','Burundi','Gabon','Niger','Chad','Mauritania','Djibouti','Comoros','Cape Verde','São Tomé','Haiti','Guadeloupe','Martinique','Réunion','French Guiana','Polynesia','Other'],
-  es:['No especificado','Francia','Bélgica','Suiza','Canadá','Marruecos','Argelia','Túnez','Senegal','Costa de Marfil','Camerún','Congo','Benín','Togo','Burkina Faso','Malí','Guinea','Madagascar','Ruanda','Burundi','Gabón','Níger','Chad','Mauritania','Yibuti','Comoras','Cabo Verde','Santo Tomé','Haití','Guadalupe','Martinica','Reunión','Guayana','Polinesia','Otro'],
-  ar:['غير محدد','فرنسا','بلجيكا','سويسرا','كندا','المغرب','الجزائر','تونس','السنغال','ساحل العاج','الكاميرون','الكونغو','بنين','توغو','بوركينا فاسو','مالي','غينيا','مدغشقر','رواندا','بوروندي','الغابون','النيجر','تشاد','موريتانيا','جيبوتي','جزر القمر','الرأس الأخضر','ساو تومي','هايتي','غوادلوب','مارتينيك','ريونيون','غيانا','بولينيزيا','أخرى'],
-  hi:['निर्दिष्ट नहीं','फ्रांस','बेल्जियम','स्विट्जरलैंड','कनाडा','मोरक्को','अल्जीरिया','ट्यूनीशिया','सेनेगल','आइवरी कोस्ट','कैमरून','कांगो','बेनिन','टोगो','बुर्किना फासो','माली','गिनी','मेडागास्कर','रवांडा','बुरुंडी','गैबॉन','नाइजर','चाड','मॉरिटानिया','जिबूती','कोमोरोस','केप वर्डे','साओ टोमे','हैती','ग्वाडेलूप','मार्टिनिक','रीयूनियन','गुयाना','पॉलिनेशिया','अन्य'],
-  zh:['未指定','法国','比利时','瑞士','加拿大','摩洛哥','阿尔及利亚','突尼斯','塞内加尔','科特迪瓦','喀麦隆','刚果','贝宁','多哥','布基纳法索','马里','几内亚','马达加斯加','卢旺达','布隆迪','加蓬','尼日尔','乍得','毛里塔尼亚','吉布提','科摩罗','佛得角','圣多美','海地','瓜德罗普','马提尼克','留尼汪','法属圭亚那','波利尼西亚','其他'],
-  pt:['Não especificado','França','Bélgica','Suíça','Canadá','Marrocos','Argélia','Tunísia','Senegal','Costa do Marfim','Camarões','Congo','Benim','Togo','Burkina Faso','Mali','Guiné','Madagascar','Ruanda','Burundi','Gabão','Níger','Chade','Mauritânia','Djibuti','Comores','Cabo Verde','São Tomé','Haiti','Guadalupe','Martinica','Reunião','Guiana','Polinésia','Outro'],
+  fr:['Non précisé','🇫🇷 France','🇧🇪 Belgique','🇨🇭 Suisse','🇨🇦 Canada','🇲🇦 Maroc','🇩🇿 Algérie','🇹🇳 Tunisie','🇸🇳 Sénégal','🇨🇮 Côte d\'Ivoire','🇨🇲 Cameroun','🇨🇬 Congo','🇧🇯 Bénin','🇹🇬 Togo','🇧🇫 Burkina Faso','🇲🇱 Mali','🇬🇳 Guinée','🇲🇬 Madagascar','🇷🇼 Rwanda','🇧🇮 Burundi','🇬🇦 Gabon','🇳🇪 Niger','🇹🇩 Tchad','🇲🇷 Mauritanie','🇩🇯 Djibouti','🇰🇲 Comores','🇨🇻 Cap-Vert','🇸🇹 São Tomé','🇭🇹 Haïti','🇬🇵 Guadeloupe','🇲🇶 Martinique','🇷🇪 Réunion','🇬🇫 Guyane','🇵🇫 Polynésie','Autre'],
+  en:['Not specified','🇫🇷 France','🇧🇪 Belgium','🇨🇭 Switzerland','🇨🇦 Canada','🇲🇦 Morocco','🇩🇿 Algeria','🇹🇳 Tunisia','🇸🇳 Senegal','🇨🇮 Ivory Coast','🇨🇲 Cameroon','🇨🇬 Congo','🇧🇯 Benin','🇹🇬 Togo','🇧🇫 Burkina Faso','🇲🇱 Mali','🇬🇳 Guinea','🇲🇬 Madagascar','🇷🇼 Rwanda','🇧🇮 Burundi','🇬🇦 Gabon','🇳🇪 Niger','🇹🇩 Chad','🇲🇷 Mauritania','🇩🇯 Djibouti','🇰🇲 Comoros','🇨🇻 Cape Verde','🇸🇹 São Tomé','🇭🇹 Haiti','🇬🇵 Guadeloupe','🇲🇶 Martinique','🇷🇪 Réunion','🇬🇫 French Guiana','🇵🇫 Polynesia','Other'],
+  es:['No especificado','🇫🇷 Francia','🇧🇪 Bélgica','🇨🇭 Suiza','🇨🇦 Canadá','🇲🇦 Marruecos','🇩🇿 Argelia','🇹🇳 Túnez','🇸🇳 Senegal','🇨🇮 Costa de Marfil','🇨🇲 Camerún','🇨🇬 Congo','🇧🇯 Benín','🇹🇬 Togo','🇧🇫 Burkina Faso','🇲🇱 Malí','🇬🇳 Guinea','🇲🇬 Madagascar','🇷🇼 Ruanda','🇧🇮 Burundi','🇬🇦 Gabón','🇳🇪 Níger','🇹🇩 Chad','🇲🇷 Mauritania','🇩🇯 Yibuti','🇰🇲 Comoras','🇨🇻 Cabo Verde','🇸🇹 Santo Tomé','🇭🇹 Haití','🇬🇵 Guadalupe','🇲🇶 Martinica','🇷🇪 Reunión','🇬🇫 Guayana Francesa','🇵🇫 Polinesia','Otro'],
+  ar:['غير محدد','🇫🇷 فرنسا','🇧🇪 بلجيكا','🇨🇭 سويسرا','🇨🇦 كندا','🇲🇦 المغرب','🇩🇿 الجزائر','🇹🇳 تونس','🇸🇳 السنغال','🇨🇮 ساحل العاج','🇨🇲 الكاميرون','🇨🇬 الكونغو','🇧🇯 بنين','🇹🇬 توغو','🇧🇫 بوركينا فاسو','🇲🇱 مالي','🇬🇳 غينيا','🇲🇬 مدغشقر','🇷🇼 رواندا','🇧🇮 بوروندي','🇬🇦 الغابون','🇳🇪 النيجر','🇹🇩 تشاد','🇲🇷 موريتانيا','🇩🇯 جيبوتي','🇰🇲 جزر القمر','🇨🇻 الرأس الأخضر','🇸🇹 ساو تومي','🇭🇹 هايتي','🇬🇵 غوادلوب','🇲🇶 مارتينيك','🇷🇪 ريونيون','🇬🇫 غيانا الفرنسية','🇵🇫 بولينيزيا','أخرى'],
+  hi:['निर्दिष्ट नहीं','🇫🇷 फ्रांस','🇧🇪 बेल्जिम','🇨🇭 स्विट्जरलैंड','🇨🇦 कनाडा','🇲🇦 मोरक्को','🇩🇿 अल्जीरिया','🇹🇳 ट्यूनीशिया','🇸🇳 सेनेगल','🇨🇮 आइवरी कोस्ट','🇨🇲 कैमरून','🇨🇬 कांगो','🇧🇯 बेनिन','🇹🇬 टोगो','🇧🇫 बुर्किना फासो','🇲🇱 माली','🇬🇳 गिनी','🇲🇬 मेडागास्कर','🇷🇼 रवांडा','🇧🇮 बुरुंडी','🇬🇦 गैबॉन','🇳🇪 नाइजर','🇹🇩 चाड','🇲🇷 मॉरिटानिया','🇩🇯 जिबूती','🇰🇲 कोमोरोस','🇨🇻 केप वर्दे','🇸🇹 साओ टोमे','🇭🇹 हैती','🇬🇵 ग्वाडेलूप','🇲🇶 मार्टिनिक','🇷🇪 रीयूनियन','🇬🇫 फ्रेंच गुयाना','🇵🇫 पोलिनेशिया','अन्य'],
+  zh:['未指定','🇫🇷 法国','🇧🇪 比利时','🇨🇭 瑞士','🇨🇦 加拿大','🇲🇦 摩洛哥','🇩🇿 阿尔及利亚','🇹🇳 突尼斯','🇸🇳 塞内加尔','🇨🇮 科特迪瓦','🇨🇲 喀麦隆','🇨🇬 刚果','🇧🇯 贝宁','🇹🇬 多哥','🇧🇫 布基纳法索','🇲🇱 马里','🇬🇳 几内亚','🇲🇬 马达加斯加','🇷🇼 卢旺达','🇧🇮 布隆迪','🇬🇦 加蓬','🇳🇪 尼日尔','🇹🇩 乍得','🇲🇷 毛里塔尼亚','🇩🇯 吉布提','🇰🇲 科摩罗','🇨🇻 佛得角','🇸🇹 圣多美','🇭🇹 海地','🇬🇵 瓜德罗普岛','🇲🇶 马提尼克岛','🇷🇪 留尼旺岛','🇬🇫 法属圭亚那','🇵🇫 法属波利尼西亚','其他'],
+  pt:['Não especificado','🇫🇷 França','🇧🇪 Bélgica','🇨🇭 Suíça','🇨🇦 Canadá','🇲🇦 Marrocos','🇩🇿 Argélia','🇹🇳 Tunísia','🇸🇳 Senegal','🇨🇮 Costa do Marfim','🇨🇲 Camarões','🇨🇬 Congo','🇧🇯 Benim','🇹🇬 Togo','🇧🇫 Burkina Faso','🇲🇱 Mali','🇬🇳 Guiné','🇲🇬 Madagascar','🇷🇼 Ruanda','🇧🇮 Burundi','🇬🇦 Gabão','🇳🇪 Níger','🇹🇩 Chade','🇲🇷 Mauritânia','🇩🇯 Djibuti','🇰🇲 Comores','🇨🇻 Cabo Verde','🇸🇹 São Tomé','🇭🇹 Haiti','🇬🇵 Guadalupe','🇲🇶 Martinica','🇷🇪 Reunião','🇬🇫 Guiana Francesa','🇵🇫 Polinésia','Outro'],
 };
 var COUNTRIES_VALUES=['','fr','be','ch','ca','ma','dz','tn','sn','ci','cm','cg','bj','tg','bf','ml','gn','mg','rw','bi','ga','ne','td','mr','dj','km','cv','st','ht','gp','mq','re','gf','pf','other'];
 
-function buildCountrySelect(selId, currentVal){
+function _normStr(s){
+  return s.replace(/[\uD83C][\uDDE6-\uDDFF]/g,'').replace(/[\uD83C][\uDDE6-\uDDFF]/g,'')
+    .normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().trim();
+}
+function buildCountrySelect(selId,currentVal){
   var sel=document.getElementById(selId);
-  if(!sel||!sel.appendChild) return;
-  var countries=COUNTRIES[appLang]||COUNTRIES.fr;
-  sel.innerHTML='';
-  for(var ci=0;ci<countries.length;ci++){
-    var opt=document.createElement('option');
-    opt.value=COUNTRIES_VALUES[ci]||countries[ci];
-    opt.textContent=countries[ci];
-    if(opt.value===currentVal||countries[ci]===currentVal) opt.selected=true;
-    sel.appendChild(opt);
+  if(!sel) return;
+  var labels=COUNTRIES[appLang]||COUNTRIES.fr;
+  var first={label:labels[0],value:''};
+  var rest=[];
+  for(var i=1;i<labels.length;i++) rest.push({label:labels[i],value:COUNTRIES_VALUES[i]||labels[i]});
+  rest.sort(function(a,b){return _normStr(a.label).localeCompare(_normStr(b.label));});
+  var pairs=[first].concat(rest);
+  var wrap=sel.parentElement;
+  if(wrap&&!wrap.querySelector('.country-search')){
+    var si=document.createElement('input');
+    si.type='text';si.className='country-search';si.autocomplete='off';
+    si.placeholder=t('countrySearchPlaceholder')||'\uD83D\uDD0D Rechercher\u2026';
+    wrap.insertBefore(si,sel);
+    si.addEventListener('input',function(){
+      var q=_normStr(si.value);
+      var opts=sel.options;
+      for(var oi=0;oi<opts.length;oi++){
+        if(oi===0){opts[oi].style.display='';continue;}
+        opts[oi].style.display=(!q||_normStr(opts[oi].textContent).indexOf(q)!==-1)?'':'none';
+      }
+    });
   }
+  while(sel.firstChild) sel.removeChild(sel.firstChild);
+  pairs.forEach(function(p){
+    var opt=document.createElement('option');
+    opt.value=p.value;
+    opt.textContent=p.label;
+    if(p.value===currentVal||p.label===currentVal) opt.selected=true;
+    sel.appendChild(opt);
+  });
 }
 
 function buildMonthSelect(){
