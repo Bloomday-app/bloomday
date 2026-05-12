@@ -2467,7 +2467,7 @@ const I18N = {
   },
   hi:{
     appSlogan:'वह दिन जब आप खिलते हैं',
-    navHome:'होम',navMembers:'सदस्य',navAdd:'जोड़ें',navEvents:'त्योहार',navMore:'अधिक',navProfile:'प्रोयाइल',
+    navHome:'होम',navMembers:'सदस्य',navAdd:'जोड़ें',navEvents:'त्योहार',navMore:'अधिक',navProfile:'प्रोफ़ाइल',
     today:'आज',tomorrow:'कल',in7days:'इस सप्ताह',
     prepareNow:'जल्द आ रहा है',prepare:'तैयार करें →',
     noEventToday:'आज कोई जन्मदिन नहीं',noEventSub:'अगले जन्मदिन तैयार करें',

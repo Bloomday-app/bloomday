@@ -404,7 +404,7 @@ function updateNavAvatar(){
   var sp=document.getElementById('nb4-initials');
   if(!sp) return;
   var name=(profile&&profile.name)||'';
-  sp.textContent=name?name.trim()[0].toUpperCase():'\uD83C\uDF38';
+  sp.textContent=(name.trim()[0]||'').toUpperCase()||'\uD83C\uDF38';
 }
 
 function updateAllTexts(){
