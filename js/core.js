@@ -220,9 +220,9 @@ function renderAllPlans(mode){
     pro:{badge:'🏢 Business',badgeCls:'biz',pop:false,price:'19,99€',period:t('perMonth'),
       feats:[t('planFeat50Collab'),t('planFeatGroupUnlim'),t('planFeatMsgUnlim'),t('planFeatCSV'),t('planFeat5Admin')],
       nope:[],cta:t('planCTAtry'),ctaCls:'B'},
-    enterprise:{badge:'Enterprise',badgeCls:'biz',pop:false,price:'Sur devis',period:'',
+    enterprise:{badge:'Enterprise',badgeCls:'biz',pop:false,price:t('planPriceOnRequest'),period:'',
       feats:[t('planFeatUnlimCollab'),t('planFeatGroupUnlim'),t('planFeatMsgUnlim'),t('planFeatCSV')],
-      nope:[],cta:'Nous contacter',ctaCls:'B'}
+      nope:[],cta:t('planCTAcontact'),ctaCls:'B'}
   };
   var BBGC={pop:'linear-gradient(135deg,#D4A843,#FF8C7A)',biz:'#1A6FC4',fre:'#18A86B',p:'#7C6EE0'};
   var pKeys=['free','bloom','pro']; var bKeys=['pro','enterprise'];

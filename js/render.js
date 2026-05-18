@@ -470,6 +470,11 @@ if(!tbAcctBtn){
   if(typeof DTPL!=='undefined'){
     for(var di=0;di<DTPL.length;di++){if(dtplNames[di])DTPL[di].n=t(dtplNames[di]);}
   }
+  // 15b. MS milestones traduits
+  if(typeof MS!=='undefined'){
+    var msAges=[1,10,18,20,30,40,50,60,70,80,90,100];
+    for(var mi=0;mi<msAges.length;mi++){var mk='ms'+msAges[mi],mv=t(mk);if(mv!==mk)MS[msAges[mi]]=mv;}
+  }
   // 16. Options religion dans rMore
   var relSel=document.getElementById('prof-rel');
   if(relSel&&relSel.appendChild&&relSel.innerHTML!==undefined){

@@ -9,7 +9,14 @@ const FALLBACK={
     'Que cette célébration t\'apporte joie et sérénité. Profite pleinement de chaque instant ! 🌸✨',
   ],
 };
-function getFallback(type){const m=FALLBACK[type]||FALLBACK.birthday;return m[Math.floor(Math.random()*m.length)];}
+function getFallback(type){
+  if(typeof t==='function'){
+    var keys=type==='fete'?['fallbackFete1','fallbackFete2']:['fallbackBirthday1','fallbackBirthday2','fallbackBirthday3'];
+    var msgs=keys.map(function(k){var v=t(k);return v!==k?v:null;}).filter(Boolean);
+    if(msgs.length)return msgs[Math.floor(Math.random()*msgs.length)];
+  }
+  var m=FALLBACK[type]||FALLBACK.birthday;return m[Math.floor(Math.random()*m.length)];
+}
 
 const PLANS={
   free:{name:'Starter',mm:10,mg:1,msgs:5,gifts:false,cards:false,adm:0,amb:false,p:0},
