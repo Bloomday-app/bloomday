@@ -58,6 +58,10 @@ Key routing rules:
 - Ship/deploy/PR → invoke /ship or /land-and-deploy
 - Save progress → invoke /context-save
 - Resume context → invoke /context-restore
-- Audit traductions i18n → invoquer /i18n-check
-- Test QA des flows → invoquer /qa-bloomday
-- Déployer en production → invoquer /ship-bloomday
+
+## Commandes Bloomday
+
+Ces commandes sont disponibles dans .claude/commands/ (pas des skills — des commandes slash locales) :
+- Audit traductions i18n → utiliser `/i18n-check`
+- Test QA des flows → utiliser `/qa-bloomday`
+- Déployer en production → utiliser `/ship-bloomday`
