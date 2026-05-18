@@ -309,46 +309,28 @@ function rEvents(){
 // ══════════════════════════════════════════════════
 var EMAIL_TEMPLATES = {
   welcome: function(d){
+    var n=d.name.split(' ')[0];
     return {
-      subject: 'Bienvenue dans Bloomday, '+d.name.split(' ')[0]+' ! 🌸',
-      body: 'Bonjour '+d.name.split(' ')[0]+',\n\n'+
-        'Votre compte Bloomday est créé !\n'+
-        '• 7 jours d\'essai offerts sur le plan Bloom\n'+
-        '• Ajoutez vos premiers membres et générez votre premier message\n\n'+
-        'Bienvenue dans la communauté 🌸\nL\'équipe Bloomday\nmybloomday.app'
+      subject: t('emailWelcomeSubject').replace('%s',n),
+      body: t('emailWelcomeBody').replace('%s',n)
     };
   },
   subscription: function(d){
     return {
-      subject: 'Confirmation — Plan '+d.plan+' activé ✓',
-      body: 'Bonjour,\n\n'+
-        'Votre plan Bloomday '+d.plan+' est actif.\n'+
-        '• 7 jours d\'essai gratuits\n'+
-        '• Premier prélèvement dans 7 jours\n'+
-        '• Annulable à tout moment\n\n'+
-        'Merci de nous faire confiance 🌸\nmybloomday.app'
+      subject: t('emailSubConfirmSubject').replace('%s',d.plan),
+      body: t('emailSubConfirmBody').replace('%s',d.plan)
     };
   },
   renewal_reminder: function(d){
     return {
-      subject: 'Votre abonnement Bloomday expire dans 3 jours ⏳',
-      body: 'Bonjour,\n\n'+
-        'Votre abonnement Bloomday '+d.plan+' expire dans 3 jours.\n\n'+
-        'Continuez à célébrer vos proches sans interruption.\n'+
-        '→ Renouveler sur mybloomday.app\n\n'+
-        'Code fidélité -10% : MERCI10\n\nL\'équipe Bloomday'
+      subject: t('emailRenewalSubject'),
+      body: t('emailRenewalBody').replace('%s',d.plan)
     };
   },
   anniversary: function(d){
     return {
-      subject: 'Ça fait 1 an ensemble 🎉',
-      body: 'Bonjour '+d.name+',\n\n'+
-        'Aujourd\'hui, ça fait exactement 1 an que vous utilisez Bloomday !\n\n'+
-        'En un an avec vous :\n'+
-        '• Nombreux anniversaires célébrés\n'+
-        '• Des messages qui ont touché des coeurs\n\n'+
-        'Merci d\'être là. Pour vous : -20% sur le plan supérieur avec le code BLOOM1AN.\n\n'+
-        'L\'équipe Bloomday 🌸'
+      subject: t('emailAnnivSubject'),
+      body: t('emailAnnivBody').replace('%s',d.name)
     };
   }
 };
@@ -729,8 +711,8 @@ async function genGift(id,elId){
 }
 
 function openFlorist(elId,name){
-  var q='livraison fleurs anniversaire '+name;
-  window.open('https://www.google.fr/search?q='+encodeURIComponent(q),'_blank');
+  var q=t('floristQuery')+' '+name;
+  window.open('https://www.google.com/search?q='+encodeURIComponent(q),'_blank');
 }
 
 window.__giftData={};
