@@ -53,7 +53,7 @@ button{cursor:pointer;font-family:'DM Sans',sans-serif}
   .desktop-sidebar,.desktop-right-panel{display:flex}
   #land .wrap{max-width:100%;border-radius:0;box-shadow:none}
   #land .hero{padding:64px 48px 52px}
-  #land .hi2 .bl{justify-content:space-between!important;padding:0 24px}
+  #land .hi2 .bl{display:flex;width:100%;justify-content:space-between!important;padding:0 24px}
   #land .hero h1{font-size:42px;max-width:600px;margin:24px auto 16px}
   .pricing-mobile{display:none}
   .pricing-desktop{display:block}
