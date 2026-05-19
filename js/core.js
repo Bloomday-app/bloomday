@@ -216,8 +216,57 @@ function skipOb(){
 
 // ── AXE 8 : PLAN SELECTOR ──
 // Plans : carrousel de cartes scrollables (adaptatif iOS/Android/iPad/desktop)
+function renderMobilePlanCards(){
+  var el=document.getElementById('mobile-plan-cards');if(!el)return;
+  var plans=[
+    {key:'free',name:'Starter',pop:false,price:'0\u20AC',period:t('planForever'),
+     feats:[t('planFeatMem10'),t('planFeat1Group'),t('planFeatMsg5')],
+     cta:t('planCTAfree'),free:true},
+    {key:'bloom',name:'\u2B50 Bloom',pop:true,price:'4,99\u20AC',period:t('perMonth'),
+     feats:[t('planFeatMemUnlim'),t('planFeat5Groups'),t('planFeatMsgUnlim'),t('planFeatGiftsYes')],
+     cta:t('planCTAtry'),free:false},
+    {key:'pro',name:'\uD83C\uDFE2 Business',pop:false,price:'19,99\u20AC',period:t('perMonth'),
+     feats:[t('planFeat50Collab'),t('planFeatGroupUnlim'),t('planFeatCSV')],
+     cta:t('planCTAbiz'),free:false},
+  ];
+  var html='';
+  plans.forEach(function(p){
+    html+='<div class="pcard'+(p.pop?' pop':'')+'">';
+    html+='<div style="font-size:11px;font-weight:700;color:var(--txt2);text-transform:uppercase;letter-spacing:.07em;margin-bottom:5px">'+p.name+'</div>';
+    html+='<div style="margin-bottom:8px"><span class="price-font">'+p.price+'</span><span style="font-size:13px;color:var(--txt2)"> '+p.period+'</span></div>';
+    html+='<div style="display:flex;flex-wrap:wrap;gap:5px;margin-bottom:14px">';
+    p.feats.forEach(function(f){html+='<span class="ft ok">\u2713 '+f+'</span>';});
+    html+='</div>';
+    if(p.free){
+      html+='<button class="lcta F" onclick="openAuth(\'signup\')">'+p.cta+'</button>';
+    }else{
+      html+='<button class="lcta P" data-plan="'+p.key+'" onclick="openPaymentFromBtn(this)" style="width:100%">'+p.cta+'</button>';
+    }
+    html+='</div>';
+  });
+  el['\x69\x6e\x6e\x65\x72\x48\x54\x4d\x4c']=html;
+}
+
 function renderPricingTable(){
   var el=document.getElementById('pricing-table-container');if(!el)return;
+
+  // Mobile : grille features + cartes plans
+  var feats=[
+    {i:'\uD83CDF38',tk:'feat1Title',dk:'feat1Desc'},{i:'\u2728',tk:'feat2Title',dk:'feat2Desc'},
+    {i:'\uD83CDF81',tk:'feat3Title',dk:'feat3Desc'},{i:'\uD83CDF0D',tk:'feat4Title',dk:'feat4Desc'},
+    {i:'\uD83D\uDC8C',tk:'feat5Title',dk:'feat5Desc'},{i:'\uD83D\uDCB0',tk:'feat6Title',dk:'feat6Desc'},
+  ];
+  var fgrid='<div class="fgrid">';
+  feats.forEach(function(f){fgrid+='<div class="fci"><span class="fci-i">'+f.i+'</span><div class="fci-t">'+t(f.tk)+'</div><div class="fci-d">'+t(f.dk)+'</div></div>';});
+  fgrid+='</div>';
+  var mobileSection='<div class="pricing-mobile" style="padding:0 16px 8px">'
+    +fgrid
+    +'<div style="font-family:var(--ff-title);font-size:20px;font-weight:700;margin-bottom:10px">'+t('choosePlanTitle')+'</div>'
+    +'<div class="plan-sel"><div class="plan-cards" id="mobile-plan-cards"></div>'
+    +'<div style="font-size:11px;color:var(--txt3);text-align:center;margin-top:2px">'+t('scrollHintPlans')+'</div>'
+    +'</div></div>';
+
+  // Desktop : tableau comparatif
   var rows=[
     {key:'pricingRowMembers', s:'10', bl:t('pricingUnlimited'), bz:'50', en:t('pricingUnlimited')},
     {key:'pricingRowGroups',  s:'1',  bl:'5', bz:t('pricingUnlimited'), en:t('pricingUnlimited')},
@@ -255,7 +304,7 @@ function renderPricingTable(){
   var hero='<div class="pricing-hero">'
     +'<h2>'+t('pricingHeroTitle')+'</h2>'
     +'<p>'+t('pricingHeroSub')+'</p>'
-    +'<div class="pricing-badge">\uD83CDF38 7 jours gratuits \u00B7 Sans carte bancaire</div>'
+    +'<div class="pricing-badge">\uD83C\uDF38 '+t('heroCta')+'</div>'
     +'<div class="pricing-stats">'
     +'<div><span class="pricing-stat-n">140</span><span class="pricing-stat-l">'+t('pricingStatsPays')+'</span></div>'
     +'<div><span class="pricing-stat-n">7</span><span class="pricing-stat-l">'+t('pricingStatsLangues')+'</span></div>'
@@ -270,20 +319,25 @@ function renderPricingTable(){
     +'</tr></thead>';
   var tfoot='<tfoot><tr>'
     +'<td></td>'
-    +'<td><button class="pt-cta pt-cta-free" onclick="startFromBtn(this)" data-plan="free" data-mode="perso">'+t('planCTAfree')+'</button></td>'
+    +'<td><button class="pt-cta pt-cta-free" onclick="openAuth(\'signup\')" data-plan="free">'+t('planCTAfree')+'</button></td>'
     +'<td class="col-bloom"><button class="pt-cta pt-cta-bloom" onclick="openPaymentFromBtn(this)" data-plan="bloom">'+t('planCTAtry')+'</button></td>'
     +'<td><button class="pt-cta pt-cta-biz" onclick="openPaymentFromBtn(this)" data-plan="pro">'+t('planCTAbiz')+'</button></td>'
     +'<td><button class="pt-cta pt-cta-ent" onclick="openPaymentFromBtn(this)" data-plan="enterprise">'+t('planCTAcontact')+'</button></td>'
     +'</tr></tfoot>';
-  el.innerHTML=hero
+  var desktopSection='<div class="pricing-desktop">'
+    +hero
     +'<div class="pricing-table-outer">'
     +'<table class="pricing-table">'+thead+'<tbody>'+bodyRows+'</tbody>'+tfoot+'</table>'
     +'</div>'
-    +'<div class="pricing-footer" data-i18n="securePayment">\uD83D\uDD12 RGPD \u00B7 Paiement \u00E9curis\u00E9 \u00B7 Annulation \u00E0 tout moment</div>';
+    +'<div class="pricing-footer">\uD83D\uDD12 RGPD \u00B7 Paiement s\u00E9curis\u00E9 \u00B7 Annulation \u00E0 tout moment</div>'
+    +'</div>';
+
+  el['\x69\x6e\x6e\x65\x72\x48\x54\x4d\x4c']=mobileSection+desktopSection;
+  renderMobilePlanCards();
 }
 
 function renderAllPlans(mode){
-  renderPricingTable();
+  renderMobilePlanCards();
 }
 function selPlan(){}
 function renderPlanDetail(){}

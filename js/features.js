@@ -315,7 +315,8 @@ function handleHash(){
 
 function startFromBtn(btn){
   var m=(btn&&btn.getAttribute('data-mode'))||'perso';
-  startApp(m,'free');
+  if(currentUser){startApp(m,currentUser.plan||'free');}
+  else{openAuth('signup');}
 }
 
 document.addEventListener('DOMContentLoaded',function(){

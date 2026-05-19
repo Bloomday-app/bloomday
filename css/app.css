@@ -49,7 +49,12 @@ button{cursor:pointer;font-family:'DM Sans',sans-serif}
   #app .scroll{flex:1;padding:16px 32px 24px;overflow-y:auto;height:100vh}
   .nav{display:none}
   .desktop-sidebar,.desktop-right-panel{display:flex}
-  #land .wrap{max-width:980px;border-radius:0;box-shadow:none;margin:0 auto}
+  #land .wrap{max-width:100%;border-radius:0;box-shadow:none}
+  #land .hero{padding:64px 48px 52px}
+  #land .hi2 .bl{justify-content:space-between!important;padding:0 24px}
+  #land .hero h1{font-size:42px;max-width:600px;margin:24px auto 16px}
+  .pricing-mobile{display:none}
+  .pricing-desktop{display:block}
 }
 
 /* ── SVG LOGO ── */
@@ -427,6 +432,8 @@ details[open] summary::after{content:" ▾"}
 .gc.add{color:var(--b3);border-color:var(--b3l);background:var(--b3l);font-size:16px;padding:4px 14px;line-height:1}
 
 /* ── PRICING TABLE ── */
+.pricing-mobile{display:block}
+.pricing-desktop{display:none}
 .pricing-wrap{padding:24px 16px 48px;max-width:960px;margin:0 auto}
 .pricing-hero{text-align:center;padding:40px 16px 28px}
 .pricing-hero h2{font-family:'Playfair Display',serif;font-size:28px;font-weight:900;line-height:1.2;color:var(--txt);margin-bottom:8px}
