@@ -40,6 +40,13 @@ function startApp(m,p){
     var app=document.getElementById('app');if(app)app.classList.add('on');
     load().then(function(){checkPushNeeded();});
   }
+  (function(){
+    var av=document.getElementById('dsb-avatar');
+    if(!av)return;
+    var u=null;try{u=JSON.parse(localStorage.getItem('bdg16_user'));}catch(e){}
+    if(u&&u.photo){av.innerHTML='<img src="'+u.photo+'" alt="">';}
+    else if(u&&u.name){av.textContent=(u.name.split(' ').map(function(w){return w[0]||'';}).join('').slice(0,2)||'🌸').toUpperCase();}
+  })();
 }
 
 // ── AXE 1 : ONBOARDING MAGIQUE ──
@@ -209,45 +216,75 @@ function skipOb(){
 
 // ── AXE 8 : PLAN SELECTOR ──
 // Plans : carrousel de cartes scrollables (adaptatif iOS/Android/iPad/desktop)
-function renderAllPlans(mode){
-  var PD={
-    free:{badge:t('free'),badgeCls:'fre',pop:false,price:'0€',period:t('planForever'),
-      feats:[t('planFeatMem10'),t('planFeat1Group'),t('planFeatMsg5'),t('planFeatGiftsNo'),t('planFeatCardsNo')],
-      nope:[],cta:t('planCTAfree'),ctaCls:'F'},
-    bloom:{badge:t('planBadgeBloom'),badgeCls:'pop',pop:true,price:'4,99€',period:t('perMonth'),
-      feats:[t('planFeatMemUnlim'),t('planFeat5Groups'),t('planFeatMsgUnlim'),t('planFeatGiftsYes'),t('planFeatCardsYes')],
-      nope:[],cta:t('planCTAtry'),ctaCls:'P'},
-    pro:{badge:'🏢 Business',badgeCls:'biz',pop:false,price:'19,99€',period:t('perMonth'),
-      feats:[t('planFeat50Collab'),t('planFeatGroupUnlim'),t('planFeatMsgUnlim'),t('planFeatCSV'),t('planFeat5Admin')],
-      nope:[],cta:t('planCTAtry'),ctaCls:'B'},
-    enterprise:{badge:'Enterprise',badgeCls:'biz',pop:false,price:t('planPriceOnRequest'),period:'',
-      feats:[t('planFeatUnlimCollab'),t('planFeatGroupUnlim'),t('planFeatMsgUnlim'),t('planFeatCSV')],
-      nope:[],cta:t('planCTAcontact'),ctaCls:'B'}
-  };
-  var BBGC={pop:'linear-gradient(135deg,#D4A843,#FF8C7A)',biz:'#1A6FC4',fre:'#18A86B',p:'#7C6EE0'};
-  var pKeys=['free','bloom','pro']; var bKeys=['pro','enterprise'];
-  var keys=mode==='biz'?bKeys:pKeys;
-  var cId=mode==='biz'?'plan-cards-biz':'plan-cards-perso';
-  var el=document.getElementById(cId); if(!el) return;
-  var html='';
-  keys.forEach(function(k){
-    var pd=PD[k]; if(!pd) return;
-    var pname=PLANS[k]?PLANS[k].name:k;
-    var bc=BBGC[pd.badgeCls]||BBGC.p; var mtop=pd.badge?'18px':'4px';
-    html+='<div class="pcard'+(pd.pop?' pop':'')+'">';
-    if(pd.badge) html+='<div class="pbdg2" style="background:'+bc+';color:#fff;position:absolute;top:-1px;right:14px;font-size:10px;font-weight:700;padding:4px 11px;border-radius:0 0 9px 9px">'+pd.badge+'</div>';
-    html+='<div style="font-size:11px;font-weight:700;color:var(--txt2);text-transform:uppercase;letter-spacing:.07em;margin-top:'+mtop+';margin-bottom:5px">'+pname+'</div>';
-    html+='<div style="margin-bottom:8px"><span class="price-font">'+pd.price+'</span><span style="font-size:13px;color:var(--txt2)"> '+pd.period+'</span></div>';
-    html+='<div style="display:flex;flex-wrap:wrap;gap:5px;margin-bottom:14px">';
-    for(var fi=0;fi<pd.feats.length;fi++) html+='<span class="ft ok">✓ '+pd.feats[fi]+'</span>';
-    html+='</div>';
-    if(k==='free') html+='<button class="lcta '+pd.ctaCls+'" data-mode="'+mode+'" data-plan="'+k+'" onclick="startFromBtn(this)">'+pd.cta+'</button>';
-    else html+='<button class="lcta P" data-plan="'+k+'" onclick="openPaymentFromBtn(this)" style="width:100%">'+t('planCTAtry')+'</button>';
-    html+='</div>';
+function renderPricingTable(){
+  var el=document.getElementById('pricing-table-container');if(!el)return;
+  var rows=[
+    {key:'pricingRowMembers', s:'10', bl:t('pricingUnlimited'), bz:'50', en:t('pricingUnlimited')},
+    {key:'pricingRowGroups',  s:'1',  bl:'5', bz:t('pricingUnlimited'), en:t('pricingUnlimited')},
+    {key:'pricingRowMessages',s:'5',  bl:t('pricingUnlimited'), bz:t('pricingUnlimited'), en:t('pricingUnlimited')},
+    {key:'pricingRowGifts',   s:'no', bl:'yes', bz:'yes', en:'yes'},
+    {key:'pricingRowCards',   s:'no', bl:'yes', bz:'yes', en:'yes'},
+    {key:'pricingRowAdmins',  s:'no', bl:'2',   bz:'5',   en:t('pricingUnlimited')},
+    {key:'pricingRowCSV',     s:'no', bl:'no',  bz:'yes', en:'yes'},
+    {key:'pricingRowWhiteLabel',s:'no',bl:'no', bz:'no',  en:'yes'},
+    {key:'pricingRowAds',     s:'ads',bl:'noads',bz:'noads',en:'noads'},
+  ];
+  function cellVal(v){
+    if(v==='yes') return '<span class="pt-yes">\u2713</span>';
+    if(v==='no')  return '<span class="pt-no">\u2717</span>';
+    if(v==='ads') return '<span class="pt-ads-yes">'+t('pricingAdsYes')+'</span>';
+    if(v==='noads') return '<span class="pt-yes">'+t('pricingAdsNo')+'</span>';
+    return '<span class="pt-val">'+v+'</span>';
+  }
+  function cellBloom(v){
+    if(v==='yes') return '<span class="pt-yes">\u2713</span>';
+    if(v==='no')  return '<span class="pt-no">\u2717</span>';
+    if(v==='noads') return '<span class="pt-yes">'+t('pricingAdsNo')+'</span>';
+    return '<span class="pt-val-bloom">'+v+'</span>';
+  }
+  var bodyRows='';
+  rows.forEach(function(r){
+    bodyRows+='<tr>'
+      +'<td>'+t(r.key)+'</td>'
+      +'<td>'+cellVal(r.s)+'</td>'
+      +'<td class="col-bloom">'+cellBloom(r.bl)+'</td>'
+      +'<td>'+cellVal(r.bz)+'</td>'
+      +'<td>'+cellVal(r.en)+'</td>'
+      +'</tr>';
   });
-  el.innerHTML=html;
+  var hero='<div class="pricing-hero">'
+    +'<h2>'+t('pricingHeroTitle')+'</h2>'
+    +'<p>'+t('pricingHeroSub')+'</p>'
+    +'<div class="pricing-badge">\uD83CDF38 7 jours gratuits \u00B7 Sans carte bancaire</div>'
+    +'<div class="pricing-stats">'
+    +'<div><span class="pricing-stat-n">140</span><span class="pricing-stat-l">'+t('pricingStatsPays')+'</span></div>'
+    +'<div><span class="pricing-stat-n">7</span><span class="pricing-stat-l">'+t('pricingStatsLangues')+'</span></div>'
+    +'<div><span class="pricing-stat-n">IA</span><span class="pricing-stat-l">'+t('pricingStatsAI')+'</span></div>'
+    +'</div></div>';
+  var thead='<thead><tr>'
+    +'<th class="pricing-th-feat"></th>'
+    +'<th><span class="pt-badge">Starter</span><span class="pt-price">0\u20AC</span><span class="pt-period">'+t('planForever')+'</span></th>'
+    +'<th class="pricing-th-bloom"><span class="pt-badge">\u2B50 Bloom</span><span class="pt-price">4,99\u20AC</span><span class="pt-period">'+t('perMonth')+'</span></th>'
+    +'<th><span class="pt-badge">\uD83C\uDFE2 Business</span><span class="pt-price">19,99\u20AC</span><span class="pt-period">'+t('perMonth')+'</span></th>'
+    +'<th><span class="pt-badge">Enterprise</span><span class="pt-price">'+t('planPriceOnRequest')+'</span><span class="pt-period"></span></th>'
+    +'</tr></thead>';
+  var tfoot='<tfoot><tr>'
+    +'<td></td>'
+    +'<td><button class="pt-cta pt-cta-free" onclick="startFromBtn(this)" data-plan="free" data-mode="perso">'+t('planCTAfree')+'</button></td>'
+    +'<td class="col-bloom"><button class="pt-cta pt-cta-bloom" onclick="openPaymentFromBtn(this)" data-plan="bloom">'+t('planCTAtry')+'</button></td>'
+    +'<td><button class="pt-cta pt-cta-biz" onclick="openPaymentFromBtn(this)" data-plan="pro">'+t('planCTAbiz')+'</button></td>'
+    +'<td><button class="pt-cta pt-cta-ent" onclick="openPaymentFromBtn(this)" data-plan="enterprise">'+t('planCTAcontact')+'</button></td>'
+    +'</tr></tfoot>';
+  el.innerHTML=hero
+    +'<div class="pricing-table-outer">'
+    +'<table class="pricing-table">'+thead+'<tbody>'+bodyRows+'</tbody>'+tfoot+'</table>'
+    +'</div>'
+    +'<div class="pricing-footer" data-i18n="securePayment">\uD83D\uDD12 RGPD \u00B7 Paiement \u00E9curis\u00E9 \u00B7 Annulation \u00E0 tout moment</div>';
 }
-// Rétrocompatibilité (appelée nulle part maintenant)
+
+function renderAllPlans(mode){
+  renderPricingTable();
+}
 function selPlan(){}
 function renderPlanDetail(){}
 
@@ -402,12 +439,14 @@ function changePlan(p){
 function showSec(name,idx){
   ['home','members','add','events','cal','more'].forEach(s=>{const e=document.getElementById('s-'+s);if(e)e.style.display=s===name?'block':'none';});
   document.querySelectorAll('.nb').forEach((b,i)=>{b.classList.toggle('on',i===idx);});
+  for(var di=0;di<5;di++){var sb=document.getElementById('dsb'+di);if(sb)sb.classList.toggle('on',di===idx);}
   const ms=document.getElementById('mscroll');if(ms)ms.scrollTo(0,0);
   if(name==='home')rHome();
   if(name==='events')rEvents();
   if(name==='cal')rCal();
   if(name==='more')rMore();
   if(name==='members')rMembers();
+  if(typeof renderDesktopRightPanel==='function')renderDesktopRightPanel(name);
 }
 
 // ═══════════════════════════════════
