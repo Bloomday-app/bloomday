@@ -329,8 +329,7 @@ document.addEventListener('DOMContentLoaded',function(){
   window.addEventListener('hashchange',handleHash);
   document.getElementById('s-home').style.display='block';
   // Rendre tous les plans en cartes scrollables (adaptatif iOS/Android/iPad/desktop)
-  renderAllPlans('perso');
-  renderAllPlans('biz');
+  renderPricingTable();
 });
 
 // ── TOAST ──
@@ -424,9 +423,5 @@ function doPayment(){
 // ── SELMODE ──
 function selMode(m){
   mode=m;
-  var lbp=document.getElementById('lbp');if(lbp)lbp.classList.toggle('on',m==='perso');
-  var lbb=document.getElementById('lbb');if(lbb)lbb.classList.toggle('on',m==='biz');
-  var lperso=document.getElementById('lperso');if(lperso)lperso.style.display=m==='perso'?'block':'none';
-  var lbiz=document.getElementById('lbiz');if(lbiz)lbiz.style.display=m==='biz'?'block':'none';
-  renderAllPlans(m);
+  renderPricingTable();
 }

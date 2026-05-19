@@ -432,8 +432,7 @@ function updateAllTexts(){
   var aiLangMap={fr:'français',en:'English',es:'español',ar:'arabe',hi:'hindi',zh:'chinois',pt:'portugais'};
   window.__aiLang=aiLangMap[appLang]||'français';
   // 10. Forfaits re-render
-  if(document.getElementById('plan-cards-perso')) renderAllPlans('perso');
-  if(document.getElementById('plan-cards-biz')) renderAllPlans('biz');
+  if(document.getElementById('pricing-table-container')) renderPricingTable();
   // 11. Sélecteur mois
   buildMonthSelect();
   // 12b. Sélecteurs pays
@@ -884,4 +883,70 @@ function copyRefLink(url){
 function shareRefLink(url){
   if(!navigator.share)return;
   navigator.share({title:'Bloomday',text:t('refSub'),url:url}).catch(function(){});
+}
+function renderDesktopRightPanel(section){
+  var el=document.getElementById('desktop-right-panel');
+  if(!el)return;
+  var today=new Date();
+  var mm=mems();
+  var html='';
+
+  if(section==='home'||section==='cal'){
+    var upcoming=mm.map(function(p){
+      var yr=today.getFullYear();
+      var d=new Date(yr,p.month-1,p.day);
+      if(d<today)d=new Date(yr+1,p.month-1,p.day);
+      var diff=Math.round((d-today)/(864e5));
+      return{p:p,diff:diff};
+    }).filter(function(x){return x.diff<=60;})
+      .sort(function(a,b){return a.diff-b.diff;})
+      .slice(0,7);
+    html+='<div class="drp-title">🎂 À venir</div>';
+    if(!upcoming.length){
+      html+='<p style="font-size:13px;color:var(--txt2);padding:12px 0">Aucune célébration dans les 60 prochains jours.</p>';
+    } else {
+      upcoming.forEach(function(x){
+        var ini=(x.p.name||'?').split(' ').map(function(w){return w[0]||'';}).join('').slice(0,2).toUpperCase();
+        var lbl=x.diff===0?'Aujourd\'hui 🎉':x.diff===1?'Demain':'Dans '+x.diff+' j.';
+        var av=x.p.photo?'<img src="'+x.p.photo+'" alt="">':ini;
+        html+='<div class="drp-item"><div class="drp-av">'+av+'</div>'
+          +'<div style="flex:1;min-width:0"><div class="drp-name">'+esc(x.p.name)+'</div><div class="drp-date">'+lbl+'</div></div></div>';
+      });
+    }
+
+  } else if(section==='members'){
+    var g=groups&&groups.find(function(x){return x.id===curG;});
+    var gname=g?(g.isDefault?t('myGroup'):g.name):'Groupe';
+    html+='<div class="drp-title">👥 '+esc(gname)+'</div>';
+    if(!mm.length){
+      html+='<p style="font-size:13px;color:var(--txt2);padding:12px 0">Aucun membre dans ce groupe.</p>';
+    } else {
+      mm.slice(0,8).forEach(function(p){
+        var ini=(p.name||'?').split(' ').map(function(w){return w[0]||'';}).join('').slice(0,2).toUpperCase();
+        var d=new Date(today.getFullYear(),p.month-1,p.day);
+        if(d<today)d=new Date(today.getFullYear()+1,p.month-1,p.day);
+        var diff=Math.round((d-today)/(864e5));
+        var lbl=diff===0?'Aujourd\'hui !':diff===1?'Demain':'Dans '+diff+' j.';
+        var av=p.photo?'<img src="'+p.photo+'" alt="">':ini;
+        html+='<div class="drp-item"><div class="drp-av">'+av+'</div>'
+          +'<div style="flex:1;min-width:0"><div class="drp-name">'+esc(p.name)+'</div><div class="drp-date">'+lbl+'</div></div></div>';
+      });
+    }
+
+  } else if(section==='more'){
+    var pname=PLANS[plan]?PLANS[plan].name:'Starter';
+    html+='<div class="drp-title">⚙️ Mon compte</div>'
+      +'<div class="drp-shortcut"><span class="drp-sc-label">Forfait</span><span class="drp-sc-val">'+esc(pname)+'</span></div>'
+      +'<div class="drp-shortcut"><span class="drp-sc-label">Membres</span><span class="drp-sc-val">'+mm.length+'/'+PL().mm+'</span></div>'
+      +'<div style="margin-top:16px;display:flex;flex-direction:column;gap:8px">'
+      +'<button class="drp-sc-btn" style="width:100%;padding:10px" onclick="goLand()">✨ Changer de forfait</button>'
+      +'<button class="drp-sc-btn" style="width:100%;padding:10px;background:var(--b2l);color:var(--b2d)" onclick="doLogoutSupabase()">Déconnexion</button>'
+      +'</div>';
+
+  } else {
+    html+='<div class="drp-title">Bloomday 🌸</div>'
+      +'<p style="font-size:13px;color:var(--txt2);line-height:1.7;padding:8px 0">Gérez vos célébrations, ne ratez plus jamais un anniversaire.</p>';
+  }
+
+  el.innerHTML='<div style="animation:fi .2s ease">'+html+'</div>';
 }
