@@ -37,6 +37,8 @@ button{cursor:pointer;font-family:'DM Sans',sans-serif}
 ::-webkit-scrollbar-thumb{background:var(--brd2);border-radius:2px}
 
 /* ── RESPONSIVE LAYOUT (Axe 11) ── */
+.pricing-mobile{display:block}
+.pricing-desktop{display:none}
 .wrap{width:100%;max-width:440px;margin:0 auto;min-height:100vh;min-height:-webkit-fill-available;position:relative;box-sizing:border-box}
 @media(min-width:768px){
   .wrap{max-width:480px;box-shadow:0 0 60px rgba(45,27,20,.10)}
@@ -432,8 +434,6 @@ details[open] summary::after{content:" ▾"}
 .gc.add{color:var(--b3);border-color:var(--b3l);background:var(--b3l);font-size:16px;padding:4px 14px;line-height:1}
 
 /* ── PRICING TABLE ── */
-.pricing-mobile{display:block}
-.pricing-desktop{display:none}
 .pricing-wrap{padding:24px 16px 48px;max-width:960px;margin:0 auto}
 .pricing-hero{text-align:center;padding:40px 16px 28px}
 .pricing-hero h2{font-family:'Playfair Display',serif;font-size:28px;font-weight:900;line-height:1.2;color:var(--txt);margin-bottom:8px}
