@@ -43,8 +43,13 @@ button{cursor:pointer;font-family:'DM Sans',sans-serif}
   body{background:linear-gradient(145deg,#FFF8F0,#FFE8D0)}
 }
 @media(min-width:1024px){
-  body{display:flex;justify-content:center;align-items:flex-start;padding:48px 0;background:linear-gradient(145deg,#FFF8F0 0%,#FFECD6 50%,#FFD8B4 100%);min-height:100vh}
-  .wrap{max-width:430px;border-radius:32px;overflow:hidden;max-height:calc(100vh - 96px);overflow-y:auto;box-shadow:0 24px 80px rgba(45,27,20,.18),0 4px 24px rgba(45,27,20,.08)}
+  body{background:linear-gradient(145deg,#FFF8F0 0%,#FFECD6 50%,#FFD8B4 100%);min-height:100vh}
+  #app.scr.on{display:flex;flex-direction:row;min-height:100vh;width:100%;max-width:100%}
+  #app .wrap{flex:1;display:flex;flex-direction:row;max-width:100%;border-radius:0;overflow:visible;max-height:none;box-shadow:none;width:100%}
+  #app .scroll{flex:1;padding:16px 32px 24px;overflow-y:auto;height:100vh}
+  .nav{display:none}
+  .desktop-sidebar,.desktop-right-panel{display:flex}
+  #land .wrap{max-width:980px;border-radius:0;box-shadow:none;margin:0 auto}
 }
 
 /* ── SVG LOGO ── */
@@ -420,3 +425,81 @@ details[open] summary::after{content:" ▾"}
 .gc{flex-shrink:0;padding:7px 16px;border-radius:22px;border:1.5px solid var(--brd);background:var(--card);font-size:12px;color:var(--txt2);font-weight:600;white-space:nowrap;transition:all .18s;box-shadow:0 1px 4px rgba(45,27,20,.05)}
 .gc.on{background:var(--grad);color:#fff;border-color:transparent;box-shadow:0 3px 12px rgba(212,168,67,.30)}
 .gc.add{color:var(--b3);border-color:var(--b3l);background:var(--b3l);font-size:16px;padding:4px 14px;line-height:1}
+
+/* ── PRICING TABLE ── */
+.pricing-wrap{padding:24px 16px 48px;max-width:960px;margin:0 auto}
+.pricing-hero{text-align:center;padding:40px 16px 28px}
+.pricing-hero h2{font-family:'Playfair Display',serif;font-size:28px;font-weight:900;line-height:1.2;color:var(--txt);margin-bottom:8px}
+.pricing-hero p{font-size:14px;color:var(--txt2);max-width:440px;margin:0 auto 16px;line-height:1.7}
+.pricing-badge{display:inline-block;background:var(--b4l);color:var(--b4d);font-size:13px;font-weight:700;padding:7px 18px;border-radius:20px;border:1px solid var(--b4);margin-bottom:20px}
+.pricing-stats{display:flex;justify-content:center;gap:28px;flex-wrap:wrap}
+.pricing-stat-n{font-size:22px;font-weight:900;color:var(--b4);display:block}
+.pricing-stat-l{font-size:11px;color:var(--txt2);font-weight:600}
+.pricing-table-outer{overflow-x:auto;-webkit-overflow-scrolling:touch;border-radius:16px;box-shadow:0 4px 32px rgba(45,27,20,.08)}
+.pricing-table{width:100%;min-width:600px;border-collapse:separate;border-spacing:0;background:var(--card)}
+.pricing-table thead th{padding:18px 14px;font-size:12px;font-weight:700;text-align:center;background:var(--bg2);vertical-align:bottom}
+.pricing-th-feat{text-align:left!important;color:var(--txt2);font-size:11px;text-transform:uppercase;letter-spacing:.06em}
+.pricing-th-bloom{background:linear-gradient(160deg,#D4A843,#FF8C7A)!important;color:white;border-radius:12px 12px 0 0}
+.pt-badge{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;opacity:.75;display:block;margin-bottom:4px}
+.pt-price{font-size:26px;font-weight:900;color:var(--txt);display:block;line-height:1}
+.pricing-th-bloom .pt-price{color:white}
+.pt-period{font-size:12px;color:var(--txt2)}
+.pricing-th-bloom .pt-period{color:rgba(255,255,255,.75)}
+.pricing-table tbody tr{border-bottom:1px solid var(--brd)}
+.pricing-table tbody tr:last-child{border-bottom:none}
+.pricing-table tbody td{padding:12px 14px;font-size:13px;text-align:center;color:var(--txt)}
+.pricing-table tbody td:first-child{text-align:left;font-weight:600;color:var(--txt2)}
+.pricing-table tbody .col-bloom{background:#fffbf0}
+.pt-yes{color:#18A86B;font-weight:700;font-size:15px}
+.pt-no{color:var(--brd2);font-size:15px}
+.pt-val{font-weight:700;color:var(--txt)}
+.pt-val-bloom{font-weight:700;color:#c08830;background:#fff5d9;border-radius:5px;padding:1px 7px;display:inline-block}
+.pt-ads-yes{font-weight:700;color:var(--b2)}
+.pricing-table tfoot td{padding:16px 14px;background:var(--bg2)}
+.pricing-table tfoot .col-bloom{background:linear-gradient(160deg,#D4A843,#FF8C7A)}
+.pt-cta{display:block;width:100%;padding:11px 8px;border-radius:10px;border:none;font-size:13px;font-weight:700;cursor:pointer;text-align:center;transition:opacity .15s}
+.pt-cta:hover{opacity:.85}
+.pt-cta-free{background:var(--b3l);color:var(--b3d)}
+.pt-cta-bloom{background:white;color:#c08830}
+.pt-cta-biz{background:var(--bizl);color:var(--bizd)}
+.pt-cta-ent{background:rgba(45,27,20,.08);color:var(--txt)}
+.pricing-footer{text-align:center;font-size:12px;color:var(--txt2);padding:12px 0 32px}
+@media(max-width:767px){
+  .pricing-table-outer{overflow:visible;box-shadow:none}
+  .pricing-table,.pricing-table thead,.pricing-table tbody,.pricing-table tfoot,.pricing-table tr,.pricing-table td,.pricing-table th{display:block}
+  .pricing-table thead{display:none}
+  .pricing-table tbody tr{background:var(--card);border-radius:16px;border:1.5px solid var(--brd);margin-bottom:12px;padding:0;box-shadow:var(--sh)}
+  .pricing-table tbody tr.bloom-row{border-color:#D4A843;background:#fffbf0}
+  .pricing-table tbody td{padding:10px 16px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--brd)}
+  .pricing-table tbody td:first-child{font-size:12px;color:var(--txt2);background:var(--bg2);border-radius:14px 14px 0 0}
+  .pricing-table tfoot{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:4px}
+  .pricing-table tfoot td{border-radius:12px;background:var(--card);border:1.5px solid var(--brd)}
+  .pricing-table tfoot .col-bloom{border-color:#D4A843}
+}
+
+/* ── DESKTOP SIDEBAR ── */
+.desktop-sidebar{display:none;flex-direction:column;align-items:center;width:64px;flex-shrink:0;background:var(--txt);min-height:100vh;padding:12px 0;position:sticky;top:0;height:100vh;z-index:200}
+.dsb-logo{margin-bottom:20px;padding:8px}
+.dsb-logo-wrap{width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,var(--b4),#5B4FBB);display:flex;align-items:center;justify-content:center}
+.dsb-logo-wrap svg{fill:white;stroke:white}
+.dsb-nav{display:flex;flex-direction:column;gap:4px;flex:1;width:100%;padding:0 8px}
+.dsb-btn{width:100%;aspect-ratio:1;border:none;background:transparent;border-radius:10px;display:flex;align-items:center;justify-content:center;color:rgba(255,255,255,.35);cursor:pointer;transition:all .18s}
+.dsb-btn:hover{background:rgba(212,168,67,.12);color:rgba(255,255,255,.7)}
+.dsb-btn.on{background:var(--b1l);color:var(--b1)}
+.dsb-avatar{width:36px;height:36px;border-radius:50%;background:var(--grad);display:flex;align-items:center;justify-content:center;cursor:pointer;margin:8px auto 12px;overflow:hidden;font-size:13px;color:white;font-weight:800;border:2px solid rgba(255,255,255,.15)}
+.dsb-avatar img{width:100%;height:100%;object-fit:cover;border-radius:50%}
+
+/* ── DESKTOP RIGHT PANEL ── */
+.desktop-right-panel{display:none;flex-direction:column;width:280px;flex-shrink:0;background:var(--card);border-left:1px solid var(--brd);min-height:100vh;overflow-y:auto;padding:20px 16px;position:sticky;top:0;height:100vh}
+.drp-title{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--txt2);margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid var(--brd)}
+.drp-item{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--brd)}
+.drp-item:last-child{border-bottom:none}
+.drp-av{width:32px;height:32px;border-radius:50%;background:var(--grad);display:flex;align-items:center;justify-content:center;font-size:11px;color:white;font-weight:800;flex-shrink:0;overflow:hidden}
+.drp-av img{width:100%;height:100%;object-fit:cover;border-radius:50%}
+.drp-name{font-size:13px;font-weight:600;color:var(--txt);flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.drp-date{font-size:11px;color:var(--txt2)}
+.drp-shortcut{display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--brd);font-size:13px}
+.drp-shortcut:last-child{border-bottom:none}
+.drp-sc-label{color:var(--txt2);font-weight:600}
+.drp-sc-val{font-weight:700;color:var(--txt)}
+.drp-sc-btn{background:var(--b4l);color:var(--b4d);border:none;border-radius:6px;padding:4px 10px;font-size:11px;font-weight:700;cursor:pointer}
