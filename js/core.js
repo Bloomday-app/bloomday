@@ -252,8 +252,8 @@ function renderPricingTable(){
 
   // Mobile : grille features + cartes plans
   var feats=[
-    {i:'\uD83CDF38',tk:'feat1Title',dk:'feat1Desc'},{i:'\u2728',tk:'feat2Title',dk:'feat2Desc'},
-    {i:'\uD83CDF81',tk:'feat3Title',dk:'feat3Desc'},{i:'\uD83CDF0D',tk:'feat4Title',dk:'feat4Desc'},
+    {i:'\uD83C\uDF38',tk:'feat1Title',dk:'feat1Desc'},{i:'\u2728',tk:'feat2Title',dk:'feat2Desc'},
+    {i:'\uD83C\uDF81',tk:'feat3Title',dk:'feat3Desc'},{i:'\uD83C\uDF0D',tk:'feat4Title',dk:'feat4Desc'},
     {i:'\uD83D\uDC8C',tk:'feat5Title',dk:'feat5Desc'},{i:'\uD83D\uDCB0',tk:'feat6Title',dk:'feat6Desc'},
   ];
   var fgrid='<div class="fgrid">';
