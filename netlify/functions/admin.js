@@ -32,11 +32,16 @@ exports.handler = async (event) => {
   const { action } = body;
 
   if (action === 'stats') {
-    const { count: totalUsers } = await supabase.from('profiles').select('*', { count: 'exact', head: true });
-    const ago30 = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString();
-    const { count: activeUsers } = await supabase.from('profiles').select('*', { count: 'exact', head: true }).gte('updated_at', ago30);
-    const { count: premiumUsers } = await supabase.from('profiles').select('*', { count: 'exact', head: true }).not('plan', 'in', '("free","")');
-    return { statusCode: 200, headers: CORS, body: JSON.stringify({ totalUsers: totalUsers || 0, activeUsers: activeUsers || 0, premiumUsers: premiumUsers || 0 }) };
+    try {
+      const { count: totalUsers, error: e1 } = await supabase.from('profiles').select('*', { count: 'exact', head: true });
+      if (e1) return err(500, e1.message);
+      const ago30 = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString();
+      const { count: activeUsers, error: e2 } = await supabase.from('profiles').select('*', { count: 'exact', head: true }).gte('updated_at', ago30);
+      if (e2) return err(500, e2.message);
+      const { count: premiumUsers, error: e3 } = await supabase.from('profiles').select('*', { count: 'exact', head: true }).not('plan', 'in', '("free","")');
+      if (e3) return err(500, e3.message);
+      return { statusCode: 200, headers: CORS, body: JSON.stringify({ totalUsers: totalUsers || 0, activeUsers: activeUsers || 0, premiumUsers: premiumUsers || 0 }) };
+    } catch (e) { return err(500, 'Stats query failed'); }
   }
 
   if (action === 'users') {
@@ -51,9 +56,11 @@ exports.handler = async (event) => {
 
   if (action === 'user_detail') {
     const uid = body.uid;
-    if (!uid || typeof uid !== 'string') return err(400, 'Missing uid');
-    const { data: contacts } = await supabase.from('bdg16_members').select('name,day,month,year,type').eq('user_id', uid);
-    const { data: profile } = await supabase.from('profiles').select('email,plan,created_at').eq('id', uid).single();
+    if (!uid || typeof uid !== 'string' || uid.length > 36) return err(400, 'Missing uid');
+    const { data: contacts, error: ce } = await supabase.from('bdg16_members').select('name,day,month,year,type').eq('user_id', uid);
+    if (ce) return err(500, ce.message);
+    const { data: profile, error: pe } = await supabase.from('profiles').select('email,plan,created_at').eq('id', uid).single();
+    if (pe && pe.code !== 'PGRST116') return err(500, pe.message);
     return { statusCode: 200, headers: CORS, body: JSON.stringify({ profile: profile || {}, contacts: contacts || [] }) };
   }
 
