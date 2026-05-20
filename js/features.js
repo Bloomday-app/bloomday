@@ -472,6 +472,77 @@ function closeLegal(){
   document.body.style.overflow='';
 }
 
+// ── SUGGESTIONS FLEURS AFFILIÉES ──
+var FLOWER_SUGGESTIONS = {
+  birthday: [
+    { emoji: '🌹', name: 'Roses rouges', price: '~29€', url: '#' },
+    { emoji: '💐', name: 'Bouquet mixte printanier', price: '~35€', url: '#' },
+    { emoji: '🌻', name: 'Tournesols du jardin', price: '~24€', url: '#' }
+  ],
+  wedding: [
+    { emoji: '🌸', name: 'Pivoines roses', price: '~45€', url: '#' },
+    { emoji: '🤍', name: 'Bouquet blanc élégant', price: '~55€', url: '#' },
+    { emoji: '🪷', name: 'Orchidées de luxe', price: '~65€', url: '#' }
+  ],
+  default: [
+    { emoji: '💐', name: 'Bouquet de saison', price: '~30€', url: '#' },
+    { emoji: '🌿', name: 'Plante verte zen', price: '~25€', url: '#' },
+    { emoji: '🌷', name: 'Tulipes colorées', price: '~22€', url: '#' }
+  ]
+};
+
+function showFlowerIdeas(name, eventType) {
+  var m = document.getElementById('modal-flowers');
+  var list = document.getElementById('modal-flowers-list');
+  var title = document.getElementById('modal-flowers-title');
+  if (!m || !list) return;
+
+  if (title) title.textContent = t('flowerModalTitle') + (name ? ' — ' + name : '');
+
+  var suggestions = FLOWER_SUGGESTIONS[eventType] || FLOWER_SUGGESTIONS.default;
+  while (list.firstChild) list.removeChild(list.firstChild);
+  suggestions.forEach(function(f) {
+    var card = document.createElement('div');
+    card.className = 'flower-card';
+
+    var emojiEl = document.createElement('div');
+    emojiEl.className = 'flower-emoji';
+    emojiEl.textContent = f.emoji;
+
+    var info = document.createElement('div');
+    info.className = 'flower-info';
+    var nameEl = document.createElement('div');
+    nameEl.className = 'flower-name';
+    nameEl.textContent = f.name;
+    var priceEl = document.createElement('div');
+    priceEl.className = 'flower-price';
+    priceEl.textContent = f.price;
+    info.appendChild(nameEl);
+    info.appendChild(priceEl);
+
+    var link = document.createElement('a');
+    link.className = 'flower-link';
+    link.href = f.url;
+    link.target = '_blank';
+    link.rel = 'noopener noreferrer';
+    link.textContent = t('flowerSeeBtn');
+
+    card.appendChild(emojiEl);
+    card.appendChild(info);
+    card.appendChild(link);
+    list.appendChild(card);
+  });
+
+  m.style.display = 'flex';
+  document.body.style.overflow = 'hidden';
+}
+
+function closeFlowers() {
+  var m = document.getElementById('modal-flowers');
+  if (m) m.style.display = 'none';
+  document.body.style.overflow = '';
+}
+
 // ── CHATBOT BLOOM ──
 var _chatHistory = [];
 var _chatOpen = false;

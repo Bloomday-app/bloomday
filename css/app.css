@@ -575,3 +575,15 @@ details[open] summary::after{content:" ▾"}
 .chat-input-row{display:flex;gap:8px;padding:10px 12px;border-top:1px solid #f0f0f0;flex-shrink:0}
 .chat-input-row input{flex:1;border:1px solid #e8deff;border-radius:10px;padding:8px 12px;font-size:13px;outline:none}
 .chat-input-row button{background:linear-gradient(135deg,#5B2D8E,#9B4FC0);color:white;border:none;border-radius:10px;padding:8px 14px;font-size:13px;cursor:pointer;flex-shrink:0}
+
+/* ── MODAL FLEURS ── */
+#modal-flowers{position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:9000;display:flex;align-items:flex-end;justify-content:center}
+@media(min-width:768px){#modal-flowers{align-items:center}}
+#modal-flowers-inner{background:white;border-radius:20px 20px 0 0;width:100%;max-width:480px;padding:24px 20px 40px;position:relative;animation:su .3s ease;max-height:85vh;overflow-y:auto}
+@media(min-width:768px){#modal-flowers-inner{border-radius:20px;max-height:80vh}}
+.flower-card{display:flex;align-items:center;gap:14px;padding:12px 14px;border:1px solid #f0e8ff;border-radius:14px;margin-bottom:10px}
+.flower-emoji{font-size:36px;flex-shrink:0}
+.flower-info{flex:1}
+.flower-name{font-size:14px;font-weight:700;color:#2D1B14}
+.flower-price{font-size:12px;color:#8B6F60;margin-top:2px}
+.flower-link{background:linear-gradient(135deg,#D4A843,#FF8C7A);color:white;border:none;border-radius:10px;padding:8px 14px;font-size:12px;font-weight:600;cursor:pointer;text-decoration:none;white-space:nowrap;flex-shrink:0}

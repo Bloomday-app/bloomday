@@ -157,7 +157,7 @@ function rHome(){
       h+='<div style="font-size:14px;font-weight:700;color:var(--b1d)">'+tIco(p.type)+' '+esc(p.name)+'<span class="pbdg pbs">'+t('inDays')+' '+d+'j</span></div>';
       h+='<div style="font-size:12px;color:var(--b1d)">'+tLbl(p.type)+' · '+p.day+' '+MN[p.month-1]+(age?' — '+age+' '+t('yearsOld'):'')+'</div>';
       h+='</div></div>';
-      h+='<div id="up-'+p.id+'"><div class="brow" style="margin-top:8px"><button class="btn sm" onclick="genMsg('+p.id+',\'up-'+p.id+'\')">'+t('prepareBtn')+'</button></div></div>';
+      h+='<div id="up-'+p.id+'"><div class="brow" style="margin-top:8px"><button class="btn sm" onclick="genMsg('+p.id+',\'up-'+p.id+'\')">'+t('prepareBtn')+'</button><button class="btn sm O" style="margin-left:6px" onclick="showFlowerIdeas(\''+esc(p.name)+'\',\''+p.type+'\')">'+t('flowerIdeasBtn')+'</button></div></div>';
       h+='</div>';
     });
   }

@@ -685,6 +685,9 @@ const I18N = {
     chatQuotaVisitor:'Tu as utilisé tes 3 messages gratuits. Crée un compte pour continuer !',
     chatQuotaFree:'Limite de 10 messages atteinte ce mois-ci. Passe en Premium pour un accès illimité 🌸',
     chatError:'Désolé, une erreur s\'est produite. Réessaie dans un instant.',
+    flowerIdeasBtn:'Idées cadeaux', flowerModalTitle:'Idées cadeaux',
+    flowerModalSub:'Sélectionnez un bouquet à offrir', flowerSeeBtn:'Voir →',
+    flowerAffiliateNotice:'Liens partenaires — Bloomday peut percevoir une commission',
   },
   en:{
     appSlogan:'The day you blossom',
@@ -1370,6 +1373,9 @@ const I18N = {
     chatQuotaVisitor:'You\'ve used your 3 free messages. Create an account to continue!',
     chatQuotaFree:'10-message limit reached this month. Upgrade to Premium for unlimited access 🌸',
     chatError:'Sorry, an error occurred. Please try again.',
+    flowerIdeasBtn:'Gift ideas', flowerModalTitle:'Gift ideas',
+    flowerModalSub:'Select a bouquet to offer', flowerSeeBtn:'See →',
+    flowerAffiliateNotice:'Partner links — Bloomday may earn a commission',
   },
   es:{
     appSlogan:'El día en que floreces',
@@ -2045,6 +2051,9 @@ const I18N = {
     chatQuotaVisitor:'Has usado tus 3 mensajes gratuitos. ¡Crea una cuenta para continuar!',
     chatQuotaFree:'Límite de 10 mensajes alcanzado este mes. ¡Actualiza a Premium!',
     chatError:'Lo siento, ocurrió un error. Inténtalo de nuevo.',
+    flowerIdeasBtn:'Ideas de regalo', flowerModalTitle:'Ideas de regalo',
+    flowerModalSub:'Selecciona un ramo para regalar', flowerSeeBtn:'Ver →',
+    flowerAffiliateNotice:'Enlaces de socio — Bloomday puede recibir comisión',
   },
   ar:{
     appSlogan:'اليوم الذي تزهر فيه',
@@ -2720,6 +2729,9 @@ const I18N = {
     chatQuotaVisitor:'لقد استخدمت رسائلك المجانية الـ3. أنشئ حساباً للمتابعة!',
     chatQuotaFree:'تم الوصول إلى حد الـ10 رسائل هذا الشهر. انتقل إلى Premium!',
     chatError:'عذراً، حدث خطأ. أعد المحاولة.',
+    flowerIdeasBtn:'أفكار هدايا', flowerModalTitle:'أفكار هدايا',
+    flowerModalSub:'اختر باقة زهور للإهداء', flowerSeeBtn:'عرض ←',
+    flowerAffiliateNotice:'روابط شراكة — قد تحصل Bloomday على عمولة',
   },
   hi:{
     appSlogan:'वह दिन जब आप खिलते हैं',
@@ -3395,6 +3407,9 @@ const I18N = {
     chatQuotaVisitor:'आपने अपने 3 मुफ्त संदेश उपयोग किए। जारी रखने के लिए खाता बनाएं!',
     chatQuotaFree:'इस महीने 10 संदेशों की सीमा पार हो गई। Premium में अपग्रेड करें!',
     chatError:'क्षमा करें, त्रुटि हुई। पुनः प्रयास करें।',
+    flowerIdeasBtn:'उपहार विचार', flowerModalTitle:'उपहार विचार',
+    flowerModalSub:'भेंट करने के लिए एक गुलदस्ता चुनें', flowerSeeBtn:'देखें →',
+    flowerAffiliateNotice:'पार्टनर लिंक — Bloomday को कमीशन मिल सकती है',
   },
   zh:{
     appSlogan:'你绽放的那一天',
@@ -4070,6 +4085,9 @@ const I18N = {
     chatQuotaVisitor:'您已使用完3条免费消息。请创建帐户继续！',
     chatQuotaFree:'本月已达到10条消息限制。升级到Premium！',
     chatError:'抱歉，发生了错误。请重试。',
+    flowerIdeasBtn:'礼物创意', flowerModalTitle:'礼物创意',
+    flowerModalSub:'选择一束花作为礼物', flowerSeeBtn:'查看 →',
+    flowerAffiliateNotice:'合作伙伴链接 — Bloomday可能获得佣金',
   },
   pt:{
     appSlogan:'O dia em que você floresce',
@@ -4749,6 +4767,9 @@ const I18N = {
     chatQuotaVisitor:'Você usou suas 3 mensagens gratuitas. Crie uma conta para continuar!',
     chatQuotaFree:'Limite de 10 mensagens atingido este mês. Atualize para Premium!',
     chatError:'Desculpe, ocorreu um erro. Tente novamente.',
+    flowerIdeasBtn:'Ideias de presente', flowerModalTitle:'Ideias de presente',
+    flowerModalSub:'Selecione um buquê para oferecer', flowerSeeBtn:'Ver →',
+    flowerAffiliateNotice:'Links parceiros — Bloomday pode receber comissão',
   },
 };
 
