@@ -428,7 +428,7 @@ function selMode(m){
 }
 // ── FOOTER LEGAL ──
 // LEGAL_CONTENT is static developer-controlled HTML (no user input) - innerHTML is safe here
-var LEGAL_CONTENT = {
+const LEGAL_CONTENT = {
   faq: '<h2>FAQ</h2>'
     +'<h3>Comment ajouter un contact ?</h3><p>Depuis l\'onglet "Ajouter", renseignez le prénom, la date d\'anniversaire et la relation. Bloomday génère ensuite un message personnalisé.</p>'
     +'<h3>Bloomday envoie les messages lui-même ?</h3><p>Non. Bloomday génère le message, vous le copiez et l\'envoyez via WhatsApp, SMS ou email. Vous gardez le contrôle.</p>'
