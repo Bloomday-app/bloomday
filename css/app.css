@@ -530,7 +530,7 @@ details[open] summary::after{content:" ▾"}
 @media(min-width:768px){
   .hero-split{flex-direction:row;align-items:stretch;min-height:420px}
   .hero-text{flex:1;padding:48px 40px;justify-content:center}
-  .hero-text h1{font-size:40px}
+  .hero-text h1{max-width:none;margin:0;font-size:40px}
   .hero-visual{flex:1;min-height:420px}
   .hero-photo{height:100%}
   .hero-phone-mockup{bottom:24px;right:24px;width:220px;font-size:12px;padding:14px 16px}
