@@ -515,5 +515,26 @@
   <script src="js/features.js?v=20260504a"></script>
   <script src="js/render.js?v=20260505d"></script>
   <script src="js/core.js?v=20260504a"></script>
+
+<!-- ═══════ CHATBOT BLOOM ═══════ -->
+<button id="chat-fab" onclick="toggleChat()" aria-label="Chat Bloom">💬</button>
+<div id="chat-panel" style="display:none">
+  <div class="chat-header">
+    <div style="display:flex;align-items:center;gap:8px">
+      <div style="font-size:20px">🌸</div>
+      <div>
+        <div style="font-size:14px;font-weight:700;color:#2D1B14">Bloom</div>
+        <div style="font-size:11px;color:#8B6F60" data-i18n="chatSubtitle">Assistant Bloomday</div>
+      </div>
+    </div>
+    <button onclick="toggleChat()" style="background:none;border:none;font-size:20px;color:#888;cursor:pointer">✕</button>
+  </div>
+  <div id="chat-messages" class="chat-messages"></div>
+  <div id="chat-quota-bar" class="chat-quota-bar"></div>
+  <div class="chat-input-row">
+    <input type="text" id="chat-input" placeholder="Pose ta question…" data-i18n-placeholder="chatPlaceholder" onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendChat();}">
+    <button onclick="sendChat()" data-i18n="chatSend">Envoyer</button>
+  </div>
+</div>
 </body>
 </html>

@@ -471,3 +471,107 @@ function closeLegal(){
   if(m)m.style.display='none';
   document.body.style.overflow='';
 }
+
+// ── CHATBOT BLOOM ──
+var _chatHistory = [];
+var _chatOpen = false;
+var _chatInitialized = false;
+
+function toggleChat() {
+  _chatOpen = !_chatOpen;
+  var panel = document.getElementById('chat-panel');
+  if (!panel) return;
+  panel.style.display = _chatOpen ? 'flex' : 'none';
+  if (_chatOpen) {
+    if (!_chatInitialized) {
+      _chatInitialized = true;
+      var msgs = document.getElementById('chat-messages');
+      if (msgs) {
+        var welcome = document.createElement('div');
+        welcome.className = 'chat-bubble bot';
+        welcome.textContent = t('chatWelcome');
+        msgs.appendChild(welcome);
+      }
+    }
+    _updateChatQuotaBar();
+    var inp = document.getElementById('chat-input');
+    if (inp) inp.focus();
+  }
+}
+
+function _getChatQuota() {
+  if (!window.currentUser) {
+    var usedV = parseInt(localStorage.getItem('bloom_chat_session') || '0', 10);
+    return { used: usedV, max: 3, type: 'visitor' };
+  }
+  var monthKey = new Date().toISOString().slice(0, 7);
+  var storageKey = 'bloom_chat_' + window.currentUser.uid + '_' + monthKey;
+  var usedU = parseInt(localStorage.getItem(storageKey) || '0', 10);
+  var plan = (window.profile && window.profile.plan) || 'free';
+  var unlimited = ['premium', 'bloom', 'pro', 'enterprise'].indexOf(plan) >= 0;
+  return { used: usedU, max: unlimited ? Infinity : 10, type: 'user', storageKey: storageKey };
+}
+
+function _incrementChatQuota(quota) {
+  if (quota.type === 'visitor') {
+    localStorage.setItem('bloom_chat_session', String(quota.used + 1));
+  } else if (quota.storageKey) {
+    localStorage.setItem(quota.storageKey, String(quota.used + 1));
+  }
+}
+
+function _updateChatQuotaBar() {
+  var bar = document.getElementById('chat-quota-bar');
+  if (!bar) return;
+  var q = _getChatQuota();
+  bar.textContent = q.max === Infinity ? '' : (q.used + '/' + q.max + ' ' + t('chatMsgUsed'));
+}
+
+function _addBubble(text, role) {
+  var msgs = document.getElementById('chat-messages');
+  if (!msgs) return null;
+  var el = document.createElement('div');
+  el.className = 'chat-bubble ' + role;
+  el.textContent = text;
+  msgs.appendChild(el);
+  msgs.scrollTop = msgs.scrollHeight;
+  return el;
+}
+
+async function sendChat() {
+  var inp = document.getElementById('chat-input');
+  if (!inp) return;
+  var text = inp.value.trim();
+  if (!text) return;
+
+  var quota = _getChatQuota();
+  if (quota.used >= quota.max) {
+    _addBubble(quota.type === 'visitor' ? t('chatQuotaVisitor') : t('chatQuotaFree'), 'bot');
+    return;
+  }
+
+  inp.value = '';
+  _addBubble(text, 'user');
+  var typingEl = _addBubble('…', 'bot typing');
+
+  _chatHistory.push({ role: 'user', content: text });
+  if (_chatHistory.length > 20) _chatHistory = _chatHistory.slice(-20);
+
+  try {
+    var r = await fetch('/.netlify/functions/chat', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ messages: _chatHistory })
+    });
+    var d = await r.json();
+    var reply = d.reply || t('chatError');
+    _chatHistory.push({ role: 'assistant', content: reply });
+    if (typingEl && typingEl.parentNode) typingEl.parentNode.removeChild(typingEl);
+    _addBubble(reply, 'bot');
+    _incrementChatQuota(quota);
+    _updateChatQuotaBar();
+  } catch (e) {
+    if (typingEl && typingEl.parentNode) typingEl.parentNode.removeChild(typingEl);
+    _addBubble(t('chatError'), 'bot');
+  }
+}
