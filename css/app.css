@@ -535,3 +535,22 @@ details[open] summary::after{content:" ▾"}
   .hero-photo{height:100%}
   .hero-phone-mockup{bottom:24px;right:24px;width:220px;font-size:12px;padding:14px 16px}
 }
+
+/* ── FOOTER LÉGAL ── */
+#footer-legal{background:linear-gradient(135deg,#1A0533,#2D1B69);padding:24px 20px 32px;text-align:center}
+.footer-links{display:flex;flex-wrap:wrap;justify-content:center;gap:12px 24px;margin-bottom:12px}
+.footer-links span{color:rgba(255,255,255,.55);font-size:13px;cursor:pointer;text-decoration:underline;text-underline-offset:3px;transition:color .2s}
+.footer-links span:hover{color:rgba(255,255,255,.9)}
+.footer-copy{color:rgba(255,255,255,.25);font-size:11px}
+
+/* ── MODAL LÉGAL ── */
+#modal-legal{position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:9000;display:flex;align-items:flex-end;justify-content:center}
+@media(min-width:768px){#modal-legal{align-items:center}}
+#modal-legal-inner{background:white;border-radius:20px 20px 0 0;width:100%;max-width:640px;max-height:85vh;overflow-y:auto;padding:24px 20px 40px;position:relative;animation:slideUp .3s ease}
+@media(min-width:768px){#modal-legal-inner{border-radius:20px;max-height:80vh}}
+@keyframes slideUp{from{transform:translateY(100%)}to{transform:translateY(0)}}
+.modal-close-btn{position:sticky;top:0;float:right;background:none;border:none;font-size:20px;color:#888;cursor:pointer;line-height:1;padding:4px 8px;margin-bottom:8px}
+#modal-legal-content h2{font-family:var(--ff-title);font-size:22px;font-weight:800;color:#2D1B14;margin-bottom:16px}
+#modal-legal-content h3{font-size:15px;font-weight:700;color:#2D1B14;margin:16px 0 6px}
+#modal-legal-content p,#modal-legal-content li{font-size:13px;color:#555;line-height:1.7;margin-bottom:8px}
+#modal-legal-content ul{padding-left:18px}

@@ -426,3 +426,48 @@ function selMode(m){
   mode=m;
   renderPricingTable();
 }
+// ── FOOTER LEGAL ──
+// LEGAL_CONTENT is static developer-controlled HTML (no user input) - innerHTML is safe here
+var LEGAL_CONTENT = {
+  faq: '<h2>FAQ</h2>'
+    +'<h3>Comment ajouter un contact ?</h3><p>Depuis l\'onglet "Ajouter", renseignez le prénom, la date d\'anniversaire et la relation. Bloomday génère ensuite un message personnalisé.</p>'
+    +'<h3>Bloomday envoie les messages lui-même ?</h3><p>Non. Bloomday génère le message, vous le copiez et l\'envoyez via WhatsApp, SMS ou email. Vous gardez le contrôle.</p>'
+    +'<h3>Comment annuler mon abonnement ?</h3><p>Depuis votre profil → "Gérer mon abonnement". L\'annulation prend effet à la fin de la période en cours.</p>'
+    +'<h3>Mes données sont-elles sécurisées ?</h3><p>Oui. Vos données sont stockées sur Supabase (infrastructure européenne), chiffrées en transit et au repos.</p>',
+
+  cgu: '<h2>Conditions d\'utilisation</h2>'
+    +'<p>Dernière mise à jour : mai 2026</p>'
+    +'<h3>1. Objet</h3><p>Bloomday est une application de rappel d\'anniversaires et de génération de messages personnalisés. En utilisant Bloomday, vous acceptez les présentes conditions.</p>'
+    +'<h3>2. Compte utilisateur</h3><p>Vous êtes responsable de la confidentialité de vos identifiants.</p>'
+    +'<h3>3. Usage acceptable</h3><p>Bloomday est destiné à un usage personnel. L\'utilisation à des fins commerciales non autorisées ou de spam est interdite.</p>'
+    +'<h3>4. Propriété intellectuelle</h3><p>Les messages générés par l\'IA vous appartiennent une fois envoyés.</p>'
+    +'<h3>5. Modification des conditions</h3><p>Bloomday se réserve le droit de modifier ces conditions. Notification par email en cas de changement majeur.</p>',
+
+  rgpd: '<h2>Politique de confidentialité</h2>'
+    +'<p>Dernière mise à jour : mai 2026</p>'
+    +'<h3>Données collectées</h3><ul><li>Email et nom lors de l\'inscription</li><li>Contacts ajoutés manuellement par vous</li><li>Logs d\'utilisation anonymisés</li></ul>'
+    +'<h3>Utilisation</h3><p>Vos données servent uniquement à faire fonctionner Bloomday : rappels, génération de messages, gestion de compte.</p>'
+    +'<h3>Partage</h3><p>Aucune donnée n\'est vendue ou partagée avec des tiers à des fins publicitaires.</p>'
+    +'<h3>Hébergement</h3><p>Supabase (infrastructure AWS eu-west, Europe). Chiffrement TLS en transit.</p>'
+    +'<h3>Vos droits RGPD</h3><ul><li>Accès : support@mybloomday.app</li><li>Suppression : profil → "Supprimer mon compte"</li><li>Portabilité : export sur demande</li></ul>',
+
+  about: '<h2>À propos de Bloomday</h2>'
+    +'<p>Bloomday est né d\'une conviction simple : les personnes qui comptent méritent d\'être célébrées, et pas seulement quand on s\'en souvient par hasard.</p>'
+    +'<h3>La mission</h3><p>Aider chacun à ne plus jamais rater un moment important pour les gens qu\'il aime, avec des messages authentiques et personnalisés.</p>'
+    +'<h3>Contact</h3><p>support@mybloomday.app</p>'
+};
+
+function showLegal(type){
+  var m=document.getElementById('modal-legal');
+  var c=document.getElementById('modal-legal-content');
+  if(!m||!c)return;
+  c.innerHTML=LEGAL_CONTENT[type]||'';
+  m.style.display='flex';
+  document.body.style.overflow='hidden';
+}
+
+function closeLegal(){
+  var m=document.getElementById('modal-legal');
+  if(m)m.style.display='none';
+  document.body.style.overflow='';
+}

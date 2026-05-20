@@ -161,6 +161,16 @@
 <div class="tstc"><p data-i18n="review3q">Ambassador Bronze depuis 3 mois. Déjà 2 mois gratuits !</p><div class="tstc-a" data-i18n="review3a">Karim M. — Ambassador Bloomday</div></div>
 <div style="text-align:center;font-size:12px;color:var(--txt2);padding-bottom:30px;margin-top:10px" data-i18n="securePayment">🔒 RGPD · Paiement sécurisé · Annulation à tout moment</div>
 </div>
+<!-- ═══════ FOOTER LÉGAL ═══════ -->
+<div id="footer-legal">
+  <div class="footer-links">
+    <span onclick="showLegal('faq')" data-i18n="footerFaq">FAQ</span>
+    <span onclick="showLegal('cgu')" data-i18n="footerCgu">Conditions d'utilisation</span>
+    <span onclick="showLegal('rgpd')" data-i18n="footerRgpd">Politique de confidentialité</span>
+    <span onclick="showLegal('about')" data-i18n="footerAbout">À propos</span>
+  </div>
+  <div class="footer-copy" data-i18n="footerCopy">© 2026 Bloomday · mybloomday.app</div>
+</div>
 </div>
 </div>
 
@@ -458,6 +468,13 @@
   <div style="font-family:'Playfair Display',serif;font-size:28px;font-weight:800;color:#2D1B14;margin-bottom:10px" id="logout-greeting"></div>
   <div style="font-size:16px;color:#8B6F60;margin-bottom:36px;max-width:280px;line-height:1.65" id="logout-subtext"></div>
   <button onclick="closeLogoutScreen()" id="logout-reconnect-btn" style="background:#18A86B;color:#fff;border:none;border-radius:50px;padding:14px 32px;font-size:15px;font-weight:700;font-family:'DM Sans',sans-serif;cursor:pointer;box-shadow:0 4px 16px rgba(24,168,107,.35)"></button>
+</div>
+<!-- ═══════ MODAL LÉGAL ═══════ -->
+<div id="modal-legal" style="display:none" onclick="if(event.target===this)closeLegal()">
+  <div id="modal-legal-inner">
+    <button class="modal-close-btn" onclick="closeLegal()">✕</button>
+    <div id="modal-legal-content"></div>
+  </div>
 </div>
   <!-- Clé publique Stripe — remplacer par votre clé pk_live_... ou pk_test_... -->
   <script>window.STRIPE_PUBLISHABLE_KEY = 'pk_live_51Owaf7PFAPmeysygjWLCsUNwx2FXqnAeoubpIlwLsZCSvjJ4qMrzCJyXalhGxffwqwupUG0h4mo2G4VqdmrQYAU800GcRVvRJA';</script>

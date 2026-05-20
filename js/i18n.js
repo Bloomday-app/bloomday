@@ -671,6 +671,9 @@ const I18N = {
     emailRenewalBody:'Bonjour,\n\nVotre abonnement Bloomday %s expire dans 3 jours.\n\nContinuez à célébrer vos proches sans interruption.\n→ Renouveler sur mybloomday.app\n\nCode fidélité -10% : MERCI10\n\nL\'équipe Bloomday',
     emailAnnivSubject:'Ça fait 1 an ensemble 🎉',
     emailAnnivBody:'Bonjour %s,\n\nAujourd\'hui, ça fait exactement 1 an que vous utilisez Bloomday !\n\nEn un an avec vous :\n• Nombreux anniversaires célébrés\n• Des messages qui ont touché des coeurs\n\nMerci d\'être là. Pour vous : -20% sur le plan supérieur avec le code BLOOM1AN.\n\nL\'équipe Bloomday 🌸',
+    footerFaq:'FAQ', footerCgu:'Conditions d\'utilisation',
+    footerRgpd:'Politique de confidentialité', footerAbout:'À propos',
+    footerCopy:'© 2026 Bloomday · mybloomday.app',
   },
   en:{
     appSlogan:'The day you blossom',
@@ -1342,6 +1345,9 @@ const I18N = {
     emailRenewalBody:'Hello,\n\nYour Bloomday %s subscription expires in 3 days.\n\nKeep celebrating your loved ones without interruption.\n→ Renew at mybloomday.app\n\nLoyalty code -10%: THANKS10\n\nThe Bloomday Team',
     emailAnnivSubject:'One year together 🎉',
     emailAnnivBody:'Hello %s,\n\nToday marks exactly 1 year of using Bloomday!\n\nThis year with you:\n• Many birthdays celebrated\n• Messages that touched hearts\n\nThank you for being here. For you: -20% on the next plan with code BLOOM1AN.\n\nThe Bloomday Team 🌸',
+    footerFaq:'FAQ', footerCgu:'Terms of Use',
+    footerRgpd:'Privacy Policy', footerAbout:'About',
+    footerCopy:'© 2026 Bloomday · mybloomday.app',
   },
   es:{
     appSlogan:'El día en que floreces',
@@ -2003,6 +2009,9 @@ const I18N = {
     emailRenewalBody:'Hola,\n\nTu suscripción Bloomday %s expira en 3 días.\n\nSigue celebrando a tus seres queridos sin interrupción.\n→ Renovar en mybloomday.app\n\nCódigo fidelidad -10%: GRACIAS10\n\nEl equipo Bloomday',
     emailAnnivSubject:'¡Un año juntos! 🎉',
     emailAnnivBody:'Hola %s,\n\n¡Hoy hace exactamente 1 año que usas Bloomday!\n\nEste año contigo:\n• Muchos cumpleaños celebrados\n• Mensajes que tocaron corazones\n\nGracias por estar aquí. Para ti: -20% en el plan superior con el código BLOOM1AN.\n\nEl equipo Bloomday 🌸',
+    footerFaq:'Preguntas frecuentes', footerCgu:'Términos de uso',
+    footerRgpd:'Política de privacidad', footerAbout:'Acerca de',
+    footerCopy:'© 2026 Bloomday · mybloomday.app',
   },
   ar:{
     appSlogan:'اليوم الذي تزهر فيه',
@@ -2664,6 +2673,9 @@ const I18N = {
     emailRenewalBody:'مرحباً،\n\nاشتراكك في Bloomday %s ينتهي خلال 3 أيام.\n\nاستمر في الاحتفال بأحبائك دون انقطاع.\n→ جدّد على mybloomday.app\n\nكود الولاء -10%: MERCI10\n\nفريق Bloomday',
     emailAnnivSubject:'عام واحد معاً 🎉',
     emailAnnivBody:'مرحباً %s،\n\nاليوم يمر عام كامل على استخدامك Bloomday!\n\nهذا العام معك:\n• العديد من أعياد الميلاد التي احتفلنا بها\n• رسائل لمست القلوب\n\nشكراً لوجودك. لك: -20% على الخطة الأعلى بالرمز BLOOM1AN.\n\nفريق Bloomday 🌸',
+    footerFaq:'الأسئلة الشائعة', footerCgu:'شروط الاستخدام',
+    footerRgpd:'سياسة الخصوصية', footerAbout:'حول التطبيق',
+    footerCopy:'© 2026 Bloomday · mybloomday.app',
   },
   hi:{
     appSlogan:'वह दिन जब आप खिलते हैं',
@@ -3325,6 +3337,9 @@ const I18N = {
     emailRenewalBody:'नमस्ते,\n\nआपका Bloomday %s सदस्यता 3 दिनों में समाप्त होती है।\n\nबिना किसी रुकावट के अपने प्रियजनों का जश्न मनाते रहें।\n→ mybloomday.app पर नवीनीकरण करें\n\nलॉयल्टी कोड -10%: MERCI10\n\nBloomday टीम',
     emailAnnivSubject:'एक साल साथ 🎉',
     emailAnnivBody:'नमस्ते %s,\n\nआज Bloomday उपयोग करते हुए ठीक 1 साल हो गया!\n\nइस साल आपके साथ:\n• कई जन्मदिन मनाए\n• दिल छू लेने वाले संदेश\n\nयहाँ रहने के लिए धन्यवाद। आपके लिए: कोड BLOOM1AN के साथ अगले प्लान पर -20%।\n\nBloomday टीम 🌸',
+    footerFaq:'सामान्य प्रश्न', footerCgu:'उपयोग की शर्तें',
+    footerRgpd:'गोपनीयता नीति', footerAbout:'हमारे बारे में',
+    footerCopy:'© 2026 Bloomday · mybloomday.app',
   },
   zh:{
     appSlogan:'你绽放的那一天',
@@ -3986,6 +4001,9 @@ const I18N = {
     emailRenewalBody:'您好，\n\n您的Bloomday %s订阅将在3天后到期。\n\n继续庆祝您的亲人，不间断。\n→ 在mybloomday.app续订\n\n忠诚码-10%: MERCI10\n\nBloomday团队',
     emailAnnivSubject:'我们在一起一年了 🎉',
     emailAnnivBody:'你好 %s,\n\n今天是您使用Bloomday整整1年的日子！\n\n这一年与您：\n• 许多生日得到了庆祝\n• 触动人心的消息\n\n感谢您的陪伴。送给您：使用代码BLOOM1AN享受高级计划-20%折扣。\n\nBloomday团队 🌸',
+    footerFaq:'常见问题', footerCgu:'使用条款',
+    footerRgpd:'隐私政策', footerAbout:'关于我们',
+    footerCopy:'© 2026 Bloomday · mybloomday.app',
   },
   pt:{
     appSlogan:'O dia em que você floresce',
@@ -4651,6 +4669,9 @@ const I18N = {
     emailRenewalBody:'Olá,\n\nSua assinatura Bloomday %s expira em 3 dias.\n\nContinue celebrando seus entes queridos sem interrupção.\n→ Renovar em mybloomday.app\n\nCódigo fidelidade -10%: OBRIGADO10\n\nA equipe Bloomday',
     emailAnnivSubject:'Um ano juntos 🎉',
     emailAnnivBody:'Olá %s,\n\nHoje faz exatamente 1 ano que você usa o Bloomday!\n\nEsse ano com você:\n• Muitos aniversários celebrados\n• Mensagens que tocaram corações\n\nObrigado por estar aqui. Para você: -20% no plano superior com o código BLOOM1AN.\n\nA equipe Bloomday 🌸',
+    footerFaq:'Perguntas frequentes', footerCgu:'Termos de uso',
+    footerRgpd:'Política de privacidade', footerAbout:'Sobre nós',
+    footerCopy:'© 2026 Bloomday · mybloomday.app',
   },
 };
 
