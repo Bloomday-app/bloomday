@@ -553,3 +553,9 @@ details[open] summary::after{content:" ▾"}
 #modal-legal-content h3{font-size:15px;font-weight:700;color:#2D1B14;margin:16px 0 6px}
 #modal-legal-content p,#modal-legal-content li{font-size:13px;color:#555;line-height:1.7;margin-bottom:8px}
 #modal-legal-content ul{padding-left:18px}
+
+/* ── ADMIN PANEL ── */
+.admin-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:4px}
+.admin-stat{background:white;border:1px solid #f0e8ff;border-radius:12px;padding:14px;text-align:center}
+.admin-stat-val{font-size:28px;font-weight:800;color:#5B2D8E}
+.admin-stat-lbl{font-size:11px;color:var(--txt2);margin-top:4px}

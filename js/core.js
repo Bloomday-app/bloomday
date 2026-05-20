@@ -491,7 +491,7 @@ function changePlan(p){
 
 // ── NAVIGATION SECTIONS ──
 function showSec(name,idx){
-  ['home','members','add','events','cal','more'].forEach(s=>{const e=document.getElementById('s-'+s);if(e)e.style.display=s===name?'block':'none';});
+  ['home','members','add','events','cal','more','admin'].forEach(s=>{const e=document.getElementById('s-'+s);if(e)e.style.display=s===name?'block':'none';});
   document.querySelectorAll('.nb').forEach((b,i)=>{b.classList.toggle('on',i===idx);});
   for(var di=0;di<5;di++){var sb=document.getElementById('dsb'+di);if(sb)sb.classList.toggle('on',di===idx);}
   const ms=document.getElementById('mscroll');if(ms)ms.scrollTo(0,0);
@@ -500,7 +500,89 @@ function showSec(name,idx){
   if(name==='cal')rCal();
   if(name==='more')rMore();
   if(name==='members')rMembers();
+  if(name==='admin')rAdmin();
   if(typeof renderDesktopRightPanel==='function')renderDesktopRightPanel(name);
+}
+
+function _clearEl(el){while(el.firstChild)el.removeChild(el.firstChild);}
+
+async function rAdmin(){
+  if(!window.isAdmin)return;
+  var sess=(await window._supabase.auth.getSession()).data.session;
+  if(!sess)return;
+  var token=sess.access_token;
+  var r=await fetch('/.netlify/functions/admin',{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+token},body:JSON.stringify({action:'stats'})});
+  var s=await r.json();
+  var conv=s.totalUsers>0?Math.round((s.premiumUsers/s.totalUsers)*100)+'%':'0%';
+  var elTotal=document.getElementById('stat-total');if(elTotal)elTotal.textContent=s.totalUsers||0;
+  var elActive=document.getElementById('stat-active');if(elActive)elActive.textContent=s.activeUsers||0;
+  var elPrem=document.getElementById('stat-premium');if(elPrem)elPrem.textContent=s.premiumUsers||0;
+  var elConv=document.getElementById('stat-conv');if(elConv)elConv.textContent=conv;
+  adminLoadUsers(token,0,'');
+}
+
+async function adminLoadUsers(token,page,search){
+  var r=await fetch('/.netlify/functions/admin',{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+token},body:JSON.stringify({action:'users',page:page,search:search})});
+  var d=await r.json();
+  var el=document.getElementById('admin-user-list');
+  if(!el)return;
+  _clearEl(el);
+  if(!d.users||!d.users.length){el.textContent=search?t('adminNoResults'):'';return;}
+  d.users.forEach(function(u){
+    var div=document.createElement('div');div.className='card';div.style.cssText='padding:10px 14px;cursor:pointer;margin-bottom:6px';
+    div.onclick=function(){adminShowUser(u.id,token);};
+    var nm=document.createElement('div');nm.style.cssText='font-size:13px;font-weight:600;color:var(--b1d)';nm.textContent=u.email;
+    var info=document.createElement('div');info.style.cssText='font-size:11px;color:var(--txt2);margin-top:2px';
+    info.textContent='Plan : '+(u.plan||'free')+' · Inscrit le '+new Date(u.created_at).toLocaleDateString('fr-FR');
+    div.appendChild(nm);div.appendChild(info);el.appendChild(div);
+  });
+}
+
+async function adminSearchUsers(){
+  var q=document.getElementById('admin-search');var search=q?q.value:'';
+  var sess=(await window._supabase.auth.getSession()).data.session;
+  if(sess)adminLoadUsers(sess.access_token,0,search);
+}
+
+async function adminShowUser(uid,token){
+  var r=await fetch('/.netlify/functions/admin',{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+token},body:JSON.stringify({action:'user_detail',uid:uid})});
+  var d=await r.json();
+  var el=document.getElementById('admin-user-detail');
+  if(!el)return;
+  el.style.display='block';_clearEl(el);
+  var card=document.createElement('div');card.className='card';card.style.cssText='padding:14px;margin-top:10px';
+  var emailEl=document.createElement('div');emailEl.style.cssText='font-size:14px;font-weight:700;margin-bottom:8px';
+  emailEl.textContent=(d.profile&&d.profile.email)||'';card.appendChild(emailEl);
+  var planEl=document.createElement('div');planEl.style.cssText='font-size:12px;color:var(--txt2);margin-bottom:10px';
+  planEl.textContent='Plan : '+((d.profile&&d.profile.plan)||'free')+' · Inscrit : '+new Date((d.profile&&d.profile.created_at)||0).toLocaleDateString('fr-FR');
+  card.appendChild(planEl);
+  var ctTitle=document.createElement('div');ctTitle.style.cssText='font-size:13px;font-weight:600;margin-bottom:6px';
+  ctTitle.textContent='Contacts ('+(d.contacts?d.contacts.length:0)+')';card.appendChild(ctTitle);
+  (d.contacts||[]).forEach(function(c){
+    var row=document.createElement('div');row.style.cssText='font-size:12px;color:var(--txt2);padding:3px 0;border-bottom:1px solid #f0f0f0';
+    row.textContent=c.name+' — '+c.day+'/'+c.month+(c.year?'/'+c.year:'');card.appendChild(row);
+  });
+  var closeBtn=document.createElement('button');closeBtn.className='btn sm';closeBtn.style.marginTop='10px';
+  closeBtn.textContent='Fermer';closeBtn.onclick=function(){el.style.display='none';};card.appendChild(closeBtn);
+  el.appendChild(card);
+}
+
+async function adminSendNotif(){
+  var msgEl=document.getElementById('admin-notif-text');var msg=msgEl?msgEl.value.trim():'';
+  if(!msg)return;
+  var sess=(await window._supabase.auth.getSession()).data.session;
+  if(!sess)return;
+  var r=await fetch('/.netlify/functions/admin',{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+sess.access_token},body:JSON.stringify({action:'notify',message:msg})});
+  var d=await r.json();
+  if(d.ok){if(msgEl)msgEl.value='';alert(t('adminNotifSent'));}
+}
+
+async function checkAdminNotifications(){
+  if(!window.currentUser)return;
+  try{
+    var r=await window._supabase.from('admin_notifications').select('message').eq('active',true).order('created_at',{ascending:false}).limit(1);
+    if(r.data&&r.data.length>0){var b=document.getElementById('offline-banner');if(b){b.textContent=r.data[0].message;b.style.display='block';}}
+  }catch(e){}
 }
 
 // ═══════════════════════════════════

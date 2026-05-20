@@ -18,6 +18,14 @@ function buildUserFromSession(session) {
   };
 }
 
+var ADMIN_EMAIL = 'zekingfinance@gmail.com';
+
+function checkAdmin(user) {
+  window.isAdmin = !!(user && user.email === ADMIN_EMAIL);
+  var btn = document.getElementById('nav-admin-btn');
+  if (btn) btn.style.display = window.isAdmin ? 'flex' : 'none';
+}
+
 function initAuth() {
   supabase.auth.getSession().then(function(result) {
     var session = result.data.session;
@@ -25,6 +33,7 @@ function initAuth() {
       currentUser = buildUserFromSession(session);
       safeLsSet('bdg16_user', JSON.stringify(currentUser));
       updateTopbar();
+      checkAdmin(currentUser);
     }
     var logoutBtn = document.getElementById('tb-logout');
     if (logoutBtn) logoutBtn.style.display = session ? 'inline-block' : 'none';
@@ -64,6 +73,7 @@ function initAuth() {
         sendEmail('welcome', { name: currentUser.name, email: currentUser.email });
       }
       updateTopbar();
+      checkAdmin(currentUser);
       var logoutBtnIn = document.getElementById('tb-logout');
       if (logoutBtnIn) logoutBtnIn.style.display = 'inline-block';
       refresh();
@@ -72,6 +82,7 @@ function initAuth() {
       currentUser = null;
       localStorage.removeItem('bdg16_user');
       updateTopbar();
+      checkAdmin(null);
       var logoutBtnOut = document.getElementById('tb-logout');
       if (logoutBtnOut) logoutBtnOut.style.display = 'none';
       refresh();

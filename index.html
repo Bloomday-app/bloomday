@@ -220,6 +220,11 @@
       <svg viewBox="0 0 22 22" fill="none" width="22" height="22"><circle cx="11" cy="8" r="4" stroke="currentColor" stroke-width="1.4"/><path d="M3 19c0-4.418 3.582-8 8-8s8 3.582 8 8" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
     </button>
   </nav>
+  <div id="nav-admin-btn" style="display:none;margin-top:auto;padding:8px 0">
+    <button class="dsb-btn" onclick="showSec('admin',99)" style="background:rgba(212,168,67,.15);border:1px solid rgba(212,168,67,.3)" title="Admin">
+      <svg viewBox="0 0 22 22" fill="none" width="20" height="20"><rect x="3" y="3" width="16" height="16" rx="3" stroke="currentColor" stroke-width="1.4"/><path d="M7 11h8M11 7v8" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
+    </button>
+  </div>
   <div class="dsb-avatar" id="dsb-avatar" onclick="showSec('more',4)">🌸</div>
 </div>
 
@@ -281,6 +286,27 @@
   <div id="s-events" style="display:none"></div>
   <div id="s-cal" style="display:none"></div>
   <div id="s-more" style="display:none"></div>
+  <!-- ═══════ SECTION ADMIN ═══════ -->
+  <div id="s-admin" style="display:none">
+    <div class="wrap">
+      <div class="sh" style="margin-bottom:16px" data-i18n="adminTitle">Panel Admin</div>
+      <div id="admin-stats" class="admin-grid">
+        <div class="admin-stat"><div class="admin-stat-val" id="stat-total">—</div><div class="admin-stat-lbl" data-i18n="adminStatTotal">Utilisateurs</div></div>
+        <div class="admin-stat"><div class="admin-stat-val" id="stat-active">—</div><div class="admin-stat-lbl" data-i18n="adminStatActive">Actifs 30j</div></div>
+        <div class="admin-stat"><div class="admin-stat-val" id="stat-premium">—</div><div class="admin-stat-lbl" data-i18n="adminStatPremium">Premium</div></div>
+        <div class="admin-stat"><div class="admin-stat-val" id="stat-conv">—</div><div class="admin-stat-lbl" data-i18n="adminStatConv">Conversion</div></div>
+      </div>
+      <div class="sh" style="margin-top:20px;margin-bottom:8px" data-i18n="adminUsers">Utilisateurs</div>
+      <input type="search" id="admin-search" placeholder="Rechercher par email…" oninput="adminSearchUsers()" class="inp" style="margin-bottom:10px;width:100%">
+      <div id="admin-user-list"></div>
+      <div id="admin-user-detail" style="display:none"></div>
+      <div class="sh" style="margin-top:20px;margin-bottom:8px" data-i18n="adminNotifTitle">Notification globale</div>
+      <textarea id="admin-notif-text" class="inp" rows="3" style="width:100%;margin-bottom:8px" placeholder="Message à envoyer à tous…"></textarea>
+      <button class="btn P fw" onclick="adminSendNotif()" data-i18n="adminNotifBtn">Envoyer à tous</button>
+      <div class="sh" style="margin-top:20px;margin-bottom:8px" data-i18n="adminBrowseTitle">Naviguer dans l'app</div>
+      <button class="btn fw" onclick="showSec('home',0)" data-i18n="adminBrowseBtn">Voir l'app comme un utilisateur →</button>
+    </div>
+  </div>
 </div>
 
 <div class="desktop-right-panel" id="desktop-right-panel"></div>
