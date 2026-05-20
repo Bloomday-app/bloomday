@@ -396,6 +396,12 @@ function updateAllTexts(){
     var el=els[i];var key=el.getAttribute('data-i18n');
     var val=t(key);if(val&&val!==key) el.textContent=val;
   }
+  // 1b. Alt text [data-i18n-alt]
+  var altEls=document.querySelectorAll('[data-i18n-alt]');
+  for(var ia=0;ia<altEls.length;ia++){
+    var altEl=altEls[ia];var altKey=altEl.getAttribute('data-i18n-alt');
+    var altVal=t(altKey);if(altVal&&altVal!==altKey) altEl.alt=altVal;
+  }
   // 2. Placeholders [data-i18n-placeholder]
   var pEls=document.querySelectorAll('[data-i18n-placeholder]');
   for(var j=0;j<pEls.length;j++){
