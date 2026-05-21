@@ -57,8 +57,8 @@ exports.handler = async function(event) {
   }
 };
 
-const APP_URL = 'https://bloomday-day.netlify.app';
-const LOGO_URL = 'https://bloomday-day.netlify.app/img/logo.png';
+const APP_URL = 'https://mybloomday.app';
+const LOGO_URL = 'https://mybloomday.app/img/logo.png';
 
 function header() {
   return `<div style="background:#5b2d8e;padding:28px 32px;text-align:center;border-radius:12px 12px 0 0">
