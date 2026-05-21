@@ -114,7 +114,7 @@ async function doSignupSupabase() {
     password: pass,
     options: {
       data: { full_name: name, phone: phone },
-      emailRedirectTo: 'https://bloomday-day.netlify.app'
+      emailRedirectTo: 'https://mybloomday.app'
     }
   });
 
@@ -198,6 +198,24 @@ function closeLogoutScreen() {
 async function doResetPassword() {
   if (!currentUser || !currentUser.email) return;
   var result = await supabase.auth.resetPasswordForEmail(currentUser.email, {
+    redirectTo: window.location.origin
+  });
+  if (result.error) {
+    showToast(result.error.message, 'error');
+  } else {
+    showToast(t('resetPasswordSent') || 'Email envoye ! Verifiez votre boite mail.', 'success');
+  }
+}
+
+async function doForgotPassword() {
+  var emailEl = document.getElementById('auth-login-email');
+  var email = (emailEl && emailEl.value || '').trim().toLowerCase();
+  var emailReg = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+  if (!email || !emailReg.test(email)) {
+    showToast(t('errEmailInvalid') || 'Entrez un email valide d\'abord.', 'error');
+    return;
+  }
+  var result = await supabase.auth.resetPasswordForEmail(email, {
     redirectTo: window.location.origin
   });
   if (result.error) {
