@@ -216,7 +216,7 @@ async function doResetPassword() {
   var result = await supabase.auth.updateUser({ password: newPass });
   if (btn) { btn.disabled = false; btn.textContent = t('resetPassBtn'); }
   if (result.error) {
-    showToast(result.error.message || t('errorGeneric'), 'error');
+    showToast(result.error.message || 'Une erreur est survenue.', 'error');
   } else {
     closeOv('m-reset-pass');
     showToast(t('passwordUpdated'), 'success');
