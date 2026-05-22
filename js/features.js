@@ -321,16 +321,27 @@ function startFromBtn(btn){
 }
 
 document.addEventListener('DOMContentLoaded',function(){
-  // Google OAuth callback : Supabase place #access_token= dans l'URL au lieu de #app
-  if(window.location.hash.includes('access_token=')){
+  // Supabase v2 traite les tokens (OAuth hash, PKCE code) avant DOMContentLoaded et efface l'URL.
+  // On détecte la session via getSession() qui couvre tous les cas :
+  //   - utilisateur déjà connecté (retour sur le site)
+  //   - confirmation email (PKCE ?code=)
+  //   - OAuth Google (#access_token= déjà traité par Supabase SDK)
+  var hasPkceCode=!!(new URLSearchParams(window.location.search).get('code'));
+  if(window.location.hash.includes('access_token=')||hasPkceCode)
     history.replaceState(null,'',window.location.pathname);
-    startApp('perso','free');
-  } else {
-    handleHash();
-  }
+
+  supabase.auth.getSession().then(function(result){
+    var appEl=document.getElementById('app');
+    var hasSession=!!(result.data&&result.data.session);
+    if((hasSession||hasPkceCode)&&appEl&&!appEl.classList.contains('on')){
+      startApp('perso','free');
+    } else {
+      handleHash();
+    }
+  });
+
   window.addEventListener('hashchange',handleHash);
   document.getElementById('s-home').style.display='block';
-  // Rendre tous les plans en cartes scrollables (adaptatif iOS/Android/iPad/desktop)
   renderPricingTable();
 });
 

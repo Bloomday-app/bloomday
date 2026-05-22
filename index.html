@@ -191,7 +191,7 @@
 
 <!-- ═══════ APP ═══════ -->
 <div id="app" class="scr">
-<div class="wrap" style="display:flex;flex-direction:column;min-height:100vh;width:100%">
+<div class="wrap">
 
 <div class="desktop-sidebar" id="desktop-sidebar">
   <div class="dsb-logo">
@@ -242,6 +242,7 @@
   </div>
 </div>
 
+<div class="app-main">
 <div class="topbar">
   <div class="tb-l">
     <div class="logo-wrap"><svg width="22" height="22"><use href="#bi"/></svg></div>
@@ -323,8 +324,6 @@
   </div>
 </div>
 
-<div class="desktop-right-panel" id="desktop-right-panel"></div>
-
 <div class="nav">
   <button class="nb on" id="nb0" onclick="showSec('home',0)">
     <svg viewBox="0 0 22 22" fill="none"><rect x="3" y="10" width="16" height="10" rx="2" stroke="currentColor" stroke-width="1.4"/><path d="M1 11L11 3l10 8" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg><span class="nbl" data-i18n="navHome">Accueil</span>
@@ -343,6 +342,9 @@
     <span class="nbl" data-i18n="navProfile">Profil</span>
   </button>
 </div>
+</div><!-- end app-main -->
+
+<div class="desktop-right-panel" id="desktop-right-panel"></div>
 </div>
 </div>
 
@@ -524,7 +526,7 @@
   <script src="js/db.js?v=20260505b"></script>
   <script src="js/migration.js?v=20260505b"></script>
   <script src="js/auth.js?v=20260505d"></script>
-  <script src="js/features.js?v=20260504a"></script>
+  <script src="js/features.js?v=20260522b"></script>
   <script src="js/render.js?v=20260505d"></script>
   <script src="js/core.js?v=20260504a"></script>
 

@@ -40,14 +40,17 @@ button{cursor:pointer;font-family:'DM Sans',sans-serif}
 .pricing-mobile{display:block}
 .pricing-desktop{display:none}
 .wrap{width:100%;max-width:440px;margin:0 auto;min-height:100vh;min-height:-webkit-fill-available;position:relative;box-sizing:border-box}
+#app .wrap{display:flex;flex-direction:column;max-width:100%;min-height:100vh}
+.app-main{flex:1;display:flex;flex-direction:column;min-height:0;overflow:hidden}
 @media(min-width:768px){
   .wrap{max-width:480px;box-shadow:0 0 60px rgba(45,27,20,.10)}
   body{background:linear-gradient(145deg,#FFF8F0,#FFE8D0)}
 }
 @media(min-width:1024px){
   body{background:linear-gradient(145deg,#FFF8F0 0%,#FFECD6 50%,#FFD8B4 100%);min-height:100vh}
-  #app.scr.on{display:flex;flex-direction:row;min-height:100vh;width:100%;max-width:100%}
-  #app .wrap{flex:1;display:flex;flex-direction:row;max-width:100%;border-radius:0;overflow:visible;max-height:none;box-shadow:none;width:100%}
+  #app.scr.on{display:flex;min-height:100vh;width:100%;max-width:100%}
+  #app .wrap{flex-direction:row;max-width:100%;border-radius:0;overflow:visible;max-height:none;box-shadow:none;width:100%;min-height:100vh}
+  .app-main{flex:1;display:flex;flex-direction:column;overflow:hidden;min-height:100vh}
   #app .scroll{flex:1;padding:16px 32px 24px;overflow-y:auto;height:100vh}
   .nav{display:none}
   .desktop-sidebar,.desktop-right-panel{display:flex}
