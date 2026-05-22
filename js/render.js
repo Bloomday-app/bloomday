@@ -541,6 +541,81 @@ function rCal(){
   el.innerHTML=h;
 }
 
+function renderSideCalendar() {
+  var el = document.getElementById('desktop-right-panel');
+  if (!el) return;
+  var m = mems();
+  var now = new Date();
+  var year = now.getFullYear();
+  var month = now.getMonth();
+  var daysInMonth = new Date(year, month + 1, 0).getDate();
+  var firstDay = new Date(year, month, 1).getDay();
+  firstDay = firstDay === 0 ? 6 : firstDay - 1;
+
+  var parts = [];
+
+  var title = document.createElement('div');
+  title.style.cssText = 'font-size:13px;font-weight:700;color:var(--txt);margin-bottom:12px';
+  title.textContent = MN[month] + ' ' + year;
+  parts.push(title);
+
+  var grid = document.createElement('div');
+  grid.style.cssText = 'display:grid;grid-template-columns:repeat(7,1fr);gap:3px;font-size:11px;text-align:center';
+  ['L','M','M','J','V','S','D'].forEach(function(d){
+    var hd = document.createElement('div');
+    hd.style.cssText = 'color:var(--txt2);padding:2px;font-size:10px';
+    hd.textContent = d;
+    grid.appendChild(hd);
+  });
+  for (var i = 0; i < firstDay; i++) {
+    grid.appendChild(document.createElement('div'));
+  }
+  for (var day = 1; day <= daysInMonth; day++) {
+    var isToday = day === now.getDate();
+    var hasBday = m.some(function(p){ return p.day === day && p.month === (month + 1); });
+    var cell = document.createElement('div');
+    cell.textContent = String(day);
+    cell.style.cssText = 'padding:5px 2px;border-radius:6px;';
+    if (isToday) cell.style.cssText += 'background:var(--b1);color:white;font-weight:700;';
+    else if (hasBday) cell.style.cssText += 'background:var(--b2l);color:var(--b2d);font-weight:700;';
+    grid.appendChild(cell);
+  }
+  parts.push(grid);
+
+  var upcoming = m.filter(function(p){
+    var dl = daysTill(p.day, p.month);
+    return dl >= 0 && dl <= 30;
+  }).sort(function(a,b){ return daysTill(a.day,a.month) - daysTill(b.day,b.month); }).slice(0,5);
+
+  if (upcoming.length) {
+    var upTitle = document.createElement('div');
+    upTitle.style.cssText = 'font-size:12px;font-weight:700;color:var(--txt);margin:16px 0 8px';
+    upTitle.textContent = t('upcomingBdays');
+    parts.push(upTitle);
+    upcoming.forEach(function(p){
+      var row = document.createElement('div');
+      row.style.cssText = 'display:flex;align-items:center;gap:8px;padding:6px 0;border-bottom:1px solid var(--brd)';
+      var dateEl = document.createElement('div');
+      dateEl.style.cssText = 'min-width:28px;font-size:11px;font-weight:700;color:var(--b1d)';
+      dateEl.textContent = p.day + '/' + p.month;
+      var nameEl = document.createElement('div');
+      nameEl.style.cssText = 'flex:1;font-size:12px;font-weight:600';
+      nameEl.textContent = tIco(p.type) + ' ' + p.name;
+      var dlEl = document.createElement('div');
+      var dl = daysTill(p.day, p.month);
+      dlEl.style.cssText = 'font-size:10px;color:var(--txt2)';
+      dlEl.textContent = dl === 0 ? t('calendarToday') : 'J-' + dl;
+      row.appendChild(dateEl);
+      row.appendChild(nameEl);
+      row.appendChild(dlEl);
+      parts.push(row);
+    });
+  }
+
+  while (el.firstChild) el.removeChild(el.firstChild);
+  parts.forEach(function(node){ el.appendChild(node); });
+}
+
 // ── PLUS ──
 function rMore(){
   var el=document.getElementById('s-more');if(!el)return;

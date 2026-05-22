@@ -384,12 +384,9 @@ details[open] summary::after{content:" ▾"}
 
 :root{--ff-title:"Playfair Display",serif}
 .price-font{font-family:var(--ff-title);font-size:36px;font-weight:800;line-height:1}
-.lang-sel{position:fixed;top:12px;right:12px;z-index:300;background:var(--card);
-  border:1px solid var(--brd);border-radius:20px;padding:5px 12px;font-size:13px;
-  display:flex;align-items:center;gap:6px;box-shadow:var(--sh);cursor:pointer}
-.lang-dd{position:fixed;top:48px;right:12px;z-index:301;background:var(--card);
-  border:1px solid var(--brd);border-radius:14px;padding:6px;
-  box-shadow:0 8px 24px rgba(0,0,0,.12);display:none;flex-direction:column;gap:2px;min-width:140px}
+.lang-sel{display:flex;align-items:center;gap:6px;padding:9px 10px;cursor:pointer;font-size:12px;font-weight:600;color:rgba(255,255,255,.5);position:relative;width:100%;box-sizing:border-box}
+.lang-sel:hover{color:rgba(255,255,255,.8)}
+.lang-dd{position:absolute;bottom:100%;left:0;z-index:400;background:var(--card);border:1px solid var(--brd);border-radius:14px;padding:6px;box-shadow:0 -8px 24px rgba(0,0,0,.12);display:none;flex-direction:column;gap:2px;min-width:140px}
 .lang-dd.open{display:flex}
 .lang-opt{padding:7px 12px;border-radius:9px;font-size:13px;font-weight:600;cursor:pointer;
   display:flex;align-items:center;gap:7px}
@@ -487,12 +484,12 @@ details[open] summary::after{content:" ▾"}
 }
 
 /* ── DESKTOP SIDEBAR ── */
-.desktop-sidebar{display:none;flex-direction:column;align-items:center;width:64px;flex-shrink:0;background:var(--txt);min-height:100vh;padding:12px 0;position:sticky;top:0;height:100vh;z-index:200}
-.dsb-logo{margin-bottom:20px;padding:8px}
+.desktop-sidebar{display:none;flex-direction:column;align-items:flex-start;width:140px;flex-shrink:0;background:var(--txt);min-height:100vh;padding:12px 0;position:sticky;top:0;height:100vh;z-index:200}
+.dsb-logo{margin-bottom:20px;padding:8px 16px;display:flex;align-items:center;gap:8px}
 .dsb-logo-wrap{width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,var(--b4),#5B4FBB);display:flex;align-items:center;justify-content:center}
 .dsb-logo-wrap svg{fill:white;stroke:white}
-.dsb-nav{display:flex;flex-direction:column;gap:4px;flex:1;width:100%;padding:0 8px}
-.dsb-btn{width:100%;aspect-ratio:1;border:none;background:transparent;border-radius:10px;display:flex;align-items:center;justify-content:center;color:rgba(255,255,255,.35);cursor:pointer;transition:all .18s}
+.dsb-nav{display:flex;flex-direction:column;gap:2px;flex:1;width:100%;padding:0 8px}
+.dsb-btn{width:100%;border:none;background:transparent;border-radius:10px;display:flex;align-items:center;gap:8px;padding:9px 10px;color:rgba(255,255,255,.35);cursor:pointer;transition:all .18s;font-size:12px;font-weight:600;letter-spacing:.01em}
 .dsb-btn:hover{background:rgba(212,168,67,.12);color:rgba(255,255,255,.7)}
 .dsb-btn.on{background:var(--b1l);color:var(--b1)}
 .dsb-avatar{width:36px;height:36px;border-radius:50%;background:var(--grad);display:flex;align-items:center;justify-content:center;cursor:pointer;margin:8px auto 12px;overflow:hidden;font-size:13px;color:white;font-weight:800;border:2px solid rgba(255,255,255,.15)}
