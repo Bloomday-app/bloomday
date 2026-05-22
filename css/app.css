@@ -28,7 +28,7 @@
   --brd:#2C2618;--brd2:#3C3426;--card:#1C1810;
   --sh:0 2px 20px rgba(0,0,0,.5);
 }
-.logo-wrap{background:linear-gradient(135deg,#C03880,#8B1A50);box-shadow:0 2px 8px rgba(180,50,120,.45)}
+.logo-wrap{background:none;box-shadow:none}
 }
 body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--txt);font-size:15px;overflow-x:hidden;width:100%;min-height:100vh;min-height:-webkit-fill-available;margin:0;padding:0}
 a{text-decoration:none;color:inherit}
@@ -75,7 +75,7 @@ button{cursor:pointer;font-family:'DM Sans',sans-serif}
 /* ── TOPBAR ── */
 .topbar{padding:14px 18px 12px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0;background:var(--card);border-bottom:1px solid var(--brd);position:sticky;top:0;z-index:50;box-shadow:0 2px 12px rgba(45,27,20,.06)}
 .tb-l{display:flex;align-items:center;gap:9px}
-.logo-wrap{width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,#FFB6D9,#FF8BC0);display:flex;align-items:center;justify-content:center;flex-shrink:0;box-shadow:0 2px 8px rgba(228,100,160,.35)}
+.logo-wrap{width:36px;height:36px;border-radius:0;background:none;display:flex;align-items:center;justify-content:center;flex-shrink:0;box-shadow:none}
 .logo-wrap svg{fill:white;stroke:white}
 .tb-t{font-family:'Playfair Display',serif;font-size:20px;font-weight:800;color:var(--txt)}
 .tb-s{font-size:11px;color:var(--txt2);margin-top:1px}
@@ -489,7 +489,7 @@ details[open] summary::after{content:" ▾"}
 /* ── DESKTOP SIDEBAR ── */
 .desktop-sidebar{display:none;flex-direction:column;align-items:flex-start;width:140px;flex-shrink:0;background:var(--txt);min-height:100vh;padding:12px 0;position:sticky;top:0;height:100vh;z-index:200}
 .dsb-logo{margin-bottom:20px;padding:8px 16px;display:flex;align-items:center;gap:8px}
-.dsb-logo-wrap{width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,var(--b4),#5B4FBB);display:flex;align-items:center;justify-content:center}
+.dsb-logo-wrap{width:36px;height:36px;border-radius:0;background:none;display:flex;align-items:center;justify-content:center;box-shadow:none}
 .dsb-logo-wrap svg{fill:white;stroke:white}
 .dsb-nav{display:flex;flex-direction:column;gap:2px;flex:1;width:100%;padding:0 8px}
 .dsb-btn{width:100%;border:none;background:transparent;border-radius:10px;display:flex;align-items:center;gap:8px;padding:9px 10px;color:rgba(255,255,255,.35);cursor:pointer;transition:all .18s;font-size:12px;font-weight:600;letter-spacing:.01em}
