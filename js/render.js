@@ -616,7 +616,7 @@ function rMore(){
     h+='<div style="font-size:12px;color:var(--txt2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+esc(currentUser.email)+'</div></div>';
     h+='</div>';
     h+='<div style="font-size:11px;color:var(--txt3);margin-bottom:14px;background:var(--bg2);padding:7px 10px;border-radius:8px;font-family:monospace">ID: '+currentUser.uid.substring(0,8)+'•••</div>';
-    h+='<button class="btn fw" style="margin-bottom:8px" onclick="doResetPassword()">'+t('resetPasswordBtn')+'</button>';
+    h+='<button class="btn fw" style="margin-bottom:8px" onclick="doForgotPassword()">'+t('resetPasswordBtn')+'</button>';
     h+='<button class="btn D fw" onclick="doDeleteAccount()">'+t('deleteAccountBtn')+'</button>';
     h+='</div>';
   }

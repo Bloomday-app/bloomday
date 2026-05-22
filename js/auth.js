@@ -87,6 +87,8 @@ function initAuth() {
       if (logoutBtnOut) logoutBtnOut.style.display = 'none';
       refresh();
       showLogoutScreen(wasUser);
+    } else if (event === 'PASSWORD_RECOVERY') {
+      showPasswordResetForm();
     }
   });
 }
@@ -195,15 +197,29 @@ function closeLogoutScreen() {
   }, 500);
 }
 
+function showPasswordResetForm() {
+  var n = document.getElementById('reset-pass-new');
+  var c = document.getElementById('reset-pass-confirm');
+  if (n) n.value = '';
+  if (c) c.value = '';
+  closeOv('m-auth');
+  openOv('m-reset-pass');
+}
+
 async function doResetPassword() {
-  if (!currentUser || !currentUser.email) return;
-  var result = await supabase.auth.resetPasswordForEmail(currentUser.email, {
-    redirectTo: window.location.origin
-  });
+  var newPass = (document.getElementById('reset-pass-new') || {}).value || '';
+  var confirm = (document.getElementById('reset-pass-confirm') || {}).value || '';
+  if (newPass.length < 8) { showToast(t('errPassShort'), 'error'); return; }
+  if (newPass !== confirm) { showToast(t('errPassMismatch'), 'error'); return; }
+  var btn = document.getElementById('reset-pass-btn');
+  if (btn) { btn.disabled = true; btn.textContent = '...'; }
+  var result = await supabase.auth.updateUser({ password: newPass });
+  if (btn) { btn.disabled = false; btn.textContent = t('resetPassBtn'); }
   if (result.error) {
-    showToast(result.error.message, 'error');
+    showToast(result.error.message || t('errorGeneric'), 'error');
   } else {
-    showToast(t('resetPasswordSent') || 'Email envoye ! Verifiez votre boite mail.', 'success');
+    closeOv('m-reset-pass');
+    showToast(t('passwordUpdated'), 'success');
   }
 }
 
