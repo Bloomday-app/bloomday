@@ -43,7 +43,7 @@ function rHome(){
     h+='<div class="card curg">';
     h+='<div style="font-size:14px;font-weight:700;color:var(--b2d);margin-bottom:4px">⚡ '+t('missedBday')+'</div>';
     h+='<div style="font-size:13px;color:var(--b2);margin-bottom:8px">'+t('urgentSub')+' <strong>'+esc(p.name)+'</strong></div>';
-    h+='<div id="urg-'+p.id+'"><button class="btn R sm" onclick="genUrgence('+p.id+',\'urg-'+p.id+'\')">'+t('urgentBtn')+'</button></div>';
+    h+='<div id="urg-'+p.id+'"><button class="btn R sm" onclick="genUrgence(\''+p.id+'\',\'urg-'+p.id+'\')">'+t('urgentBtn')+'</button></div>';
     h+='</div>';
   });
 
@@ -102,9 +102,9 @@ function rHome(){
       h+='</div></div>';
       if(p.phone)h+='<div style="font-size:12px;color:var(--b2);margin-bottom:8px">📞 '+esc(p.phone)+'</div>';
       h+='<div id="h-msg-'+p.id+'"><div class="brow">';
-      h+='<button class="btn G" onclick="genMsg('+p.id+',\'h-msg-'+p.id+'\')">'+t('msgBtn')+'</button>';
-      h+='<button class="btn V" onclick="genGiftModal('+p.id+')">'+t('giftBtn')+'</button>';
-      if(pl.cards)h+='<button class="btn O" onclick="genCard('+p.id+',\'h-card-'+p.id+'\')">'+t('cardBtn')+'</button>';
+      h+='<button class="btn G" onclick="genMsg(\''+p.id+'\',\'h-msg-'+p.id+'\')">'+t('msgBtn')+'</button>';
+      h+='<button class="btn V" onclick="genGiftModal(\''+p.id+'\')">'+t('giftBtn')+'</button>';
+      if(pl.cards)h+='<button class="btn O" onclick="genCard(\''+p.id+'\',\'h-card-'+p.id+'\')">'+t('cardBtn')+'</button>';
       h+='</div></div>';
       h+='<div id="h-gift-'+p.id+'"></div><div id="h-card-'+p.id+'"></div>';
       h+='</div>';
@@ -137,7 +137,7 @@ function rHome(){
         h+='<div style="font-size:12px;color:var(--b1d);margin-top:2px">'+p.day+' '+MN[p.month-1]+(age?' · '+age+' '+t('yearsOld'):'')+'</div>';
         h+='<div style="font-size:11px;font-weight:700;color:var(--b1);margin-top:3px">'+t('inDays')+' '+d+' '+(d>1?t('daysUnit'):t('dayUnit'))+'</div>';
         h+='</div>';
-        h+='<div id="prep-'+p.id+'"><button class="btn O sm" onclick="genMsg('+p.id+',\'prep-'+p.id+'\')">'+t('prepareBtn')+'</button></div>';
+        h+='<div id="prep-'+p.id+'"><button class="btn O sm" onclick="genMsg(\''+p.id+'\',\'prep-'+p.id+'\')">'+t('prepareBtn')+'</button></div>';
         h+='</div>';
       });
     }
@@ -157,7 +157,7 @@ function rHome(){
       h+='<div style="font-size:14px;font-weight:700;color:var(--b1d)">'+tIco(p.type)+' '+esc(p.name)+'<span class="pbdg pbs">'+t('inDays')+' '+d+'j</span></div>';
       h+='<div style="font-size:12px;color:var(--b1d)">'+tLbl(p.type)+' · '+p.day+' '+MN[p.month-1]+(age?' — '+age+' '+t('yearsOld'):'')+'</div>';
       h+='</div></div>';
-      h+='<div id="up-'+p.id+'"><div class="brow" style="margin-top:8px"><button class="btn sm" onclick="genMsg('+p.id+',\'up-'+p.id+'\')">'+t('prepareBtn')+'</button><button class="btn sm O" style="margin-left:6px" onclick="showFlowerIdeas(\''+esc(p.name)+'\',\''+p.type+'\')">'+t('flowerIdeasBtn')+'</button></div></div>';
+      h+='<div id="up-'+p.id+'"><div class="brow" style="margin-top:8px"><button class="btn sm" onclick="genMsg(\''+p.id+'\',\'up-'+p.id+'\')">'+t('prepareBtn')+'</button><button class="btn sm O" style="margin-left:6px" onclick="showFlowerIdeas(\''+esc(p.name)+'\',\''+p.type+'\')">'+t('flowerIdeasBtn')+'</button></div></div>';
       h+='</div>';
     });
   }
@@ -271,13 +271,13 @@ function rMembers(){
     <label>${t('genderLabel')||'Genre'}</label><select id="em-gender"><option value=""${!p.gender?' selected':''}>${t('genderNone')}</option><option value="femme"${p.gender==='femme'?' selected':''}>${t('genderF')}</option><option value="homme"${p.gender==='homme'?' selected':''}>${t('genderM')}</option><option value="enfant"${p.gender==='enfant'?' selected':''}>${t('genderKid')}</option></select>
     <label>${t('notesLabel')||'Notes'}</label><textarea id="em-note">${esc(p.note||'')}</textarea>
     <label>${t('customMsgLabel')||'Message personnalisé'}</label><textarea id="em-custom-msg" style="min-height:70px">${esc(p.customMsg||'')}</textarea>
-    <div class="brow" style="margin-top:10px"><button class="btn G" style="flex:1" onclick="saveEdit(${p.id})">${t('saveBtn')}</button><button class="btn" onclick="togEdit(${p.id})">${t('cancelBtn')}</button></div></div>`:''}
+    <div class="brow" style="margin-top:10px"><button class="btn G" style="flex:1" onclick="saveEdit('${p.id}')">${t('saveBtn')}</button><button class="btn" onclick="togEdit('${p.id}')">${t('cancelBtn')}</button></div></div>`:''}
     <div id="m-msg-${p.id}"></div><div id="m-gift-${p.id}"></div></div>
     <div style="display:flex;flex-direction:column;gap:5px;flex-shrink:0">
-    <button class="btn O sm" onclick="togEdit(${p.id})">${isEd?'✕':'✏'}</button>
-    <button class="btn G sm" onclick="genMsg(${p.id},'m-msg-${p.id}')">✨</button>
-    <button class="btn V sm" onclick="genGiftModal(${p.id})">💡</button>
-    <button class="btn D sm" onclick="removeMem(${p.id})">✕</button></div></div>`;
+    <button class="btn O sm" onclick="togEdit('${p.id}')">${isEd?'✕':'✏'}</button>
+    <button class="btn G sm" onclick="genMsg('${p.id}','m-msg-${p.id}')">✨</button>
+    <button class="btn V sm" onclick="genGiftModal('${p.id}')">💡</button>
+    <button class="btn D sm" onclick="removeMem('${p.id}')">✕</button></div></div>`;
   });
   h+=`<button class="exbtn" onclick="exportPDF()">${t('exportPDFBtn')}</button>`;
   el.innerHTML=h;
@@ -416,9 +416,12 @@ function updateAllTexts(){
   // 4. Slogan topbar
   var slogan=document.getElementById('tbsub-lang');
   if(slogan) slogan.textContent=t('appSlogan');
-  // 5. Badge plan topbar
+  // 5. Badge plan topbar (admin seulement)
+  var isAdmin=!!(currentUser&&currentUser.email==='zekingfinance@gmail.com');
   var tbp=document.getElementById('tbplan');
-  if(tbp) tbp.textContent=(PLANS[plan]?PLANS[plan].name:'Bloom')+' ▾';
+  if(tbp){tbp.textContent=(PLANS[plan]?PLANS[plan].name:'Bloom')+' ▾';tbp.style.display=isAdmin?'':'none';}
+  var tbPlansBtn=document.getElementById('tb-plans-btn');
+  if(tbPlansBtn) tbPlansBtn.style.display=isAdmin?'':'none';
   // 6. Langue courante dans sélecteur
   var langLabels={fr:'FR',en:'EN',es:'ES',ar:'AR',hi:'HI',zh:'ZH',pt:'PT'};
   var langCur=document.getElementById('lang-cur');
@@ -668,9 +671,7 @@ function rMore(){
   if (refUrl) {
     h += '<div style="display:flex;gap:8px">';
     h += '<button class="btn G" style="flex:1;font-size:12px" onclick="copyRefLink(\'' + esc(refUrl) + '\')">' + t('refCopyBtn') + '</button>';
-    if (navigator.share) {
-      h += '<button class="btn P" style="flex:1;font-size:12px" onclick="shareRefLink(\'' + esc(refUrl) + '\')">' + t('refShareBtn') + '</button>';
-    }
+    h += '<button class="btn P" style="flex:1;font-size:12px" onclick="shareRefLink(\'' + esc(refUrl) + '\')">' + t('refShareBtn') + '</button>';
     h += '</div>';
   }
   h += '</div>';
@@ -683,10 +684,18 @@ function rMore(){
   h+='</div>';
   if(currentUser){
     var ini=(currentUser.name||currentUser.email||'?')[0].toUpperCase();
+    var savedPhoto=localStorage.getItem('bdg16_user_photo')||'';
     h+='<div class="sh" style="margin-top:16px">'+t('sectionMonCompte')+'</div>';
     h+='<div class="card" style="padding:16px">';
     h+='<div style="display:flex;align-items:center;gap:14px;margin-bottom:14px">';
-    h+='<div style="width:50px;height:50px;border-radius:50%;background:var(--b3l);color:var(--b3d);display:flex;align-items:center;justify-content:center;font-size:21px;font-weight:800;flex-shrink:0">'+esc(ini)+'</div>';
+    h+='<div style="position:relative;flex-shrink:0" onclick="document.getElementById(\'profPhotoInp\').click()" title="Changer la photo" style="cursor:pointer">';
+    h+='<div style="width:60px;height:60px;border-radius:50%;background:var(--b3l);color:var(--b3d);display:flex;align-items:center;justify-content:center;font-size:24px;font-weight:800;overflow:hidden;cursor:pointer;border:2px solid var(--b1)">';
+    if(savedPhoto) h+='<img src="'+savedPhoto+'" style="width:100%;height:100%;object-fit:cover">';
+    else h+=esc(ini);
+    h+='</div>';
+    h+='<div style="position:absolute;bottom:0;right:0;background:var(--b1);border-radius:50%;width:20px;height:20px;display:flex;align-items:center;justify-content:center;font-size:11px;cursor:pointer;pointer-events:none">📷</div>';
+    h+='</div>';
+    h+='<input type="file" id="profPhotoInp" accept="image/*" style="display:none" onchange="updateUserPhoto(this)">';
     h+='<div style="min-width:0"><div style="font-weight:700;font-size:15px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+esc(currentUser.name)+'</div>';
     h+='<div style="font-size:12px;color:var(--txt2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+esc(currentUser.email)+'</div></div>';
     h+='</div>';
@@ -717,7 +726,7 @@ function _renderMsgActions(elId,msg,phone){
 }
 async function genMsg(id,elId){
   var el=document.getElementById(elId);if(!el)return;
-  var p=mems().find(function(x){return x.id===id;});if(!p)return;
+  var p=mems().find(function(x){return String(x.id)===String(id);});if(!p)return;
   var pl=PL();
   if((stats.msgsM||0)>=pl.msgs){
     el.innerHTML='<div style="color:var(--b2d);font-size:12px;padding:8px">'+t('msgLimitReached')+'</div>';return;
@@ -750,7 +759,7 @@ async function genMsg(id,elId){
   }
 }
 async function genMsgAI(id,elId){
-  var p=mems().find(function(x){return x.id===id;});
+  var p=mems().find(function(x){return String(x.id)===String(id);});
   if(p){var orig=p.customMsg;p.customMsg=undefined;await genMsg(id,elId);p.customMsg=orig;}
 }
 
@@ -803,7 +812,7 @@ function openFlorist(elId,name){
 window.__giftData={};
 
 async function genGiftModal(id){
-  var p=mems().find(function(x){return x.id===id;});if(!p)return;
+  var p=mems().find(function(x){return String(x.id)===String(id);});if(!p)return;
   var nameEl=document.getElementById('mgift-name');
   var el=document.getElementById('mgift-c');
   if(!el||!nameEl)return;
@@ -859,7 +868,7 @@ function saveGiftIdea(memberId,idx,btnId){
 
 async function genUrgence(id,elId){
   var el=document.getElementById(elId);if(!el)return;
-  var p=mems().find(function(x){return x.id===id;});if(!p)return;
+  var p=mems().find(function(x){return String(x.id)===String(id);});if(!p)return;
   el.innerHTML='<div style="text-align:center;padding:12px"><div class="ld"></div></div>';
   var prompt='Génère en '+(window.__aiLang||'français')+' un message de rattrapage bienveillant pour '+p.name+" dont c'était l'anniversaire hier. Chaleureux, légèrement humoristique sur le retard. 2-3 phrases.";
   try{
@@ -916,8 +925,9 @@ function exportPDF(){
     var age=ageBday(p.day,p.month,p.year);
     return '<tr><td>'+esc(p.name)+'</td><td>'+p.day+'/'+p.month+(p.year?'/'+p.year:'')+'</td><td>'+(age!==null?age:'—')+'</td><td>'+(p.phone||'—')+'</td><td>'+(p.note||'—')+'</td></tr>';
   }).join('');
-  var html='<html><head><title>Bloomday Export</title><style>body{font-family:sans-serif;padding:20px}table{border-collapse:collapse;width:100%}th,td{border:1px solid #ccc;padding:8px;font-size:13px}th{background:#f5f5f5}@media print{button{display:none}}</style></head><body><h1>🌸 Bloomday — '+m.length+' '+t('membresLabel')+'</h1><button onclick="window.print()">'+t('pdfPrint')+'</button><table><thead><tr><th>'+t('pdfColName')+'</th><th>'+t('pdfColDate')+'</th><th>'+t('pdfColAge')+'</th><th>'+t('pdfColPhone')+'</th><th>'+t('pdfColNotes')+'</th></tr></thead><tbody>'+rows+'</tbody></table></body></html>';
-  var blob=new Blob([html],{type:'text/html'});
+  var grpName=(groups&&groups[0]&&groups[0].name)||'Bloomday';
+  var html='<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Bloomday Export</title><style>*{box-sizing:border-box}body{font-family:"Helvetica Neue",Arial,sans-serif;background:#FFF8F0;margin:0;padding:0}header{background:linear-gradient(135deg,#D4A843,#FF8C7A);padding:28px 32px;display:flex;align-items:center;gap:16px}header img{width:52px;height:52px;border-radius:12px;object-fit:contain;background:#fff;padding:4px}header h1{color:#fff;margin:0;font-size:22px;font-weight:800;letter-spacing:-.02em}header p{color:rgba(255,255,255,.8);margin:4px 0 0;font-size:13px}.container{padding:28px 32px}table{border-collapse:collapse;width:100%;background:#fff;border-radius:12px;overflow:hidden;box-shadow:0 2px 12px rgba(0,0,0,.08)}th{background:#2D1B14;color:#fff;padding:12px 14px;text-align:left;font-size:12px;text-transform:uppercase;letter-spacing:.06em}td{padding:11px 14px;font-size:13px;border-bottom:1px solid #f0e8e0}tr:last-child td{border-bottom:none}tr:hover td{background:#FFF5E8}.print-btn{background:#D4A843;color:#fff;border:none;padding:10px 24px;border-radius:8px;font-size:14px;font-weight:700;cursor:pointer;margin-bottom:20px;font-family:inherit}@media print{.print-btn{display:none}header{-webkit-print-color-adjust:exact;print-color-adjust:exact}}</style></head><body><header><img src="https://mybloomday.app/img/logo.png" alt="Bloomday"><div><h1>'+esc(grpName)+'</h1><p>'+m.length+' '+t('membresLabel')+' · mybloomday.app</p></div></header><div class="container"><button class="print-btn" onclick="window.print()">'+t('pdfPrint')+'</button><table><thead><tr><th>'+t('pdfColName')+'</th><th>'+t('pdfColDate')+'</th><th>'+t('pdfColAge')+'</th><th>'+t('pdfColPhone')+'</th><th>'+t('pdfColNotes')+'</th></tr></thead><tbody>'+rows+'</tbody></table></div></body></html>';
+  var blob=new Blob([html],{type:'text/html;charset=utf-8'});
   var url=URL.createObjectURL(blob);
   var a=document.createElement('a');a.href=url;a.target='_blank';a.click();
   setTimeout(function(){URL.revokeObjectURL(url);},5000);
@@ -962,8 +972,13 @@ function copyRefLink(url){
 }
 
 function shareRefLink(url){
-  if(!navigator.share)return;
-  navigator.share({title:'Bloomday',text:t('refSub'),url:url}).catch(function(){});
+  if(navigator.share){
+    navigator.share({title:'Bloomday',text:t('refSub'),url:url}).catch(function(){
+      navigator.clipboard&&navigator.clipboard.writeText(url).then(function(){showToast(t('refCopied')||'Lien copié !','success');});
+    });
+  } else {
+    navigator.clipboard&&navigator.clipboard.writeText(url).then(function(){showToast(t('refCopied')||'Lien copié !','success');});
+  }
 }
 function renderDesktopRightPanel(section){
   var el=document.getElementById('desktop-right-panel');

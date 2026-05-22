@@ -447,10 +447,10 @@ function addMember(){
   if(pp)pp.innerHTML='<svg width="28" height="28" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="10" r="3.5" stroke="#D4A843" stroke-width="1.5"/><path d="M4 20c0-4 3.582-7 8-7s8 3 8 7" stroke="#D4A843" stroke-width="1.5" stroke-linecap="round"/><path d="M17 6h4M19 4v4" stroke="#D4A843" stroke-width="1.5" stroke-linecap="round"/></svg>';
   refresh();showSec('members',1);
 }
-function removeMem(id){if(!confirm(t('removeMemberConfirm')))return;setMems(mems().filter(p=>p.id!==id));saveG();refresh();}
-function togEdit(id){editId=editId===id?null:id;rMembers();}
+function removeMem(id){if(!confirm(t('removeMemberConfirm')))return;setMems(mems().filter(p=>String(p.id)!==String(id)));saveG();refresh();}
+function togEdit(id){editId=String(editId)===String(id)?null:id;rMembers();}
 function saveEdit(id){
-  const m=mems(),p=m.find(x=>x.id===id);if(!p)return;
+  const m=mems(),p=m.find(x=>String(x.id)===String(id));if(!p)return;
   const name=(document.getElementById('em-name').value||'').trim(),day=parseInt(document.getElementById('em-day').value)||0,month=parseInt(document.getElementById('em-month').value)||0;
   if(!name||!day||!month||day<1||day>31||month<1||month>12){alert(t('invalidData'));return;}
   const yv=document.getElementById('em-year').value;

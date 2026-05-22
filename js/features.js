@@ -555,6 +555,21 @@ function closeFlowers() {
   document.body.style.overflow = '';
 }
 
+function updateUserPhoto(input){
+  if(!input.files||!input.files[0])return;
+  var file=input.files[0];
+  var reader=new FileReader();
+  reader.onload=function(e){
+    var dataUrl=e.target.result;
+    localStorage.setItem('bdg16_user_photo',dataUrl);
+    updateNavAvatar();
+    showToast('Photo mise à jour !','success');
+    var el=document.getElementById('s-more');
+    if(el&&el.style.display!=='none') rMore();
+  };
+  reader.readAsDataURL(file);
+}
+
 // ── CHATBOT BLOOM ──
 var _chatHistory = [];
 var _chatOpen = false;
