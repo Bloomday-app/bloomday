@@ -67,8 +67,18 @@ function initAuth() {
         await sg('bdg16_profile', profile);
       }
 
+      // Si l'app n'est pas encore visible (utilisateur vient de la vitrine), la lancer
+      var appEl = document.getElementById('app');
+      var appStarted = appEl && appEl.classList.contains('on');
+      if (!appStarted) {
+        var landEl = document.getElementById('land');
+        if (landEl) landEl.style.display = 'none';
+        if (appEl) appEl.classList.add('on');
+        if (typeof load === 'function') load();
+      }
+
+      closeOv('m-auth');
       if (isNew) {
-        closeOv('m-auth');
         showToast(t('welcomeUser') + ' ' + currentUser.name.split(' ')[0] + ' !', 'success');
         sendEmail('welcome', { name: currentUser.name, email: currentUser.email });
       }
@@ -76,7 +86,7 @@ function initAuth() {
       checkAdmin(currentUser);
       var logoutBtnIn = document.getElementById('tb-logout');
       if (logoutBtnIn) logoutBtnIn.style.display = 'inline-block';
-      refresh();
+      if (appStarted) refresh();
     } else if (event === 'SIGNED_OUT') {
       var wasUser = currentUser;
       currentUser = null;
@@ -181,7 +191,7 @@ function showLogoutScreen(wasUser) {
   if (reconnectBtn) reconnectBtn.textContent = t('logoutReconnect') || 'Se reconnecter';
   screen.style.display = 'flex';
   screen.style.animation = 'fi .4s ease';
-  setTimeout(function() { closeLogoutScreen(); }, 3000);
+  setTimeout(function() { closeLogoutScreen(); }, 5000);
 }
 
 function closeLogoutScreen() {
@@ -193,7 +203,7 @@ function closeLogoutScreen() {
     screen.style.display = 'none';
     screen.style.opacity = '';
     screen.style.transition = '';
-    openOv('m-auth');
+    if (typeof goLand === 'function') goLand();
   }, 500);
 }
 
