@@ -4,3 +4,8 @@ node_modules/
 *.log
 .gstack/
 .worktrees/
+.claude/
+.agents/
+.superpowers/
+.playwright-mcp/
+skills-lock.json
