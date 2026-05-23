@@ -1,0 +1,108 @@
+<h2>Layout 3 colonnes — quelle largeur pour la nav gauche ?</h2>
+<p class="subtitle">Le calendrier sera toujours à droite (280px). La question : la colonne gauche avec les labels ou juste des icônes ?</p>
+
+<div class="cards">
+
+  <div class="card" data-choice="a" onclick="toggleSelect(this)">
+    <div class="card-image">
+      <div style="display:flex;height:200px;border:1px solid #e0e0e0;border-radius:8px;overflow:hidden;font-size:11px">
+        <div style="width:200px;background:#1a1a2e;color:white;padding:12px 8px;display:flex;flex-direction:column;gap:6px;flex-shrink:0">
+          <div style="font-size:10px;font-weight:700;color:#f4a261;margin-bottom:4px">🌸 Bloomday</div>
+          <div style="background:rgba(255,255,255,0.15);border-radius:6px;padding:6px 8px;display:flex;align-items:center;gap:6px">🏠 <span>Accueil</span></div>
+          <div style="padding:6px 8px;display:flex;align-items:center;gap:6px;color:#aaa">👥 <span>Membres</span></div>
+          <div style="padding:6px 8px;display:flex;align-items:center;gap:6px;color:#aaa">➕ <span>Ajouter</span></div>
+          <div style="padding:6px 8px;display:flex;align-items:center;gap:6px;color:#aaa">📍 <span>Fêtes</span></div>
+          <div style="padding:6px 8px;display:flex;align-items:center;gap:6px;color:#aaa">👤 <span>Profil</span></div>
+          <div style="margin-top:auto;padding:6px 8px;display:flex;align-items:center;gap:6px;color:#aaa;font-size:10px">🌍 FR</div>
+        </div>
+        <div style="flex:1;background:#fff8f0;padding:12px;color:#333">
+          <div style="font-weight:700;font-size:12px;margin-bottom:8px">Accueil</div>
+          <div style="background:#ffe;border-radius:4px;height:20px;margin-bottom:6px"></div>
+          <div style="background:#ffe;border-radius:4px;height:20px;margin-bottom:6px"></div>
+          <div style="background:#ffe;border-radius:4px;height:40px"></div>
+        </div>
+        <div style="width:200px;background:#fff;border-left:1px solid #eee;padding:10px;flex-shrink:0">
+          <div style="font-size:10px;font-weight:700;color:#333;margin-bottom:6px">📅 Mai 2026</div>
+          <div style="display:grid;grid-template-columns:repeat(7,1fr);gap:2px;font-size:9px;text-align:center">
+            <div style="color:#999">L</div><div style="color:#999">M</div><div style="color:#999">M</div><div style="color:#999">J</div><div style="color:#999">V</div><div style="color:#999">S</div><div style="color:#999">D</div>
+            <div></div><div></div><div></div><div style="background:#f4a261;border-radius:50%;color:white;width:16px;height:16px;display:flex;align-items:center;justify-content:center">1</div><div>2</div><div>3</div><div>4</div>
+            <div>5</div><div>6</div><div>7</div><div>8</div><div>9</div><div>10</div><div>11</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>A — Nav large avec labels (200px)</h3>
+      <p>Navigation visible avec texte + icône. Sélecteur de langue en bas de la sidebar. Plus clair, occupe plus d'espace.</p>
+    </div>
+  </div>
+
+  <div class="card" data-choice="b" onclick="toggleSelect(this)">
+    <div class="card-image">
+      <div style="display:flex;height:200px;border:1px solid #e0e0e0;border-radius:8px;overflow:hidden;font-size:11px">
+        <div style="width:64px;background:#1a1a2e;color:white;padding:12px 4px;display:flex;flex-direction:column;align-items:center;gap:8px;flex-shrink:0">
+          <div style="font-size:16px">🌸</div>
+          <div style="background:rgba(255,255,255,0.15);border-radius:8px;padding:6px;font-size:16px">🏠</div>
+          <div style="padding:6px;font-size:16px;color:#aaa">👥</div>
+          <div style="padding:6px;font-size:16px;color:#aaa">➕</div>
+          <div style="padding:6px;font-size:16px;color:#aaa">📍</div>
+          <div style="padding:6px;font-size:16px;color:#aaa">👤</div>
+          <div style="margin-top:auto;font-size:10px;color:#aaa">🌍</div>
+        </div>
+        <div style="flex:1;background:#fff8f0;padding:12px;color:#333">
+          <div style="font-weight:700;font-size:12px;margin-bottom:8px">Accueil</div>
+          <div style="background:#ffe;border-radius:4px;height:20px;margin-bottom:6px"></div>
+          <div style="background:#ffe;border-radius:4px;height:20px;margin-bottom:6px"></div>
+          <div style="background:#ffe;border-radius:4px;height:40px"></div>
+        </div>
+        <div style="width:200px;background:#fff;border-left:1px solid #eee;padding:10px;flex-shrink:0">
+          <div style="font-size:10px;font-weight:700;color:#333;margin-bottom:6px">📅 Mai 2026</div>
+          <div style="display:grid;grid-template-columns:repeat(7,1fr);gap:2px;font-size:9px;text-align:center">
+            <div style="color:#999">L</div><div style="color:#999">M</div><div style="color:#999">M</div><div style="color:#999">J</div><div style="color:#999">V</div><div style="color:#999">S</div><div style="color:#999">D</div>
+            <div></div><div></div><div></div><div style="background:#f4a261;border-radius:50%;color:white;width:16px;height:16px;display:flex;align-items:center;justify-content:center">1</div><div>2</div><div>3</div><div>4</div>
+            <div>5</div><div>6</div><div>7</div><div>8</div><div>9</div><div>10</div><div>11</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>B — Nav icônes seulement (64px, actuelle)</h3>
+      <p>Sidebar compacte déjà en place. Plus de place pour le contenu. Sélecteur langue en bas de la sidebar. Moins lisible.</p>
+    </div>
+  </div>
+
+  <div class="card" data-choice="c" onclick="toggleSelect(this)">
+    <div class="card-image">
+      <div style="display:flex;height:200px;border:1px solid #e0e0e0;border-radius:8px;overflow:hidden;font-size:11px">
+        <div style="width:140px;background:#1a1a2e;color:white;padding:12px 8px;display:flex;flex-direction:column;gap:6px;flex-shrink:0">
+          <div style="font-size:10px;font-weight:700;color:#f4a261;margin-bottom:4px">🌸 Bloomday</div>
+          <div style="background:rgba(255,255,255,0.15);border-radius:6px;padding:5px 7px;display:flex;align-items:center;gap:5px;font-size:10px">🏠 <span>Accueil</span></div>
+          <div style="padding:5px 7px;display:flex;align-items:center;gap:5px;color:#aaa;font-size:10px">👥 <span>Membres</span></div>
+          <div style="padding:5px 7px;display:flex;align-items:center;gap:5px;color:#aaa;font-size:10px">➕ <span>Ajouter</span></div>
+          <div style="padding:5px 7px;display:flex;align-items:center;gap:5px;color:#aaa;font-size:10px">📍 <span>Fêtes</span></div>
+          <div style="padding:5px 7px;display:flex;align-items:center;gap:5px;color:#aaa;font-size:10px">👤 <span>Profil</span></div>
+          <div style="margin-top:auto;padding:5px 7px;font-size:9px;color:#888">🌍 Français ▾</div>
+        </div>
+        <div style="flex:1;background:#fff8f0;padding:12px;color:#333">
+          <div style="font-weight:700;font-size:12px;margin-bottom:8px">Accueil</div>
+          <div style="background:#ffe;border-radius:4px;height:20px;margin-bottom:6px"></div>
+          <div style="background:#ffe;border-radius:4px;height:20px;margin-bottom:6px"></div>
+          <div style="background:#ffe;border-radius:4px;height:40px"></div>
+        </div>
+        <div style="width:180px;background:#fff;border-left:1px solid #eee;padding:10px;flex-shrink:0">
+          <div style="font-size:10px;font-weight:700;color:#333;margin-bottom:6px">📅 Mai 2026</div>
+          <div style="display:grid;grid-template-columns:repeat(7,1fr);gap:2px;font-size:9px;text-align:center">
+            <div style="color:#999">L</div><div style="color:#999">M</div><div style="color:#999">M</div><div style="color:#999">J</div><div style="color:#999">V</div><div style="color:#999">S</div><div style="color:#999">D</div>
+            <div></div><div></div><div></div><div style="background:#f4a261;border-radius:50%;color:white;width:16px;height:16px;display:flex;align-items:center;justify-content:center">1</div><div>2</div><div>3</div><div>4</div>
+            <div>5</div><div>6</div><div>7</div><div>8</div><div>9</div><div>10</div><div>11</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>C — Nav moyenne avec labels (140px) — Recommandé</h3>
+      <p>Compromis : labels lisibles sans grignoter trop d'espace. Sélecteur langue discret en bas avec le nom de la langue. Équilibre optimal.</p>
+    </div>
+  </div>
+
+</div>

@@ -1,0 +1,66 @@
+<h2>Commande de fleurs — quel flux ?</h2>
+<p class="subtitle">Depuis la fiche d'un événement, l'utilisateur clique "Commander des fleurs"…</p>
+
+<div class="cards">
+
+  <div class="card" data-choice="redirect" onclick="toggleSelect(this)">
+    <div class="card-image" style="background:linear-gradient(135deg,#1A0533,#5B2D8E);padding:16px;min-height:180px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px">
+      <!-- App card -->
+      <div style="background:rgba(255,255,255,.1);border-radius:12px;padding:10px;width:180px;text-align:center">
+        <div style="color:white;font-size:10px;font-weight:700;margin-bottom:4px">🎂 Marie — Demain</div>
+        <div style="background:#D4A843;border-radius:8px;padding:6px;font-size:9px;color:white;margin-bottom:6px">🌸 Commander des fleurs</div>
+        <div style="color:rgba(255,255,255,.5);font-size:8px">↓ Redirige vers</div>
+      </div>
+      <!-- Flèche -->
+      <div style="color:#D4A843;font-size:20px">↓</div>
+      <!-- Partenaire externe -->
+      <div style="background:white;border-radius:12px;padding:8px 14px;font-size:9px;color:#333;font-weight:600">
+        🌹 Interflora / 1001Fleurs / etc.
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>Redirection partenaire (rapide)</h3>
+      <p>Bouton "Commander des fleurs" → ouverture du site d'un fleuriste partenaire (Interflora, 1001Fleurs…). Bloomday reçoit une commission d'affiliation. Zéro gestion de commandes.</p>
+    </div>
+  </div>
+
+  <div class="card" data-choice="inapp" onclick="toggleSelect(this)">
+    <div class="card-image" style="background:linear-gradient(135deg,#1A0533,#5B2D8E);padding:16px;min-height:180px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px">
+      <div style="background:rgba(255,255,255,.1);border-radius:12px;padding:10px;width:180px">
+        <div style="color:white;font-size:9px;font-weight:700;margin-bottom:6px;text-align:center">🌸 Envoyer des fleurs à Marie</div>
+        <!-- Sélecteur bouquet -->
+        <div style="display:flex;gap:4px;margin-bottom:6px">
+          <div style="background:linear-gradient(135deg,#D4A843,#FF8C7A);border-radius:8px;padding:4px;flex:1;text-align:center;font-size:7px;color:white">💐<br>Roses<br>29€</div>
+          <div style="background:rgba(255,255,255,.15);border-radius:8px;padding:4px;flex:1;text-align:center;font-size:7px;color:white">🌷<br>Tulipes<br>24€</div>
+          <div style="background:rgba(255,255,255,.15);border-radius:8px;padding:4px;flex:1;text-align:center;font-size:7px;color:white">🌻<br>Tournesols<br>19€</div>
+        </div>
+        <div style="background:#D4A843;border-radius:8px;padding:5px;font-size:8px;color:white;text-align:center">Payer 29€ →</div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>Boutique intégrée dans Bloomday</h3>
+      <p>Catalogue bouquets, paiement Stripe directement dans l'app. Bloomday gère la commande et transmet au fleuriste. Plus d'expérience, mais très lourd à développer et gérer.</p>
+    </div>
+  </div>
+
+  <div class="card" data-choice="suggest" onclick="toggleSelect(this)">
+    <div class="card-image" style="background:linear-gradient(135deg,#1A0533,#5B2D8E);padding:16px;min-height:180px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px">
+      <div style="background:rgba(255,255,255,.1);border-radius:12px;padding:10px;width:180px">
+        <div style="color:white;font-size:9px;font-weight:700;margin-bottom:6px;text-align:center">💡 Idées pour Marie</div>
+        <div style="background:rgba(255,255,255,.08);border-radius:8px;padding:6px;margin-bottom:4px">
+          <div style="font-size:8px;color:white">🌹 Roses rouges — 29€</div>
+          <div style="font-size:7px;color:rgba(255,255,255,.5)">Voir sur Interflora →</div>
+        </div>
+        <div style="background:rgba(255,255,255,.08);border-radius:8px;padding:6px">
+          <div style="font-size:8px;color:white">🌿 Bouquet zen — 35€</div>
+          <div style="font-size:7px;color:rgba(255,255,255,.5)">Voir sur 1001Fleurs →</div>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>Suggestions avec liens affiliés</h3>
+      <p>Bloomday propose 2-3 bouquets adaptés (avec IA selon le profil du contact) et redirige vers le bon lien. Plus curatif que simple redirection, moins lourd qu'une boutique.</p>
+    </div>
+  </div>
+
+</div>

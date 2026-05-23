@@ -1,4 +1,5 @@
 // ── SUPABASE AUTH ──
+var _authInited = false;
 
 // Capture referral code from URL on page load
 (function(){
@@ -27,6 +28,8 @@ function checkAdmin(user) {
 }
 
 function initAuth() {
+  if (_authInited) return;
+  _authInited = true;
   supabase.auth.getSession().then(function(result) {
     var session = result.data.session;
     if (session) {

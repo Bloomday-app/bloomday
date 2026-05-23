@@ -1,0 +1,138 @@
+- generic [active] [ref=e1]:
+  - generic [ref=e3]:
+    - generic [ref=e7]:
+      - generic [ref=e8]:
+        - img [ref=e9]
+        - generic [ref=e13]:
+          - generic [ref=e14]: Bloomday
+          - generic [ref=e15]: Le jour où tu fleuris
+        - button "Connexion" [ref=e16] [cursor=pointer]
+      - heading "Célébrez chaque personne qui compte pour vous" [level=1] [ref=e17]:
+        - text: Célébrez chaque personne
+        - text: qui compte pour vous
+      - paragraph [ref=e18]: Messages IA personnalisés, idées cadeaux, fêtes du monde entier.
+      - generic [ref=e19]: 🌸 7 jours gratuits · Sans carte bancaire
+    - generic [ref=e21]:
+      - generic [ref=e22]:
+        - heading "Choisissez votre formule" [level=2] [ref=e23]
+        - paragraph [ref=e24]: Messages IA · Cadeaux · 140 pays · 7 langues
+        - generic [ref=e25]: 🌸 🌸 7 jours gratuits · Sans carte bancaire
+        - generic [ref=e26]:
+          - generic [ref=e27]:
+            - generic [ref=e28]: "140"
+            - text: Pays
+          - generic [ref=e29]:
+            - generic [ref=e30]: "7"
+            - text: Langues
+          - generic [ref=e31]:
+            - generic [ref=e32]: IA
+            - text: IA Personnalisé
+      - table [ref=e34]:
+        - rowgroup [ref=e35]:
+          - row "Starter 0€ pour toujours ⭐ Bloom 4,99€ /mois 🏢 Business 19,99€ /mois Enterprise Sur devis" [ref=e36]:
+            - columnheader [ref=e37]
+            - columnheader "Starter 0€ pour toujours" [ref=e38]:
+              - generic [ref=e39]: Starter
+              - generic [ref=e40]: 0€
+              - text: pour toujours
+            - columnheader "⭐ Bloom 4,99€ /mois" [ref=e41]:
+              - generic [ref=e42]: ⭐ Bloom
+              - generic [ref=e43]: 4,99€
+              - text: /mois
+            - columnheader "🏢 Business 19,99€ /mois" [ref=e44]:
+              - generic [ref=e45]: 🏢 Business
+              - generic [ref=e46]: 19,99€
+              - text: /mois
+            - columnheader "Enterprise Sur devis" [ref=e47]:
+              - generic [ref=e48]: Enterprise
+              - generic [ref=e49]: Sur devis
+        - rowgroup [ref=e50]:
+          - row "Membres max 10 Illimité 50 Illimité" [ref=e51]:
+            - cell "Membres max" [ref=e52]
+            - cell "10" [ref=e53]
+            - cell "Illimité" [ref=e54]:
+              - generic [ref=e55]: Illimité
+            - cell "50" [ref=e56]
+            - cell "Illimité" [ref=e57]
+          - row "Groupes 1 5 Illimité Illimité" [ref=e58]:
+            - cell "Groupes" [ref=e59]
+            - cell "1" [ref=e60]
+            - cell "5" [ref=e61]:
+              - generic [ref=e62]: "5"
+            - cell "Illimité" [ref=e63]
+            - cell "Illimité" [ref=e64]
+          - row "Messages IA/mois 5 Illimité Illimité Illimité" [ref=e65]:
+            - cell "Messages IA/mois" [ref=e66]
+            - cell "5" [ref=e67]
+            - cell "Illimité" [ref=e68]:
+              - generic [ref=e69]: Illimité
+            - cell "Illimité" [ref=e70]
+            - cell "Illimité" [ref=e71]
+          - row "Cadeaux IA ✗ ✓ ✓ ✓" [ref=e72]:
+            - cell "Cadeaux IA" [ref=e73]
+            - cell "✗" [ref=e74]
+            - cell "✓" [ref=e75]
+            - cell "✓" [ref=e76]
+            - cell "✓" [ref=e77]
+          - row "Cartes virtuelles ✗ ✓ ✓ ✓" [ref=e78]:
+            - cell "Cartes virtuelles" [ref=e79]
+            - cell "✗" [ref=e80]
+            - cell "✓" [ref=e81]
+            - cell "✓" [ref=e82]
+            - cell "✓" [ref=e83]
+          - row "Admins de groupe ✗ 2 5 Illimité" [ref=e84]:
+            - cell "Admins de groupe" [ref=e85]
+            - cell "✗" [ref=e86]
+            - cell "2" [ref=e87]:
+              - generic [ref=e88]: "2"
+            - cell "5" [ref=e89]
+            - cell "Illimité" [ref=e90]
+          - row "Import CSV ✗ ✗ ✓ ✓" [ref=e91]:
+            - cell "Import CSV" [ref=e92]
+            - cell "✗" [ref=e93]
+            - cell "✗" [ref=e94]
+            - cell "✓" [ref=e95]
+            - cell "✓" [ref=e96]
+          - row "Marque blanche ✗ ✗ ✗ ✓" [ref=e97]:
+            - cell "Marque blanche" [ref=e98]
+            - cell "✗" [ref=e99]
+            - cell "✗" [ref=e100]
+            - cell "✗" [ref=e101]
+            - cell "✓" [ref=e102]
+          - row "Publicités Oui ✗ Aucune ✗ Aucune ✗ Aucune" [ref=e103]:
+            - cell "Publicités" [ref=e104]
+            - cell "Oui" [ref=e105]
+            - cell "✗ Aucune" [ref=e106]
+            - cell "✗ Aucune" [ref=e107]
+            - cell "✗ Aucune" [ref=e108]
+        - rowgroup [ref=e109]:
+          - row "Commencer gratuitement 🌸 Essayer 7 jours gratuits Essai 14 jours → Nous contacter" [ref=e110]:
+            - cell [ref=e111]
+            - cell "Commencer gratuitement" [ref=e112]:
+              - button "Commencer gratuitement" [ref=e113] [cursor=pointer]
+            - cell "🌸 Essayer 7 jours gratuits" [ref=e114]:
+              - button "🌸 Essayer 7 jours gratuits" [ref=e115] [cursor=pointer]
+            - cell "Essai 14 jours →" [ref=e116]:
+              - button "Essai 14 jours →" [ref=e117] [cursor=pointer]
+            - cell "Nous contacter" [ref=e118]:
+              - button "Nous contacter" [ref=e119] [cursor=pointer]
+      - generic [ref=e120]: 🔒 RGPD · Paiement sécurisé · Annulation à tout moment
+    - generic [ref=e121]:
+      - generic [ref=e122]: Ils ont fleuri avec Bloomday
+      - generic [ref=e123]:
+        - text: "\""
+        - paragraph [ref=e124]: Bloomday a changé la dynamique de notre groupe.
+        - generic [ref=e125]: Marie L. — Responsable d'association
+      - generic [ref=e126]:
+        - text: "\""
+        - paragraph [ref=e127]: 80 collaborateurs gérés sans effort. Les messages IA sont parfaitement adaptés.
+        - generic [ref=e128]: Thomas B. — DRH, agence de communication
+      - generic [ref=e129]:
+        - text: "\""
+        - paragraph [ref=e130]: Ambassador Bronze depuis 3 mois. Déjà 2 mois gratuits !
+        - generic [ref=e131]: Karim M. — Ambassador Bloomday
+      - generic [ref=e132]: 🔒 RGPD · Paiement sécurisé · Annulation à tout moment
+  - text: 🌸 🌺 🌷 🌼 ✨ 🌻
+  - generic [ref=e133] [cursor=pointer]:
+    - generic [ref=e134]: 🌍
+    - generic [ref=e135]: FR

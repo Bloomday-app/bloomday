@@ -1,0 +1,39 @@
+<h2>Hero sur mobile — comportement</h2>
+<p class="subtitle">Le split gauche/droite ne tient pas sur un petit écran. Comment gérer ?</p>
+
+<div class="cards">
+
+  <div class="card" data-choice="stack" onclick="toggleSelect(this)">
+    <div class="card-image" style="background:#1A0533;padding:16px;min-height:180px;display:flex;align-items:center;justify-content:center">
+      <!-- Mockup téléphone vertical -->
+      <div style="background:#2D1B69;border-radius:20px;width:120px;padding:12px;box-shadow:0 8px 24px rgba(0,0,0,.4)">
+        <!-- Photo en haut -->
+        <div style="background:linear-gradient(135deg,#9B4FC0,#D4A843);border-radius:12px;height:60px;display:flex;align-items:center;justify-content:center;margin-bottom:8px;font-size:24px">📸</div>
+        <!-- Texte en dessous -->
+        <div style="color:white;font-size:8px;font-weight:700;text-align:center;margin-bottom:4px">Célébrez chaque<br>personne qui compte</div>
+        <div style="background:#D4A843;border-radius:8px;padding:4px;font-size:7px;color:white;text-align:center;margin-top:6px">🌸 7 jours gratuits</div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>Photo en haut, texte en bas (recommandé)</h3>
+      <p>La photo s'empile au-dessus du texte sur mobile. Logique, lisible, on voit quand même l'image. C'est le comportement naturel des landing pages modernes.</p>
+    </div>
+  </div>
+
+  <div class="card" data-choice="hide" onclick="toggleSelect(this)">
+    <div class="card-image" style="background:#1A0533;padding:16px;min-height:180px;display:flex;align-items:center;justify-content:center">
+      <div style="background:#2D1B69;border-radius:20px;width:120px;padding:12px;box-shadow:0 8px 24px rgba(0,0,0,.4)">
+        <!-- Pas de photo -->
+        <div style="color:white;font-size:8px;font-weight:700;text-align:center;margin-bottom:6px;margin-top:8px">Célébrez chaque<br>personne qui compte</div>
+        <div style="font-size:9px;color:rgba(255,255,255,.6);text-align:center;margin-bottom:8px">Messages IA · Cadeaux</div>
+        <div style="background:#D4A843;border-radius:8px;padding:4px;font-size:7px;color:white;text-align:center">🌸 7 jours gratuits</div>
+        <div style="text-align:center;margin-top:6px;font-size:8px;color:rgba(255,255,255,.3)">(photo cachée)</div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>Photo cachée sur mobile</h3>
+      <p>Mobile reste épuré — juste le texte et le CTA. La photo n'apparaît que sur desktop (≥768px). Plus minimaliste, chargement plus léger.</p>
+    </div>
+  </div>
+
+</div>

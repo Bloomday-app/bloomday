@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bloomday — Maquettes UX</title>
+<style>
+  :root {
+    --pink: #E8A4C8;
+    --gold: #D4A843;
+    --green: #4CAF8A;
+    --bg: #FFF8F0;
+    --bg2: #F5EDE4;
+    --txt: #2D1B0E;
+    --txt2: #8B6B4A;
+    --border: #E8D5C0;
+    --red: #E07070;
+    --blue: #5B8FD4;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #F0EBE3; color: var(--txt); }
+
+  h1 { text-align: center; padding: 32px 20px 8px; font-size: 24px; color: var(--txt); }
+  .subtitle { text-align: center; color: var(--txt2); font-size: 14px; padding-bottom: 24px; }
+
+  .section { margin: 0 auto 48px; max-width: 960px; padding: 0 16px; }
+  .section-title { font-size: 18px; font-weight: 700; color: var(--txt); margin-bottom: 6px; }
+  .section-desc { font-size: 13px; color: var(--txt2); margin-bottom: 20px; line-height: 1.5; }
+
+  .compare { display: flex; gap: 20px; flex-wrap: wrap; }
+  .card { flex: 1; min-width: 280px; background: white; border-radius: 16px; overflow: hidden; box-shadow: 0 2px 12px rgba(0,0,0,0.08); }
+  .card-label { padding: 10px 16px; font-size: 12px; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase; }
+  .card-label.before { background: #FFF0F0; color: var(--red); border-bottom: 2px solid #FFD0D0; }
+  .card-label.after { background: #F0FFF6; color: #2E7D52; border-bottom: 2px solid #B0EDD0; }
+
+  /* ── PHONE FRAME ── */
+  .phone { width: 240px; margin: 0 auto; background: var(--bg); border-radius: 12px; overflow: hidden; border: 1px solid var(--border); }
+  .phone-inner { padding-bottom: 8px; }
+
+  /* TOPBAR */
+  .topbar { display: flex; align-items: center; justify-content: space-between; padding: 10px 12px; background: var(--bg); border-bottom: 1px solid var(--border); }
+  .topbar-l { display: flex; align-items: center; gap: 8px; }
+  .topbar-r .plan-tag { background: linear-gradient(135deg, var(--gold), #F0C060); color: white; font-size: 10px; font-weight: 700; padding: 3px 8px; border-radius: 20px; }
+
+  /* Logo variants */
+  .logo-old { width: 26px; height: 26px; background: #1A1A1A; border-radius: 50%; display: flex; align-items: center; justify-content: center; }
+  .logo-old svg { opacity: 0.3; }
+
+  .logo-new { width: 26px; height: 26px; background: linear-gradient(135deg, #FFB6D9, #FF8BC0); border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 6px rgba(228, 100, 160, 0.4); }
+  .logo-new svg { filter: drop-shadow(0 1px 2px rgba(255,255,255,0.8)); }
+
+  .tb-text { }
+  .tb-title { font-size: 13px; font-weight: 800; color: var(--txt); letter-spacing: -0.3px; }
+  .tb-sub { font-size: 9px; color: var(--txt2); }
+
+  /* GROUP BAR */
+  .gbar { display: flex; gap: 6px; padding: 8px 10px; overflow-x: auto; background: var(--bg); border-bottom: 1px solid var(--border); }
+  .gc { font-size: 11px; padding: 4px 10px; border-radius: 20px; border: 1px solid var(--border); background: white; color: var(--txt2); white-space: nowrap; cursor: pointer; }
+  .gc.on { background: var(--gold); color: white; border-color: var(--gold); font-weight: 700; }
+  .gc-old { background: #FFEEEE; color: var(--red); border-color: #FFCCCC; }
+  .gc-new { background: var(--bg2); color: var(--txt2); border-color: var(--border); }
+
+  /* CONTENT */
+  .content { padding: 12px; min-height: 120px; }
+  .member-row { display: flex; align-items: center; gap: 8px; padding: 8px; background: var(--bg2); border-radius: 10px; margin-bottom: 6px; }
+  .avatar { width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 14px; flex-shrink: 0; }
+  .member-info { font-size: 11px; }
+  .member-name { font-weight: 700; color: var(--txt); }
+  .member-date { color: var(--txt2); }
+
+  /* BOTTOM NAV */
+  .nav { display: flex; background: white; border-top: 1px solid var(--border); }
+  .nb { flex: 1; display: flex; flex-direction: column; align-items: center; padding: 8px 4px 6px; gap: 3px; border: none; background: none; color: var(--txt2); cursor: pointer; font-size: 9px; }
+  .nb.on { color: var(--gold); }
+  .nb svg { width: 18px; height: 18px; }
+  .nb-avatar { width: 22px; height: 22px; border-radius: 50%; overflow: hidden; background: linear-gradient(135deg, var(--pink), #F0A0D0); display: flex; align-items: center; justify-content: center; border: 2px solid var(--gold); }
+  .nb-avatar img { width: 100%; height: 100%; object-fit: cover; }
+  .nb-avatar-placeholder { font-size: 12px; color: white; font-weight: 700; }
+
+  /* COUNTRY DROPDOWN */
+  .dropdown-demo { background: white; border-radius: 12px; padding: 12px; }
+  .dd-label { font-size: 12px; font-weight: 700; color: var(--txt); margin-bottom: 6px; }
+  .dd-select-old { width: 100%; border: 1px solid var(--border); border-radius: 8px; padding: 8px 10px; font-size: 12px; color: var(--txt2); background: var(--bg2); appearance: none; cursor: pointer; }
+  .dd-search-wrap { position: relative; margin-bottom: 6px; }
+  .dd-search { width: 100%; border: 1.5px solid var(--gold); border-radius: 8px; padding: 7px 10px 7px 28px; font-size: 12px; color: var(--txt); background: white; outline: none; }
+  .dd-search-icon { position: absolute; left: 8px; top: 50%; transform: translateY(-50%); font-size: 12px; }
+  .dd-list { max-height: 110px; overflow-y: auto; border: 1px solid var(--border); border-radius: 8px; background: white; }
+  .dd-item { padding: 6px 10px; font-size: 12px; color: var(--txt); cursor: pointer; display: flex; align-items: center; gap: 6px; }
+  .dd-item:hover { background: var(--bg2); }
+  .dd-item.active { background: #FFF3E0; color: var(--gold); font-weight: 700; }
+
+  /* TAGS */
+  .tag { display: inline-block; font-size: 11px; padding: 2px 8px; border-radius: 20px; font-weight: 600; margin-bottom: 4px; }
+  .tag-bad { background: #FFE0E0; color: var(--red); }
+  .tag-good { background: #E0FFE8; color: #2E7D52; }
+
+  /* FETE badge */
+  .fete-badge { display: inline-flex; align-items: center; gap: 4px; background: linear-gradient(135deg, #E8F4FF, #D0E8FF); border: 1px solid #A0C8FF; border-radius: 8px; padding: 4px 8px; font-size: 11px; color: #2255AA; margin: 4px 0; }
+
+  /* SEPARATOR */
+  .sep { border: none; border-top: 2px dashed var(--border); margin: 40px 0; }
+
+  /* Dark mode topbar demo */
+  .topbar-dark { background: #1E1610; border-bottom: 1px solid #3A2A1A; }
+  .topbar-dark .tb-title { color: #F5E8D0; }
+  .topbar-dark .tb-sub { color: #8B6B4A; }
+</style>
+</head>
+<body>
+
+<h1>🌸 Bloomday — Maquettes UX</h1>
+<p class="subtitle">Comparaisons Avant / Après — 3 axes d'amélioration</p>
+
+<!-- ── A1 : LOGO ── -->
+<div class="section">
+  <div class="section-title">A1 — Logo visible dans la topbar (mode clair & sombre)</div>
+  <div class="section-desc">Actuellement le SVG <code>#bi</code> sur fond sombre n'est pas distinguable. Solution : fond rose dégradé + ombre portée blanche.</div>
+
+  <div class="compare">
+    <div class="card">
+      <div class="card-label before">❌ Avant — Logo invisible</div>
+      <div style="padding:16px">
+        <div class="phone">
+          <div class="topbar topbar-dark">
+            <div class="topbar-l">
+              <div class="logo-old">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="white"><path d="M12 2C9 2 7 4 7 7c0 2 1 3.5 2.5 4.5C8 13 7 15 7 17h10c0-2-1-4-2.5-5.5C16 10.5 17 9 17 7c0-3-2-5-5-5z"/></svg>
+              </div>
+              <div class="tb-text">
+                <div class="tb-title" style="color:#F5E8D0">Bloomday</div>
+                <div class="tb-sub">Le jour où tu fleuris</div>
+              </div>
+            </div>
+            <div class="topbar-r"><div class="plan-tag">Bloom ▾</div></div>
+          </div>
+          <div class="content" style="background:#1E1610">
+            <span class="tag tag-bad">Logo quasi invisible en sombre</span>
+          </div>
+        </div>
+        <p style="font-size:11px;color:var(--txt2);margin-top:10px;text-align:center">SVG noir sans fond → disparaît sur fond sombre</p>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-label after">✅ Après — Logo bien visible</div>
+      <div style="padding:16px">
+        <div class="phone">
+          <div class="topbar topbar-dark">
+            <div class="topbar-l">
+              <div class="logo-new">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="white"><path d="M12 2C9 2 7 4 7 7c0 2 1 3.5 2.5 4.5C8 13 7 15 7 17h10c0-2-1-4-2.5-5.5C16 10.5 17 9 17 7c0-3-2-5-5-5z"/></svg>
+              </div>
+              <div class="tb-text">
+                <div class="tb-title" style="color:#F5E8D0">Bloomday</div>
+                <div class="tb-sub">Le jour où tu fleuris</div>
+              </div>
+            </div>
+            <div class="topbar-r"><div class="plan-tag">Bloom ▾</div></div>
+          </div>
+          <div class="content" style="background:#1E1610">
+            <span class="tag tag-good">Logo clair sur fond sombre ✓</span>
+          </div>
+        </div>
+        <p style="font-size:11px;color:var(--txt2);margin-top:10px;text-align:center">Fond rose dégradé + ombre blanche → visible partout</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<hr class="sep">
+
+<!-- ── A2 : NAV PROFIL ── -->
+<div class="section">
+  <div class="section-title">A2 — Onglet "Plus" → "Profil" avec photo ronde</div>
+  <div class="section-desc">Le 5e onglet de la barre de navigation montre 3 points et "Plus". Le remplacer par la photo de profil de l'utilisateur (initiales si pas de photo) et "Profil".</div>
+
+  <div class="compare">
+    <div class="card">
+      <div class="card-label before">❌ Avant — "Plus" générique</div>
+      <div style="padding:16px">
+        <div class="phone">
+          <div class="phone-inner">
+            <div class="topbar">
+              <div class="topbar-l">
+                <div class="logo-new"><svg width="16" height="16" viewBox="0 0 24 24" fill="white"><path d="M12 2C9 2 7 4 7 7c0 2 1 3.5 2.5 4.5C8 13 7 15 7 17h10c0-2-1-4-2.5-5.5C16 10.5 17 9 17 7c0-3-2-5-5-5z"/></svg></div>
+                <div class="tb-text"><div class="tb-title">Bloomday</div></div>
+              </div>
+            </div>
+            <div class="content">
+              <div class="member-row"><div class="avatar" style="background:#FFE0D0">🎂</div><div class="member-info"><div class="member-name">Marie Dupont</div><div class="member-date">dans 3 jours</div></div></div>
+              <div class="member-row"><div class="avatar" style="background:#E0F0FF">💍</div><div class="member-info"><div class="member-name">Jean & Sophie</div><div class="member-date">dans 7 jours</div></div></div>
+            </div>
+          </div>
+          <div class="nav">
+            <button class="nb on"><svg viewBox="0 0 22 22" fill="none"><rect x="3" y="10" width="16" height="10" rx="2" stroke="currentColor" stroke-width="1.4"/><path d="M1 11L11 3l10 8" stroke="currentColor" stroke-width="1.4"/></svg><span>Accueil</span></button>
+            <button class="nb"><svg viewBox="0 0 22 22" fill="none"><circle cx="8" cy="7" r="3.5" stroke="currentColor" stroke-width="1.4"/><path d="M2 19c0-3.314 2.686-6 6-6s6 2.686 6 6" stroke="currentColor" stroke-width="1.4"/></svg><span>Membres</span></button>
+            <button class="nb"><svg viewBox="0 0 22 22" fill="none"><circle cx="11" cy="11" r="8.5" stroke="currentColor" stroke-width="1.4"/><path d="M11 7v8M7 11h8" stroke="currentColor" stroke-width="1.4"/></svg><span>Ajouter</span></button>
+            <button class="nb"><svg viewBox="0 0 22 22" fill="none"><path d="M11 3C7.686 3 5 5.686 5 9c0 5 6 10 6 10s6-5 6-10c0-3.314-2.686-6-6-6z" stroke="currentColor" stroke-width="1.4"/></svg><span>Fêtes</span></button>
+            <button class="nb">
+              <svg viewBox="0 0 22 22" fill="none"><circle cx="11" cy="5" r="1.5" fill="currentColor"/><circle cx="11" cy="11" r="1.5" fill="currentColor"/><circle cx="11" cy="17" r="1.5" fill="currentColor"/></svg>
+              <span>Plus</span>
+            </button>
+          </div>
+        </div>
+        <p style="font-size:11px;color:var(--txt2);margin-top:10px;text-align:center">3 points → impersonnel, pas de lien avec l'utilisateur</p>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-label after">✅ Après — "Profil" avec avatar</div>
+      <div style="padding:16px">
+        <div class="phone">
+          <div class="phone-inner">
+            <div class="topbar">
+              <div class="topbar-l">
+                <div class="logo-new"><svg width="16" height="16" viewBox="0 0 24 24" fill="white"><path d="M12 2C9 2 7 4 7 7c0 2 1 3.5 2.5 4.5C8 13 7 15 7 17h10c0-2-1-4-2.5-5.5C16 10.5 17 9 17 7c0-3-2-5-5-5z"/></svg></div>
+                <div class="tb-text"><div class="tb-title">Bloomday</div></div>
+              </div>
+            </div>
+            <div class="content">
+              <div class="member-row"><div class="avatar" style="background:#FFE0D0">🎂</div><div class="member-info"><div class="member-name">Marie Dupont</div><div class="member-date">dans 3 jours</div></div></div>
+              <div class="member-row"><div class="avatar" style="background:#E0F0FF">💍</div><div class="member-info"><div class="member-name">Jean & Sophie</div><div class="member-date">dans 7 jours</div></div></div>
+            </div>
+          </div>
+          <div class="nav">
+            <button class="nb on"><svg viewBox="0 0 22 22" fill="none"><rect x="3" y="10" width="16" height="10" rx="2" stroke="currentColor" stroke-width="1.4"/><path d="M1 11L11 3l10 8" stroke="currentColor" stroke-width="1.4"/></svg><span>Accueil</span></button>
+            <button class="nb"><svg viewBox="0 0 22 22" fill="none"><circle cx="8" cy="7" r="3.5" stroke="currentColor" stroke-width="1.4"/><path d="M2 19c0-3.314 2.686-6 6-6s6 2.686 6 6" stroke="currentColor" stroke-width="1.4"/></svg><span>Membres</span></button>
+            <button class="nb"><svg viewBox="0 0 22 22" fill="none"><circle cx="11" cy="11" r="8.5" stroke="currentColor" stroke-width="1.4"/><path d="M11 7v8M7 11h8" stroke="currentColor" stroke-width="1.4"/></svg><span>Ajouter</span></button>
+            <button class="nb"><svg viewBox="0 0 22 22" fill="none"><path d="M11 3C7.686 3 5 5.686 5 9c0 5 6 10 6 10s6-5 6-10c0-3.314-2.686-6-6-6z" stroke="currentColor" stroke-width="1.4"/></svg><span>Fêtes</span></button>
+            <button class="nb" style="color: var(--gold)">
+              <div class="nb-avatar"><div class="nb-avatar-placeholder">D</div></div>
+              <span style="color:var(--gold);font-weight:700">Profil</span>
+            </button>
+          </div>
+        </div>
+        <p style="font-size:11px;color:var(--txt2);margin-top:10px;text-align:center">Avatar avec initiale dorée → personnel et identifiable</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<hr class="sep">
+
+<!-- ── A3 : GROUP TAB ── -->
+<div class="section">
+  <div class="section-title">A3 — "Mon groupe" traduit dynamiquement</div>
+  <div class="section-desc">Le groupe par défaut stocke le nom en dur ("Mon groupe") au moment de la création. Si on change de langue, l'onglet reste en français. Solution : stocker un flag <code>isDefault:true</code> et afficher <code>t('myGroup')</code> en temps réel.</div>
+
+  <div class="compare">
+    <div class="card">
+      <div class="card-label before">❌ Avant — Nom figé à la création</div>
+      <div style="padding:16px">
+        <div class="phone">
+          <div class="topbar">
+            <div class="topbar-l">
+              <div class="logo-new"><svg width="16" height="16" viewBox="0 0 24 24" fill="white"><path d="M12 2C9 2 7 4 7 7c0 2 1 3.5 2.5 4.5C8 13 7 15 7 17h10c0-2-1-4-2.5-5.5C16 10.5 17 9 17 7c0-3-2-5-5-5z"/></svg></div>
+              <div class="tb-text"><div class="tb-title">Bloomday</div><div class="tb-sub">Le jour où tu fleuris</div></div>
+            </div>
+          </div>
+          <div class="gbar">
+            <button class="gc gc-old on">🌸 Mon groupe</button>
+            <button class="gc">+ Famille</button>
+            <button class="gc add" style="background:transparent;border:1px dashed var(--border)">＋</button>
+          </div>
+          <div class="content">
+            <span class="tag tag-bad">Langue = English → toujours "Mon groupe" 😕</span>
+          </div>
+        </div>
+        <p style="font-size:11px;color:var(--txt2);margin-top:10px;text-align:center">Nom stocké en français même si l'UI est en anglais</p>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-label after">✅ Après — Traduit selon la langue active</div>
+      <div style="padding:16px">
+        <div class="phone">
+          <div class="topbar">
+            <div class="topbar-l">
+              <div class="logo-new"><svg width="16" height="16" viewBox="0 0 24 24" fill="white"><path d="M12 2C9 2 7 4 7 7c0 2 1 3.5 2.5 4.5C8 13 7 15 7 17h10c0-2-1-4-2.5-5.5C16 10.5 17 9 17 7c0-3-2-5-5-5z"/></svg></div>
+              <div class="tb-text"><div class="tb-title">Bloomday</div><div class="tb-sub">My blooming day</div></div>
+            </div>
+          </div>
+          <div class="gbar">
+            <button class="gc on">🌸 My group</button>
+            <button class="gc">+ Family</button>
+            <button class="gc add" style="background:transparent;border:1px dashed var(--border)">＋</button>
+          </div>
+          <div class="content">
+            <span class="tag tag-good">Langue = English → "My group" ✓</span>
+          </div>
+        </div>
+        <p style="font-size:11px;color:var(--txt2);margin-top:10px;text-align:center">flag <code>isDefault:true</code> → affiche <code>t('myGroup')</code> dynamiquement</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<hr class="sep">
+
+<!-- ── B1 : PAYS ALPHABÉTIQUE + RECHERCHE ── -->
+<div class="section">
+  <div class="section-title">B1 — Pays triés A→Z + recherche par 3 premières lettres</div>
+  <div class="section-desc">Les listes de pays ne sont pas triées. L'utilisateur doit tout faire défiler. Solution : tri alphabétique + champ de recherche textuel en tête de liste.</div>
+
+  <div class="compare">
+    <div class="card">
+      <div class="card-label before">❌ Avant — Liste non triée, pas de recherche</div>
+      <div style="padding:16px">
+        <div class="dropdown-demo">
+          <div class="dd-label">Pays d'origine</div>
+          <select class="dd-select-old">
+            <option>France</option>
+            <option>Belgique</option>
+            <option>Suisse</option>
+            <option>Canada</option>
+            <option>Maroc</option>
+            <option>Algérie</option>
+            <option>Haïti</option>
+            <option>Sénégal</option>
+            <option>… 40+ pays</option>
+          </select>
+          <p style="font-size:11px;color:var(--red);margin-top:8px">Pas d'ordre → "Haïti" est au milieu, dur à trouver</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-label after">✅ Après — Tri A→Z + recherche instantanée</div>
+      <div style="padding:16px">
+        <div class="dropdown-demo">
+          <div class="dd-label">Pays d'origine</div>
+          <div class="dd-search-wrap">
+            <span class="dd-search-icon">🔍</span>
+            <input class="dd-search" type="text" placeholder="Taper 3 lettres…" value="haï">
+          </div>
+          <div class="dd-list">
+            <div class="dd-item active">🇭🇹 Haïti</div>
+          </div>
+          <p style="font-size:11px;color:#2E7D52;margin-top:8px">Tape "haï" → résultat instantané ✓</p>
+          <p style="font-size:11px;color:var(--txt2);margin-top:4px">Sans texte → liste A→Z complète</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<hr class="sep">
+
+<!-- ── B2 : PLUS DE PAYS + FETES LOCALES ── -->
+<div class="section">
+  <div class="section-title">B2 — Plus de pays + fêtes nationales correspondantes</div>
+  <div class="section-desc">Actuellement ~50 pays. Beaucoup de grands pays manquent (Nigeria, Philippines, Kenya, Éthiopie, Colombie, Argentine…). Principe : langue → pays la parlant → ajout automatique + leurs jours fériés nationaux.</div>
+
+  <div class="compare">
+    <div class="card">
+      <div class="card-label before">❌ Avant — Pays manquants</div>
+      <div style="padding:16px; min-height:160px">
+        <p style="font-size:12px;font-weight:700;color:var(--txt);margin-bottom:8px">Pays absents de la liste actuelle :</p>
+        <div style="display:flex;flex-wrap:wrap;gap:5px">
+          <span class="tag tag-bad">🇳🇬 Nigeria</span>
+          <span class="tag tag-bad">🇵🇭 Philippines</span>
+          <span class="tag tag-bad">🇰🇪 Kenya</span>
+          <span class="tag tag-bad">🇪🇹 Éthiopie</span>
+          <span class="tag tag-bad">🇨🇴 Colombie</span>
+          <span class="tag tag-bad">🇦🇷 Argentine</span>
+          <span class="tag tag-bad">🇵🇪 Pérou</span>
+          <span class="tag tag-bad">🇻🇳 Vietnam</span>
+          <span class="tag tag-bad">🇹🇭 Thaïlande</span>
+          <span class="tag tag-bad">🇿🇦 Afrique du Sud</span>
+          <span class="tag tag-bad">🇷🇺 Russie</span>
+          <span class="tag tag-bad">🇰🇷 Corée du Sud</span>
+          <span class="tag tag-bad">🇲🇽 Mexico ✓ (PAYS) mais pas COUNTRIES</span>
+          <span class="tag tag-bad">🇧🇫 Burkina ✓ mais pas ses fêtes</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-label after">✅ Après — Mapping langue → pays + fêtes</div>
+      <div style="padding:16px; min-height:160px">
+        <p style="font-size:12px;font-weight:700;color:var(--txt);margin-bottom:8px">Exemple : utilisateur en espagnol → pays ajoutés :</p>
+        <div style="display:flex;flex-wrap:wrap;gap:5px;margin-bottom:12px">
+          <span class="tag tag-good">🇨🇴 Colombie</span>
+          <span class="tag tag-good">🇦🇷 Argentine</span>
+          <span class="tag tag-good">🇵🇪 Pérou</span>
+          <span class="tag tag-good">🇻🇪 Venezuela</span>
+          <span class="tag tag-good">🇨🇱 Chili</span>
+          <span class="tag tag-good">🇪🇨 Équateur</span>
+        </div>
+        <p style="font-size:12px;font-weight:700;color:var(--txt);margin-bottom:6px">Fêtes nationales correspondantes :</p>
+        <div class="fete-badge">🇨🇴 Indépendance Colombie — 20 juil</div>
+        <div class="fete-badge">🇦🇷 Indépendance Argentine — 9 juil</div>
+        <div class="fete-badge">🇭🇹 Indépendance Haïti — 1er janv ✓ déjà présent</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div style="text-align:center;padding:40px 20px;color:var(--txt2);font-size:13px">
+  <p>🌸 Bloomday — Wave 3 UX Improvements</p>
+  <p style="font-size:11px;margin-top:4px">C (traductions complètes) sera couvert dans la phase suivante</p>
+</div>
+
+</body>
+</html>

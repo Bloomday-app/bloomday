@@ -40,8 +40,8 @@ button{cursor:pointer;font-family:'DM Sans',sans-serif}
 .pricing-mobile{display:block}
 .pricing-desktop{display:none}
 .wrap{width:100%;max-width:440px;margin:0 auto;min-height:100vh;min-height:-webkit-fill-available;position:relative;box-sizing:border-box}
-#app .wrap{display:flex;flex-direction:column;max-width:100%;min-height:100vh}
-.app-main{flex:1;display:flex;flex-direction:column;min-height:0;overflow:hidden}
+#app .wrap{display:flex;flex-direction:row;max-width:100%;min-height:100vh}
+.app-main{flex:1;display:flex;flex-direction:column;min-height:0;overflow:hidden;min-width:0}
 @media(min-width:768px){
   .wrap{max-width:480px;box-shadow:0 0 60px rgba(45,27,20,.10)}
   body{background:linear-gradient(145deg,#FFF8F0,#FFE8D0)}
@@ -49,11 +49,12 @@ button{cursor:pointer;font-family:'DM Sans',sans-serif}
 @media(min-width:1024px){
   body{background:linear-gradient(145deg,#FFF8F0 0%,#FFECD6 50%,#FFD8B4 100%);min-height:100vh}
   #app.scr.on{display:flex;min-height:100vh;width:100%;max-width:100%}
-  #app .wrap{flex-direction:row;max-width:100%;border-radius:0;overflow:visible;max-height:none;box-shadow:none;width:100%;min-height:100vh}
+  #app .wrap{max-width:100%;border-radius:0;overflow:visible;max-height:none;box-shadow:none;width:100%;min-height:100vh}
   .app-main{flex:1;display:flex;flex-direction:column;overflow:hidden;min-height:100vh}
   #app .scroll{flex:1;padding:16px 32px 24px;overflow-y:auto;height:100vh}
-  .nav{display:none}
-  .desktop-sidebar,.desktop-right-panel{display:flex}
+  .desktop-right-panel{display:flex}
+  .desktop-sidebar{width:140px}
+  .desktop-sidebar.collapsed{width:52px}
   #land .wrap{max-width:100%;border-radius:0;box-shadow:none}
   #land .hero{padding:64px 48px 52px}
   #land .hi2 .bl{display:flex;width:100%;justify-content:space-between!important;padding:0 24px}
@@ -68,7 +69,7 @@ button{cursor:pointer;font-family:'DM Sans',sans-serif}
 .btag{font-size:10px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;opacity:.75;display:block;margin-top:1px}
 
 /* ── SCREENS ── */
-.scr{display:none;flex-direction:column;min-height:100vh;width:100%;padding-bottom:72px}
+.scr{display:none;flex-direction:column;min-height:100vh;width:100%;padding-bottom:0}
 .scr.on{display:flex;animation:fi .25s ease}
 @keyframes fi{from{opacity:0;transform:translateY(6px)}to{opacity:1}}
 
@@ -92,10 +93,10 @@ button{cursor:pointer;font-family:'DM Sans',sans-serif}
 .gc.add{color:var(--b3);border-color:var(--b3);font-size:16px;padding:4px 13px;line-height:1}
 
 /* ── SCROLL AREA ── */
-.scroll{flex:1;overflow-y:auto;padding:16px 16px 88px;overscroll-behavior:contain}
+.scroll{flex:1;overflow-y:auto;padding:16px 16px 24px;overscroll-behavior:contain}
 
-/* ── BOTTOM NAV ── */
-.nav{display:flex;border-top:1px solid rgba(45,27,20,.07);background:rgba(255,253,249,.88);flex-shrink:0;padding-bottom:env(safe-area-inset-bottom);position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:440px;z-index:100;-webkit-backdrop-filter:blur(20px);backdrop-filter:blur(20px)}
+/* ── BOTTOM NAV — masqué, remplacé par la sidebar ── */
+.nav{display:none!important}
 .nb{flex:1;padding:10px 2px 8px;border:none;background:transparent;display:flex;flex-direction:column;align-items:center;gap:3px;font-size:9px;color:var(--txt3);font-weight:700;letter-spacing:.02em;position:relative;transition:color .2s}
 .nb.on{color:var(--b1)}
 .nb.on::after{content:'';position:absolute;top:0;left:25%;right:25%;height:2.5px;background:var(--grad);border-radius:0 0 3px 3px}
@@ -486,8 +487,19 @@ details[open] summary::after{content:" ▾"}
   .pricing-table tfoot .col-bloom{border-color:#D4A843}
 }
 
-/* ── DESKTOP SIDEBAR ── */
-.desktop-sidebar{display:none;flex-direction:column;align-items:flex-start;width:140px;flex-shrink:0;background:var(--txt);min-height:100vh;padding:12px 0;position:sticky;top:0;height:100vh;z-index:200}
+/* ── SIDEBAR (toutes tailles) ── */
+.desktop-sidebar{display:flex;flex-direction:column;align-items:flex-start;width:140px;flex-shrink:0;background:var(--txt);min-height:100vh;padding:12px 0;position:sticky;top:0;height:100vh;z-index:200;transition:width .22s ease;overflow:hidden}
+.desktop-sidebar.collapsed{width:52px}
+.desktop-sidebar.collapsed .dsb-btn span,.desktop-sidebar.collapsed .dsb-logo>span,.desktop-sidebar.collapsed .lang-sel span:nth-child(2),.desktop-sidebar.collapsed .lang-sel span:nth-child(3){display:none}
+.desktop-sidebar.collapsed .dsb-logo{justify-content:center;padding:8px 0}
+.desktop-sidebar.collapsed .dsb-nav{padding:0 4px}
+.desktop-sidebar.collapsed .dsb-btn{justify-content:center;padding:10px}
+.desktop-sidebar.collapsed #nav-admin-btn{padding:0 4px}
+.desktop-sidebar.collapsed .lang-sel{justify-content:center;padding:6px 0}
+.dsb-toggle-wrap{padding:0 8px;margin-top:auto;padding-bottom:12px}
+.dsb-toggle{width:100%;border:none;background:rgba(255,255,255,.08);border-radius:8px;color:rgba(255,255,255,.5);cursor:pointer;padding:7px 0;font-size:18px;font-weight:700;transition:background .15s;display:flex;align-items:center;justify-content:center}
+.dsb-toggle:hover{background:rgba(255,255,255,.15);color:rgba(255,255,255,.85)}
+.desktop-sidebar.collapsed .dsb-toggle-wrap{padding:0 4px 12px}
 .dsb-logo{margin-bottom:20px;padding:8px 16px;display:flex;align-items:center;gap:8px}
 .dsb-logo-wrap{width:36px;height:36px;border-radius:0;background:none;display:flex;align-items:center;justify-content:center;box-shadow:none}
 .dsb-logo-wrap svg{fill:white;stroke:white}

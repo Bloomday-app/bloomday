@@ -575,12 +575,19 @@ function renderSideCalendar() {
   }
   for (var day = 1; day <= daysInMonth; day++) {
     var isToday = day === now.getDate();
-    var hasBday = m.some(function(p){ return p.day === day && p.month === (month + 1); });
+    var dayMembers = m.filter(function(p){ return p.day === day && p.month === (month + 1); });
+    var hasBday = dayMembers.length > 0;
     var cell = document.createElement('div');
     cell.textContent = String(day);
-    cell.style.cssText = 'padding:5px 2px;border-radius:6px;';
+    cell.style.cssText = 'padding:5px 2px;border-radius:6px;cursor:'+(hasBday?'pointer':'default')+';';
     if (isToday) cell.style.cssText += 'background:var(--b1);color:white;font-weight:700;';
     else if (hasBday) cell.style.cssText += 'background:var(--b2l);color:var(--b2d);font-weight:700;';
+    if (hasBday) {
+      (function(d, members){
+        cell.onclick = function(){ showDayDetails(d, month+1, members); };
+        cell.title = members.map(function(p){return p.name;}).join(', ');
+      })(day, dayMembers);
+    }
     grid.appendChild(cell);
   }
   parts.push(grid);
@@ -619,15 +626,77 @@ function renderSideCalendar() {
   parts.forEach(function(node){ el.appendChild(node); });
 }
 
+function showDayDetails(day, month, members) {
+  var el = document.getElementById('desktop-right-panel');
+  if (!el) return;
+  var now = new Date();
+  var year = now.getFullYear();
+  var MN2 = typeof MN !== 'undefined' ? MN : ['Jan','Fév','Mar','Avr','Mai','Juin','Juil','Aoû','Sep','Oct','Nov','Déc'];
+  var monthName = MN2[month - 1] || month;
+
+  var parts = [];
+
+  var backBtn = document.createElement('button');
+  backBtn.textContent = '← ' + monthName + ' ' + year;
+  backBtn.style.cssText = 'background:none;border:none;color:var(--b1d);font-size:12px;font-weight:700;cursor:pointer;padding:0 0 12px;display:block';
+  backBtn.onclick = function(){ renderSideCalendar(); };
+  parts.push(backBtn);
+
+  var title = document.createElement('div');
+  title.style.cssText = 'font-size:16px;font-weight:800;color:var(--txt);margin-bottom:14px';
+  title.textContent = day + ' ' + monthName;
+  parts.push(title);
+
+  members.forEach(function(p){
+    var card = document.createElement('div');
+    card.style.cssText = 'background:var(--card);border:1px solid var(--brd);border-radius:12px;padding:12px;margin-bottom:10px;cursor:pointer;transition:box-shadow .15s';
+    card.onmouseenter = function(){ card.style.boxShadow = '0 4px 16px rgba(0,0,0,.09)'; };
+    card.onmouseleave = function(){ card.style.boxShadow = ''; };
+    card.onclick = function(){ togEdit(p.id); showSec('members',1); };
+
+    var top = document.createElement('div');
+    top.style.cssText = 'display:flex;align-items:center;gap:10px';
+    var av = document.createElement('div');
+    av.style.cssText = 'width:38px;height:38px;border-radius:50%;background:var(--grad);display:flex;align-items:center;justify-content:center;font-size:13px;color:white;font-weight:800;flex-shrink:0;overflow:hidden';
+    if (p.photo) {
+      var img = document.createElement('img');
+      img.src = p.photo;
+      img.style.cssText = 'width:100%;height:100%;object-fit:cover;border-radius:50%';
+      av.appendChild(img);
+    } else {
+      av.textContent = (p.name||'?')[0].toUpperCase();
+    }
+    var info = document.createElement('div');
+    info.style.cssText = 'flex:1;min-width:0';
+    var nm = document.createElement('div');
+    nm.style.cssText = 'font-size:13px;font-weight:700;color:var(--txt)';
+    nm.textContent = tIco(p.type) + ' ' + p.name;
+    var sub = document.createElement('div');
+    sub.style.cssText = 'font-size:11px;color:var(--txt2);margin-top:1px';
+    var dl = daysTill(p.day, p.month);
+    sub.textContent = dl === 0 ? t('calendarToday') : 'Dans ' + dl + ' jour' + (dl > 1 ? 's' : '');
+    info.appendChild(nm);
+    info.appendChild(sub);
+    top.appendChild(av);
+    top.appendChild(info);
+    card.appendChild(top);
+    parts.push(card);
+  });
+
+  while (el.firstChild) el.removeChild(el.firstChild);
+  parts.forEach(function(node){ el.appendChild(node); });
+}
+
 // ── PLUS ──
 function rMore(){
   var el=document.getElementById('s-more');if(!el)return;
   var h='';
   h+='<div class="sh">'+t('monProfil')+'</div>';
   h+='<div class="card" style="padding:16px">';
-  h+='<label>'+t('liveCountry')+'</label><select id="prof-live" onchange="profile.live=this.value;savePr();rEvents()"></select>';
-  h+='<label style="margin-top:12px">'+t('originCountry')+'</label><select id="prof-origin" onchange="profile.origin=this.value;savePr()"></select>';
-  h+='<label style="margin-top:12px">'+t('religionLabel')+'</label><select id="prof-rel" onchange="profile.religion=this.value;savePr();rEvents()"></select>';
+  h+='<label>'+t('liveCountry')+'</label><select id="prof-live"></select>';
+  h+='<label style="margin-top:12px">'+t('originCountry')+'</label><select id="prof-origin"></select>';
+  h+='<label style="margin-top:12px">'+t('religionLabel')+'</label><select id="prof-rel"></select>';
+  h+='<button class="btn P fw" style="margin-top:16px" onclick="saveProfileSettings()">✓ '+t('applyProfileBtn')+'</button>';
   h+='</div>';
   // ── SECTION PARRAINAGE ──
   var refs = (stats && stats.refsCount) || 0;

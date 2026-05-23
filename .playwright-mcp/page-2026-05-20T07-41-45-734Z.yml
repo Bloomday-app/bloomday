@@ -1,0 +1,10 @@
+- generic [active] [ref=e1]:
+  - img "Bloomday" [ref=e2]
+  - generic [ref=e3]:
+    - generic [ref=e4]: Bloomday
+    - generic [ref=e5]: Le jour où tu fleuris 🌸
+    - generic [ref=e6]:
+      - generic [ref=e7]: ✨ Messages IA
+      - generic [ref=e8]: 🎁 Idées cadeaux
+      - generic [ref=e9]: 🌍 Fêtes du monde
+  - generic [ref=e10]: mybloomday.app

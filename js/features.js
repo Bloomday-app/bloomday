@@ -320,15 +320,33 @@ function startFromBtn(btn){
   else{openAuth('signup');}
 }
 
+function toggleSidebar(){
+  var sb=document.getElementById('desktop-sidebar');
+  if(!sb)return;
+  var collapsed=sb.classList.toggle('collapsed');
+  localStorage.setItem('bdg16_sb_collapsed',collapsed?'1':'0');
+  var btn=document.getElementById('dsb-toggle');
+  if(btn)btn.textContent=collapsed?'›':'‹';
+}
+
+function _restoreSidebar(){
+  var sb=document.getElementById('desktop-sidebar');
+  if(!sb)return;
+  var saved=localStorage.getItem('bdg16_sb_collapsed');
+  var collapsed=(saved==='1')||(saved===null&&window.innerWidth<1024);
+  if(collapsed){
+    sb.classList.add('collapsed');
+    var btn=document.getElementById('dsb-toggle');
+    if(btn)btn.textContent='›';
+  }
+}
+
 document.addEventListener('DOMContentLoaded',function(){
-  // Supabase v2 traite les tokens (OAuth hash, PKCE code) avant DOMContentLoaded et efface l'URL.
-  // On détecte la session via getSession() qui couvre tous les cas :
-  //   - utilisateur déjà connecté (retour sur le site)
-  //   - confirmation email (PKCE ?code=)
-  //   - OAuth Google (#access_token= déjà traité par Supabase SDK)
   var hasPkceCode=!!(new URLSearchParams(window.location.search).get('code'));
   if(window.location.hash.includes('access_token=')||hasPkceCode)
     history.replaceState(null,'',window.location.pathname);
+
+  initAuth();
 
   supabase.auth.getSession().then(function(result){
     var appEl=document.getElementById('app');
@@ -338,12 +356,26 @@ document.addEventListener('DOMContentLoaded',function(){
     } else {
       handleHash();
     }
+    _restoreSidebar();
   });
 
   window.addEventListener('hashchange',handleHash);
   document.getElementById('s-home').style.display='block';
   renderPricingTable();
 });
+
+function saveProfileSettings(){
+  var liveEl=document.getElementById('prof-live');
+  var originEl=document.getElementById('prof-origin');
+  var relEl=document.getElementById('prof-rel');
+  if(liveEl)profile.live=liveEl.value;
+  if(originEl)profile.origin=originEl.value;
+  if(relEl)profile.religion=relEl.value;
+  savePr();
+  buildCats();
+  rEvents();
+  showToast(t('profileSaved')||'Préférences enregistrées !','success');
+}
 
 // ── TOAST ──
 function showToast(msg,type){

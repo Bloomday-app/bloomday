@@ -55,10 +55,15 @@ exports.handler = async function(event) {
   var last = messages[messages.length - 1];
   if (!last || typeof last.content !== 'string' || last.content.length > 500) return err(400, 'Invalid message');
 
+  var apiKey = process.env.GEMINI_API_KEY;
+  if (!apiKey) return err(503, 'API key not configured — set GEMINI_API_KEY in Netlify env vars');
+
   try {
     var reply = await geminiRequest(messages);
+    if (!reply) return err(502, 'Empty response from Gemini');
     return { statusCode: 200, headers: CORS, body: JSON.stringify({ reply: reply }) };
   } catch (e) {
-    return err(500, 'Gemini error');
+    console.error('Gemini error:', e && e.message);
+    return err(500, 'Gemini error: ' + (e && e.message || 'unknown'));
   }
 };

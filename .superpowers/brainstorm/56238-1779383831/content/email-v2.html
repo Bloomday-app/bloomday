@@ -1,0 +1,65 @@
+<h2>Email reset — Option A avec logo Bloomday</h2>
+<p class="subtitle">Aperçu du template email. Note : les clients email supportent mal le SVG — le logo sera encodé en image inline (base64).</p>
+
+<div class="mockup">
+  <div class="mockup-header">Aperçu — Email "Réinitialisation de mot de passe"</div>
+  <div class="mockup-body" style="background:#f5f5f5;padding:24px">
+    <div style="max-width:420px;margin:0 auto;background:#fff8f0;border:1px solid #fde8cc;border-radius:16px;overflow:hidden;font-family:Georgia,serif">
+
+      <!-- Header -->
+      <div style="background:linear-gradient(135deg,#e8621a,#f4a261);padding:28px;text-align:center">
+        <svg width="48" height="48" viewBox="0 0 36 36" style="display:block;margin:0 auto 8px">
+          <defs><linearGradient id="blg2" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#fff"/><stop offset="100%" stop-color="#fde8cc"/></linearGradient></defs>
+          <path d="M7 4h12c3.5 0 6 2 6 5.5 0 1.8-.8 3.2-2 4.2 2 .9 3.2 2.6 3.2 4.8C26.2 22.5 23.5 25 19.5 25H7V4z" fill="url(#blg2)"/>
+          <path d="M13 11.5c0-1.4 1.1-2.5 2.5-2.5 .7 0 1.3.3 1.7.7.4-.4 1-.7 1.7-.7 1.4 0 2.5 1.1 2.5 2.5 0 .8-.4 1.5-.9 2l-3.3 3.2-3.3-3.2c-.5-.5-.9-1.2-.9-2z" fill="rgba(232,98,26,0.9)"/>
+          <path d="M11 25c0 0 1-4 4-5s5 1 5 1-2 5-5 5.5-4-1.5-4-1.5z" fill="#8BC34A"/>
+        </svg>
+        <div style="font-size:20px;font-weight:700;color:white;letter-spacing:0.5px">Bloomday</div>
+        <div style="font-size:11px;color:rgba(255,255,255,0.8);margin-top:2px">Célébrez chaque moment</div>
+      </div>
+
+      <!-- Body -->
+      <div style="padding:28px 32px;text-align:center">
+        <div style="font-size:16px;font-weight:700;color:#3a2010;margin-bottom:12px">Réinitialisation de mot de passe</div>
+        <div style="font-size:13px;color:#7a5a45;line-height:1.7;margin-bottom:24px">
+          Vous avez demandé à réinitialiser votre mot de passe Bloomday.<br>
+          Cliquez sur le bouton ci-dessous pour choisir un nouveau mot de passe.
+        </div>
+        <a href="#" style="display:inline-block;background:linear-gradient(135deg,#e8621a,#f4a261);border-radius:10px;padding:14px 32px;color:white;font-size:14px;font-weight:700;text-decoration:none;letter-spacing:0.3px">
+          🔑 Réinitialiser mon mot de passe
+        </a>
+        <div style="font-size:11px;color:#bbb;margin-top:20px;line-height:1.6">
+          Ce lien expire dans <strong style="color:#e8621a">24 heures</strong>.<br>
+          Si vous n'êtes pas à l'origine de cette demande, ignorez cet email.
+        </div>
+      </div>
+
+      <!-- Footer -->
+      <div style="background:#fde8cc;padding:14px 32px;text-align:center">
+        <div style="font-size:10px;color:#b08060">mybloomday.app · Ne pas répondre à cet email · © 2026 Bloomday</div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<div class="section" style="margin-top:16px">
+  <p class="subtitle">⚠️ Note technique : les emails ne supportent pas les SVG externes. En production, le logo sera soit une image PNG hébergée sur mybloomday.app, soit un SVG inline encodé.</p>
+</div>
+
+<div class="options" style="margin-top:8px">
+  <div class="option" data-choice="ok" onclick="toggleSelect(this)">
+    <div class="letter">✓</div>
+    <div class="content">
+      <h3>C'est bon, je valide ce design</h3>
+      <p>On part sur ce template pour l'email Supabase</p>
+    </div>
+  </div>
+  <div class="option" data-choice="adjust" onclick="toggleSelect(this)">
+    <div class="letter">✏️</div>
+    <div class="content">
+      <h3>Ajuster quelque chose</h3>
+      <p>Dis-moi ce que tu veux changer</p>
+    </div>
+  </div>
+</div>
