@@ -25,6 +25,15 @@ function checkAdmin(user) {
   window.isAdmin = !!(user && user.email === ADMIN_EMAIL);
   var btn = document.getElementById('nav-admin-btn');
   if (btn) btn.style.display = window.isAdmin ? 'flex' : 'none';
+  if (window.isAdmin) {
+    // Admin = accès enterprise illimité + mode business
+    plan = 'enterprise';
+    localStorage.setItem('bdg16_plan', 'enterprise');
+    var tbp = document.getElementById('tbplan');
+    if (tbp) { tbp.textContent = 'Admin ▾'; tbp.style.display = 'inline-flex'; }
+    // Activer le mode business pour l'admin
+    if (typeof mode !== 'undefined') mode = 'biz';
+  }
 }
 
 function initAuth() {

@@ -508,12 +508,13 @@ function getActiveFetes(){
   var now=new Date();now.setHours(0,0,0,0);
   var year=now.getFullYear();
   var live=(profile&&profile.live)||'fr';
+  var origin=(profile&&profile.origin)||'';
   var rel=(profile&&profile.religion)||'';
   // Combine fêtes fixes + mobiles (année courante + suivante)
   var allFetes=FETES.concat(getMoveableFetes(year),getMoveableFetes(year+1));
   var seen={};
   return allFetes.map(function(f){
-    var ok=f.c.includes('universal')||f.c.includes(live)||(rel&&f.c.includes(rel));
+    var ok=f.c.includes('universal')||f.c.includes(live)||(origin&&f.c.includes(origin))||(rel&&f.c.includes(rel));
     if(!ok)return null;
     var x=new Date(year,f.m-1,f.d);
     if(!f.moveable&&x<now){x.setFullYear(year+1);}
@@ -587,7 +588,7 @@ function renderSideCalendar() {
     var cell = document.createElement('div');
     cell.textContent = String(day);
     cell.style.cssText = 'padding:5px 2px;border-radius:6px;cursor:'+(hasBday?'pointer':'default')+';';
-    if (isToday) cell.style.cssText += 'background:var(--b1);color:white;font-weight:700;';
+    if (isToday) cell.style.cssText += 'background:var(--b1);color:#2D1B14;font-weight:700;';
     else if (hasBday) cell.style.cssText += 'background:var(--b2l);color:var(--b2d);font-weight:700;';
     if (hasBday) {
       (function(d, members){

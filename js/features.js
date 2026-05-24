@@ -58,7 +58,7 @@ function showToast(msg){
   var el=document.getElementById('bd-toast');
   if(!el){
     el=document.createElement('div');el.id='bd-toast';
-    el.style.cssText='position:fixed;bottom:80px;left:50%;transform:translateX(-50%);background:var(--b1);color:#fff;padding:10px 20px;border-radius:20px;font-size:13px;font-weight:600;z-index:9998;transition:opacity .3s;max-width:300px;text-align:center;pointer-events:none';
+    el.style.cssText='position:fixed;bottom:80px;left:50%;transform:translateX(-50%);background:var(--b1);color:#2D1B14;padding:10px 20px;border-radius:20px;font-size:13px;font-weight:600;z-index:9998;transition:opacity .3s;max-width:300px;text-align:center;pointer-events:none';
     document.body.appendChild(el);
   }
   el.textContent=msg;el.style.opacity='1';
