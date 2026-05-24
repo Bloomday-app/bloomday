@@ -41,6 +41,7 @@ button{cursor:pointer;font-family:'DM Sans',sans-serif}
 .pricing-desktop{display:none}
 .wrap{width:100%;max-width:440px;margin:0 auto;min-height:100vh;min-height:-webkit-fill-available;position:relative;box-sizing:border-box}
 #app .wrap{display:flex;flex-direction:row;max-width:100%;min-height:100vh}
+#app .scroll .wrap{flex-direction:column;max-width:100%;min-height:auto}
 .app-main{flex:1;display:flex;flex-direction:column;min-height:0;overflow:hidden;min-width:0}
 @media(min-width:768px){
   .wrap{max-width:480px;box-shadow:0 0 60px rgba(45,27,20,.10)}
@@ -504,7 +505,7 @@ details[open] summary::after{content:" ▾"}
 .dsb-logo-wrap{width:36px;height:36px;border-radius:0;background:none;display:flex;align-items:center;justify-content:center;box-shadow:none}
 .dsb-logo-wrap svg{fill:white;stroke:white}
 .dsb-nav{display:flex;flex-direction:column;gap:2px;flex:1;width:100%;padding:0 8px}
-.dsb-btn{width:100%;border:none;background:transparent;border-radius:10px;display:flex;align-items:center;gap:8px;padding:9px 10px;color:rgba(255,255,255,.35);cursor:pointer;transition:all .18s;font-size:12px;font-weight:600;letter-spacing:.01em}
+.dsb-btn{width:100%;border:none;background:transparent;border-radius:10px;display:flex;align-items:center;gap:8px;padding:9px 10px;color:rgba(255,255,255,.72);cursor:pointer;transition:all .18s;font-size:12px;font-weight:600;letter-spacing:.01em}
 .dsb-btn:hover{background:rgba(212,168,67,.12);color:rgba(255,255,255,.7)}
 .dsb-btn.on{background:var(--b1l);color:var(--b1)}
 .dsb-avatar{width:36px;height:36px;border-radius:50%;background:var(--grad);display:flex;align-items:center;justify-content:center;cursor:pointer;margin:8px auto 12px;overflow:hidden;font-size:13px;color:white;font-weight:800;border:2px solid rgba(255,255,255,.15)}

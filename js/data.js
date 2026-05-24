@@ -105,7 +105,61 @@ const FETES=[
   {n:'Fête Nationale Arabie Saoudite',i:'🇸🇦',m:9,d:23,c:['sa']},
   {n:'Indépendance Pakistan',i:'🇵🇰',m:8,d:14,c:['pk']},
   {n:'Indépendance Bangladesh',i:'🇧🇩',m:3,d:26,c:['bd']},
+  // Fêtes universelles / travail
+  {n:"Fête du Travail",i:"✊",m:5,d:1,c:['universal']},
+  // Fêtes nationales supplémentaires
+  {n:"Fête Nationale Canada",i:"🇨🇦",m:7,d:1,c:['ca']},
+  {n:"Fête Nationale Suisse",i:"🇨🇭",m:8,d:1,c:['ch']},
+  {n:"Fête Nationale Australie",i:"🇦🇺",m:1,d:26,c:['au']},
+  {n:"Fête Nationale Portugal",i:"🇵🇹",m:6,d:10,c:['pt']},
+  {n:"Fête Nationale Pays-Bas",i:"🇳🇱",m:4,d:27,c:['nl']},
+  {n:"Saint Patrick",i:"🍀",m:3,d:17,c:['ie']},
+  {n:"Boxing Day",i:"🎁",m:12,d:26,c:['gb','ca','au','nz']},
 ];
+
+// ── FÊTES MOBILES ──
+function easterDate(y){
+  var a=y%19,b=Math.floor(y/100),c=y%100;
+  var d=Math.floor(b/4),e=b%4,f=Math.floor((b+8)/25);
+  var g=Math.floor((b-f+1)/3),h=(19*a+b-d-g+15)%30;
+  var i=Math.floor(c/4),k=c%4,l=(32+2*e+2*i-h-k)%7;
+  var m2=Math.floor((a+11*h+22*l)/451);
+  var mo=Math.floor((h+l-7*m2+114)/31);
+  var da=((h+l-7*m2+114)%31)+1;
+  return new Date(y,mo-1,da);
+}
+// Dates approximatives (±1 jour selon pays) — mise à jour annuelle
+var ISLAMIC_FETES={
+  eidFitr: {2024:[4,10],2025:[3,30],2026:[3,20],2027:[3,9],2028:[2,27]},
+  eidAdha: {2024:[6,17],2025:[6,7],2026:[5,27],2027:[5,17],2028:[5,5]},
+  mawlid:  {2024:[9,16],2025:[9,5],2026:[8,25],2027:[8,14],2028:[8,2]},
+};
+var CHINESE_NY={2024:[2,10],2025:[1,29],2026:[2,17],2027:[2,7],2028:[1,26]};
+
+function getMoveableFetes(y){
+  var fetes=[];
+  var easter=easterDate(y);
+  function addOff(off,n,i,cats){
+    var dt=new Date(easter.getTime()+off*864e5);
+    fetes.push({n:n,i:i,m:dt.getMonth()+1,d:dt.getDate(),c:cats,moveable:true});
+  }
+  addOff(-2,"Vendredi Saint","✝️",['christian']);
+  addOff(0,"Pâques","🐣",['christian']);
+  addOff(1,"Lundi de Pâques","🐣",['christian']);
+  addOff(39,"Ascension","✨",['christian']);
+  addOff(49,"Pentecôte","🕊️",['christian']);
+  addOff(50,"Lundi de Pentecôte","🕊️",['christian']);
+  var ef=ISLAMIC_FETES.eidFitr[y]||ISLAMIC_FETES.eidFitr[2026];
+  fetes.push({n:"Eid al-Fitr",i:"🌙",m:ef[0],d:ef[1],c:['muslim'],moveable:true});
+  var ea=ISLAMIC_FETES.eidAdha[y]||ISLAMIC_FETES.eidAdha[2026];
+  fetes.push({n:"Eid al-Adha",i:"🐑",m:ea[0],d:ea[1],c:['muslim'],moveable:true});
+  var mw=ISLAMIC_FETES.mawlid[y]||ISLAMIC_FETES.mawlid[2026];
+  fetes.push({n:"Mawlid",i:"🌟",m:mw[0],d:mw[1],c:['muslim'],moveable:true});
+  var cn=CHINESE_NY[y]||CHINESE_NY[2026];
+  fetes.push({n:"Nouvel An Chinois",i:"🧧",m:cn[0],d:cn[1],c:['hk','mo','sg','tw','my'],moveable:true});
+  return fetes;
+}
+
 const DTPL=[
   {id:'t1',n:'Chaleureux & festif',dk:'dtpl1Desc',t:"chaleureux, festif et plein d'amour",e:'🌸'},
   {id:'t2',n:'Poetique',dk:'dtpl2Desc',t:'poetique et lyrique, avec des metaphores florales',e:'🌺'},

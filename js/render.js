@@ -488,7 +488,7 @@ if(!tbAcctBtn){
   if(relSel&&relSel.appendChild&&relSel.innerHTML!==undefined){
     var relKeys=['','relChristian','relMuslim','relJewish','relHindu','relBuddhist','relNone'];
     var relVals=['','christian','muslim','jewish','hindu','buddhist','none'];
-    var relCur=relSel.value;
+    var relCur=(profile&&profile.religion)||'';
     relSel.innerHTML='';
     for(var ri=0;ri<relKeys.length;ri++){
       var rOpt=document.createElement('option');
@@ -505,17 +505,24 @@ if(!tbAcctBtn){
 
 // ── FÊTES ──
 function getActiveFetes(){
-  var now=new Date();
+  var now=new Date();now.setHours(0,0,0,0);
+  var year=now.getFullYear();
   var live=(profile&&profile.live)||'fr';
   var rel=(profile&&profile.religion)||'';
-  return FETES.map(function(f){
-    var m=f.m,d=f.d;
+  // Combine fêtes fixes + mobiles (année courante + suivante)
+  var allFetes=FETES.concat(getMoveableFetes(year),getMoveableFetes(year+1));
+  var seen={};
+  return allFetes.map(function(f){
     var ok=f.c.includes('universal')||f.c.includes(live)||(rel&&f.c.includes(rel));
     if(!ok)return null;
-    var x=new Date(now.getFullYear(),m-1,d);
+    var x=new Date(year,f.m-1,f.d);
+    if(!f.moveable&&x<now){x.setFullYear(year+1);}
     var dl=Math.round((x-now)/86400000);
-    if(dl<0){x.setFullYear(now.getFullYear()+1);dl=Math.round((x-now)/86400000);}
-    return {n:f.n,i:f.i,m:m,d:d,dl:dl};
+    if(dl<0)return null;
+    // Garder seulement la prochaine occurrence par nom
+    if(seen[f.n]!==undefined&&seen[f.n]<=dl)return null;
+    seen[f.n]=dl;
+    return {n:f.n,i:f.i,m:f.m,d:f.d,dl:dl};
   }).filter(Boolean).sort(function(a,b){return a.dl-b.dl;});
 }
 
@@ -1041,12 +1048,13 @@ function copyRefLink(url){
 }
 
 function shareRefLink(url){
+  var msg='🌸 '+t('refShareMsg')+' : '+url;
   if(navigator.share){
-    navigator.share({title:'Bloomday',text:t('refSub'),url:url}).catch(function(){
-      navigator.clipboard&&navigator.clipboard.writeText(url).then(function(){showToast(t('refCopied')||'Lien copié !','success');});
+    navigator.share({title:'Bloomday',text:'🌸 '+t('refShareMsg'),url:url}).catch(function(){
+      navigator.clipboard&&navigator.clipboard.writeText(msg).then(function(){showToast(t('refCopied')||'Lien copié !','success');});
     });
   } else {
-    navigator.clipboard&&navigator.clipboard.writeText(url).then(function(){showToast(t('refCopied')||'Lien copié !','success');});
+    navigator.clipboard&&navigator.clipboard.writeText(msg).then(function(){showToast(t('refCopied')||'Lien copié !','success');});
   }
 }
 function renderDesktopRightPanel(section){
