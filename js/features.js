@@ -607,6 +607,46 @@ var _chatHistory = [];
 var _chatOpen = false;
 var _chatInitialized = false;
 
+(function initChatDrag() {
+  function setup() {
+    var handle = document.getElementById('chat-drag-handle');
+    var panel = document.getElementById('chat-panel');
+    if (!handle || !panel) return;
+    var dragging = false, ox = 0, oy = 0;
+    function onStart(e) {
+      if (window.innerWidth < 481) return; // no drag on mobile
+      dragging = true;
+      var touch = e.touches ? e.touches[0] : e;
+      var r = panel.getBoundingClientRect();
+      ox = touch.clientX - r.left;
+      oy = touch.clientY - r.top;
+      panel.style.right = 'auto';
+      panel.style.bottom = 'auto';
+      panel.style.left = r.left + 'px';
+      panel.style.top = r.top + 'px';
+      handle.style.cursor = 'grabbing';
+      e.preventDefault();
+    }
+    function onMove(e) {
+      if (!dragging) return;
+      var touch = e.touches ? e.touches[0] : e;
+      var x = Math.max(0, Math.min(touch.clientX - ox, window.innerWidth - panel.offsetWidth));
+      var y = Math.max(0, Math.min(touch.clientY - oy, window.innerHeight - panel.offsetHeight));
+      panel.style.left = x + 'px';
+      panel.style.top = y + 'px';
+    }
+    function onEnd() { dragging = false; handle.style.cursor = 'grab'; }
+    handle.addEventListener('mousedown', onStart);
+    handle.addEventListener('touchstart', onStart, { passive: false });
+    document.addEventListener('mousemove', onMove);
+    document.addEventListener('touchmove', onMove, { passive: false });
+    document.addEventListener('mouseup', onEnd);
+    document.addEventListener('touchend', onEnd);
+  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', setup);
+  else setup();
+})();
+
 function toggleChat() {
   _chatOpen = !_chatOpen;
   var panel = document.getElementById('chat-panel');
