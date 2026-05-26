@@ -763,6 +763,160 @@ function showDayDetails(day, month, members) {
   parts.forEach(function(node) { el.appendChild(node); });
 }
 
+function showMemberEditPanel(memberId, backDay, backMonth) {
+  var el = document.getElementById('desktop-right-panel');
+  if (!el) return;
+  var p = mems().find(function(x) { return String(x.id) === String(memberId); });
+  if (!p) return;
+  var backMonthName = MN[backMonth - 1] || String(backMonth);
+
+  while (el.firstChild) el.removeChild(el.firstChild);
+
+  function mkLabel(text) {
+    var l = document.createElement('label');
+    l.style.cssText = 'font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--txt2);display:block;margin-bottom:4px;margin-top:10px';
+    l.textContent = text;
+    return l;
+  }
+  function mkInput(id, type, value) {
+    var inp = document.createElement('input');
+    inp.id = id;
+    inp.className = 'inp';
+    inp.type = type || 'text';
+    inp.value = value || '';
+    return inp;
+  }
+  function mkTextarea(id, value) {
+    var ta = document.createElement('textarea');
+    ta.id = id;
+    ta.className = 'inp';
+    ta.rows = 2;
+    ta.style.cssText = 'min-height:50px';
+    ta.value = value || '';
+    return ta;
+  }
+
+  var backBtn = document.createElement('button');
+  backBtn.style.cssText = 'background:none;border:none;color:var(--b1d);font-size:12px;font-weight:700;cursor:pointer;padding:0 0 12px;display:block';
+  backBtn.textContent = '← ' + backDay + ' ' + backMonthName;
+  backBtn.onclick = function() {
+    showDayDetails(backDay, backMonth, mems().filter(function(x) { return x.day === backDay && x.month === backMonth; }));
+  };
+  el.appendChild(backBtn);
+
+  var title = document.createElement('div');
+  title.style.cssText = 'font-size:13px;font-weight:700;color:var(--txt);margin-bottom:4px';
+  title.textContent = '✏ ' + t('editMember') + ' ' + p.name;
+  el.appendChild(title);
+
+  el.appendChild(mkLabel(t('namePlaceholder') || 'Nom'));
+  el.appendChild(mkInput('sp-name', 'text', p.name));
+
+  var dateRow = document.createElement('div');
+  dateRow.style.cssText = 'display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;margin-top:10px';
+  [
+    { label: t('dayLabel') || 'Jour', id: 'sp-day', val: String(p.day), maxlength: '2' },
+    { label: t('monthLabel') || 'Mois', id: 'sp-month', val: String(p.month), maxlength: '2' },
+    { label: t('yearLabel') || 'Année', id: 'sp-year', val: String(p.year || ''), maxlength: '4' }
+  ].forEach(function(f) {
+    var w = document.createElement('div');
+    var l = document.createElement('label');
+    l.style.cssText = 'font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--txt2);display:block;margin-bottom:4px';
+    l.textContent = f.label;
+    var inp = document.createElement('input');
+    inp.id = f.id;
+    inp.className = 'inp';
+    inp.setAttribute('inputmode', 'numeric');
+    inp.setAttribute('maxlength', f.maxlength);
+    inp.value = f.val;
+    w.appendChild(l);
+    w.appendChild(inp);
+    dateRow.appendChild(w);
+  });
+  el.appendChild(dateRow);
+
+  el.appendChild(mkLabel(t('labelPhone') || 'Téléphone'));
+  el.appendChild(mkInput('sp-phone', 'tel', p.phone || ''));
+
+  el.appendChild(mkLabel(t('notesLabel') || 'Notes'));
+  el.appendChild(mkTextarea('sp-note', p.note || ''));
+
+  el.appendChild(mkLabel(t('customMsgLabel') || 'Message personnalisé'));
+  el.appendChild(mkTextarea('sp-custom-msg', p.customMsg || ''));
+
+  var errDiv = document.createElement('div');
+  errDiv.id = 'sp-err';
+  errDiv.style.cssText = 'font-size:12px;color:var(--b2d);margin-top:8px;display:none';
+  el.appendChild(errDiv);
+
+  var saveBtn = document.createElement('button');
+  saveBtn.className = 'btn P fw';
+  saveBtn.style.cssText = 'margin-top:12px;margin-bottom:8px';
+  saveBtn.textContent = '✓ ' + t('saveBtn');
+  (function(mid, bd, bm) {
+    saveBtn.onclick = function() { saveEditPanel(mid, bd, bm); };
+  })(memberId, backDay, backMonth);
+  el.appendChild(saveBtn);
+
+  var cancelBtn = document.createElement('button');
+  cancelBtn.className = 'btn fw';
+  cancelBtn.textContent = t('cancelBtn');
+  (function(bd, bm) {
+    cancelBtn.onclick = function() {
+      showDayDetails(bd, bm, mems().filter(function(x) { return x.day === bd && x.month === bm; }));
+    };
+  })(backDay, backMonth);
+  el.appendChild(cancelBtn);
+}
+
+function saveEditPanel(memberId, backDay, backMonth) {
+  var m = mems();
+  var p = m.find(function(x) { return String(x.id) === String(memberId); });
+  if (!p) return;
+
+  var name = (document.getElementById('sp-name').value || '').trim();
+  var day = parseInt(document.getElementById('sp-day').value) || 0;
+  var month = parseInt(document.getElementById('sp-month').value) || 0;
+  var yearVal = document.getElementById('sp-year').value;
+  var phone = (document.getElementById('sp-phone').value || '').trim();
+  var note = (document.getElementById('sp-note').value || '').trim();
+  var customMsg = (document.getElementById('sp-custom-msg').value || '').trim();
+
+  var errDiv = document.getElementById('sp-err');
+  if (!name || !day || !month || day < 1 || day > 31 || month < 1 || month > 12) {
+    if (errDiv) { errDiv.textContent = t('invalidData'); errDiv.style.display = 'block'; }
+    return;
+  }
+  if (errDiv) errDiv.style.display = 'none';
+
+  Object.assign(p, {
+    name: name,
+    day: day,
+    month: month,
+    year: yearVal ? parseInt(yearVal) : null,
+    phone: phone,
+    note: note,
+    customMsg: customMsg || undefined
+  });
+  m.sort(function(a, b) { return a.month - b.month || a.day - b.day; });
+  setMems(m);
+  saveG();
+
+  var sHome = document.getElementById('s-home');
+  if (sHome && sHome.style.display !== 'none') rHome();
+
+  renderSideCalendar();
+
+  var el = document.getElementById('desktop-right-panel');
+  if (el) {
+    var flash = document.createElement('div');
+    flash.style.cssText = 'background:var(--b3l);color:var(--b3d);border-radius:8px;padding:8px 12px;font-size:12px;font-weight:700;margin-bottom:10px';
+    flash.textContent = '✓ ' + name + ' ' + t('saveBtn').toLowerCase();
+    el.insertBefore(flash, el.firstChild);
+    setTimeout(function() { if (flash.parentNode) flash.parentNode.removeChild(flash); }, 2000);
+  }
+}
+
 // ── PLUS ──
 function rMore(){
   var el=document.getElementById('s-more');if(!el)return;
