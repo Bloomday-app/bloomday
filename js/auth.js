@@ -52,7 +52,7 @@ function initAuth() {
   });
 
   supabase.auth.onAuthStateChange(async function(event, session) {
-    if (event === 'SIGNED_IN' && session) {
+    if ((event === 'SIGNED_IN' || event === 'INITIAL_SESSION') && session) {
       var isNew = !currentUser;
       currentUser = buildUserFromSession(session);
       safeLsSet('bdg16_user', JSON.stringify(currentUser));
@@ -76,6 +76,8 @@ function initAuth() {
       if (sbProfile) {
         profile.live = sbProfile.live || profile.live;
         profile.religion = sbProfile.religion || profile.religion;
+        if (sbProfile.name) profile.name = sbProfile.name;
+        if (sbProfile.phone) profile.phone = sbProfile.phone;
         await sg('bdg16_profile', profile);
       }
 
@@ -90,7 +92,7 @@ function initAuth() {
       }
 
       closeOv('m-auth');
-      if (isNew) {
+      if (isNew && event === 'SIGNED_IN') {
         showToast(t('welcomeUser') + ' ' + currentUser.name.split(' ')[0] + ' !', 'success');
         sendEmail('welcome', { name: currentUser.name, email: currentUser.email });
       }
