@@ -667,62 +667,100 @@ function renderSideCalendar() {
 function showDayDetails(day, month, members) {
   var el = document.getElementById('desktop-right-panel');
   if (!el) return;
-  var now = new Date();
-  var year = now.getFullYear();
-  var MN2 = typeof MN !== 'undefined' ? MN : ['Jan','Fév','Mar','Avr','Mai','Juin','Juil','Aoû','Sep','Oct','Nov','Déc'];
-  var monthName = MN2[month - 1] || month;
-
+  var monthName = MN[month - 1] || String(month);
+  var allMems = mems();
   var parts = [];
 
   var backBtn = document.createElement('button');
-  backBtn.textContent = '← ' + monthName + ' ' + year;
+  backBtn.textContent = '← ' + MN[sideCal.month] + ' ' + sideCal.year;
   backBtn.style.cssText = 'background:none;border:none;color:var(--b1d);font-size:12px;font-weight:700;cursor:pointer;padding:0 0 12px;display:block';
-  backBtn.onclick = function(){ renderSideCalendar(); };
+  backBtn.onclick = function() { renderSideCalendar(); };
   parts.push(backBtn);
 
-  var title = document.createElement('div');
-  title.style.cssText = 'font-size:16px;font-weight:800;color:var(--txt);margin-bottom:14px';
-  title.textContent = day + ' ' + monthName;
-  parts.push(title);
+  var titleEl = document.createElement('div');
+  titleEl.style.cssText = 'font-size:16px;font-weight:800;color:var(--txt);margin-bottom:14px';
+  titleEl.textContent = day + ' ' + monthName;
+  parts.push(titleEl);
 
-  members.forEach(function(p){
+  members.forEach(function(p) {
+    var idx = allMems.indexOf(p);
     var card = document.createElement('div');
-    card.style.cssText = 'background:var(--card);border:1px solid var(--brd);border-radius:12px;padding:12px;margin-bottom:10px;cursor:pointer;transition:box-shadow .15s';
-    card.onmouseenter = function(){ card.style.boxShadow = '0 4px 16px rgba(0,0,0,.09)'; };
-    card.onmouseleave = function(){ card.style.boxShadow = ''; };
-    card.onclick = function(){ togEdit(p.id); showSec('members',1); };
+    card.style.cssText = 'background:var(--card);border:1px solid var(--brd);border-radius:12px;padding:12px;margin-bottom:10px';
 
     var top = document.createElement('div');
-    top.style.cssText = 'display:flex;align-items:center;gap:10px';
+    top.style.cssText = 'display:flex;align-items:center;gap:10px;margin-bottom:10px';
+
     var av = document.createElement('div');
-    av.style.cssText = 'width:38px;height:38px;border-radius:50%;background:var(--grad);display:flex;align-items:center;justify-content:center;font-size:13px;color:white;font-weight:800;flex-shrink:0;overflow:hidden';
+    av.className = 'av ' + (idx >= 0 ? AV[idx % 4] : AV[0]);
+    av.style.cssText = 'width:38px;height:38px;font-size:13px;flex-shrink:0';
     if (p.photo) {
       var img = document.createElement('img');
       img.src = p.photo;
       img.style.cssText = 'width:100%;height:100%;object-fit:cover;border-radius:50%';
       av.appendChild(img);
     } else {
-      av.textContent = (p.name||'?')[0].toUpperCase();
+      av.textContent = ini(p.name);
     }
+
     var info = document.createElement('div');
     info.style.cssText = 'flex:1;min-width:0';
+
     var nm = document.createElement('div');
     nm.style.cssText = 'font-size:13px;font-weight:700;color:var(--txt)';
     nm.textContent = tIco(p.type) + ' ' + p.name;
+
     var sub = document.createElement('div');
     sub.style.cssText = 'font-size:11px;color:var(--txt2);margin-top:1px';
+    var age = ageBday(p.day, p.month, p.year);
+    sub.textContent = tLbl(p.type) + ' · ' + p.day + ' ' + MN[p.month - 1] + (p.year ? ' ' + p.year : '') + (age ? ' — ' + age + ' ' + t('yearsOld') : '');
+
     var dl = daysTill(p.day, p.month);
-    sub.textContent = dl === 0 ? t('calendarToday') : 'Dans ' + dl + ' jour' + (dl > 1 ? 's' : '');
+    var dlEl = document.createElement('div');
+    dlEl.style.cssText = 'font-size:11px;color:var(--b1d);margin-top:2px;font-weight:700';
+    dlEl.textContent = dl === 0 ? t('calendarToday') : t('inDays') + ' ' + dl + ' ' + (dl > 1 ? t('daysUnit') : t('dayUnit'));
+
     info.appendChild(nm);
     info.appendChild(sub);
+    info.appendChild(dlEl);
     top.appendChild(av);
     top.appendChild(info);
     card.appendChild(top);
+
+    var btns = document.createElement('div');
+    btns.style.cssText = 'display:flex;gap:5px';
+
+    var editBtn = document.createElement('button');
+    editBtn.className = 'btn O sm';
+    editBtn.style.cssText = 'flex:1;font-size:10px;padding:6px 4px';
+    editBtn.textContent = '✏ ' + t('editMember');
+    (function(pid) { editBtn.onclick = function() { showMemberEditPanel(pid, day, month); }; })(p.id);
+
+    var msgBtn = document.createElement('button');
+    msgBtn.className = 'btn G sm';
+    msgBtn.style.cssText = 'flex:1;font-size:10px;padding:6px 4px';
+    msgBtn.textContent = '✨ ' + t('msgBtn');
+    (function(pid) { msgBtn.onclick = function() { genMsg(pid, 'side-msg-' + pid); }; })(p.id);
+
+    var giftBtn = document.createElement('button');
+    giftBtn.className = 'btn V sm';
+    giftBtn.style.cssText = 'flex:1;font-size:10px;padding:6px 4px';
+    giftBtn.textContent = '💡 ' + t('giftBtn');
+    (function(pid) { giftBtn.onclick = function() { genGiftModal(pid); }; })(p.id);
+
+    btns.appendChild(editBtn);
+    btns.appendChild(msgBtn);
+    btns.appendChild(giftBtn);
+    card.appendChild(btns);
+
+    var msgDiv = document.createElement('div');
+    msgDiv.id = 'side-msg-' + p.id;
+    card.appendChild(msgDiv);
+
     parts.push(card);
   });
 
   while (el.firstChild) el.removeChild(el.firstChild);
-  parts.forEach(function(node){ el.appendChild(node); });
+  parts.forEach(function(node) { el.appendChild(node); });
 }
 
 // ── PLUS ──
