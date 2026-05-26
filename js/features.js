@@ -613,25 +613,37 @@ var _chatInitialized = false;
     var panel = document.getElementById('chat-panel');
     if (!handle || !panel) return;
     var dragging = false, ox = 0, oy = 0;
+
+    function anchorPanel() {
+      var r = panel.getBoundingClientRect();
+      var w = Math.min(r.width || 320, window.innerWidth - 16);
+      panel.style.position = 'fixed';
+      panel.style.right = 'auto';
+      panel.style.bottom = 'auto';
+      panel.style.width = w + 'px';
+      panel.style.maxWidth = 'none';
+      panel.style.borderRadius = '20px';
+      panel.style.left = Math.max(0, r.left) + 'px';
+      panel.style.top = Math.max(0, r.top) + 'px';
+    }
+
     function onStart(e) {
-      if (window.innerWidth < 481) return; // no drag on mobile
-      dragging = true;
+      if (e.target.closest('button,input')) return;
       var touch = e.touches ? e.touches[0] : e;
+      anchorPanel();
       var r = panel.getBoundingClientRect();
       ox = touch.clientX - r.left;
       oy = touch.clientY - r.top;
-      panel.style.right = 'auto';
-      panel.style.bottom = 'auto';
-      panel.style.left = r.left + 'px';
-      panel.style.top = r.top + 'px';
+      dragging = true;
       handle.style.cursor = 'grabbing';
       e.preventDefault();
     }
     function onMove(e) {
       if (!dragging) return;
+      e.preventDefault();
       var touch = e.touches ? e.touches[0] : e;
       var x = Math.max(0, Math.min(touch.clientX - ox, window.innerWidth - panel.offsetWidth));
-      var y = Math.max(0, Math.min(touch.clientY - oy, window.innerHeight - panel.offsetHeight));
+      var y = Math.max(0, Math.min(touch.clientY - oy, window.innerHeight - 60));
       panel.style.left = x + 'px';
       panel.style.top = y + 'px';
     }
