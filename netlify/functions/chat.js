@@ -28,6 +28,7 @@ function geminiRequest(messages) {
       res.on('end', function() {
         try {
           var parsed = JSON.parse(data);
+          if (!parsed.candidates) console.error('Gemini no candidates:', JSON.stringify(parsed).substring(0, 300));
           var text = (parsed.candidates && parsed.candidates[0] && parsed.candidates[0].content && parsed.candidates[0].content.parts && parsed.candidates[0].content.parts[0] && parsed.candidates[0].content.parts[0].text) || '';
           resolve(text);
         } catch (e) { reject(e); }
