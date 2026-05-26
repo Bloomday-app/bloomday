@@ -10,7 +10,7 @@ function err(status, msg) {
 function geminiRequest(messages) {
   return new Promise(function(resolve, reject) {
     var apiKey = process.env.GEMINI_API_KEY;
-    var path = '/v1beta/models/gemini-1.5-flash:generateContent?key=' + apiKey;
+    var path = '/v1beta/models/gemini-2.0-flash:generateContent?key=' + apiKey;
     var payload = JSON.stringify({
       system_instruction: { parts: [{ text: SYSTEM_PROMPT }] },
       contents: messages.map(function(m) {
