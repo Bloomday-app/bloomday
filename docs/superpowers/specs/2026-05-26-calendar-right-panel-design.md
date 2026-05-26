@@ -38,9 +38,10 @@ L'objectif est d'enrichir ce panneau droit desktop en un calendrier mensuel navi
 
 ### Variables d'état (globales, dans `render.js`)
 ```js
-var sideCal = { year: now.getFullYear(), month: now.getMonth() }; // mois affiché dans le panneau droit
+// Déclaré au niveau module, juste avant renderSideCalendar()
+var sideCal = { year: new Date().getFullYear(), month: new Date().getMonth() };
 ```
-Ces variables persistent pendant la session. Réinitialisées à la date courante à chaque rechargement.
+Persiste pendant la session. Réinitialisé à la date courante à chaque rechargement de page.
 
 ### Fonctions modifiées
 
@@ -55,7 +56,7 @@ Ces variables persistent pendant la session. Réinitialisées à la date courant
 - Pour chaque membre : afficher avatar (initiales ou photo), nom, type, date, `daysTill` compteur
 - **Ajouter** 3 boutons par carte :
   - `✏ Modifier` → `showMemberEditPanel(p.id, day, month)`
-  - `✨ Message` → `genMsg(p.id, 'side-msg-' + p.id)` + un div `id="side-msg-[id]"` sous la carte
+  - `✨ Message` → `genMsg(p.id, 'side-msg-' + p.id)` — un div `id="side-msg-[id]"` est rendu juste après la rangée de boutons de chaque carte
   - `💡 Idée` → `genGiftModal(p.id)`
 - Supprimer `card.onclick = function(){ togEdit(p.id); showSec('members',1); }` (navigation vers Membres supprimée)
 
@@ -66,9 +67,9 @@ showMemberEditPanel(memberId, backDay, backMonth)
   2. Rendre dans el (desktop-right-panel) :
      - Bouton ← "[backDay] [MN[backMonth-1]]" → showDayDetails(backDay, backMonth, members du jour)
      - Titre "✏ Modifier [nom]"
-     - Champs : nom (input), jour/mois/année (3 inputs en grid), téléphone (input), notes (textarea), message personnalisé (textarea)
-     - Bouton "✓ Sauvegarder" → appelle saveEditPanel(memberId, backDay, backMonth)
-     - Bouton "Annuler" → showDayDetails(backDay, backMonth, ...)
+     - Champs avec IDs préfixés `sp-` pour éviter toute collision avec `saveEdit` : `sp-name`, `sp-day`, `sp-month`, `sp-year`, `sp-phone`, `sp-note`, `sp-custom-msg`
+     - Bouton "✓ Sauvegarder" → appelle `saveEditPanel(memberId, backDay, backMonth)`
+     - Bouton "Annuler" → `showDayDetails(backDay, backMonth, mems().filter(p=>p.day===backDay&&p.month===backMonth))`
 ```
 
 ### Nouvelle fonction : `saveEditPanel(memberId, backDay, backMonth)`
@@ -78,7 +79,7 @@ saveEditPanel(memberId, backDay, backMonth)
   2. Valider (nom non vide, jour 1-31, mois 1-12)
   3. Mettre à jour le membre dans le store local + Supabase (réutiliser saveEdit logic)
   4. Rafraîchir : rHome() si section home active
-  5. Retour : showDayDetails(backDay, backMonth, membres recalculés du jour)
+  5. Retour : `showDayDetails(backDay, backMonth, mems().filter(p=>p.day===backDay&&p.month===backMonth))`
   6. Flash de confirmation : div vert temporaire en haut du calendrier pendant 2s
 ```
 
