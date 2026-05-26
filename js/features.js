@@ -779,6 +779,7 @@ function _getChatQuota() {
   var monthKey = new Date().toISOString().slice(0, 7);
   var storageKey = 'bloom_chat_' + window.currentUser.uid + '_' + monthKey;
   var usedU = parseInt(localStorage.getItem(storageKey) || '0', 10);
+  if (window.isAdmin) return { used: 0, max: Infinity, type: 'user', storageKey: storageKey };
   var plan = (window.profile && window.profile.plan) || 'free';
   var unlimited = ['premium', 'bloom', 'pro', 'enterprise'].indexOf(plan) >= 0;
   return { used: usedU, max: unlimited ? Infinity : 10, type: 'user', storageKey: storageKey };
