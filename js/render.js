@@ -933,6 +933,11 @@ function saveEditPanel(memberId, backDay, backMonth) {
 function rMore(){
   var el=document.getElementById('s-more');if(!el)return;
   var h='';
+  var isDark=typeof _isDarkMode==='function'&&_isDarkMode();
+  h+='<div class="card" style="padding:14px 16px;margin-bottom:14px;display:flex;align-items:center;justify-content:space-between">';
+  h+='<span style="font-size:14px;font-weight:600">'+t('darkModeLabel')+'</span>';
+  h+='<button class="btn sm" style="min-width:72px;font-size:13px" onclick="toggleDarkMode()">'+(isDark?'☀️ OFF':'🌙 ON')+'</button>';
+  h+='</div>';
   h+='<div class="sh">'+t('monProfil')+'</div>';
   h+='<div class="card" style="padding:16px">';
   h+='<label>'+t('liveCountry')+'</label><select id="prof-live"></select>';
@@ -1314,7 +1319,7 @@ function _drpMemberRow(el,p){
 function renderDesktopRightPanel(section){
   var el=document.getElementById('desktop-right-panel');
   if(!el)return;
-  if(section==='add'||section==='events'||section==='admin'){el.style.display='none';return;}
+  if(section==='add'||section==='events'||section==='admin'||section==='members'||section==='more'){el.style.display='none';return;}
   el.style.display='flex';
   _drpClear(el);
   if(section==='home'||section==='cal'){

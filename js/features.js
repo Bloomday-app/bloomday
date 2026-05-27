@@ -303,7 +303,24 @@ function refresh(){
   rGbar();updateTopbar();
   rHome();
   ['members','events','cal','more'].forEach(s=>{const e=document.getElementById('s-'+s);if(e&&e.style.display!=='none'){if(s==='members')rMembers();else if(s==='events')rEvents();else if(s==='cal')rCal();else if(s==='more')rMore();}});
-  renderSideCalendar();
+  if(typeof renderDesktopRightPanel==='function')renderDesktopRightPanel(window._curSection||'home');
+}
+
+function _isDarkMode(){
+  var saved=localStorage.getItem('bdg16_dark_mode');
+  if(saved==='1')return true;
+  if(saved==='0')return false;
+  return window.matchMedia&&window.matchMedia('(prefers-color-scheme:dark)').matches;
+}
+function applyDarkMode(){
+  var dark=_isDarkMode();
+  document.documentElement.classList.toggle('dark-mode',dark);
+  document.documentElement.classList.toggle('light-mode',!dark);
+}
+function toggleDarkMode(){
+  localStorage.setItem('bdg16_dark_mode',_isDarkMode()?'0':'1');
+  applyDarkMode();
+  rMore();
 }
 
 function handleHash(){
