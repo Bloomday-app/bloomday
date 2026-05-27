@@ -423,7 +423,7 @@ function updateAllTexts(){
   var tbPlansBtn=document.getElementById('tb-plans-btn');
   if(tbPlansBtn) tbPlansBtn.style.display=isAdmin?'':'none';
   // 6. Langue courante dans sélecteur
-  var langLabels={fr:'FR',en:'EN',es:'ES',ar:'AR',hi:'HI',zh:'ZH',pt:'PT'};
+  var langLabels={fr:'🇫🇷',en:'🇬🇧',es:'🇪🇸',ar:'🇸🇦',hi:'🇮🇳',zh:'🇨🇳',pt:'🇧🇷'};
   var langCur=document.getElementById('lang-cur');
   if(langCur) langCur.textContent=langLabels[appLang]||appLang.toUpperCase();
   // 7. Direction RTL arabe
