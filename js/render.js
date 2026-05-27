@@ -616,15 +616,13 @@ function renderSideCalendar() {
     var hasBday = dayMembers.length > 0;
     var cell = document.createElement('div');
     cell.textContent = String(day);
-    cell.style.cssText = 'padding:5px 2px;border-radius:6px;cursor:' + (hasBday ? 'pointer' : 'default') + ';';
+    cell.style.cssText = 'padding:5px 2px;border-radius:6px;cursor:pointer;';
     if (isToday) cell.style.cssText += 'background:var(--b1);color:#2D1B14;font-weight:700;';
     else if (hasBday) cell.style.cssText += 'background:var(--b2l);color:var(--b2d);font-weight:700;';
-    if (hasBday) {
-      (function(d, members) {
-        cell.onclick = function() { showDayDetails(d, month + 1, members); };
-        cell.title = members.map(function(p) { return p.name; }).join(', ');
-      })(day, dayMembers);
-    }
+    (function(d, members) {
+      cell.onclick = function() { showDayDetails(d, month + 1, members); };
+      if (members.length) cell.title = members.map(function(p) { return p.name; }).join(', ');
+    })(day, dayMembers);
     grid.appendChild(cell);
   }
   parts.push(grid);
