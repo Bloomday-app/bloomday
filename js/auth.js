@@ -70,7 +70,9 @@ function initAuth() {
         await sg('bdg16_stats', stats);
       }
       await ensureRefCode();
-      var isNewUser = (Date.now() - new Date(session.user.created_at).getTime()) < 86400000;
+      var accountAgeMs = Date.now() - new Date(session.user.created_at).getTime();
+      var isNewUser = accountAgeMs < 86400000;
+      var isBrandNew = accountAgeMs < 600000;
       if(isNewUser) await trackPendingReferral(session.user.id);
       var sbProfile = await dbLoadProfile(currentUser.uid);
       if (sbProfile) {
@@ -92,7 +94,7 @@ function initAuth() {
       }
 
       closeOv('m-auth');
-      if (isNew && event === 'SIGNED_IN') {
+      if (isBrandNew && event === 'SIGNED_IN') {
         showToast(t('welcomeUser') + ' ' + currentUser.name.split(' ')[0] + ' !', 'success');
         sendEmail('welcome', { name: currentUser.name, email: currentUser.email });
       }

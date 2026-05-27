@@ -610,3 +610,5 @@ details[open] summary::after{content:" ▾"}
 .dsb-btn{color:var(--b1)}
 .dsb-btn.on{background:rgba(212,168,67,.22);box-shadow:inset 0 0 0 1px rgba(212,168,67,.35)}
 }
+/* ── DESKTOP RIGHT PANEL — override display:none défini plus haut ── */
+@media(min-width:1024px){.desktop-right-panel{display:flex}}
