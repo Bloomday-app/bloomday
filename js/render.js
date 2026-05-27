@@ -459,6 +459,20 @@ function updateAllTexts(){
   // 14. Placeholder nom dans formulaire
   var obName=document.getElementById('ob-name');
   if(obName) obName.placeholder=t('namePlaceholder');
+  // 14b. Reconstruire le select type d'événement (force rafraîchissement navigateur)
+  var typeSel=document.getElementById('inp-type');
+  if(typeSel){
+    var curType=typeSel.value||'birthday';
+    var typeOpts=[{v:'birthday',k:'evtBirthday'},{v:'wedding',k:'evtWedding'},{v:'work',k:'evtWork'},{v:'custom',k:'evtCustom'},{v:'other',k:'evtOther'}];
+    while(typeSel.firstChild) typeSel.removeChild(typeSel.firstChild);
+    for(var ti=0;ti<typeOpts.length;ti++){
+      var tOpt=document.createElement('option');
+      tOpt.value=typeOpts[ti].v;
+      tOpt.textContent=t(typeOpts[ti].k);
+      if(typeOpts[ti].v===curType) tOpt.selected=true;
+      typeSel.appendChild(tOpt);
+    }
+  }
   
 // Bouton compte dans topbar
 var tbAcctBtn=document.getElementById('tb-account-btn');

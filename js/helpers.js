@@ -151,19 +151,31 @@ function buildCountrySelect(selId,currentVal){
   });
 }
 
-function buildMonthSelect(){
-  var sel=document.getElementById('em-month');
+function _fillMonthSelect(sel, useShort, addBlank){
   if(!sel||!sel.appendChild) return;
   var current=sel.value;
-  sel.innerHTML='<option value="">'+t('monthLabel')+'</option>';
   var months=I18N[appLang]&&I18N[appLang].months?I18N[appLang].months:I18N.fr.months;
+  var monthsShort=I18N[appLang]&&I18N[appLang].monthsShort?I18N[appLang].monthsShort:I18N.fr.monthsShort;
+  var names=useShort?monthsShort:months;
+  while(sel.firstChild) sel.removeChild(sel.firstChild);
+  if(addBlank){
+    var blank=document.createElement('option');
+    blank.value='';
+    blank.textContent=t('monthLabel');
+    sel.appendChild(blank);
+  }
   for(var mi=0;mi<12;mi++){
     var opt=document.createElement('option');
     opt.value=mi+1;
-    opt.textContent=months[mi];
+    opt.textContent=names[mi];
     sel.appendChild(opt);
   }
   if(current) sel.value=current;
+}
+function buildMonthSelect(){
+  _fillMonthSelect(document.getElementById('em-month'), false, true);
+  _fillMonthSelect(document.getElementById('inp-month'), true, false);
+  _fillMonthSelect(document.getElementById('ob-month'), true, false);
 }
 
 function getOrCreateUID(){

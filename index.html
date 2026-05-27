@@ -291,9 +291,9 @@
     <label data-i18n="genderLabel2">Genre (pour idées cadeaux)</label>
     <select id="inp-gender"><option value="" data-i18n="genderNone">Non précisé</option><option value="femme" data-i18n="genderF">👩 Femme</option><option value="homme" data-i18n="genderM">👨 Homme</option><option value="enfant" data-i18n="genderKid">👶 Enfant</option></select>
     <label data-i18n="notesLabel2">Notes personnelles</label>
-    <textarea id="inp-note" placeholder="Aime la cuisine, responsable louange, passionné de sport..."></textarea>
+    <textarea id="inp-note" data-i18n-placeholder="notesPlaceholderAdd" placeholder="Aime la cuisine, responsable louange, passionné de sport..."></textarea>
     <label data-i18n="customMsgLabel">Message personnalisé (optionnel)</label>
-    <textarea id="inp-custom-msg" placeholder="Écris ici le message que tu veux envoyer..." style="min-height:80px"></textarea>
+    <textarea id="inp-custom-msg" data-i18n-placeholder="customMsgPlaceholder" placeholder="Écris ici le message que tu veux envoyer..." style="min-height:80px"></textarea>
     <label data-i18n="importVcf2">Importer contact (.vcf)</label>
     <input type="file" id="inp-vcf" accept=".vcf,.vcard" style="font-size:14px;padding:8px;background:var(--bg2);color:var(--txt)" onchange="impVCard(this)">
     <label data-i18n="importCsv">Importer CSV entreprise</label>
@@ -302,7 +302,7 @@
     <!-- Guide import contacts (Axe 10) -->
     <div style="background:var(--b4l);border:1px solid var(--b4);border-radius:12px;padding:12px;margin-bottom:16px">
       <div style="font-size:13px;font-weight:700;color:var(--b4d);margin-bottom:6px" data-i18n="vcfExportTitle">📱 Exporter vos contacts iPhone en .vcf</div>
-      <div style="font-size:12px;color:var(--b4d);line-height:1.7">1. Ouvrez <strong>Contacts</strong> sur iPhone → sélectionnez un contact<br>2. Faites défiler → appuyez sur <strong>"Partager le contact"</strong><br>3. Choisissez <strong>"Copier"</strong> <span data-i18n="vcfStep3b">ou envoyez-vous le fichier .vcf</span><br data-i18n="vcfStep4b">4. Importez-le ici avec le bouton ci-dessus</div>
+      <div style="font-size:12px;color:var(--b4d);line-height:1.7"><span data-i18n="vcfStep1b">1. Ouvrez Contacts sur iPhone → sélectionnez un contact</span><br><span data-i18n="vcfStep2b">2. Faites défiler → appuyez sur "Partager le contact"</span><br><span data-i18n="vcfStep3b">3. Choisissez ou envoyez-vous le fichier .vcf</span><br><span data-i18n="vcfStep4b">4. Importez-le ici avec le bouton ci-dessus</span></div>
     </div>
     <button class="btn P fw" onclick="addMember()" data-i18n="addToGroupBtn">🌸 Ajouter au groupe</button>
   </div>
