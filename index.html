@@ -295,9 +295,17 @@
     <label data-i18n="customMsgLabel">Message personnalisé (optionnel)</label>
     <textarea id="inp-custom-msg" data-i18n-placeholder="customMsgPlaceholder" placeholder="Écris ici le message que tu veux envoyer..." style="min-height:80px"></textarea>
     <label data-i18n="importVcf2">Importer contact (.vcf)</label>
-    <input type="file" id="inp-vcf" accept=".vcf,.vcard" style="font-size:14px;padding:8px;background:var(--bg2);color:var(--txt)" onchange="impVCard(this)">
+    <input type="file" id="inp-vcf" accept=".vcf,.vcard" style="display:none" onchange="impVCard(this);document.getElementById('vcf-filename').textContent=this.files[0]?this.files[0].name:t('noFileChosen')">
+    <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px">
+      <button type="button" class="btn sm O" onclick="document.getElementById('inp-vcf').click()" id="btn-vcf" data-i18n="openFileBtn">Choisir un fichier</button>
+      <span id="vcf-filename" style="font-size:13px;color:var(--txt2)" data-i18n="noFileChosen">Aucun fichier choisi</span>
+    </div>
     <label data-i18n="importCsv">Importer CSV entreprise</label>
-    <input type="file" id="inp-csv" accept=".csv" style="font-size:14px;padding:8px;background:var(--bg2);color:var(--txt)" onchange="impCSV(this)">
+    <input type="file" id="inp-csv" accept=".csv" style="display:none" onchange="impCSV(this);document.getElementById('csv-filename').textContent=this.files[0]?this.files[0].name:t('noFileChosen')">
+    <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px">
+      <button type="button" class="btn sm O" onclick="document.getElementById('inp-csv').click()" id="btn-csv" data-i18n="openFileBtn">Choisir un fichier</button>
+      <span id="csv-filename" style="font-size:13px;color:var(--txt2)" data-i18n="noFileChosen">Aucun fichier choisi</span>
+    </div>
     <div style="font-size:11px;color:var(--txt2);margin:3px 0 16px" data-i18n="csvFormat">Format : nom,jour,mois,année,téléphone</div>
     <!-- Guide import contacts (Axe 10) -->
     <div style="background:var(--b4l);border:1px solid var(--b4);border-radius:12px;padding:12px;margin-bottom:16px">

@@ -430,7 +430,7 @@ function updateAllTexts(){
   document.body.style.direction=(appLang==='ar'?'rtl':'ltr');
   // 8. Noms des langues dans le sélecteur
   var langOpts=document.querySelectorAll('.lang-opt');
-  var lnFlags={fr:'🇫🇷',en:'🇬🇧',es:'🇪🇸',ar:'🇸🇦',hi:'🇮🇳',zh:'🇨🇳',pt:'🇧🇷'};
+  var lnFlags={fr:'🇫🇷',en:'🇬🇧',es:'🇪🇸',ar:'🇸🇦',hi:'🇮🇳',zh:'🇨🇳',pt:'🇵🇹'};
   for(var lo=0;lo<langOpts.length;lo++){
     var loEl=langOpts[lo];var loCode=loEl.getAttribute('data-lang');
     loEl.classList.toggle('on',loCode===appLang);
