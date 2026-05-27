@@ -1287,7 +1287,10 @@ function renderDesktopRightPanel(section){
   var mm=mems();
   var html='';
 
-  if(section==='home'||section==='cal'){
+  if(section==='cal'){
+    renderSideCalendar();
+    return;
+  } else if(section==='home'){
     var upcoming=mm.map(function(p){
       var yr=today.getFullYear();
       var d=new Date(yr,p.month-1,p.day);
