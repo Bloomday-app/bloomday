@@ -57,6 +57,22 @@ function initAuth() {
       currentUser = buildUserFromSession(session);
       safeLsSet('bdg16_user', JSON.stringify(currentUser));
 
+      // Afficher l'app immédiatement avec les données locales (cache)
+      var appEl = document.getElementById('app');
+      var appStarted = appEl && appEl.classList.contains('on');
+      if (!appStarted) {
+        var landEl = document.getElementById('land');
+        if (landEl) landEl.style.display = 'none';
+        if (appEl) appEl.classList.add('on');
+        if (typeof load === 'function') load();
+      }
+      closeOv('m-auth');
+      updateTopbar();
+      checkAdmin(currentUser);
+      var logoutBtnIn = document.getElementById('tb-logout');
+      if (logoutBtnIn) logoutBtnIn.style.display = 'inline-block';
+
+      // Charger les données Supabase en arrière-plan puis rafraîchir
       await migrateIfNeeded(currentUser.uid);
 
       var sbGroups = await dbLoadGroups(currentUser.uid);
@@ -83,26 +99,12 @@ function initAuth() {
         await sg('bdg16_profile', profile);
       }
 
-      // Si l'app n'est pas encore visible (utilisateur vient de la vitrine), la lancer
-      var appEl = document.getElementById('app');
-      var appStarted = appEl && appEl.classList.contains('on');
-      if (!appStarted) {
-        var landEl = document.getElementById('land');
-        if (landEl) landEl.style.display = 'none';
-        if (appEl) appEl.classList.add('on');
-        if (typeof load === 'function') load();
-      }
-
-      closeOv('m-auth');
+      // Mettre à jour l'UI avec les données fraîches
+      if (typeof refresh === 'function') refresh();
       if (isBrandNew && event === 'SIGNED_IN') {
         showToast(t('welcomeUser') + ' ' + currentUser.name.split(' ')[0] + ' !', 'success');
         sendEmail('welcome', { name: currentUser.name, email: currentUser.email });
       }
-      updateTopbar();
-      checkAdmin(currentUser);
-      var logoutBtnIn = document.getElementById('tb-logout');
-      if (logoutBtnIn) logoutBtnIn.style.display = 'inline-block';
-      if (appStarted) refresh();
     } else if (event === 'SIGNED_OUT') {
       var wasUser = currentUser;
       currentUser = null;

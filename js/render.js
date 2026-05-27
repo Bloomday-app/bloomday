@@ -1319,16 +1319,14 @@ function _drpMemberRow(el,p){
 function renderDesktopRightPanel(section){
   var el=document.getElementById('desktop-right-panel');
   if(!el)return;
-  if(section==='add'||section==='events'||section==='admin'||section==='members'||section==='more'){el.style.display='none';return;}
+  if(section==='add'||section==='events'||section==='admin'){el.style.display='none';return;}
   el.style.display='flex';
-  _drpClear(el);
   if(section==='home'||section==='cal'){
-    _drpTitle(el,t('drpUpcoming'));
-    var m=mems();
-    var up=m.filter(function(p){return daysTill(p.day,p.month)>=0;}).sort(function(a,b){return daysTill(a.day,a.month)-daysTill(b.day,b.month);}).slice(0,7);
-    if(!up.length){_drpEmpty(el,t('noBirthdaysToday'));}
-    else{up.forEach(function(p){_drpMemberRow(el,p);});}
-  } else if(section==='members'){
+    renderSideCalendar();
+    return;
+  }
+  _drpClear(el);
+  if(section==='members'){
     _drpTitle(el,t('drpUpcoming'));
     var m=mems();
     var near=m.filter(function(p){return daysTill(p.day,p.month)>=0;}).sort(function(a,b){return daysTill(a.day,a.month)-daysTill(b.day,b.month);})[0];
