@@ -346,7 +346,22 @@ function renderPlanDetail(){}
 // ── GROUPES ──
 function rGbar(){
   const b=document.getElementById('gbar');if(!b)return;
-  b.innerHTML=groups.map(g=>`<button class="gc${g.id===curG?' on':''}" onclick="switchG('${esc(g.id)}')">${esc(g.icon)} ${esc(g.isDefault?t('myGroup'):g.name)}</button>`).join('')+`<button class="gc add" onclick="addGroup()" title="${esc(t('groupModalTitle')||'Nouveau groupe')}">＋</button>`;
+  var _allDefNames=Object.keys(I18N).map(function(lang){return I18N[lang].myGroup;}).filter(Boolean);
+  while(b.firstChild) b.removeChild(b.firstChild);
+  groups.forEach(function(g){
+    var isDef=g.isDefault||_allDefNames.indexOf(g.name)!==-1;
+    var btn=document.createElement('button');
+    btn.className='gc'+(g.id===curG?' on':'');
+    btn.textContent=g.icon+' '+(isDef?t('myGroup'):g.name);
+    btn.onclick=function(){switchG(g.id);};
+    b.appendChild(btn);
+  });
+  var addBtn=document.createElement('button');
+  addBtn.className='gc add';
+  addBtn.textContent='＋';
+  addBtn.title=t('groupModalTitle')||'Nouveau groupe';
+  addBtn.onclick=addGroup;
+  b.appendChild(addBtn);
 }
 function switchG(id){curG=id;fMonth=0;fType='';searchInput='';searchFiltered=null;editId=null;refresh();}
 function addGroup(){
