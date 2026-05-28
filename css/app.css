@@ -513,7 +513,6 @@ details[open] summary::after{content:" ▾"}
 }
 
 /* ── SIDEBAR (desktop only) ── */
-@media(max-width:1023px){.desktop-sidebar{display:none}.wrow{display:none}}
 .desktop-sidebar{display:flex;flex-direction:column;align-items:flex-start;width:140px;flex-shrink:0;background:var(--txt);min-height:100vh;padding:12px 0;position:sticky;top:0;height:100vh;z-index:200;transition:width .22s ease;overflow:hidden}
 .desktop-sidebar.collapsed{width:52px}
 .desktop-sidebar.collapsed .dsb-btn span,.desktop-sidebar.collapsed .dsb-logo>span,.desktop-sidebar.collapsed .lang-sel span:nth-child(2),.desktop-sidebar.collapsed .lang-sel span:nth-child(3){display:none}
@@ -643,5 +642,10 @@ details[open] summary::after{content:" ▾"}
 .dsb-btn{color:var(--b1)}
 .dsb-btn.on{background:rgba(212,168,67,.22);box-shadow:inset 0 0 0 1px rgba(212,168,67,.35)}
 }
+html.dark-mode .desktop-sidebar{background:#2D1B14}
+html.dark-mode .dsb-btn{color:var(--b1)}
+html.dark-mode .dsb-btn.on{background:rgba(212,168,67,.22);box-shadow:inset 0 0 0 1px rgba(212,168,67,.35)}
 /* ── DESKTOP RIGHT PANEL — override display:none défini plus haut ── */
 @media(min-width:1024px){.desktop-right-panel{display:flex}}
+/* ── MOBILE — masquer sidebar et calendrier semaine ── */
+@media(max-width:1023px){.desktop-sidebar{display:none!important}.wrow{display:none}}

@@ -330,20 +330,28 @@ function rEvents(){
     hd.textContent=d;grid.appendChild(hd);
   });
   for(var i=0;i<firstDay;i++)grid.appendChild(document.createElement('div'));
+  var evtDayPanel=document.createElement('div');
+  evtDayPanel.id='evt-day-panel';
+  evtDayPanel.style.cssText='margin-top:10px';
+
   for(var day=1;day<=daysInMonth;day++){
     var isTd=day===now.getDate()&&month===now.getMonth()&&year===now.getFullYear();
     var hasBday=m.some(function(p){return p.day===day&&p.month===(month+1);});
     var hasFete=allFetes.some(function(f){return f.d===day&&f.m===(month+1);});
     var cell=document.createElement('div');
     cell.textContent=String(day);
-    var css='padding:6px 2px;border-radius:8px;font-size:13px;';
+    var css='padding:6px 2px;border-radius:8px;font-size:13px;cursor:pointer;';
     if(isTd)css+='background:var(--b1);color:#2D1B14;font-weight:700;';
     else if(hasBday)css+='background:var(--b2l);color:var(--b2d);font-weight:700;';
     else if(hasFete)css+='background:var(--b4l);color:var(--b4d);font-weight:700;';
     cell.style.cssText=css;
+    (function(d){
+      cell.onclick=function(){showEvtDay(d,month+1,m,allFetes,evtDayPanel);};
+    })(day);
     grid.appendChild(cell);
   }
   calCard.appendChild(grid);
+  calCard.appendChild(evtDayPanel);
   el.appendChild(calCard);
 
   // ── LISTE UNIFIÉE (fêtes + anniversaires) ──
@@ -387,6 +395,36 @@ function rEvents(){
   el.appendChild(listCard);
 }
 
+function showEvtDay(day,month,members,allFetes,panel){
+  while(panel.firstChild)panel.removeChild(panel.firstChild);
+  var bdaysDay=members.filter(function(p){return p.day===day&&p.month===month;});
+  var fetesDay=allFetes.filter(function(f){return f.d===day&&f.m===month;});
+  if(!bdaysDay.length&&!fetesDay.length){panel.style.display='none';return;}
+  panel.style.display='block';
+  var wrap=document.createElement('div');
+  wrap.style.cssText='border-top:1px solid var(--brd);margin-top:10px;padding-top:10px';
+  var title=document.createElement('div');
+  title.style.cssText='font-size:12px;font-weight:700;color:var(--txt2);margin-bottom:8px;text-transform:uppercase;letter-spacing:.06em';
+  title.textContent=day+' '+MN[month-1];
+  wrap.appendChild(title);
+  fetesDay.forEach(function(f){
+    var row=document.createElement('div');
+    row.style.cssText='display:flex;align-items:center;gap:8px;padding:6px 0;border-bottom:1px solid var(--brd)';
+    var ico=document.createElement('span');ico.textContent=f.i||'🎉';ico.style.cssText='font-size:16px';
+    var nm=document.createElement('span');nm.style.cssText='font-size:13px;font-weight:600;color:var(--b4d);flex:1';nm.textContent=tFete(f.n)||f.n;
+    row.appendChild(ico);row.appendChild(nm);wrap.appendChild(row);
+  });
+  bdaysDay.forEach(function(p){
+    var row=document.createElement('div');
+    row.style.cssText='display:flex;align-items:center;gap:8px;padding:6px 0;border-bottom:1px solid var(--brd)';
+    var ico=document.createElement('span');ico.textContent=tIco(p.type);ico.style.cssText='font-size:16px';
+    var nm=document.createElement('span');nm.style.cssText='font-size:13px;font-weight:600;color:var(--b2d);flex:1';nm.textContent=p.name;
+    var age=ageBday(p.day,p.month,p.year);
+    if(age){var ag=document.createElement('span');ag.style.cssText='font-size:11px;color:var(--txt2)';ag.textContent=age+' '+t('yearsOld');row.appendChild(ag);}
+    row.appendChild(ico);row.appendChild(nm);wrap.appendChild(row);
+  });
+  panel.appendChild(wrap);
+}
 
 // ══════════════════════════════════════════════════
 // SYSTÈME EMAILS AUTOMATIQUES (simulé MVP)
