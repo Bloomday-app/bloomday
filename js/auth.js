@@ -157,8 +157,15 @@ async function doSignupSupabase() {
 
   // Email confirmation required — session is null until user clicks the link
   if (result.data.user && !result.data.session) {
-    showToast(t('checkYourEmail') || 'Vérifiez votre boîte mail pour confirmer votre compte !', 'success');
-    closeOv('m-auth');
+    var sentPanel = document.getElementById('auth-email-sent');
+    var formPanel = document.getElementById('auth-form-s');
+    var tabBar = document.querySelector('#m-auth .mt');
+    var addrEl = document.getElementById('auth-email-sent-addr');
+    if (addrEl) addrEl.textContent = email;
+    if (formPanel) formPanel.style.display = 'none';
+    if (document.getElementById('auth-tab-s')) document.getElementById('auth-tab-s').style.display = 'none';
+    if (document.getElementById('auth-tab-l')) document.getElementById('auth-tab-l').style.display = 'none';
+    if (sentPanel) sentPanel.style.display = 'block';
     return;
   }
   // onAuthStateChange SIGNED_IN handles the rest (auto-confirm disabled)

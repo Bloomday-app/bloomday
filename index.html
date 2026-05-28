@@ -451,7 +451,7 @@
     <div style="font-size:11px;color:var(--txt2);margin-top:6px;line-height:1.5" data-i18n="dataPrivacyNote">
       🔒 Vos données sont stockées localement sur votre appareil.
     </div>
-    <button class="btn P fw" style="margin-top:14px" onclick="doSignup()"><span data-i18n="btnSignup">🌸 Créer mon compte gratuit</span></button>
+    <button id="auth-submit-btn" class="btn P fw" style="margin-top:14px" onclick="doSignup()" data-i18n="btnSignup">🌸 Créer mon compte gratuit</button>
     <p style="text-align:center;font-size:11px;color:var(--txt2);margin-top:8px" data-i18n="freeTrialNote">
       ✅ Gratuit · 5 membres · Sans carte bancaire
     </p>
@@ -460,6 +460,14 @@
       <svg width="18" height="18" viewBox="0 0 18 18"><path fill="#4285F4" d="M17.64 9.2c0-.637-.057-1.251-.164-1.84H9v3.481h4.844c-.209 1.125-.843 2.078-1.796 2.716v2.259h2.908c1.702-1.567 2.684-3.875 2.684-6.615z"/><path fill="#34A853" d="M9 18c2.43 0 4.467-.806 5.956-2.18l-2.908-2.259c-.806.54-1.837.86-3.048.86-2.344 0-4.328-1.584-5.036-3.711H.957v2.332C2.438 15.983 5.482 18 9 18z"/><path fill="#FBBC05" d="M3.964 10.71c-.18-.54-.282-1.117-.282-1.71s.102-1.17.282-1.71V4.958H.957C.347 6.173 0 7.548 0 9s.348 2.827.957 4.042l3.007-2.332z"/><path fill="#EA4335" d="M9 3.58c1.321 0 2.508.454 3.44 1.345l2.582-2.58C13.463.891 11.426 0 9 0 5.482 0 2.438 2.017.957 4.958L3.964 7.29C4.672 5.163 6.656 3.58 9 3.58z"/></svg>
       Continuer avec Google
     </button>
+  </div>
+  <div id="auth-email-sent" style="display:none;text-align:center;padding:16px 8px">
+    <div style="font-size:48px;margin-bottom:12px">📬</div>
+    <div style="font-size:18px;font-weight:700;margin-bottom:8px" data-i18n="emailSentTitle">Vérifiez votre boîte mail !</div>
+    <div id="auth-email-sent-addr" style="font-size:13px;color:var(--txt2);margin-bottom:16px"></div>
+    <div style="font-size:13px;color:var(--txt2);line-height:1.6;margin-bottom:20px" data-i18n="emailSentDesc">Nous vous avons envoyé un lien de confirmation. Cliquez dessus pour activer votre compte et commencer à utiliser Bloomday.</div>
+    <button class="btn P fw" onclick="closeOv('m-auth')" data-i18n="emailSentClose">OK, je vérifie mes mails</button>
+    <p style="font-size:11px;color:var(--txt2);margin-top:12px" data-i18n="emailSentSpam">Pas reçu ? Vérifiez vos spams.</p>
   </div>
   <div id="auth-form-l" style="display:none">
     <label data-i18n="labelEmail">Email</label>
@@ -542,13 +550,13 @@
   <script>window.STRIPE_PUBLISHABLE_KEY = 'pk_live_51Owaf7PFAPmeysygjWLCsUNwx2FXqnAeoubpIlwLsZCSvjJ4qMrzCJyXalhGxffwqwupUG0h4mo2G4VqdmrQYAU800GcRVvRJA';</script>
   <!-- Scripts Bloomday — ordre important -->
   <script src="js/data.js?v=20260504a"></script>
-  <script src="js/i18n.js?v=20260523d"></script>
+  <script src="js/i18n.js?v=20260528c"></script>
   <script src="js/helpers.js?v=20260504a"></script>
   <script src="js/supabase-client.js?v=20260505a"></script>
   <script src="js/db.js?v=20260505b"></script>
   <script src="js/migration.js?v=20260505b"></script>
-  <script src="js/auth.js?v=20260528a"></script>
-  <script src="js/features.js?v=20260523d"></script>
+  <script src="js/auth.js?v=20260528b"></script>
+  <script src="js/features.js?v=20260528a"></script>
   <script src="js/render.js?v=20260528b"></script>
   <script src="js/core.js?v=20260523a"></script>
 

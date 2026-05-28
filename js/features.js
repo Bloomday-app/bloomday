@@ -439,7 +439,15 @@ document.addEventListener('click',function(e){
 });
 // ── AUTH ──
 var currentUser=null;
-function openAuth(ctx){switchAuthTab(ctx||'signup');openOv('m-auth');}
+function openAuth(ctx){
+  var sp=document.getElementById('auth-email-sent');
+  var ts=document.getElementById('auth-tab-s');
+  var tl=document.getElementById('auth-tab-l');
+  if(sp)sp.style.display='none';
+  if(ts)ts.style.display='';
+  if(tl)tl.style.display='';
+  switchAuthTab(ctx||'signup');openOv('m-auth');
+}
 function switchAuthTab(tab){
   document.getElementById('auth-form-s').style.display=tab==='signup'?'block':'none';
   document.getElementById('auth-form-l').style.display=tab==='login'?'block':'none';
