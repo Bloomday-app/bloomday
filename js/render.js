@@ -287,19 +287,104 @@ function rMembers(){
     if(inp&&document.activeElement!==inp)inp.focus({preventScroll:true});
   }
 }
+var evtCal={year:new Date().getFullYear(),month:new Date().getMonth()};
+
 function rEvents(){
-  const el=document.getElementById('s-events');if(!el)return;
-  const fetes=getActiveFetes(),up=fetes.filter(f=>f.dl<=90);
-  let h=`<div class="sh">${t('nextCelebrations')}</div><div style="font-size:12px;color:var(--txt2);margin-bottom:12px">${t('personalizeProfile')}</div><div class="card" style="padding:6px 14px">`;
-  if(!up.length)h+=`<div style="font-size:13px;color:var(--txt2);padding:10px 0">${t('noCelebrations')}</div>`;
-  up.forEach(f=>{
-    const nom=tFete(f.n)||f.n;
-    const lbl=f.dl===0?t('today')||'Aujourd\'hui !':f.dl===1?t('tomorrowLabel')||'Demain':`${t('inDays')||'dans'} ${f.dl}j`;
-    const st=f.dl===0?'background:var(--b2l);color:var(--b2d)':f.dl<=7?'background:var(--b1l);color:var(--b1d)':'background:var(--bg2);color:var(--txt2)';
-    h+=`<div class="fr"><div class="fi">${f.i}</div><div style="flex:1"><div class="fn">${esc(nom)}</div><div class="fd">${f.d} ${MN[f.m-1]}</div></div><div class="fpill" style="${st}">${esc(lbl)}</div></div>`;
+  var el=document.getElementById('s-events');if(!el)return;
+  while(el.firstChild)el.removeChild(el.firstChild);
+
+  var now=new Date();
+  var year=evtCal.year,month=evtCal.month;
+  var daysInMonth=new Date(year,month+1,0).getDate();
+  var firstDay=new Date(year,month,1).getDay();
+  firstDay=firstDay===0?6:firstDay-1;
+  var m=mems();
+  var allFetes=getActiveFetes();
+
+  // ── CALENDRIER ──
+  var calCard=document.createElement('div');
+  calCard.className='card';
+  calCard.style.cssText='padding:14px 12px;margin-bottom:14px';
+
+  var nav=document.createElement('div');
+  nav.style.cssText='display:flex;align-items:center;justify-content:space-between;margin-bottom:10px';
+  var prevBtn=document.createElement('button');
+  prevBtn.textContent='‹';
+  prevBtn.style.cssText='background:var(--bg2);border:1px solid var(--brd);border-radius:8px;color:var(--txt);font-size:20px;width:34px;height:34px;cursor:pointer;line-height:1;display:flex;align-items:center;justify-content:center';
+  prevBtn.onclick=function(){evtCal.month--;if(evtCal.month<0){evtCal.month=11;evtCal.year--;}rEvents();};
+  var monthTitle=document.createElement('div');
+  monthTitle.style.cssText='font-size:15px;font-weight:700;color:var(--txt)';
+  monthTitle.textContent=MN[month]+' '+year;
+  var nextBtn=document.createElement('button');
+  nextBtn.textContent='›';
+  nextBtn.style.cssText='background:var(--bg2);border:1px solid var(--brd);border-radius:8px;color:var(--txt);font-size:20px;width:34px;height:34px;cursor:pointer;line-height:1;display:flex;align-items:center;justify-content:center';
+  nextBtn.onclick=function(){evtCal.month++;if(evtCal.month>11){evtCal.month=0;evtCal.year++;}rEvents();};
+  nav.appendChild(prevBtn);nav.appendChild(monthTitle);nav.appendChild(nextBtn);
+  calCard.appendChild(nav);
+
+  var grid=document.createElement('div');
+  grid.style.cssText='display:grid;grid-template-columns:repeat(7,1fr);gap:2px;text-align:center';
+  ['L','M','M','J','V','S','D'].forEach(function(d){
+    var hd=document.createElement('div');
+    hd.style.cssText='color:var(--txt2);padding:3px 0;font-size:10px;font-weight:600';
+    hd.textContent=d;grid.appendChild(hd);
   });
-  h+=`</div>`;
-  el.innerHTML=h;
+  for(var i=0;i<firstDay;i++)grid.appendChild(document.createElement('div'));
+  for(var day=1;day<=daysInMonth;day++){
+    var isTd=day===now.getDate()&&month===now.getMonth()&&year===now.getFullYear();
+    var hasBday=m.some(function(p){return p.day===day&&p.month===(month+1);});
+    var hasFete=allFetes.some(function(f){return f.d===day&&f.m===(month+1);});
+    var cell=document.createElement('div');
+    cell.textContent=String(day);
+    var css='padding:6px 2px;border-radius:8px;font-size:13px;';
+    if(isTd)css+='background:var(--b1);color:#2D1B14;font-weight:700;';
+    else if(hasBday)css+='background:var(--b2l);color:var(--b2d);font-weight:700;';
+    else if(hasFete)css+='background:var(--b4l);color:var(--b4d);font-weight:700;';
+    cell.style.cssText=css;
+    grid.appendChild(cell);
+  }
+  calCard.appendChild(grid);
+  el.appendChild(calCard);
+
+  // ── LISTE UNIFIÉE (fêtes + anniversaires) ──
+  var sh=document.createElement('div');
+  sh.className='sh';sh.textContent=t('nextCelebrations');
+  el.appendChild(sh);
+
+  var items=[];
+  allFetes.forEach(function(f){
+    items.push({icon:f.i,name:tFete(f.n)||f.n,day:f.d,month:f.m,dl:f.dl});
+  });
+  m.forEach(function(p){
+    var dl=daysTill(p.day,p.month);
+    if(dl>=0)items.push({icon:tIco(p.type),name:p.name,day:p.day,month:p.month,dl:dl});
+  });
+  items.sort(function(a,b){return a.dl-b.dl;});
+  items=items.slice(0,10);
+
+  var listCard=document.createElement('div');
+  listCard.className='card';listCard.style.cssText='padding:6px 14px';
+  if(!items.length){
+    var empty=document.createElement('div');
+    empty.style.cssText='font-size:13px;color:var(--txt2);padding:10px 0';
+    empty.textContent=t('noCelebrations');listCard.appendChild(empty);
+  }else{
+    items.forEach(function(item){
+      var row=document.createElement('div');row.className='fr';
+      var ico=document.createElement('div');ico.className='fi';ico.textContent=item.icon;
+      var info=document.createElement('div');info.style.cssText='flex:1';
+      var nm=document.createElement('div');nm.className='fn';nm.textContent=esc(item.name);
+      var dt=document.createElement('div');dt.className='fd';dt.textContent=item.day+' '+MN[item.month-1];
+      info.appendChild(nm);info.appendChild(dt);
+      var pill=document.createElement('div');pill.className='fpill';
+      var lbl=item.dl===0?(t('today')||'Aujourd\'hui'):item.dl===1?(t('tomorrowLabel')||'Demain'):(t('inDays')||'dans')+' '+item.dl+'j';
+      var st=item.dl===0?'background:var(--b2l);color:var(--b2d)':item.dl<=7?'background:var(--b1l);color:var(--b1d)':'background:var(--bg2);color:var(--txt2)';
+      pill.style.cssText=st;pill.textContent=lbl;
+      row.appendChild(ico);row.appendChild(info);row.appendChild(pill);
+      listCard.appendChild(row);
+    });
+  }
+  el.appendChild(listCard);
 }
 
 
