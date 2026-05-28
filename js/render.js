@@ -1442,6 +1442,7 @@ function _drpMemberRow(el,p){
 function renderDesktopRightPanel(section){
   var el=document.getElementById('desktop-right-panel');
   if(!el)return;
+  if(window.innerWidth<1024){el.style.display='none';return;}
   if(section!=='home'&&section!=='cal'){el.style.display='none';return;}
   el.style.display='flex';
   renderSideCalendar();

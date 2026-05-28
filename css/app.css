@@ -647,5 +647,5 @@ html.dark-mode .dsb-btn{color:var(--b1)}
 html.dark-mode .dsb-btn.on{background:rgba(212,168,67,.22);box-shadow:inset 0 0 0 1px rgba(212,168,67,.35)}
 /* ── DESKTOP RIGHT PANEL — override display:none défini plus haut ── */
 @media(min-width:1024px){.desktop-right-panel{display:flex}}
-/* ── MOBILE — masquer sidebar et calendrier semaine ── */
-@media(max-width:1023px){.desktop-sidebar{display:none!important}.wrow{display:none}}
+/* ── MOBILE — masquer calendrier semaine et panneau droit ── */
+@media(max-width:1023px){.wrow{display:none}.desktop-right-panel{display:none!important}}
