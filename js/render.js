@@ -1319,52 +1319,7 @@ function _drpMemberRow(el,p){
 function renderDesktopRightPanel(section){
   var el=document.getElementById('desktop-right-panel');
   if(!el)return;
-  if(section==='add'||section==='events'||section==='admin'){el.style.display='none';return;}
+  if(section!=='home'&&section!=='cal'){el.style.display='none';return;}
   el.style.display='flex';
-  if(section==='home'||section==='cal'){
-    renderSideCalendar();
-    return;
-  }
-  _drpClear(el);
-  if(section==='members'){
-    _drpTitle(el,t('drpUpcoming'));
-    var m=mems();
-    var near=m.filter(function(p){return daysTill(p.day,p.month)>=0;}).sort(function(a,b){return daysTill(a.day,a.month)-daysTill(b.day,b.month);})[0];
-    if(!near){_drpEmpty(el,t('noBirthdaysToday'));}
-    else{
-      var card=document.createElement('div');card.className='drp-spotlight';
-      var av=document.createElement('div');av.className='drp-spotlight-av';
-      if(near.photo){var img=document.createElement('img');img.src=near.photo;img.alt='';av.appendChild(img);}
-      else{av.textContent=ini(near.name);}
-      var nm=document.createElement('div');nm.className='drp-spotlight-name';nm.textContent=tIco(near.type)+' '+near.name;
-      var age=ageBday(near.day,near.month,near.year);
-      var sub=document.createElement('div');sub.className='drp-spotlight-sub';sub.textContent=MN[near.month-1]+' '+near.day+(age?' · '+age+' '+t('yearsOld'):'');
-      var d=daysTill(near.day,near.month);
-      var dLabel=d===0?t('todayLabel'):d===1?t('tomorrowLabel'):t('inDays')+' '+d+' j';
-      var badge=document.createElement('div');badge.className='drp-spotlight-badge';badge.textContent=dLabel;
-      card.appendChild(av);card.appendChild(nm);card.appendChild(sub);card.appendChild(badge);
-      el.appendChild(card);
-      var acts=document.createElement('div');acts.className='drp-actions';
-      var btnMsg=document.createElement('button');btnMsg.className='btn P fw';btnMsg.textContent=t('prepareBtn');
-      (function(id){btnMsg.onclick=function(){genMsg(id,null);};})(near.id);
-      var btnGift=document.createElement('button');btnGift.className='btn O fw';btnGift.textContent=t('flowerIdeasBtn');
-      (function(n,tp){btnGift.onclick=function(){showFlowerIdeas(n,tp);};})(near.name,near.type);
-      acts.appendChild(btnMsg);acts.appendChild(btnGift);el.appendChild(acts);
-    }
-  } else if(section==='more'){
-    _drpTitle(el,t('drpShortcuts'));
-    var planRow=document.createElement('div');planRow.className='drp-shortcut';
-    var planLbl=document.createElement('span');planLbl.className='drp-sc-label';planLbl.textContent=PLANS[plan]?PLANS[plan].name:'Starter';
-    planRow.appendChild(planLbl);
-    if(plan==='free'||plan==='bloom'){var upBtn=document.createElement('button');upBtn.className='drp-sc-btn';upBtn.textContent=t('upgradeBtn');upBtn.onclick=function(){showSec('more',4);};planRow.appendChild(upBtn);}
-    el.appendChild(planRow);
-    var lnFlags={fr:'🇫🇷',en:'🇬🇧',es:'🇪🇸',ar:'🇸🇦',hi:'🇮🇳',zh:'🇨🇳',pt:'🇵🇹'};
-    var langRow=document.createElement('div');langRow.className='drp-shortcut';
-    var langLbl=document.createElement('span');langLbl.className='drp-sc-label';langLbl.textContent=(lnFlags[appLang]||'')+' '+appLang.toUpperCase();
-    var langBtn=document.createElement('button');langBtn.className='drp-sc-btn';langBtn.textContent=t('langLabel')||'Langue';langBtn.onclick=function(){showSec('more',4);};
-    langRow.appendChild(langLbl);langRow.appendChild(langBtn);el.appendChild(langRow);
-    var logRow=document.createElement('div');logRow.className='drp-shortcut';
-    var logBtn=document.createElement('button');logBtn.className='drp-sc-btn';logBtn.style.cssText='background:var(--brd2);color:var(--txt2)';logBtn.textContent=t('logout')||'Déconnexion';logBtn.onclick=logOut;
-    logRow.appendChild(logBtn);el.appendChild(logRow);
-  }
+  renderSideCalendar();
 }
