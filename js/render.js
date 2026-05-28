@@ -561,7 +561,11 @@ function updateAllTexts(){
     var loEl=langOpts[lo];var loCode=loEl.getAttribute('data-lang');
     loEl.classList.toggle('on',loCode===appLang);
     var lnKey='langName_'+loCode;var lnVal=t(lnKey);
-    if(lnVal&&lnVal!==lnKey) loEl.textContent=(lnFlags[loCode]||'')+' '+lnVal;
+    var loName=lnVal&&lnVal!==lnKey?lnVal:(loCode.charAt(0).toUpperCase()+loCode.slice(1));
+    loEl.textContent='';
+    loEl.appendChild(document.createTextNode((lnFlags[loCode]||'')+' '));
+    var loNameSpan=document.createElement('span');loNameSpan.className='lo-name';loNameSpan.textContent=loName;loEl.appendChild(loNameSpan);
+    var loCodeSpan=document.createElement('span');loCodeSpan.className='lo-code';loCodeSpan.textContent=langLabels[loCode]||loCode.toUpperCase();loEl.appendChild(loCodeSpan);
   }
   // 9. Langue IA
   var aiLangMap={fr:'français',en:'English',es:'español',ar:'arabe',hi:'hindi',zh:'chinois',pt:'portugais'};

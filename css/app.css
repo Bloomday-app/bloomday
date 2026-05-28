@@ -414,11 +414,15 @@ details[open] summary::after{content:" ▾"}
 .price-font{font-family:var(--ff-title);font-size:36px;font-weight:800;line-height:1}
 .lang-sel{display:flex;align-items:center;gap:6px;padding:9px 10px;cursor:pointer;font-size:12px;font-weight:600;color:rgba(255,255,255,.5);position:relative;width:100%;box-sizing:border-box}
 .lang-sel:hover{color:rgba(255,255,255,.8)}
-.lang-dd{position:absolute;bottom:100%;left:0;z-index:400;background:var(--card);border:1px solid var(--brd);border-radius:14px;padding:6px;box-shadow:0 -8px 24px rgba(0,0,0,.12);display:none;flex-direction:column;gap:2px;min-width:140px}
+.lang-dd{position:fixed;z-index:9000;background:var(--card);border:1px solid var(--brd);border-radius:14px;padding:6px;box-shadow:0 -8px 24px rgba(0,0,0,.12);display:none;flex-direction:column;gap:2px;min-width:160px}
 .lang-dd.open{display:flex}
 .lang-opt{padding:7px 12px;border-radius:9px;font-size:13px;font-weight:600;cursor:pointer;
   display:flex;align-items:center;gap:7px}
 .lang-opt:hover,.lang-opt.on{background:var(--b1l);color:var(--b1d)}
+.lo-code{display:none}
+.lang-dd--compact{min-width:90px}
+.lang-dd--compact .lo-name{display:none}
+.lang-dd--compact .lo-code{display:inline}
 .lang-col{display:none}
 @keyframes bdFadeIn{from{opacity:0;transform:translateX(-50%) translateY(8px)}to{opacity:1;transform:translateX(-50%) translateY(0)}}
 .mbox2{background:var(--card);border-radius:22px;padding:24px;width:90%;max-width:400px;max-height:90vh;overflow-y:auto}

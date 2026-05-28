@@ -408,7 +408,19 @@ function showToast(msg,type){
 }
 // ── LANGUE ──
 function toggleLangDd(){
-  var dd=document.getElementById('lang-dd');if(dd)dd.classList.toggle('open');
+  var dd=document.getElementById('lang-dd');
+  if(!dd)return;
+  if(dd.classList.contains('open')){dd.classList.remove('open');return;}
+  var sel=document.getElementById('lang-sel');
+  if(sel){
+    var r=sel.getBoundingClientRect();
+    dd.style.bottom=(window.innerHeight-r.top+4)+'px';
+    dd.style.left=r.left+'px';
+    dd.style.top='auto';
+    var sb=document.getElementById('desktop-sidebar');
+    dd.classList.toggle('lang-dd--compact',!!(sb&&sb.classList.contains('collapsed')));
+  }
+  dd.classList.add('open');
 }
 function pickLang(lang){
   var labels={fr:'FR',en:'EN',es:'ES',ar:'AR',hi:'HI',zh:'ZH',pt:'PT'};
