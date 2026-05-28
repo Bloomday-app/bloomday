@@ -547,13 +547,16 @@ function updateAllTexts(){
   if(tbPlansBtn) tbPlansBtn.style.display=isAdmin?'':'none';
   // 6. Langue courante dans sélecteur
   var langLabels={fr:'FR',en:'EN',es:'ES',ar:'AR',hi:'HI',zh:'ZH',pt:'PT'};
-  var langCur=document.getElementById('lang-cur');
-  if(langCur) langCur.textContent=langLabels[appLang]||appLang.toUpperCase();
+  var lnFlags={fr:'🇫🇷',en:'🇬🇧',es:'🇪🇸',ar:'🇸🇦',hi:'🇮🇳',zh:'🇨🇳',pt:'🇵🇹'};
+  var flagEl=document.getElementById('lang-flag');if(flagEl)flagEl.textContent=lnFlags[appLang]||'🌍';
+  var codeEl=document.getElementById('lang-code');if(codeEl)codeEl.textContent=langLabels[appLang]||appLang.toUpperCase();
+  var nameEl=document.getElementById('lang-name');
+  var lnNameKey='langName_'+appLang;var lnNameVal=t(lnNameKey);
+  if(nameEl&&lnNameVal&&lnNameVal!==lnNameKey)nameEl.textContent=lnNameVal;
   // 7. Direction RTL arabe
   document.body.style.direction=(appLang==='ar'?'rtl':'ltr');
   // 8. Noms des langues dans le sélecteur
   var langOpts=document.querySelectorAll('.lang-opt');
-  var lnFlags={fr:'🇫🇷',en:'🇬🇧',es:'🇪🇸',ar:'🇸🇦',hi:'🇮🇳',zh:'🇨🇳',pt:'🇵🇹'};
   for(var lo=0;lo<langOpts.length;lo++){
     var loEl=langOpts[lo];var loCode=loEl.getAttribute('data-lang');
     loEl.classList.toggle('on',loCode===appLang);

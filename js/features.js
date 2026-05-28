@@ -412,7 +412,9 @@ function toggleLangDd(){
 }
 function pickLang(lang){
   var labels={fr:'FR',en:'EN',es:'ES',ar:'AR',hi:'HI',zh:'ZH',pt:'PT'};
-  var cur=document.getElementById('lang-cur');if(cur)cur.textContent=labels[lang]||lang.toUpperCase();
+  var pkFlags={fr:'🇫🇷',en:'🇬🇧',es:'🇪🇸',ar:'🇸🇦',hi:'🇮🇳',zh:'🇨🇳',pt:'🇵🇹'};
+  var flEl=document.getElementById('lang-flag');if(flEl)flEl.textContent=pkFlags[lang]||'🌍';
+  var cdEl=document.getElementById('lang-code');if(cdEl)cdEl.textContent=labels[lang]||lang.toUpperCase();
   document.querySelectorAll('.lang-opt').forEach(function(el){
     el.classList.toggle('on',el.getAttribute('data-lang')===lang);
   });
