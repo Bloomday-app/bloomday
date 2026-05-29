@@ -1,6 +1,15 @@
 // ── SUPABASE AUTH ──
 var _authInited = false;
 
+function togglePassVisibility(id) {
+  var inp = document.getElementById(id);
+  var btn = document.querySelector('[data-pass-toggle="' + id + '"]');
+  if (!inp || !btn) return;
+  var show = inp.type === 'password';
+  inp.type = show ? 'text' : 'password';
+  btn.setAttribute('data-showing', show ? '1' : '0');
+}
+
 // Capture referral code from URL on page load
 (function(){
   var urlRef=new URLSearchParams(window.location.search).get('ref');
@@ -126,15 +135,18 @@ async function doSignupSupabase() {
   var emailEl = document.getElementById('auth-email');
   var phoneEl = document.getElementById('auth-phone');
   var passEl = document.getElementById('auth-pass');
+  var confirmEl = document.getElementById('auth-pass-confirm');
   var name = (nameEl && nameEl.value || '').trim();
   var email = (emailEl && emailEl.value || '').trim().toLowerCase();
   var phone = (phoneEl && phoneEl.value || '').trim();
   var pass = (passEl && passEl.value || '').trim();
+  var passConfirm = (confirmEl && confirmEl.value || '').trim();
 
   if (!name) { showToast('Votre prénom est requis', 'error'); return; }
   var emailReg = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
   if (!email || !emailReg.test(email)) { showToast(t('errEmailInvalid'), 'error'); return; }
   if (pass.length < 8) { showToast(t('errPassShort'), 'error'); return; }
+  if (pass !== passConfirm) { showToast(t('errPassMismatch'), 'error'); return; }
 
   var btn = document.getElementById('auth-submit-btn');
   if (btn) { btn.disabled = true; btn.textContent = t('registeringText') || 'Création...'; }

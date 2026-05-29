@@ -431,6 +431,13 @@ details[open] summary::after{content:" ▾"}
 .mbox2 input:focus{border-color:var(--b1);outline:none}
 .ptab{padding:8px 16px;border-radius:20px;border:1.5px solid var(--brd);background:none;font-size:13px;font-weight:600;color:var(--txt2);cursor:pointer}
 .ptab.on{background:var(--b1);color:#fff;border-color:var(--b1)}
+.pass-wrap{position:relative}
+.pass-wrap input{padding-right:44px!important}
+.pass-toggle{position:absolute;right:10px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;color:var(--txt2);padding:4px;display:flex;align-items:center;justify-content:center;line-height:0}
+.pass-toggle:hover{color:var(--b1)}
+.pass-toggle .eye-off{display:none}
+.pass-toggle[data-showing="1"] .eye-on{display:none}
+.pass-toggle[data-showing="1"] .eye-off{display:block}
 
 #app{overflow-y:auto;height:100vh}
 .ob-msg{background:var(--b1l);border-left:3px solid var(--b1);border-radius:12px;padding:14px;font-size:14px;line-height:1.65;color:var(--txt)}
