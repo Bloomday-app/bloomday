@@ -441,9 +441,11 @@ document.addEventListener('click',function(e){
 var currentUser=null;
 function openAuth(ctx){
   var sp=document.getElementById('auth-email-sent');
+  var su=document.getElementById('auth-email-unconfirmed');
   var ts=document.getElementById('auth-tab-s');
   var tl=document.getElementById('auth-tab-l');
   if(sp)sp.style.display='none';
+  if(su)su.style.display='none';
   if(ts)ts.style.display='';
   if(tl)tl.style.display='';
   switchAuthTab(ctx||'signup');openOv('m-auth');

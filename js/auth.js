@@ -188,21 +188,58 @@ async function doLoginSupabase() {
   var passEl = document.getElementById('auth-login-pass');
   var email = (emailEl && emailEl.value || '').trim();
   var pass = (passEl && passEl.value || '').trim();
-  if (!email || !pass) { showToast('Remplissez tous les champs', 'error'); return; }
+  if (!email || !pass) { showToast(t('fillAllFields') || 'Remplissez tous les champs', 'error'); return; }
+
+  var btn = document.getElementById('auth-login-btn');
+  if (btn) { btn.disabled = true; btn.textContent = t('connectingText') || '⏳ Connexion...'; }
 
   var result = await supabase.auth.signInWithPassword({ email: email, password: pass });
+
+  if (btn) { btn.disabled = false; btn.textContent = t('authConnectBtn') || 'Se connecter'; }
+
   if (result.error) {
     var msg = result.error.message || '';
     if (msg.toLowerCase().includes('email not confirmed')) {
-      showToast('Confirmez votre email avant de vous connecter.', 'error');
+      showEmailUnconfirmedPanel(email);
     } else if (msg.toLowerCase().includes('invalid login') || msg.toLowerCase().includes('invalid credentials')) {
-      showToast('Email ou mot de passe incorrect.', 'error');
+      showToast(t('errLoginInvalid') || 'Email ou mot de passe incorrect.', 'error');
     } else {
       showToast(msg || t('noAccountFound'), 'error');
     }
     return;
   }
   // onAuthStateChange SIGNED_IN handles the rest
+}
+
+function showEmailUnconfirmedPanel(email) {
+  var formEl = document.getElementById('auth-form-l');
+  var panel = document.getElementById('auth-email-unconfirmed');
+  var addrEl = document.getElementById('auth-unconfirmed-addr');
+  if (addrEl) addrEl.textContent = email;
+  if (formEl) formEl.style.display = 'none';
+  if (panel) panel.style.display = 'block';
+}
+
+function showLoginForm() {
+  var formEl = document.getElementById('auth-form-l');
+  var panel = document.getElementById('auth-email-unconfirmed');
+  if (panel) panel.style.display = 'none';
+  if (formEl) formEl.style.display = 'block';
+}
+
+async function doResendConfirm() {
+  var addrEl = document.getElementById('auth-unconfirmed-addr');
+  var email = addrEl ? addrEl.textContent.trim() : '';
+  if (!email) return;
+  var btn = document.getElementById('auth-resend-btn');
+  if (btn) { btn.disabled = true; btn.textContent = '⏳ ...'; }
+  var result = await supabase.auth.resend({ type: 'signup', email: email });
+  if (btn) { btn.disabled = false; btn.textContent = t('emailUnconfirmedResend') || 'Renvoyer l\'email'; }
+  if (result.error) {
+    showToast(result.error.message || t('noAccountFound'), 'error');
+  } else {
+    showToast(t('emailUnconfirmedResent') || 'Email renvoyé ! Vérifiez vos spams.', 'success');
+  }
 }
 
 async function doGoogleLogin() {
