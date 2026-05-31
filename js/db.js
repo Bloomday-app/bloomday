@@ -75,7 +75,7 @@ async function dbSaveGroups(userId, groups) {
 
 async function dbLoadProfile(userId) {
   try {
-    const res = await supabase.from('profiles').select('*').eq('id', userId).single();
+    const res = await supabase.from('profiles').select('*').eq('id', userId).maybeSingle();
     if (res.error) return null;
     return res.data;
   } catch (e) {
@@ -99,7 +99,7 @@ async function dbSaveProfile(userId, profile) {
 
 async function dbLoadStats(userId) {
   try {
-    const res = await supabase.from('stats').select('*').eq('user_id', userId).single();
+    const res = await supabase.from('stats').select('*').eq('user_id', userId).maybeSingle();
     if (res.error) return null;
     const d = res.data;
     return {
