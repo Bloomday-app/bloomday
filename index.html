@@ -440,8 +440,10 @@
     <button class="ptab" id="auth-tab-l" onclick="switchAuthTab('login')" data-i18n="authLogin">Connexion</button>
   </div>
   <div id="auth-form-s">
-    <label data-i18n="labelName">Prénom & Nom *</label>
-    <input type="text" id="auth-name" placeholder="Sophie Martin" autocomplete="name">
+    <label data-i18n="labelFirstName">Prénom *</label>
+    <input type="text" id="auth-firstname" placeholder="Sophie" autocomplete="given-name">
+    <label data-i18n="labelLastName">Nom</label>
+    <input type="text" id="auth-lastname" placeholder="Martin" autocomplete="family-name">
     <label data-i18n="labelEmail">Email *</label>
     <input type="email" id="auth-email" placeholder="sophie@exemple.com" autocomplete="email">
     <label data-i18n="labelPhone">Téléphone (WhatsApp)</label>

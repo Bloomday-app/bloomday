@@ -18,10 +18,12 @@ function togglePassVisibility(id) {
 
 function buildUserFromSession(session) {
   var meta = session.user.user_metadata || {};
+  var fullName = meta.full_name || meta.name || session.user.email.split('@')[0];
   return {
     uid: session.user.id,
     email: session.user.email,
-    name: meta.full_name || meta.name || session.user.email.split('@')[0],
+    name: fullName,
+    firstName: meta.first_name || fullName.split(' ')[0],
     phone: meta.phone || '',
     plan: localStorage.getItem('bdg16_plan') || 'free',
     createdAt: session.user.created_at
@@ -111,7 +113,7 @@ function initAuth() {
       // Mettre à jour l'UI avec les données fraîches
       if (typeof refresh === 'function') refresh();
       if (isBrandNew && event === 'SIGNED_IN') {
-        showToast(t('welcomeUser') + ' ' + currentUser.name.split(' ')[0] + ' !', 'success');
+        showToast(t('welcomeUser') + ' ' + currentUser.firstName + ' !', 'success');
         sendEmail('welcome', { name: currentUser.name, email: currentUser.email });
       }
     } else if (event === 'SIGNED_OUT') {
@@ -131,18 +133,21 @@ function initAuth() {
 }
 
 async function doSignupSupabase() {
-  var nameEl = document.getElementById('auth-name');
+  var firstEl = document.getElementById('auth-firstname');
+  var lastEl = document.getElementById('auth-lastname');
   var emailEl = document.getElementById('auth-email');
   var phoneEl = document.getElementById('auth-phone');
   var passEl = document.getElementById('auth-pass');
   var confirmEl = document.getElementById('auth-pass-confirm');
-  var name = (nameEl && nameEl.value || '').trim();
+  var firstName = (firstEl && firstEl.value || '').trim();
+  var lastName = (lastEl && lastEl.value || '').trim();
+  var name = firstName + (lastName ? ' ' + lastName : '');
   var email = (emailEl && emailEl.value || '').trim().toLowerCase();
   var phone = (phoneEl && phoneEl.value || '').trim();
   var pass = (passEl && passEl.value || '').trim();
   var passConfirm = (confirmEl && confirmEl.value || '').trim();
 
-  if (!name) { showToast('Votre prénom est requis', 'error'); return; }
+  if (!firstName) { showToast(t('errFirstNameRequired'), 'error'); return; }
   var emailReg = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
   if (!email || !emailReg.test(email)) { showToast(t('errEmailInvalid'), 'error'); return; }
   if (pass.length < 8) { showToast(t('errPassShort'), 'error'); return; }
@@ -155,7 +160,7 @@ async function doSignupSupabase() {
     email: email,
     password: pass,
     options: {
-      data: { full_name: name, phone: phone },
+      data: { full_name: name, first_name: firstName, last_name: lastName, phone: phone },
       emailRedirectTo: 'https://mybloomday.app'
     }
   });
