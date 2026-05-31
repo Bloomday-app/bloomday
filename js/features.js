@@ -360,6 +360,23 @@ function _restoreSidebar(){
 
 document.addEventListener('DOMContentLoaded',function(){
   var hasPkceCode=!!(new URLSearchParams(window.location.search).get('code'));
+  var hashStr=window.location.hash;
+  var hasOAuthToken=hashStr.includes('access_token=');
+  var hasOAuthError=hashStr.includes('error=');
+
+  // Détecter et afficher les erreurs OAuth immédiatement
+  if(hasOAuthError){
+    var errParams=new URLSearchParams(hashStr.replace(/^#/,''));
+    var errMsg=errParams.get('error_description')||errParams.get('error')||'Erreur Google OAuth';
+    console.error('[OAuth] Erreur retournée par Supabase:', errMsg);
+    history.replaceState(null,'',window.location.pathname);
+    setTimeout(function(){ showToast(errMsg,'error'); },300);
+  }
+
+  if(hasOAuthToken||hasPkceCode){
+    console.log('[OAuth] Callback détecté — token dans URL, démarrage initialisation Supabase');
+  }
+
   // Ne pas effacer le hash ici — Supabase lit #access_token= de façon async
   // lors de initialize(), qui est attendu par getSession(). Effacer le hash
   // avant que getSession() resolve ferait perdre le token OAuth.
@@ -369,6 +386,9 @@ document.addEventListener('DOMContentLoaded',function(){
   supabase.auth.getSession().then(function(result){
     var appEl=document.getElementById('app');
     var hasSession=!!(result.data&&result.data.session);
+    if(hasOAuthToken||hasPkceCode){
+      console.log('[OAuth] getSession résolu — session:', hasSession, 'erreur:', result.error&&result.error.message);
+    }
     // Nettoyer l'URL après que Supabase ait traité le token
     if(window.location.hash.includes('access_token=')||hasPkceCode)
       history.replaceState(null,'',window.location.pathname);
