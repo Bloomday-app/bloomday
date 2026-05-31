@@ -360,14 +360,18 @@ function _restoreSidebar(){
 
 document.addEventListener('DOMContentLoaded',function(){
   var hasPkceCode=!!(new URLSearchParams(window.location.search).get('code'));
-  if(window.location.hash.includes('access_token=')||hasPkceCode)
-    history.replaceState(null,'',window.location.pathname);
+  // Ne pas effacer le hash ici — Supabase lit #access_token= de façon async
+  // lors de initialize(), qui est attendu par getSession(). Effacer le hash
+  // avant que getSession() resolve ferait perdre le token OAuth.
 
   initAuth();
 
   supabase.auth.getSession().then(function(result){
     var appEl=document.getElementById('app');
     var hasSession=!!(result.data&&result.data.session);
+    // Nettoyer l'URL après que Supabase ait traité le token
+    if(window.location.hash.includes('access_token=')||hasPkceCode)
+      history.replaceState(null,'',window.location.pathname);
     if((hasSession||hasPkceCode)&&appEl&&!appEl.classList.contains('on')){
       startApp('perso','free');
     } else {
