@@ -120,12 +120,12 @@ function initAuth() {
       var wasUser = currentUser;
       currentUser = null;
       localStorage.removeItem('bdg16_user');
+      showLogoutScreen(wasUser);
       updateTopbar();
       checkAdmin(null);
       var logoutBtnOut = document.getElementById('tb-logout');
       if (logoutBtnOut) logoutBtnOut.style.display = 'none';
       refresh();
-      showLogoutScreen(wasUser);
     } else if (event === 'PASSWORD_RECOVERY') {
       showPasswordResetForm();
     }
@@ -255,12 +255,14 @@ async function doGoogleLogin() {
 }
 
 async function doLogoutSupabase() {
+  showLogoutScreen(currentUser);
   await supabase.auth.signOut();
 }
 
 function showLogoutScreen(wasUser) {
   var screen = document.getElementById('logout-screen');
   if (!screen) return;
+  if (screen.style.display === 'flex') return;
   var firstName = wasUser && wasUser.name ? wasUser.name.split(' ')[0] : '';
   var greeting = document.getElementById('logout-greeting');
   var subtext = document.getElementById('logout-subtext');
