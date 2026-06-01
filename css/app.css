@@ -466,6 +466,22 @@ details[open] summary::after{content:" ▾"}
 .country-search{width:100%;border:1.5px solid var(--b1,#D4A843);border-radius:var(--rad-sm,11px);padding:8px 12px;font-size:13px;background:var(--bg,#FFF8F0);color:var(--txt,#2D1B0E);outline:none;margin-bottom:6px;box-sizing:border-box}
 .country-search:focus{border-color:var(--b1d,#B8922E)}
 
+/* ── CUSTOM COUNTRY SELECT ── */
+.csel{position:relative;width:100%;margin-bottom:0}
+.csel-trigger{width:100%;background:var(--bg);border:1.5px solid var(--brd);border-radius:var(--rad-sm);padding:11px 14px;font-size:15px;color:var(--txt);font-family:'DM Sans',sans-serif;cursor:pointer;display:flex;align-items:center;justify-content:space-between;text-align:left;transition:border .2s,box-shadow .2s}
+.csel-trigger:focus{outline:none;border-color:var(--b1);box-shadow:0 0 0 3px rgba(212,168,67,.12)}
+.csel-trigger:hover{border-color:var(--b1)}
+.csel-arrow{color:var(--txt2);font-size:13px;transition:transform .18s;flex-shrink:0;margin-left:6px}
+.csel-panel.open~* .csel-arrow,.csel-panel.open+.csel-arrow{transform:rotate(180deg)}
+.csel[data-open] .csel-arrow{transform:rotate(180deg)}
+.csel-panel{position:absolute;top:calc(100% + 4px);left:0;right:0;background:var(--card);border:1.5px solid var(--b1);border-radius:var(--rad-sm);box-shadow:0 8px 28px rgba(0,0,0,.16);z-index:600;display:none;flex-direction:column;padding:8px;min-width:200px}
+.csel-panel.open{display:flex}
+.csel-list{max-height:200px;overflow-y:auto;margin-top:2px;scrollbar-width:thin}
+.csel-item{padding:7px 10px;border-radius:8px;cursor:pointer;font-size:14px;color:var(--txt);line-height:1.3}
+.csel-item:hover{background:var(--bg2)}
+.csel-item.sel{background:rgba(212,168,67,.15);font-weight:600;color:var(--b1d)}
+@media(min-width:768px){.csel-list{max-height:260px}.csel-item{font-size:14px}}
+
 /* ── GROUP BAR PREMIUM ── */
 .gbar{background:var(--bg);border-bottom:1px solid var(--brd);padding:10px 16px;display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;flex-shrink:0}
 .gc{flex-shrink:0;padding:7px 16px;border-radius:22px;border:1.5px solid var(--brd);background:var(--card);font-size:12px;color:var(--txt2);font-weight:600;white-space:nowrap;transition:all .18s;box-shadow:0 1px 4px rgba(45,27,20,.05)}

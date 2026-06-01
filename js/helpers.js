@@ -126,29 +126,78 @@ function buildCountrySelect(selId,currentVal){
   for(var i=1;i<labels.length;i++) rest.push({label:labels[i],value:COUNTRIES_VALUES[i]||labels[i]});
   rest.sort(function(a,b){return _normStr(a.label).localeCompare(_normStr(b.label));});
   var pairs=[first].concat(rest);
-  var wrap=sel.parentElement;
-  if(wrap&&!wrap.querySelector('.country-search')){
-    var si=document.createElement('input');
-    si.type='text';si.className='country-search';si.autocomplete='off';
-    si.placeholder=t('countrySearchPlaceholder')||'\uD83D\uDD0D Rechercher\u2026';
-    wrap.insertBefore(si,sel);
-    si.addEventListener('input',function(){
-      var q=_normStr(si.value);
-      var opts=sel.options;
-      for(var oi=0;oi<opts.length;oi++){
-        if(oi===0){opts[oi].style.display='';continue;}
-        opts[oi].style.display=(!q||_normStr(opts[oi].textContent).indexOf(q)!==-1)?'':'none';
-      }
-    });
-  }
+  // Sync hidden native select (used by saveProfileSettings via .value)
+  sel.style.display='none';
   while(sel.firstChild) sel.removeChild(sel.firstChild);
   pairs.forEach(function(p){
     var opt=document.createElement('option');
-    opt.value=p.value;
-    opt.textContent=p.label;
+    opt.value=p.value;opt.textContent=p.label;
     if(p.value===currentVal||p.label===currentVal) opt.selected=true;
     sel.appendChild(opt);
   });
+  // Remove previous custom select for this field
+  var wrap=sel.parentElement;
+  var old=wrap&&wrap.querySelector('.csel[data-for="'+selId+'"]');
+  if(old) old.remove();
+  // Current display label
+  var curLabel=first.label;
+  for(var j=0;j<pairs.length;j++){
+    if(pairs[j].value===currentVal||(currentVal&&pairs[j].label===currentVal)){curLabel=pairs[j].label;break;}
+  }
+  // Build custom dropdown
+  var csel=document.createElement('div');
+  csel.className='csel';csel.setAttribute('data-for',selId);
+  var trigger=document.createElement('button');
+  trigger.type='button';trigger.className='csel-trigger';
+  var lspan=document.createElement('span');lspan.className='csel-label';lspan.textContent=curLabel;
+  var arrow=document.createElement('span');arrow.className='csel-arrow';arrow.textContent='\u25BE';
+  trigger.appendChild(lspan);trigger.appendChild(arrow);
+  var panel=document.createElement('div');panel.className='csel-panel';
+  var si=document.createElement('input');
+  si.type='text';si.className='country-search';si.autocomplete='off';
+  si.placeholder=t('countrySearchPlaceholder')||'\uD83D\uDD0D Rechercher\u2026';
+  var list=document.createElement('div');list.className='csel-list';
+  pairs.forEach(function(p){
+    var item=document.createElement('div');
+    item.className='csel-item'+(p.value===currentVal||(currentVal&&p.label===currentVal)?' sel':'');
+    item.textContent=p.label;
+    item.addEventListener('click',function(){
+      sel.value=p.value;lspan.textContent=p.label;
+      panel.classList.remove('open');
+      list.querySelectorAll('.csel-item').forEach(function(el){el.classList.remove('sel');});
+      item.classList.add('sel');
+    });
+    list.appendChild(item);
+  });
+  si.addEventListener('input',function(){
+    var q=_normStr(si.value);
+    list.querySelectorAll('.csel-item').forEach(function(el){
+      el.style.display=(!q||_normStr(el.textContent).indexOf(q)!==-1)?'':'none';
+    });
+  });
+  panel.appendChild(si);panel.appendChild(list);
+  csel.appendChild(trigger);csel.appendChild(panel);
+  trigger.addEventListener('click',function(e){
+    e.stopPropagation();
+    var isOpen=panel.classList.contains('open');
+    document.querySelectorAll('.csel-panel.open').forEach(function(p){p.classList.remove('open');});
+    if(!isOpen){
+      panel.classList.add('open');
+      si.value='';
+      list.querySelectorAll('.csel-item').forEach(function(el){el.style.display='';});
+      setTimeout(function(){si.focus();},30);
+      var selItem=list.querySelector('.csel-item.sel');
+      if(selItem) setTimeout(function(){selItem.scrollIntoView({block:'nearest'});},50);
+    }
+  });
+  panel.addEventListener('click',function(e){e.stopPropagation();});
+  if(!window._cselCloseInit){
+    window._cselCloseInit=true;
+    document.addEventListener('click',function(){
+      document.querySelectorAll('.csel-panel.open').forEach(function(p){p.classList.remove('open');});
+    });
+  }
+  wrap.insertBefore(csel,sel);
 }
 
 function _fillMonthSelect(sel, useShort, addBlank){
