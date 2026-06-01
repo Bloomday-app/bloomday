@@ -76,7 +76,7 @@ const FETES=[
   {n:"Noël",i:"🎄",m:12,d:25,c:['christian']},
   {n:"Saint-Étienne",i:"⭐",m:12,d:26,c:['christian']},
   // ── France / Europe francophone ──
-  {n:"Fête Nationale France",i:"🇫🇷",m:7,d:14,c:['fr','gp','mq','re','yt','pm','nc']},
+  {n:"Fête Nationale France",i:"🇫🇷",m:7,d:14,c:['fr','gp','mq','re','yt','pm','nc','gf','pf']},
   {n:"Armistice",i:"🕊️",m:11,d:11,c:['fr','be']},
   {n:"Victoire 1945",i:"✌️",m:5,d:8,c:['fr','be']},
   // ── DOM-TOM / Outre-mer ──
@@ -324,6 +324,47 @@ const FETES=[
   {n:"Bonifacio Day (Philippines)",i:"🇵🇭",m:11,d:30,c:['ph']},
   {n:"Rizal Day (Philippines)",i:"🇵🇭",m:12,d:30,c:['ph']},
   {n:"Racial Harmony Day (Singapour)",i:"🇸🇬",m:7,d:21,c:['sg']},
+  // ── Europe manquante ──
+  {n:"Fête Nationale Luxembourg",i:"🇱🇺",m:6,d:23,c:['lu']},
+  {n:"Fête Nationale Islande",i:"🇮🇸",m:6,d:17,c:['is']},
+  {n:"Fête Nationale Albanie",i:"🇦🇱",m:11,d:28,c:['al']},
+  {n:"Fête Nationale Bulgarie",i:"🇧🇬",m:3,d:3,c:['bg']},
+  {n:"Fête Nationale Lituanie",i:"🇱🇹",m:2,d:16,c:['lt']},
+  {n:"Fête Nationale Lettonie",i:"🇱🇻",m:11,d:18,c:['lv']},
+  {n:"Fête Nationale Estonie",i:"🇪🇪",m:2,d:24,c:['ee']},
+  {n:"Fête Nationale Croatie",i:"🇭🇷",m:6,d:25,c:['hr']},
+  {n:"Fête Nationale Slovénie",i:"🇸🇮",m:6,d:25,c:['si']},
+  {n:"Fête Nationale Macédoine",i:"🇲🇰",m:9,d:8,c:['mk']},
+  {n:"Fête Nationale Monténégro",i:"🇲🇪",m:7,d:13,c:['me']},
+  {n:"Fête Nationale Serbie",i:"🇷🇸",m:2,d:15,c:['rs']},
+  {n:"Fête Nationale Bosnie",i:"🇧🇦",m:11,d:25,c:['ba']},
+  {n:"Fête Nationale Kosovo",i:"🇽🇰",m:2,d:17,c:['xk']},
+  {n:"Fête Nationale Andorre",i:"🇦🇩",m:9,d:8,c:['ad']},
+  {n:"Fête Nationale San Marin",i:"🇸🇲",m:9,d:3,c:['sm']},
+  {n:"Fête de l'Europe",i:"🇪🇺",m:5,d:9,c:['fr','be','de','it','pt','nl','es','at','ch','lu','gr','pl','ro','hu','cz','sk','se','dk','fi','ie']},
+  {n:"Noël Orthodoxe",i:"⛪",m:1,d:7,c:['ru','ua','rs','bg','ro','gr','ge','am','me','mk','et']},
+  {n:"Kwanzaa",i:"🕯️",m:12,d:26,c:['us']},
+  // ── Afrique manquante ──
+  {n:"Libération Rwanda",i:"🇷🇼",m:7,d:4,c:['rw']},
+  {n:"Mémorial Génocide Rwanda",i:"🕯️",m:4,d:7,c:['rw']},
+  {n:"Indépendance Burundi",i:"🇧🇮",m:7,d:1,c:['bi']},
+  {n:"Indépendance Mauritanie",i:"🇲🇷",m:11,d:28,c:['mr']},
+  {n:"Indépendance Cap-Vert",i:"🇨🇻",m:7,d:5,c:['cv']},
+  {n:"Indépendance São Tomé",i:"🇸🇹",m:7,d:12,c:['st']},
+  {n:"Indépendance Libéria",i:"🇱🇷",m:7,d:26,c:['lr']},
+  {n:"Indépendance Soudan",i:"🇸🇩",m:1,d:1,c:['sd']},
+  {n:"Indépendance Eswatini",i:"🇸🇿",m:9,d:6,c:['sz']},
+  {n:"Indépendance Lesotho",i:"🇱🇸",m:10,d:4,c:['ls']},
+  // ── Asie manquante ──
+  {n:"Indépendance Sri Lanka",i:"🇱🇰",m:2,d:4,c:['lk']},
+  // ── Amériques / Caraïbes manquant ──
+  {n:"Indépendance Suriname",i:"🇸🇷",m:11,d:25,c:['sr']},
+  {n:"Fête Nationale Polynésie Française",i:"🌺",m:6,d:29,c:['pf']},
+  // ── Fêtes culturelles globales ──
+  {n:"Journée Mondiale de la Paix",i:"☮️",m:9,d:21,c:['universal']},
+  {n:"Journée Mondiale des Droits de l'Enfant",i:"🧒",m:11,d:20,c:['universal']},
+  {n:"Journée de la Terre",i:"🌍",m:4,d:22,c:['universal']},
+  {n:"Journée Internationale des Droits de l'Homme",i:"🕊️",m:12,d:10,c:['universal']},
 ];
 
 // ── FÊTES MOBILES ──
@@ -339,11 +380,13 @@ function easterDate(y){
 }
 // Tables de dates approximatives pour fêtes lunaires/luni-solaires (±1j)
 var ISLAMIC_FETES={
-  ramadan: {2024:[3,11],2025:[3,1],2026:[2,18],2027:[2,7],2028:[1,26]},
-  eidFitr: {2024:[4,10],2025:[3,30],2026:[3,20],2027:[3,9],2028:[2,27]},
-  eidAdha: {2024:[6,17],2025:[6,7],2026:[5,27],2027:[5,17],2028:[5,5]},
-  mawlid:  {2024:[9,16],2025:[9,5],2026:[8,25],2027:[8,14],2028:[8,2]},
-  achoura: {2024:[7,16],2025:[7,5],2026:[6,25],2027:[6,14],2028:[6,2]},
+  ramadan:  {2024:[3,11], 2025:[3,1],  2026:[2,18], 2027:[2,7],  2028:[1,26]},
+  eidFitr:  {2024:[4,10], 2025:[3,30], 2026:[3,20], 2027:[3,9],  2028:[2,27]},
+  eidAdha:  {2024:[6,17], 2025:[6,7],  2026:[5,27], 2027:[5,17], 2028:[5,5]},
+  mawlid:   {2024:[9,16], 2025:[9,5],  2026:[8,25], 2027:[8,14], 2028:[8,2]},
+  achoura:  {2024:[7,16], 2025:[7,5],  2026:[6,25], 2027:[6,14], 2028:[6,2]},
+  muharram: {2024:[7,7],  2025:[6,26], 2026:[6,16], 2027:[6,5],  2028:[5,25]},
+  israMiraj:{2024:[2,8],  2025:[1,27], 2026:[1,17], 2027:[1,6],  2028:[12,14]},
 };
 var JEWISH_FETES={
   roshHashana:  {2024:[9,2], 2025:[9,22],2026:[9,11],2027:[9,1], 2028:[9,20]},
@@ -401,6 +444,7 @@ function getMoveableFetes(y){
     var dt=new Date(easter.getTime()+off*864e5);
     fetes.push({n:n,i:i,m:dt.getMonth()+1,d:dt.getDate(),c:cats,moveable:true});
   }
+  addOff(-47,"Mardi Gras / Carnaval","🎭",['christian','fr','be','br','ht','mq','gp','re','gf','pf']);
   addOff(-46,"Mercredi des Cendres","🙏",['christian']);
   addOff(-7,"Dimanche des Rameaux","🌿",['christian']);
   addOff(-2,"Vendredi Saint","✝️",['christian']);
@@ -419,6 +463,8 @@ function getMoveableFetes(y){
   addIsm('eidAdha','Eid al-Adha','🐑');
   addIsm('mawlid','Mawlid (Naissance du Prophète)','🌟');
   addIsm('achoura','Achoura','🕌');
+  addIsm('muharram','Nouvel An Islamique (1er Muharram)','☪️');
+  addIsm('israMiraj',"Isra Mi'raj",'🌙');
   // Judaïsme
   function addJew(tbl,n,i){
     var d=JEWISH_FETES[tbl][y]||JEWISH_FETES[tbl][2026];
@@ -463,21 +509,32 @@ function getMoveableFetes(y){
   fetes.push({n:'Nouvel An Chinois',i:'🧧',m:cn[0],d:cn[1],c:['cn','hk','mo','sg','tw','my'],moveable:true});
   fetes.push({n:'Seollal (Nouvel An Coréen)',i:'🎊',m:cn[0],d:cn[1],c:['kr'],moveable:true});
   fetes.push({n:'Tết Nguyên Đán',i:'🌸',m:cn[0],d:cn[1],c:['vn'],moveable:true});
-  // Fête des Mères — dernier dimanche de mai (France + Afrique francophone)
+  // Fête des Lanternes (15e jour du 1er mois lunaire = CNY + 14 jours)
+  var ltDate=new Date(y,cn[0]-1,cn[1]+14);
+  fetes.push({n:'Fête des Lanternes',i:'🏮',m:ltDate.getMonth()+1,d:ltDate.getDate(),c:['cn','hk','mo','tw','sg','my'],moveable:true});
+  // Fête des Mères Fr/Be/CH/Lu — dernier dimanche de mai (sauf si = Pentecôte → 1er dim juin)
   var fm=lastWeekday(y,5,0);
-  fetes.push({n:'Fête des Mères',i:'💐',m:fm.m,d:fm.d,c:['fr','be','ch','ca','ht','ci','sn','cm','ga','cd','mg','ml','tg','bj','gn','bf','ne','td','cg','cf'],moveable:true});
-  // Fête des Pères — 3e dimanche de juin
+  var pentD=new Date(easter.getTime()+49*864e5);
+  if(fm.m===pentD.getMonth()+1&&fm.d===pentD.getDate()){fm=nthWeekday(y,6,0,1);}
+  fetes.push({n:'Fête des Mères',i:'💐',m:fm.m,d:fm.d,c:['fr','be','ch','lu','ca','ht','ci','sn','cm','ga','cd','mg','ml','tg','bj','gn','bf','ne','td','cg','cf','mr','bi','rw','cv','st','gf','pf'],moveable:true});
+  // Fête des Grands-Mères (France) — 1er dimanche de mars
+  var fgm=nthWeekday(y,3,0,1);
+  fetes.push({n:"Fête des Grand-Mères",i:'👵',m:fgm.m,d:fgm.d,c:['fr'],moveable:true});
+  // Fête des Pères — 3e dimanche de juin (international)
   var fp=nthWeekday(y,6,0,3);
-  fetes.push({n:'Fête des Pères',i:'👔',m:fp.m,d:fp.d,c:['fr','be','ch','ca'],moveable:true});
+  fetes.push({n:'Fête des Pères',i:'👔',m:fp.m,d:fp.d,c:['fr','be','ch','lu','ca','us','gb','au','nz','ht','ci','sn','cm','ga','cd','mg','ml','tg','bj','gn','bf','ne','td','cg','cf','za','ph','sg','my','in','ng','gh','ke'],moveable:true});
   // Thanksgiving USA — 4e jeudi de novembre
   var tg=nthWeekday(y,11,4,4);
   fetes.push({n:'Thanksgiving USA',i:'🦃',m:tg.m,d:tg.d,c:['us'],moveable:true});
+  // Thanksgiving Canada — 2e lundi d'octobre
+  var tgCA=nthWeekday(y,10,1,2);
+  fetes.push({n:'Thanksgiving Canada',i:'🍁',m:tgCA.m,d:tgCA.d,c:['ca'],moveable:true});
   // Mothering Sunday UK/IE — Easter - 21 jours (4e dimanche de Carême)
   var msUK=new Date(easter.getTime()-21*864e5);
   fetes.push({n:'Mothering Sunday',i:'💐',m:msUK.getMonth()+1,d:msUK.getDate(),c:['gb','ie'],moveable:true});
-  // Mother's Day USA/CA/AU/NZ/ZA — 2e dimanche de mai
+  // Mother's Day USA/CA/AU/NZ/ZA/PH/IN… — 2e dimanche de mai
   var ms2=nthWeekday(y,5,0,2);
-  fetes.push({n:"Mother's Day",i:'💐',m:ms2.m,d:ms2.d,c:['us','ca','au','nz','za'],moveable:true});
+  fetes.push({n:"Mother's Day",i:'💐',m:ms2.m,d:ms2.d,c:['us','ca','au','nz','za','ph','in','pk','bd','lk','ng','gh','ke','sg','my'],moveable:true});
   // Father's Day AU/NZ — 1er dimanche de septembre
   var fdAU=nthWeekday(y,9,0,1);
   fetes.push({n:"Father's Day",i:'👔',m:fdAU.m,d:fdAU.d,c:['au','nz'],moveable:true});
