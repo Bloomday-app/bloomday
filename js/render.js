@@ -381,7 +381,7 @@ function rEvents(){
       var row=document.createElement('div');row.className='fr';
       var ico=document.createElement('div');ico.className='fi';ico.textContent=item.icon;
       var info=document.createElement('div');info.style.cssText='flex:1';
-      var nm=document.createElement('div');nm.className='fn';nm.textContent=esc(item.name);
+      var nm=document.createElement('div');nm.className='fn';nm.textContent=item.name;
       var dt=document.createElement('div');dt.className='fd';dt.textContent=item.day+' '+MN[item.month-1];
       info.appendChild(nm);info.appendChild(dt);
       var pill=document.createElement('div');pill.className='fpill';
@@ -1157,7 +1157,7 @@ function rMore(){
   h+='</div>';
   h+='<div style="text-align:center;font-size:11px;color:var(--txt3);margin:24px 0 8px">Bloomday v2 · mybloomday.app</div>';
   el.innerHTML=h;
-  buildCountrySelect('prof-live',profile.live||'fr');
+  buildCountrySelect('prof-live',profile.live||'');
   buildCountrySelect('prof-origin',profile.origin||'');
   updateAllTexts();
 }

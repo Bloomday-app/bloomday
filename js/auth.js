@@ -276,6 +276,7 @@ function showLogoutScreen(wasUser) {
 }
 
 function closeLogoutScreen() {
+  if (typeof goLand === 'function') goLand();
   var screen = document.getElementById('logout-screen');
   if (!screen) return;
   screen.style.opacity = '0';
@@ -284,7 +285,6 @@ function closeLogoutScreen() {
     screen.style.display = 'none';
     screen.style.opacity = '';
     screen.style.transition = '';
-    if (typeof goLand === 'function') goLand();
   }, 500);
 }
 
