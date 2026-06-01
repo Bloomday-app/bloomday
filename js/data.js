@@ -76,11 +76,14 @@ const FETES=[
   {n:"Noël",i:"🎄",m:12,d:25,c:['christian']},
   {n:"Saint-Étienne",i:"⭐",m:12,d:26,c:['christian']},
   // ── France / Europe francophone ──
-  {n:"Fête des Mères",i:"💐",m:5,d:26,c:['fr','be','ch','ca','ht','ci','sn','cm','ga','cd','mg','ml','tg','bj','gn','bf','ne','td','cg','cf']},
-  {n:"Fête des Pères",i:"👔",m:6,d:15,c:['fr','be','ch','ca']},
   {n:"Fête Nationale France",i:"🇫🇷",m:7,d:14,c:['fr','gp','mq','re','yt','pm','nc']},
   {n:"Armistice",i:"🕊️",m:11,d:11,c:['fr','be']},
   {n:"Victoire 1945",i:"✌️",m:5,d:8,c:['fr','be']},
+  // ── DOM-TOM / Outre-mer ──
+  {n:"Abolition de l'Esclavage",i:"⛓️",m:5,d:22,c:['mq']},
+  {n:"Abolition de l'Esclavage",i:"⛓️",m:5,d:27,c:['gp']},
+  {n:"Abolition de l'Esclavage",i:"⛓️",m:12,d:20,c:['re']},
+  {n:"Abolition de l'Esclavage",i:"⛓️",m:4,d:27,c:['yt']},
   // ── Europe ──
   {n:"Fête Nationale Belgique",i:"🇧🇪",m:7,d:21,c:['be']},
   {n:"Fête Nationale Suisse",i:"🇨🇭",m:8,d:1,c:['ch']},
@@ -94,7 +97,6 @@ const FETES=[
   {n:"Fête Nationale Malta",i:"🇲🇹",m:3,d:31,c:['mt']},
   // ── Amériques ──
   {n:"Indépendance USA",i:"🇺🇸",m:7,d:4,c:['us']},
-  {n:"Thanksgiving USA",i:"🦃",m:11,d:28,c:['us']},
   {n:"Fête Nationale Canada",i:"🇨🇦",m:7,d:1,c:['ca']},
   {n:"Fête Nationale Australie",i:"🇦🇺",m:1,d:26,c:['au']},
   {n:"Indépendance Haïti",i:"🇭🇹",m:1,d:1,c:['ht']},
@@ -197,10 +199,92 @@ const FETES=[
   {n:"Fête Nationale Singapour",i:"🇸🇬",m:8,d:9,c:['sg']},
   {n:"Fête Nationale Taiwan",i:"🇹🇼",m:10,d:10,c:['tw']},
   {n:"Fête Nationale HK (Rétrocession)",i:"🇭🇰",m:7,d:1,c:['hk']},
-  {n:"Fête Nationale Chine",i:"🇨🇳",m:10,d:1,c:['hk','mo','sg','my']},
+  {n:"Fête Nationale Chine",i:"🇨🇳",m:10,d:1,c:['cn','hk','mo','sg','my']},
   {n:"Fête Nationale Macao",i:"🇲🇴",m:12,d:20,c:['mo']},
   {n:"Indépendance Timor-Leste",i:"🇹🇱",m:5,d:20,c:['tl']},
   {n:"Indépendance Fidji",i:"🇫🇯",m:10,d:10,c:['fj']},
+  // ── Europe (nouveaux pays) ──
+  {n:"Saint-Georges (Angleterre)",i:"🏴󠁧󠁢󠁥󠁮󠁧󠁿",m:4,d:23,c:['gb']},
+  {n:"Fête Nationale Monaco",i:"🇲🇨",m:11,d:19,c:['mc']},
+  {n:"Fête Nationale Autriche",i:"🇦🇹",m:10,d:26,c:['at']},
+  {n:"Indépendance Grèce",i:"🇬🇷",m:3,d:25,c:['gr']},
+  {n:"Ochi Day (Grèce)",i:"🇬🇷",m:10,d:28,c:['gr']},
+  {n:"Constitution Pologne",i:"🇵🇱",m:5,d:3,c:['pl']},
+  {n:"Fête Nationale Pologne",i:"🇵🇱",m:11,d:11,c:['pl']},
+  {n:"Fête Nationale Roumanie",i:"🇷🇴",m:12,d:1,c:['ro']},
+  {n:"Fête Nationale Hongrie",i:"🇭🇺",m:8,d:20,c:['hu']},
+  {n:"Révolution Hongrie 1956",i:"🇭🇺",m:10,d:23,c:['hu']},
+  {n:"Indépendance Tchéquie",i:"🇨🇿",m:10,d:28,c:['cz']},
+  {n:"Révolution de Velours",i:"🇨🇿",m:11,d:17,c:['cz','sk']},
+  {n:"Fête Nationale Slovaquie",i:"🇸🇰",m:9,d:1,c:['sk']},
+  {n:"Fête Nationale Suède",i:"🇸🇪",m:6,d:6,c:['se']},
+  {n:"Fête Nationale Norvège",i:"🇳🇴",m:5,d:17,c:['no']},
+  {n:"Fête Nationale Danemark",i:"🇩🇰",m:6,d:5,c:['dk']},
+  {n:"Indépendance Finlande",i:"🇫🇮",m:12,d:6,c:['fi']},
+  {n:"Fête Nationale Russie",i:"🇷🇺",m:6,d:12,c:['ru']},
+  {n:"Fête de la Victoire (9 mai)",i:"🎖️",m:5,d:9,c:['ru']},
+  {n:"Indépendance Ukraine",i:"🇺🇦",m:8,d:24,c:['ua']},
+  // ── Afrique (nouveaux pays) ──
+  {n:"Révolution Égypte",i:"🇪🇬",m:7,d:23,c:['eg']},
+  {n:"Libération du Sinaï",i:"🇪🇬",m:4,d:25,c:['eg']},
+  {n:"Fête Forces Armées Égypte",i:"🇪🇬",m:10,d:6,c:['eg']},
+  {n:"Indépendance Guinée Équatoriale",i:"🇬🇶",m:10,d:12,c:['gq']},
+  // ── Moyen-Orient / Caucase ──
+  {n:"Fête Nationale Turquie",i:"🇹🇷",m:10,d:29,c:['tr']},
+  {n:"Victoire Turquie",i:"🇹🇷",m:8,d:30,c:['tr']},
+  {n:"Fête de l'Enfance Turquie",i:"🇹🇷",m:4,d:23,c:['tr']},
+  {n:"Révolution Islamique Iran",i:"🇮🇷",m:2,d:11,c:['ir']},
+  {n:"Nowruz (Nouvel An Persan)",i:"🌸",m:3,d:21,c:['ir','af','kz','uz','kg','tj','tm','az']},
+  {n:"Yom HaShoah",i:"🕯️",m:4,d:24,c:['il']},
+  {n:"Indépendance Arménie",i:"🇦🇲",m:9,d:21,c:['am']},
+  {n:"Mémorial Génocide Arménien",i:"🕯️",m:4,d:24,c:['am']},
+  {n:"Indépendance Géorgie",i:"🇬🇪",m:5,d:26,c:['ge']},
+  {n:"Fête Nationale Azerbaïdjan",i:"🇦🇿",m:5,d:28,c:['az']},
+  {n:"Indépendance Azerbaïdjan",i:"🇦🇿",m:10,d:18,c:['az']},
+  {n:"Indépendance Kazakhstan",i:"🇰🇿",m:12,d:16,c:['kz']},
+  {n:"Indépendance Ouzbékistan",i:"🇺🇿",m:9,d:1,c:['uz']},
+  {n:"Indépendance Kirghizistan",i:"🇰🇬",m:8,d:31,c:['kg']},
+  {n:"Indépendance Tadjikistan",i:"🇹🇯",m:9,d:9,c:['tj']},
+  {n:"Indépendance Turkménistan",i:"🇹🇲",m:10,d:27,c:['tm']},
+  {n:"Indépendance Afghanistan",i:"🇦🇫",m:8,d:19,c:['af']},
+  // ── Asie (nouveaux pays) ──
+  {n:"Indépendance Indonésie",i:"🇮🇩",m:8,d:17,c:['id']},
+  {n:"Chakri Day (Thaïlande)",i:"🇹🇭",m:4,d:6,c:['th']},
+  {n:"Fête Nationale Thaïlande",i:"🇹🇭",m:12,d:5,c:['th']},
+  {n:"Indépendance Cambodge",i:"🇰🇭",m:11,d:9,c:['kh']},
+  {n:"Fête du Roi Cambodge",i:"🇰🇭",m:5,d:14,c:['kh']},
+  {n:"Fête Nationale Laos",i:"🇱🇦",m:12,d:2,c:['la']},
+  {n:"Pi Mai / Boun Pi Mai (Laos)",i:"💧",m:4,d:14,c:['la']},
+  {n:"Indépendance Myanmar",i:"🇲🇲",m:1,d:4,c:['mm']},
+  {n:"Thingyan (Nouvel An Myanmar)",i:"💧",m:4,d:13,c:['mm']},
+  {n:"Naadam (Mongolie)",i:"🇲🇳",m:7,d:11,c:['mn']},
+  {n:"Fête Nationale Bhoutan",i:"🇧🇹",m:12,d:17,c:['bt']},
+  {n:"Indépendance Maldives",i:"🇲🇻",m:7,d:26,c:['mv']},
+  {n:"Fête Nationale Brunei",i:"🇧🇳",m:2,d:23,c:['bn']},
+  {n:"Libération du Sud Vietnam",i:"🇻🇳",m:4,d:30,c:['vn']},
+  // ── Pacifique ──
+  {n:"Indépendance PNG",i:"🇵🇬",m:9,d:16,c:['pg']},
+  {n:"Indépendance Îles Salomon",i:"🇸🇧",m:7,d:7,c:['sb']},
+  {n:"Indépendance Vanuatu",i:"🇻🇺",m:7,d:30,c:['vu']},
+  {n:"Indépendance Samoa",i:"🇼🇸",m:6,d:1,c:['ws']},
+  {n:"Fête Nationale Tonga",i:"🇹🇴",m:11,d:4,c:['to']},
+  // ── Caraïbes anglophones ──
+  {n:"Emancipation Day",i:"✊",m:8,d:1,c:['jm','tt','bb','gy','bz','bs','lc','gd','ag','kn','dm','vc']},
+  {n:"Indépendance Belize",i:"🇧🇿",m:9,d:21,c:['bz']},
+  {n:"Indépendance Bahamas",i:"🇧🇸",m:7,d:10,c:['bs']},
+  {n:"Indépendance Sainte-Lucie",i:"🇱🇨",m:2,d:22,c:['lc']},
+  {n:"Fête de Sainte-Lucie",i:"🇱🇨",m:12,d:13,c:['lc']},
+  {n:"Indépendance Grenade",i:"🇬🇩",m:2,d:7,c:['gd']},
+  {n:"Indépendance Antigua",i:"🇦🇬",m:11,d:1,c:['ag']},
+  {n:"Indépendance Saint-Kitts",i:"🇰🇳",m:9,d:19,c:['kn']},
+  {n:"Indépendance Dominique",i:"🇩🇲",m:11,d:3,c:['dm']},
+  {n:"Indépendance Saint-Vincent",i:"🇻🇨",m:10,d:27,c:['vc']},
+  // ── Amériques (compléments) ──
+  {n:"Juneteenth USA",i:"✊",m:6,d:19,c:['us']},
+  {n:"Fête Nationale Brésil (Rép.)",i:"🇧🇷",m:11,d:15,c:['br']},
+  {n:"Tiradentes Brésil",i:"🇧🇷",m:4,d:21,c:['br']},
+  {n:"Bataille de Boyacá (Colombie)",i:"🇨🇴",m:8,d:7,c:['co']},
+  {n:"Día de los Muertos (Mexique)",i:"💀",m:11,d:1,c:['mx']},
   // ── Sikh (fêtes fixes) ──
   {n:"Vaisakhi",i:"🌾",m:4,d:14,c:['sikh','in','pk']},
   {n:"Baisakhi",i:"🌾",m:4,d:14,c:['sikh','in']},
@@ -209,6 +293,37 @@ const FETES=[
   {n:"Makar Sankranti",i:"🪁",m:1,d:14,c:['hindu','in']},
   {n:"Ugadi",i:"🌿",m:3,d:30,c:['hindu','in']},
   {n:"Onam",i:"🌸",m:9,d:5,c:['hindu','in']},
+  // ── Compléments Europe ──
+  {n:"Remembrance Day",i:"🌹",m:11,d:11,c:['gb','ca','au','nz','us']},
+  {n:"St David's Day",i:"🏴󠁧󠁢󠁷󠁬󠁳󠁿",m:3,d:1,c:['gb']},
+  {n:"St Andrew's Day",i:"🏴󠁧󠁢󠁳󠁣󠁴󠁿",m:11,d:30,c:['gb']},
+  {n:"Anzac Day",i:"🌺",m:4,d:25,c:['au','nz']},
+  {n:"Waitangi Day",i:"🇳🇿",m:2,d:6,c:['nz']},
+  {n:"Sainte-Lucie (Suède)",i:"🕯️",m:12,d:13,c:['se']},
+  {n:"Jour du Souvenir (Pays-Bas)",i:"🌹",m:5,d:4,c:['nl']},
+  {n:"Jour de la Libération (Pays-Bas)",i:"🇳🇱",m:5,d:5,c:['nl']},
+  {n:"Fête de la République (Portugal)",i:"🇵🇹",m:10,d:5,c:['pt']},
+  {n:"Restauration Indépendance (Portugal)",i:"🇵🇹",m:12,d:1,c:['pt']},
+  {n:"Día de la Constitución (Espagne)",i:"🇪🇸",m:12,d:6,c:['es']},
+  {n:"Inmaculada Concepción",i:"✨",m:12,d:8,c:['es','it','pt']},
+  {n:"Unité Nationale (Russie)",i:"🇷🇺",m:11,d:4,c:['ru']},
+  // ── Compléments Asie / Pacifique ──
+  {n:"Showa Day (Japon)",i:"🇯🇵",m:4,d:29,c:['jp']},
+  {n:"Constitution Day (Japon)",i:"🇯🇵",m:5,d:3,c:['jp']},
+  {n:"Greenery Day (Japon)",i:"🌿",m:5,d:4,c:['jp']},
+  {n:"Fête des Enfants",i:"🎏",m:5,d:5,c:['jp','kr']},
+  {n:"Jour de la Montagne (Japon)",i:"🗻",m:8,d:11,c:['jp']},
+  {n:"Culture Day (Japon)",i:"🎌",m:11,d:3,c:['jp']},
+  {n:"Labour Thanksgiving Day (Japon)",i:"🙏",m:11,d:23,c:['jp']},
+  {n:"Birthday de l'Empereur (Japon)",i:"👑",m:2,d:23,c:['jp']},
+  {n:"Samil Movement Day (Corée)",i:"🇰🇷",m:3,d:1,c:['kr']},
+  {n:"Jour du Souvenir (Corée)",i:"🇰🇷",m:6,d:6,c:['kr']},
+  {n:"Hangul Day (Corée)",i:"🇰🇷",m:10,d:9,c:['kr']},
+  {n:"Qingming (Chine)",i:"🌿",m:4,d:5,c:['cn','tw','hk','mo']},
+  {n:"Gandhi Jayanti (Inde)",i:"🕊️",m:10,d:2,c:['in']},
+  {n:"Bonifacio Day (Philippines)",i:"🇵🇭",m:11,d:30,c:['ph']},
+  {n:"Rizal Day (Philippines)",i:"🇵🇭",m:12,d:30,c:['ph']},
+  {n:"Racial Harmony Day (Singapour)",i:"🇸🇬",m:7,d:21,c:['sg']},
 ];
 
 // ── FÊTES MOBILES ──
@@ -258,7 +373,25 @@ var BUDDHIST_FETES={
 var SIKH_FETES={
   guruNanak:    {2024:[11,15],2025:[11,5],2026:[11,24],2027:[11,13],2028:[11,2]},
 };
+var MID_AUTUMN={2024:[9,17],2025:[10,6],2026:[9,25],2027:[9,14],2028:[10,2]};
+var DRAGON_BOAT={2024:[6,10],2025:[5,31],2026:[6,19],2027:[6,9],2028:[5,28]};
+var HUNG_KINGS={2024:[4,18],2025:[4,7],2026:[4,27],2027:[4,16],2028:[4,5]};
+var BUDDHA_KR={2024:[5,15],2025:[5,5],2026:[5,24],2027:[5,13],2028:[5,1]};
 var CHINESE_NY={2024:[2,10],2025:[1,29],2026:[2,17],2027:[2,7],2028:[1,26]};
+
+// Retourne le Nème jour de semaine (0=dim…6=sam) du mois m (1-12), année y
+function nthWeekday(y,m,wd,n){
+  var d=new Date(y,m-1,1);
+  while(d.getDay()!==wd)d.setDate(d.getDate()+1);
+  d.setDate(d.getDate()+(n-1)*7);
+  return{m:m,d:d.getDate()};
+}
+// Retourne le dernier jour de semaine wd du mois m
+function lastWeekday(y,m,wd){
+  var d=new Date(y,m,0);
+  while(d.getDay()!==wd)d.setDate(d.getDate()-1);
+  return{m:m,d:d.getDate()};
+}
 
 function getMoveableFetes(y){
   var fetes=[];
@@ -321,13 +454,76 @@ function getMoveableFetes(y){
   addBud('vesak','Vesak (Bouddha)','☸️');
   addBud('magha','Magha Puja','🪷');
   // Songkran (Nouvel An bouddhiste, date fixe)
-  fetes.push({n:'Songkran',i:'💧',m:4,d:13,c:['buddhist'],moveable:false});
+  fetes.push({n:'Songkran',i:'💧',m:4,d:13,c:['buddhist','th','la','mm'],moveable:false});
   // Sikhisme
   var gn=SIKH_FETES.guruNanak[y]||SIKH_FETES.guruNanak[2026];
   fetes.push({n:'Guru Nanak Jayanti','i':'🙏',m:gn[0],d:gn[1],c:['sikh','in'],moveable:true});
   // Nouvel An Chinois
   var cn=CHINESE_NY[y]||CHINESE_NY[2026];
-  fetes.push({n:'Nouvel An Chinois',i:'🧧',m:cn[0],d:cn[1],c:['hk','mo','sg','tw','my'],moveable:true});
+  fetes.push({n:'Nouvel An Chinois',i:'🧧',m:cn[0],d:cn[1],c:['cn','hk','mo','sg','tw','my'],moveable:true});
+  fetes.push({n:'Seollal (Nouvel An Coréen)',i:'🎊',m:cn[0],d:cn[1],c:['kr'],moveable:true});
+  fetes.push({n:'Tết Nguyên Đán',i:'🌸',m:cn[0],d:cn[1],c:['vn'],moveable:true});
+  // Fête des Mères — dernier dimanche de mai (France + Afrique francophone)
+  var fm=lastWeekday(y,5,0);
+  fetes.push({n:'Fête des Mères',i:'💐',m:fm.m,d:fm.d,c:['fr','be','ch','ca','ht','ci','sn','cm','ga','cd','mg','ml','tg','bj','gn','bf','ne','td','cg','cf'],moveable:true});
+  // Fête des Pères — 3e dimanche de juin
+  var fp=nthWeekday(y,6,0,3);
+  fetes.push({n:'Fête des Pères',i:'👔',m:fp.m,d:fp.d,c:['fr','be','ch','ca'],moveable:true});
+  // Thanksgiving USA — 4e jeudi de novembre
+  var tg=nthWeekday(y,11,4,4);
+  fetes.push({n:'Thanksgiving USA',i:'🦃',m:tg.m,d:tg.d,c:['us'],moveable:true});
+  // Mothering Sunday UK/IE — Easter - 21 jours (4e dimanche de Carême)
+  var msUK=new Date(easter.getTime()-21*864e5);
+  fetes.push({n:'Mothering Sunday',i:'💐',m:msUK.getMonth()+1,d:msUK.getDate(),c:['gb','ie'],moveable:true});
+  // Mother's Day USA/CA/AU/NZ/ZA — 2e dimanche de mai
+  var ms2=nthWeekday(y,5,0,2);
+  fetes.push({n:"Mother's Day",i:'💐',m:ms2.m,d:ms2.d,c:['us','ca','au','nz','za'],moveable:true});
+  // Father's Day AU/NZ — 1er dimanche de septembre
+  var fdAU=nthWeekday(y,9,0,1);
+  fetes.push({n:"Father's Day",i:'👔',m:fdAU.m,d:fdAU.d,c:['au','nz'],moveable:true});
+  // MLK Day USA — 3e lundi de janvier
+  var mlk=nthWeekday(y,1,1,3);
+  fetes.push({n:'Martin Luther King Day',i:'✊',m:mlk.m,d:mlk.d,c:['us'],moveable:true});
+  // Presidents Day USA — 3e lundi de février
+  var pres=nthWeekday(y,2,1,3);
+  fetes.push({n:"Presidents' Day",i:'🇺🇸',m:pres.m,d:pres.d,c:['us'],moveable:true});
+  // Memorial Day USA — dernier lundi de mai
+  var memD=lastWeekday(y,5,1);
+  fetes.push({n:'Memorial Day',i:'🇺🇸',m:memD.m,d:memD.d,c:['us'],moveable:true});
+  // Labor Day USA/CA — 1er lundi de septembre
+  var labD=nthWeekday(y,9,1,1);
+  fetes.push({n:'Labor Day',i:'💼',m:labD.m,d:labD.d,c:['us','ca'],moveable:true});
+  // Columbus Day USA — 2e lundi d'octobre
+  var colD=nthWeekday(y,10,1,2);
+  fetes.push({n:'Columbus Day',i:'🇺🇸',m:colD.m,d:colD.d,c:['us'],moveable:true});
+  // Midsommar Suède — vendredi entre le 19 et 25 juin
+  var midsD=new Date(y,5,19);while(midsD.getDay()!==5)midsD.setDate(midsD.getDate()+1);
+  fetes.push({n:'Midsommar',i:'🌞',m:6,d:midsD.getDate(),c:['se'],moveable:true});
+  // UK Spring & Summer Bank Holidays
+  var ukSBH=lastWeekday(y,5,1);
+  fetes.push({n:'Spring Bank Holiday (UK)',i:'🌸',m:ukSBH.m,d:ukSBH.d,c:['gb'],moveable:true});
+  var ukBH=lastWeekday(y,8,1);
+  fetes.push({n:'Summer Bank Holiday (UK)',i:'🎉',m:ukBH.m,d:ukBH.d,c:['gb'],moveable:true});
+  // Fêtes mobiles Japon
+  var marJ=nthWeekday(y,7,1,3);
+  fetes.push({n:'Marine Day (Japon)',i:'🌊',m:marJ.m,d:marJ.d,c:['jp'],moveable:true});
+  var respJ=nthWeekday(y,9,1,3);
+  fetes.push({n:'Respect for the Aged Day (Japon)',i:'🙏',m:respJ.m,d:respJ.d,c:['jp'],moveable:true});
+  var sporJ=nthWeekday(y,10,1,2);
+  fetes.push({n:'Sports Day (Japon)',i:'🏅',m:sporJ.m,d:sporJ.d,c:['jp'],moveable:true});
+  // Mi-Automne & Chuseok — même date lunaire
+  var ma=MID_AUTUMN[y]||MID_AUTUMN[2026];
+  fetes.push({n:'Fête de la Mi-Automne',i:'🥮',m:ma[0],d:ma[1],c:['cn','hk','mo','tw','sg','my'],moveable:true});
+  fetes.push({n:'Chuseok (Corée)',i:'🌕',m:ma[0],d:ma[1],c:['kr'],moveable:true});
+  // Dragon Boat Festival / Duanwu (Chine)
+  var db=DRAGON_BOAT[y]||DRAGON_BOAT[2026];
+  fetes.push({n:'Dragon Boat Festival (Duanwu)',i:'🐉',m:db[0],d:db[1],c:['cn','hk','mo','tw','sg'],moveable:true});
+  // Hùng Vương Vietnam
+  var hkV=HUNG_KINGS[y]||HUNG_KINGS[2026];
+  fetes.push({n:'Hùng Vương (Vietnam)',i:'🇻🇳',m:hkV[0],d:hkV[1],c:['vn'],moveable:true});
+  // Anniversaire de Bouddha (Corée)
+  var bkKR=BUDDHA_KR[y]||BUDDHA_KR[2026];
+  fetes.push({n:"Anniversaire de Bouddha (Corée)",i:'🪷',m:bkKR[0],d:bkKR[1],c:['kr'],moveable:true});
   return fetes;
 }
 

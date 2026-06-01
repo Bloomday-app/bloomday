@@ -107,6 +107,8 @@ function initAuth() {
         profile.religion = sbProfile.religion || profile.religion;
         if (sbProfile.name) profile.name = sbProfile.name;
         if (sbProfile.phone) profile.phone = sbProfile.phone;
+        if (sbProfile.origin) profile.origin = sbProfile.origin;
+        if (sbProfile.origin2) profile.origin2 = sbProfile.origin2;
         await sg('bdg16_profile', profile);
       }
 

@@ -408,9 +408,11 @@ document.addEventListener('DOMContentLoaded',function(){
 function saveProfileSettings(){
   var liveEl=document.getElementById('prof-live');
   var originEl=document.getElementById('prof-origin');
+  var origin2El=document.getElementById('prof-origin2');
   var relEl=document.getElementById('prof-rel');
   if(liveEl)profile.live=liveEl.value;
   if(originEl)profile.origin=originEl.value;
+  if(origin2El)profile.origin2=origin2El.value;
   if(relEl)profile.religion=relEl.value;
   savePr();
   buildCats();

@@ -90,6 +90,8 @@ async function dbSaveProfile(userId, profile) {
       name: profile.name || '',
       phone: profile.phone || '',
       live: profile.live || 'fr',
+      origin: profile.origin || '',
+      origin2: profile.origin2 || '',
       religion: profile.religion || 'christian'
     });
   } catch (e) {
