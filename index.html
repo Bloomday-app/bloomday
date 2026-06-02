@@ -619,5 +619,39 @@
     <button onclick="sendChat()" data-i18n="chatSend">Envoyer</button>
   </div>
 </div>
+
+<!-- ── IMPORT CONTACTS BOTTOM SHEET ── -->
+<div id="import-sheet-overlay" style="display:none;position:fixed;inset:0;background:rgba(45,27,20,.35);z-index:200" onclick="closeImportSheet()"></div>
+<div id="import-sheet" style="display:none;position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:440px;background:var(--card);border-radius:20px 20px 0 0;z-index:201;padding:0 16px 32px">
+  <div style="width:36px;height:3px;background:var(--brd2);border-radius:2px;margin:12px auto 16px"></div>
+  <div style="font-family:'Playfair Display',serif;font-size:17px;font-weight:800;color:var(--txt);margin-bottom:6px" data-i18n="importChoiceTitle">Importer un contact</div>
+  <div style="font-size:13px;color:var(--txt2);line-height:1.55;margin-bottom:16px;padding-bottom:14px;border-bottom:1px solid var(--brd)" data-i18n="importChoiceHint">Sélectionnez un contact précis ou importez-en plusieurs.</div>
+  <div id="import-sheet-opt-single" onclick="importSingleContact()" style="border:1.5px solid var(--b1);background:var(--b1l);border-radius:12px;padding:12px 14px;margin-bottom:8px;cursor:pointer;display:flex;align-items:center;gap:12px">
+    <div style="width:36px;height:36px;border-radius:8px;background:var(--b1l);display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0">👤</div>
+    <div>
+      <div style="font-size:14px;font-weight:700;color:var(--txt)" data-i18n="importChoiceSingle">Choisir un contact</div>
+      <div style="font-size:12px;color:var(--txt2);margin-top:2px" data-i18n="importChoiceSingleSub">Sélectionner dans mes contacts et compléter sa fiche</div>
+    </div>
+    <div style="margin-left:auto;color:var(--txt3);font-size:18px">›</div>
+  </div>
+  <div id="import-sheet-opt-multi" onclick="importMultipleContacts()" style="border:1.5px solid var(--brd);background:var(--card);border-radius:12px;padding:12px 14px;margin-bottom:16px;cursor:pointer;display:flex;align-items:center;gap:12px">
+    <div style="width:36px;height:36px;border-radius:8px;background:var(--b4l);display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0">👥</div>
+    <div>
+      <div style="font-size:14px;font-weight:700;color:var(--txt)" data-i18n="importChoiceMultiple">Importer plusieurs contacts</div>
+      <div style="font-size:12px;color:var(--txt2);margin-top:2px" data-i18n="importChoiceMultipleSub">Sélection multiple, puis compléter les anniversaires après</div>
+    </div>
+    <div style="margin-left:auto;color:var(--txt3);font-size:18px">›</div>
+  </div>
+  <button onclick="closeImportSheet()" style="width:100%;padding:10px;background:transparent;border:none;font-size:13px;color:var(--txt2);cursor:pointer;font-family:inherit" data-i18n="importCancelBtn">Annuler</button>
+</div>
+
+<!-- ── IMPORT RECAP SCREEN ── -->
+<div id="import-recap-overlay" style="display:none;position:fixed;inset:0;background:var(--bg);z-index:202;overflow-y:auto;padding:20px 16px 40px">
+  <div style="max-width:440px;margin:0 auto">
+    <div id="import-recap-banner" style="background:var(--b1l);border:1px solid var(--b1);border-radius:10px;padding:10px 14px;font-size:13px;color:var(--b1d);line-height:1.5;margin-bottom:14px"></div>
+    <div id="import-recap-list"></div>
+    <button onclick="closeImportRecap()" style="width:100%;padding:12px;border:none;border-radius:12px;background:var(--grad);color:#fff;font-size:15px;font-weight:700;cursor:pointer;font-family:inherit;margin-top:12px" data-i18n="importFinish">Terminer</button>
+  </div>
+</div>
 </body>
 </html>
