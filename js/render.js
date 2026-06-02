@@ -1526,3 +1526,50 @@ function renderDesktopRightPanel(section){
   el.style.display='flex';
   renderSideCalendar();
 }
+function showImportRecap(added){
+  var ov=document.getElementById('import-recap-overlay');
+  if(!ov)return;
+  var missing=added.filter(function(p){return p.incomplete;});
+  var banner=document.getElementById('import-recap-banner');
+  if(banner){
+    var txt=added.length+' '+t('importRecapBanner');
+    if(missing.length>0)txt=added.length+' '+t('importRecapBanner').replace('·',missing.length+' ·');
+    else txt=added.length+' contacts importés.';
+    banner.textContent=txt;
+  }
+  var list=document.getElementById('import-recap-list');
+  if(list){
+    var h='';
+    added.forEach(function(p){
+      var hasDate=!p.incomplete;
+      h+='<div style="background:var(--card);border:1px solid var(--brd);border-radius:10px;padding:10px 12px;margin-bottom:6px;display:flex;align-items:center;gap:10px">';
+      h+='<div class="av '+AV[0]+'" style="width:32px;height:32px;font-size:13px;flex-shrink:0">'+ini(p.name)+'</div>';
+      h+='<div style="flex:1;min-width:0"><div style="font-size:14px;font-weight:600;color:var(--txt)">'+esc(p.name)+'</div>';
+      if(hasDate){
+        h+='<div style="font-size:12px;color:var(--b3d);margin-top:1px">✓ '+p.day+' '+MNS[p.month-1]+'</div>';
+      }else{
+        h+='<div style="font-size:12px;color:var(--b2d);margin-top:1px">'+t('importDateMissing')+'</div>';
+      }
+      h+='</div>';
+      if(!hasDate){
+        h+='<button onclick="closeImportRecap();editMemberInline(\''+p.id+'\')" style="background:var(--b1l);border:1px solid var(--b1);color:var(--b1d);border-radius:8px;padding:5px 10px;font-size:12px;font-weight:700;cursor:pointer;font-family:inherit;flex-shrink:0">'+t('importComplete')+' ›</button>';
+      }
+      h+='</div>';
+    });
+    list.innerHTML=h;
+  }
+  ov.style.display='block';
+}
+function closeImportRecap(){
+  var ov=document.getElementById('import-recap-overlay');
+  if(ov)ov.style.display='none';
+}
+function editMemberInline(id){
+  editId=String(id);
+  showSec('members',1);
+  rMembers();
+  setTimeout(function(){
+    var el=document.getElementById('em-name');
+    if(el)el.focus();
+  },200);
+}
