@@ -418,8 +418,22 @@ function prevPhoto(i){if(!i.files||!i.files[0])return;const r=new FileReader();r
 function impVCard(i){if(!i.files||!i.files[0])return;const r=new FileReader();r.onload=e=>{const t=e.target.result,nm=t.match(/FN:(.*)/),tm=t.match(/TEL[^:]*:(.*)/),bm=t.match(/BDAY:(\d{4})(\d{2})(\d{2})/);if(nm)document.getElementById('inp-name').value=nm[1].trim();if(tm)document.getElementById('inp-phone').value=tm[1].trim();if(bm){document.getElementById('inp-year').value=bm[1];document.getElementById('inp-month').value=parseInt(bm[2]);document.getElementById('inp-day').value=parseInt(bm[3]);}alert(t('contactImported'));};r.readAsText(i.files[0]);}
 function impCSV(i){if(!i.files||!i.files[0])return;const r=new FileReader();r.onload=e=>{const ls=e.target.result.split('\n').filter(l=>l.trim());let cnt=0;const m=mems();ls.forEach(line=>{const p=line.split(',').map(x=>x.trim().replace(/^"|"$/g,''));if(p.length<3)return;const name=p[0],day=parseInt(p[1]),month=parseInt(p[2]);if(!name||!day||isNaN(day)||!month||isNaN(month)||day<1||day>31||month<1||month>12)return;m.push({id:Date.now()+cnt,day,month,year:p[3]?parseInt(p[3]):null,name,phone:p[4]||'',note:'',photo:'',type:'birthday',gender:''});cnt++;});m.sort((a,b)=>a.month-b.month||a.day-b.day);setMems(m);saveG();refresh();alert(`✓ ${cnt} membre${cnt>1?'s':''} importé${cnt>1?'s':''} !`);};r.readAsText(i.files[0]);}
 
-async function importFromContacts(){
+function openImportSheet(){
   if(!('contacts' in navigator&&'ContactsManager' in window))return;
+  var ov=document.getElementById('import-sheet-overlay');
+  var sh=document.getElementById('import-sheet');
+  if(ov)ov.style.display='block';
+  if(sh)sh.style.display='block';
+  applyI18n();
+}
+function closeImportSheet(){
+  var ov=document.getElementById('import-sheet-overlay');
+  var sh=document.getElementById('import-sheet');
+  if(ov)ov.style.display='none';
+  if(sh)sh.style.display='none';
+}
+async function importSingleContact(){
+  closeImportSheet();
   try{
     var res=await navigator.contacts.select(['name','tel','birthday'],{multiple:false});
     if(!res||!res.length)return;
@@ -437,13 +451,50 @@ async function importFromContacts(){
         if(d.getFullYear()>1900)document.getElementById('inp-year').value=d.getFullYear();
       }
     }
-    alert(t('contactImported'));
+    showSec('add',1);
+    showToast(t('contactImported'));
   }catch(e){}
 }
-
+async function importMultipleContacts(){
+  closeImportSheet();
+  try{
+    var res=await navigator.contacts.select(['name','tel','birthday'],{multiple:true});
+    if(!res||!res.length)return;
+    var m=mems();
+    var pl=PL();
+    var added=[],skipped=0;
+    res.forEach(function(c){
+      if(m.length+added.length>=pl.mm){skipped++;return;}
+      var name=(c.name&&c.name[0])||'';
+      if(!name)return;
+      var phone=(c.tel&&c.tel[0])||'';
+      var bday=c.birthday;
+      var day=null,month=null,year=null,incomplete=true;
+      if(bday){
+        var d=new Date(bday);
+        if(!isNaN(d.getTime())){
+          day=d.getDate();month=d.getMonth()+1;
+          year=d.getFullYear()>1900?d.getFullYear():null;
+          incomplete=false;
+        }
+      }
+      added.push({id:Date.now()+added.length,day,month,year,name,phone,note:'',photo:'',type:'birthday',gender:'',incomplete:incomplete||undefined});
+    });
+    if(!added.length)return;
+    added.forEach(function(p){m.push(p);});
+    m.sort(function(a,b){
+      if(!a.month&&!b.month)return 0;
+      if(!a.month)return 1;
+      if(!b.month)return -1;
+      return a.month-b.month||a.day-b.day;
+    });
+    setMems(m);saveG();refresh();
+    showImportRecap(added);
+  }catch(e){}
+}
 if('contacts' in navigator&&'ContactsManager' in window){
   var _bcb=document.getElementById('btn-import-contacts');
-  if(_bcb)_bcb.style.display='block';
+  if(_bcb){_bcb.style.display='block';_bcb.onclick=openImportSheet;}
 }
 
 // ── ADD MEMBER ──
