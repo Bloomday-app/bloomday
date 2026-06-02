@@ -821,33 +821,53 @@ function renderSideCalendar() {
   }
   parts.push(grid);
 
-  // Prochains anniversaires (30j)
-  var upcoming = m.filter(function(p) {
-    var dl = daysTill(p.day, p.month);
-    return dl >= 0 && dl <= 30;
-  }).sort(function(a, b) { return daysTill(a.day, a.month) - daysTill(b.day, b.month); }).slice(0, 5);
+  // Panneau mensuel mixte — anniversaires + fêtes du mois affiché, triés par date
+  var monthBdays = m.filter(function(p) { return p.month === month + 1; });
+  var monthFetes = getFetesForMonth(year, month);
 
-  if (upcoming.length) {
-    var upTitle = document.createElement('div');
-    upTitle.style.cssText = 'font-size:12px;font-weight:700;color:var(--txt);margin:16px 0 8px';
-    upTitle.textContent = t('upcomingBdays');
-    parts.push(upTitle);
-    upcoming.forEach(function(p) {
+  var events = [];
+  monthBdays.forEach(function(p) {
+    events.push({ d: p.day, type: 'bday', name: tIco(p.type) + ' ' + p.name });
+  });
+  monthFetes.forEach(function(f) {
+    events.push({ d: f.d, type: 'fete', name: f.i + ' ' + f.n });
+  });
+  events.sort(function(a, b) {
+    if (a.d !== b.d) return a.d - b.d;
+    return a.type === 'bday' ? -1 : 1;
+  });
+
+  var monthTitle = document.createElement('div');
+  monthTitle.style.cssText = 'font-size:12px;font-weight:700;color:var(--txt);margin:16px 0 8px';
+  monthTitle.textContent = t('thisMonth');
+  parts.push(monthTitle);
+
+  if (events.length === 0) {
+    var emptyEl = document.createElement('div');
+    emptyEl.style.cssText = 'font-size:11px;color:var(--txt2);padding:8px 0';
+    emptyEl.textContent = t('noEventsThisMonth');
+    parts.push(emptyEl);
+  } else {
+    events.forEach(function(ev) {
       var row = document.createElement('div');
-      row.style.cssText = 'display:flex;align-items:center;gap:8px;padding:6px 0;border-bottom:1px solid var(--brd)';
+      row.style.cssText = 'display:flex;align-items:center;gap:8px;padding:5px 0;border-bottom:1px solid var(--brd)';
       var dateEl = document.createElement('div');
-      dateEl.style.cssText = 'min-width:28px;font-size:11px;font-weight:700;color:var(--b1d)';
-      dateEl.textContent = p.day + '/' + p.month;
+      dateEl.style.cssText = 'min-width:28px;font-size:10px;font-weight:700;color:var(--b1d)';
+      dateEl.textContent = ev.d + '/' + (month + 1);
       var nameEl = document.createElement('div');
-      nameEl.style.cssText = 'flex:1;font-size:12px;font-weight:600';
-      nameEl.textContent = tIco(p.type) + ' ' + p.name;
-      var dlEl = document.createElement('div');
-      var dl = daysTill(p.day, p.month);
-      dlEl.style.cssText = 'font-size:10px;color:var(--txt2)';
-      dlEl.textContent = dl === 0 ? t('calendarToday') : 'J-' + dl;
+      nameEl.style.cssText = 'flex:1;font-size:11px;font-weight:600';
+      nameEl.textContent = ev.name;
+      var tagEl = document.createElement('span');
+      if (ev.type === 'bday') {
+        tagEl.style.cssText = 'background:var(--b2l);color:var(--b2d);border-radius:3px;font-size:9px;padding:1px 5px;white-space:nowrap;flex-shrink:0';
+        tagEl.textContent = t('tagBirthday');
+      } else {
+        tagEl.style.cssText = 'background:var(--b3l);color:var(--b3d);border-radius:3px;font-size:9px;padding:1px 5px;white-space:nowrap;flex-shrink:0';
+        tagEl.textContent = t('tagHoliday');
+      }
       row.appendChild(dateEl);
       row.appendChild(nameEl);
-      row.appendChild(dlEl);
+      row.appendChild(tagEl);
       parts.push(row);
     });
   }
