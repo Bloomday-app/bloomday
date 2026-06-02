@@ -806,12 +806,12 @@ function renderSideCalendar() {
     } else if (hasBday && hasFete) {
       cell.style.cssText += 'background:var(--b2l);color:var(--b2d);font-weight:700;position:relative;';
       var dot = document.createElement('span');
-      dot.style.cssText = 'position:absolute;bottom:2px;right:2px;width:4px;height:4px;border-radius:50%;background:#5dbfaa;pointer-events:none';
+      dot.style.cssText = 'position:absolute;bottom:2px;right:2px;width:4px;height:4px;border-radius:50%;background:var(--b3);pointer-events:none';
       cell.appendChild(dot);
     } else if (hasBday) {
       cell.style.cssText += 'background:var(--b2l);color:var(--b2d);font-weight:700;';
     } else if (hasFete) {
-      cell.style.cssText += 'background:#1c3330;color:#5dbfaa;font-weight:600;';
+      cell.style.cssText += 'background:var(--b3l);color:var(--b3d);font-weight:600;';
     }
     (function(d, members) {
       cell.onclick = function() { showDayDetails(d, month + 1, members); };
