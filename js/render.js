@@ -760,6 +760,27 @@ function renderSideCalendar() {
   parts.push(yearRow);
   parts.push(monthRow);
 
+  // Fêtes du mois affiché, filtrées selon le profil
+  function getFetesForMonth(y, mo) {
+    var lv = (profile && profile.live) || 'fr';
+    var or = (profile && profile.origin) || '';
+    var or2 = (profile && profile.origin2) || '';
+    var rl = (profile && profile.religion) || '';
+    var all = FETES.concat(getMoveableFetes(y));
+    var seen = {};
+    return all.filter(function(f) {
+      if (f.m !== mo + 1) return false;
+      var ok = f.c.includes('universal') || f.c.includes(lv) ||
+               (or && f.c.includes(or)) || (or2 && f.c.includes(or2)) ||
+               (rl && f.c.includes(rl));
+      if (!ok || seen[f.n]) return false;
+      seen[f.n] = true;
+      return true;
+    });
+  }
+  var feteDays = {};
+  getFetesForMonth(year, month).forEach(function(f) { feteDays[f.d] = true; });
+
   // Grille
   var grid = document.createElement('div');
   grid.style.cssText = 'display:grid;grid-template-columns:repeat(7,1fr);gap:3px;font-size:11px;text-align:center';
@@ -776,11 +797,22 @@ function renderSideCalendar() {
     var isToday = day === now.getDate() && month === now.getMonth() && year === now.getFullYear();
     var dayMembers = m.filter(function(p) { return p.day === day && p.month === (month + 1); });
     var hasBday = dayMembers.length > 0;
+    var hasFete = !!feteDays[day];
     var cell = document.createElement('div');
     cell.textContent = String(day);
     cell.style.cssText = 'padding:5px 2px;border-radius:6px;cursor:pointer;';
-    if (isToday) cell.style.cssText += 'background:var(--b1);color:#2D1B14;font-weight:700;';
-    else if (hasBday) cell.style.cssText += 'background:var(--b2l);color:var(--b2d);font-weight:700;';
+    if (isToday) {
+      cell.style.cssText += 'background:var(--b1);color:#2D1B14;font-weight:700;';
+    } else if (hasBday && hasFete) {
+      cell.style.cssText += 'background:var(--b2l);color:var(--b2d);font-weight:700;position:relative;';
+      var dot = document.createElement('span');
+      dot.style.cssText = 'position:absolute;bottom:2px;right:2px;width:4px;height:4px;border-radius:50%;background:#5dbfaa;pointer-events:none';
+      cell.appendChild(dot);
+    } else if (hasBday) {
+      cell.style.cssText += 'background:var(--b2l);color:var(--b2d);font-weight:700;';
+    } else if (hasFete) {
+      cell.style.cssText += 'background:#1c3330;color:#5dbfaa;font-weight:600;';
+    }
     (function(d, members) {
       cell.onclick = function() { showDayDetails(d, month + 1, members); };
       if (members.length) cell.title = members.map(function(p) { return p.name; }).join(', ');
