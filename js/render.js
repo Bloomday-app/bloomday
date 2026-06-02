@@ -1532,10 +1532,13 @@ function showImportRecap(added){
   var missing=added.filter(function(p){return p.incomplete;});
   var banner=document.getElementById('import-recap-banner');
   if(banner){
-    var txt=added.length+' '+t('importRecapBanner');
-    if(missing.length>0)txt=added.length+' '+t('importRecapBanner').replace('·',missing.length+' ·');
-    else txt=added.length+' contacts importés.';
-    banner.textContent=txt;
+    if(missing.length>0){
+      banner.textContent=added.length+' '+t('importRecapBanner').replace('·',missing.length+' ·');
+      banner.style.display='';
+    }else{
+      banner.textContent='';
+      banner.style.display='none';
+    }
   }
   var list=document.getElementById('import-recap-list');
   if(list){
@@ -1552,7 +1555,7 @@ function showImportRecap(added){
       }
       h+='</div>';
       if(!hasDate){
-        h+='<button onclick="closeImportRecap();editMemberInline(\''+p.id+'\')" style="background:var(--b1l);border:1px solid var(--b1);color:var(--b1d);border-radius:8px;padding:5px 10px;font-size:12px;font-weight:700;cursor:pointer;font-family:inherit;flex-shrink:0">'+t('importComplete')+' ›</button>';
+        h+='<button data-id="'+String(p.id)+'" onclick="closeImportRecap();editMemberInline(this.dataset.id)" style="background:var(--b1l);border:1px solid var(--b1);color:var(--b1d);border-radius:8px;padding:5px 10px;font-size:12px;font-weight:700;cursor:pointer;font-family:inherit;flex-shrink:0">'+t('importComplete')+' ›</button>';
       }
       h+='</div>';
     });
