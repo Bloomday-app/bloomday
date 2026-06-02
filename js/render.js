@@ -713,10 +713,27 @@ function renderSideCalendar() {
 
   var parts = [];
 
-  // Header de navigation
-  var header = document.createElement('div');
-  header.style.cssText = 'display:flex;align-items:center;justify-content:space-between;margin-bottom:12px';
+  // Rangée année (±1 an)
+  var yearRow = document.createElement('div');
+  yearRow.style.cssText = 'display:flex;align-items:center;justify-content:space-between;margin-bottom:4px';
+  var prevYearBtn = document.createElement('button');
+  prevYearBtn.textContent = '‹‹';
+  prevYearBtn.style.cssText = 'background:var(--bg2);border:1px solid var(--brd);border-radius:6px;color:var(--txt);font-size:12px;padding:1px 7px;cursor:pointer;line-height:1';
+  prevYearBtn.onclick = function() { sideCal.year--; renderSideCalendar(); };
+  var yearEl = document.createElement('div');
+  yearEl.style.cssText = 'font-size:10px;font-weight:700;color:var(--b1d);letter-spacing:1px';
+  yearEl.textContent = String(year);
+  var nextYearBtn = document.createElement('button');
+  nextYearBtn.textContent = '››';
+  nextYearBtn.style.cssText = 'background:var(--bg2);border:1px solid var(--brd);border-radius:6px;color:var(--txt);font-size:12px;padding:1px 7px;cursor:pointer;line-height:1';
+  nextYearBtn.onclick = function() { sideCal.year++; renderSideCalendar(); };
+  yearRow.appendChild(prevYearBtn);
+  yearRow.appendChild(yearEl);
+  yearRow.appendChild(nextYearBtn);
 
+  // Rangée mois (±1 mois)
+  var monthRow = document.createElement('div');
+  monthRow.style.cssText = 'display:flex;align-items:center;justify-content:space-between;margin-bottom:12px';
   var prevBtn = document.createElement('button');
   prevBtn.textContent = '‹';
   prevBtn.style.cssText = 'background:var(--bg2);border:1px solid var(--brd);border-radius:6px;color:var(--txt);font-size:16px;padding:1px 8px;cursor:pointer;line-height:1';
@@ -725,11 +742,9 @@ function renderSideCalendar() {
     if (sideCal.month < 0) { sideCal.month = 11; sideCal.year--; }
     renderSideCalendar();
   };
-
   var titleEl = document.createElement('div');
   titleEl.style.cssText = 'font-size:13px;font-weight:700;color:var(--txt)';
-  titleEl.textContent = MN[month] + ' ' + year;
-
+  titleEl.textContent = MN[month];
   var nextBtn = document.createElement('button');
   nextBtn.textContent = '›';
   nextBtn.style.cssText = 'background:var(--bg2);border:1px solid var(--brd);border-radius:6px;color:var(--txt);font-size:16px;padding:1px 8px;cursor:pointer;line-height:1';
@@ -738,11 +753,12 @@ function renderSideCalendar() {
     if (sideCal.month > 11) { sideCal.month = 0; sideCal.year++; }
     renderSideCalendar();
   };
+  monthRow.appendChild(prevBtn);
+  monthRow.appendChild(titleEl);
+  monthRow.appendChild(nextBtn);
 
-  header.appendChild(prevBtn);
-  header.appendChild(titleEl);
-  header.appendChild(nextBtn);
-  parts.push(header);
+  parts.push(yearRow);
+  parts.push(monthRow);
 
   // Grille
   var grid = document.createElement('div');
