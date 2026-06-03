@@ -6,16 +6,10 @@
 DROP POLICY IF EXISTS "surveys_public" ON surveys;
 DROP POLICY IF EXISTS "survey_members_public" ON survey_members;
 
--- 2. Policies restrictives
--- anon : INSERT seulement (via tf_create_survey, mais aussi direct pour compatibilité)
--- authenticated : tout (pour la sync Bloomday côté utilisateur connecté)
-CREATE POLICY "surveys_auth_all" ON surveys
-  FOR ALL TO authenticated USING (true) WITH CHECK (true);
-
-CREATE POLICY "survey_members_auth_all" ON survey_members
-  FOR ALL TO authenticated USING (true) WITH CHECK (true);
-
--- Pas de SELECT/UPDATE/DELETE direct pour anon → tout passe par les RPCs
+-- 2. Aucune policy directe pour anon ni authenticated.
+-- Tout accès passe par les fonctions SECURITY DEFINER ci-dessous.
+-- (Les policies "surveys_auth_all" / "survey_members_auth_all" ont été retirées
+--  via 20260604100000_team_survey_fix_rls.sql : IDOR si laissées.)
 
 -- 3. Fonctions SECURITY DEFINER (bypassent RLS, valident le token en interne)
 
