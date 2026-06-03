@@ -4,57 +4,62 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>Bloomday — Formulaire d'équipe</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;800&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
   <style>
-    :root { --b2:#e75480; --b3:#f9a8c9; --txt:#222; --txt2:#666; --bg:#fafafa; --bg2:#fff; --rad:12px; --shadow:0 2px 12px rgba(0,0,0,.08); }
+    :root{--b1:#D4A843;--b2:#FF8C7A;--b3:#18A86B;--bg:#FFF8F0;--bg2:#FFFDF9;--txt:#2D1B14;--txt2:#8B6F60;--txt3:#C8B0A4;--brd:#EEE0D4;--brd2:#DDD0C0;--grad:linear-gradient(135deg,#D4A843,#FF8C7A);--sh:0 4px 24px rgba(45,27,20,.08);--rad:18px}
     *{box-sizing:border-box;margin:0;padding:0}
-    body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg);color:var(--txt);min-height:100vh}
+    body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--txt);min-height:100vh}
     .tf-wrap{max-width:540px;margin:0 auto;padding:24px 16px 80px}
-    .tf-logo{text-align:center;margin-bottom:24px}
-    .tf-logo a{font-size:22px;font-weight:800;color:var(--b2);text-decoration:none}
-    .tf-card{background:var(--bg2);border-radius:var(--rad);box-shadow:var(--shadow);padding:24px;margin-bottom:16px}
-    h1{font-size:20px;font-weight:700;margin-bottom:4px}
+    .tf-logo{display:flex;align-items:center;justify-content:center;gap:10px;margin-bottom:28px;text-decoration:none}
+    .tf-logo img{width:32px;height:32px;object-fit:contain;border-radius:8px}
+    .tf-logo span{font-family:'Playfair Display',serif;font-size:22px;font-weight:800;color:var(--txt)}
+    .tf-card{background:var(--bg2);border-radius:var(--rad);box-shadow:var(--sh);padding:24px;margin-bottom:16px;border:1px solid var(--brd)}
+    h1{font-family:'Playfair Display',serif;font-size:20px;font-weight:800;margin-bottom:4px}
     h2{font-size:16px;font-weight:600;margin-bottom:16px;color:var(--b2)}
     label{display:block;font-size:13px;font-weight:600;margin-bottom:4px;color:var(--txt2)}
-    input,select,textarea{width:100%;border:1.5px solid #e0e0e0;border-radius:8px;padding:10px 12px;font-size:14px;outline:none;background:#fff;transition:border-color .2s;margin-bottom:12px;font-family:inherit}
+    input,select,textarea{width:100%;border:1.5px solid var(--brd);border-radius:10px;padding:10px 12px;font-size:14px;outline:none;background:var(--bg);color:var(--txt);transition:border-color .2s;margin-bottom:12px;font-family:inherit}
     input:focus,select:focus,textarea:focus{border-color:var(--b2)}
     textarea{resize:vertical;min-height:80px}
-    .btn{display:inline-block;padding:12px 20px;border-radius:8px;font-size:14px;font-weight:600;border:none;cursor:pointer;transition:opacity .15s;font-family:inherit}
+    .btn{display:inline-block;padding:12px 20px;border-radius:12px;font-size:14px;font-weight:700;border:none;cursor:pointer;transition:opacity .15s;font-family:inherit}
     .btn:hover{opacity:.85}
-    .btn-primary{background:var(--b2);color:#fff;width:100%;text-align:center}
-    .btn-ghost{background:transparent;border:1.5px solid #ddd;color:var(--txt2)}
+    .btn-primary{background:var(--grad);color:#fff;width:100%;text-align:center}
+    .btn-ghost{background:transparent;border:1.5px solid var(--brd);color:var(--txt2)}
     .btn-sm{padding:7px 12px;font-size:12px}
     .tf-steps{display:flex;gap:8px;margin-bottom:20px}
-    .tf-step{flex:1;text-align:center;font-size:12px;font-weight:600;padding:6px 0;border-radius:6px;background:#f0f0f0;color:#999}
-    .tf-step.active{background:var(--b2);color:#fff}
-    .tf-step.done{background:#d4edda;color:#155724}
-    .member-card{border:1.5px solid #eee;border-radius:8px;padding:12px;margin-bottom:10px;display:flex;justify-content:space-between;align-items:center}
-    .member-card .mname{font-weight:600;font-size:14px}
+    .tf-step{flex:1;text-align:center;font-size:12px;font-weight:600;padding:6px 0;border-radius:8px;background:var(--bg2);border:1px solid var(--brd);color:var(--txt2)}
+    .tf-step.active{background:var(--grad);color:#fff;border-color:transparent}
+    .tf-step.done{background:#E3F9F0;color:#0A5C3A;border-color:transparent}
+    .member-card{border:1.5px solid var(--brd);border-radius:12px;padding:12px;margin-bottom:10px;display:flex;justify-content:space-between;align-items:center}
+    .member-card .mname{font-weight:700;font-size:14px}
     .member-card .mmeta{font-size:12px;color:var(--txt2)}
     .share-btns{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px}
-    .share-btn{padding:8px;border-radius:8px;font-size:12px;font-weight:600;border:1.5px solid #ddd;background:#fff;cursor:pointer;text-align:center;transition:all .15s;font-family:inherit}
+    .share-btn{padding:8px;border-radius:10px;font-size:12px;font-weight:600;border:1.5px solid var(--brd);background:var(--bg2);cursor:pointer;text-align:center;transition:all .15s;font-family:inherit;color:var(--txt2)}
     .share-btn:hover{border-color:var(--b2);color:var(--b2)}
     .badge{display:inline-block;padding:2px 8px;border-radius:20px;font-size:11px;font-weight:600}
-    .badge-ok{background:#d4edda;color:#155724}
-    .badge-wait{background:#fff3cd;color:#856404}
-    .progress-bar{height:6px;border-radius:3px;background:#eee;margin-bottom:16px}
-    .progress-fill{height:100%;border-radius:3px;background:var(--b2);transition:width .4s}
-    .relation-tag{display:inline-flex;align-items:center;gap:6px;background:#f0f0f0;border-radius:6px;padding:4px 10px;margin:4px}
-    .relation-tag input{border:none;background:transparent;padding:0;margin:0;font-size:13px;width:120px}
-    .relation-tag button{background:none;border:none;cursor:pointer;color:#999;font-size:16px;padding:0;line-height:1}
-    .toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:#333;color:#fff;padding:10px 20px;border-radius:20px;font-size:13px;z-index:999;opacity:0;transition:opacity .3s;pointer-events:none;white-space:nowrap}
+    .badge-ok{background:#E3F9F0;color:#0A5C3A}
+    .badge-wait{background:#FDF6E3;color:#7A5A10}
+    .progress-bar{height:6px;border-radius:3px;background:var(--brd);margin-bottom:16px}
+    .progress-fill{height:100%;border-radius:3px;background:var(--grad);transition:width .4s}
+    .relation-tag{display:inline-flex;align-items:center;gap:6px;background:var(--bg2);border:1px solid var(--brd);border-radius:8px;padding:4px 10px;margin:4px}
+    .relation-tag input{border:none;background:transparent;padding:0;margin:0;font-size:13px;width:120px;color:var(--txt)}
+    .relation-tag button{background:none;border:none;cursor:pointer;color:var(--txt3);font-size:16px;padding:0;line-height:1}
+    .toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:var(--txt);color:#fff;padding:10px 20px;border-radius:20px;font-size:13px;z-index:999;opacity:0;transition:opacity .3s;pointer-events:none;white-space:nowrap}
     .toast.show{opacity:1}
     #tf-view-create,#tf-view-dashboard,#tf-view-member,#tf-view-thanks{display:none}
     .tf-gender-row{display:flex;gap:10px;margin-bottom:12px}
-    .tf-gender-btn{flex:1;padding:10px;border:1.5px solid #ddd;border-radius:8px;background:#fff;font-size:13px;font-weight:600;cursor:pointer;text-align:center;transition:all .15s;font-family:inherit}
-    .tf-gender-btn.selected{border-color:var(--b2);background:#fde8f0;color:var(--b2)}
+    .tf-gender-btn{flex:1;padding:10px;border:1.5px solid var(--brd);border-radius:10px;background:var(--bg2);font-size:13px;font-weight:600;cursor:pointer;text-align:center;transition:all .15s;font-family:inherit;color:var(--txt)}
+    .tf-gender-btn.selected{border-color:var(--b2);background:#FFF0EE;color:var(--b2)}
     .tf-toggle{display:flex;align-items:center;gap:10px;margin-bottom:12px}
     .tf-toggle input[type=checkbox]{width:20px;height:20px;accent-color:var(--b2);margin:0;flex-shrink:0}
-    .tf-dash-card{background:var(--bg2);border-radius:var(--rad);box-shadow:var(--shadow);padding:16px;margin-bottom:12px}
+    .tf-dash-card{background:var(--bg2);border-radius:var(--rad);box-shadow:var(--sh);padding:16px;margin-bottom:12px;border:1px solid var(--brd)}
   </style>
 </head>
 <body>
   <div class="tf-wrap">
-    <div class="tf-logo"><a href="https://mybloomday.app">🌸 Bloomday</a></div>
+    <a class="tf-logo" href="https://mybloomday.app">
+      <img src="img/logo.png" alt="Bloomday">
+      <span>Bloomday</span>
+    </a>
 
     <!-- Mode: Création -->
     <div id="tf-view-create">
