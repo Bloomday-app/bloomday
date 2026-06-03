@@ -1,0 +1,84 @@
+var TF_I18N = {
+  fr: {
+    title: 'Formulaire d\'équipe',
+    stepTeam: 'L\'équipe', stepMembers: 'Les membres', stepShare: 'Partager',
+    teamName: 'Nom de l\'équipe *', managerName: 'Votre prénom *',
+    inviteMessage: 'Message d\'invitation',
+    defaultInviteMsg: 'Bonjour [Prénom] ! [Manager] t\'invite à compléter ton profil pour l\'équipe [Équipe]. Ça prend 2 minutes et ça permettra de ne jamais rater vos moments importants 🎂 👉 [LIEN]',
+    relationLabels: 'Options de relation', addRelation: '+ Ajouter une option',
+    firstName: 'Prénom *', lastName: 'Nom', emailLabel: 'Email (optionnel)',
+    relation: 'Relation', addMember: 'Ajouter', removeMember: 'Retirer',
+    createTeam: 'Créer l\'équipe →', next: 'Suivant →', back: '← Retour',
+    noMembers: 'Aucun membre — ajoutez-en au moins un.',
+    dashTitle: 'Tableau de bord',
+    progress: '%done/%total complétés',
+    statusCompleted: '✅ Complété', statusPending: '⏳ En attente',
+    sendEmail: '📧 Email', sendWhatsApp: '💬 WhatsApp',
+    sendSMS: '📱 SMS', copyLink: '📋 Copier',
+    copied: 'Lien copié !', qrCode: 'QR Code',
+    printQR: 'Imprimer tous les QR codes',
+    exportCSV: '⬇ Exporter CSV',
+    syncBloomday: '🌸 Importer dans Bloomday',
+    syncSuccess: '%d contact(s) importé(s) dans Bloomday !',
+    syncNotConnected: 'Connectez-vous à Bloomday pour utiliser la sync directe.',
+    memberTitle: 'Complète ton profil 🌸',
+    memberSub: 'Tes infos restent privées et servent uniquement à Bloomday.',
+    birthDate: 'Date de naissance *', day: 'Jour', month: 'Mois', year: 'Année',
+    gender: 'Genre', male: 'Homme', female: 'Femme',
+    married: 'Marié(e) ?',
+    spouseName: 'Prénom + Nom du/de la conjoint(e) *',
+    weddingDate: 'Date du mariage *',
+    submit: 'Envoyer mes infos',
+    thankYou: 'Merci [Prénom] ! 🎉',
+    thankYouSub: 'Tes infos ont bien été enregistrées.',
+    errorRequired: 'Merci de remplir les champs obligatoires.',
+    alreadyCompleted: 'Tu as déjà complété ton profil. Merci !',
+    defaultRelations: ['Collègue', 'Manager', 'Directeur·rice', 'Stagiaire', 'Ami(e)', 'Autre']
+  },
+  en: {
+    title: 'Team Form',
+    stepTeam: 'The team', stepMembers: 'Members', stepShare: 'Share',
+    teamName: 'Team name *', managerName: 'Your first name *',
+    inviteMessage: 'Invitation message',
+    defaultInviteMsg: 'Hi [First name]! [Manager] is inviting you to complete your profile for the [Team] team. Takes 2 minutes 🎂 👉 [LINK]',
+    relationLabels: 'Relation options', addRelation: '+ Add option',
+    firstName: 'First name *', lastName: 'Last name', emailLabel: 'Email (optional)',
+    relation: 'Relation', addMember: 'Add', removeMember: 'Remove',
+    createTeam: 'Create team →', next: 'Next →', back: '← Back',
+    noMembers: 'No members yet — add at least one.',
+    dashTitle: 'Dashboard',
+    progress: '%done/%total completed',
+    statusCompleted: '✅ Completed', statusPending: '⏳ Pending',
+    sendEmail: '📧 Email', sendWhatsApp: '💬 WhatsApp',
+    sendSMS: '📱 SMS', copyLink: '📋 Copy',
+    copied: 'Link copied!', qrCode: 'QR Code',
+    printQR: 'Print all QR codes',
+    exportCSV: '⬇ Export CSV',
+    syncBloomday: '🌸 Import to Bloomday',
+    syncSuccess: '%d contact(s) imported to Bloomday!',
+    syncNotConnected: 'Log in to Bloomday to use direct sync.',
+    memberTitle: 'Complete your profile 🌸',
+    memberSub: 'Your info stays private and is only used by Bloomday.',
+    birthDate: 'Date of birth *', day: 'Day', month: 'Month', year: 'Year',
+    gender: 'Gender', male: 'Male', female: 'Female',
+    married: 'Married?',
+    spouseName: 'Spouse\'s full name *',
+    weddingDate: 'Wedding date *',
+    submit: 'Submit my info',
+    thankYou: 'Thank you [First name]! 🎉',
+    thankYouSub: 'Your info has been saved.',
+    errorRequired: 'Please fill in all required fields.',
+    alreadyCompleted: 'You already completed your profile. Thank you!',
+    defaultRelations: ['Colleague', 'Manager', 'Director', 'Intern', 'Friend', 'Other']
+  }
+};
+
+function tfLang() {
+  return (navigator.language || 'fr').startsWith('fr') ? 'fr' : 'en';
+}
+
+function tfT(key) {
+  var lang = tfLang();
+  var val = TF_I18N[lang] && TF_I18N[lang][key] !== undefined ? TF_I18N[lang][key] : TF_I18N['fr'][key];
+  return val !== undefined ? val : key;
+}
