@@ -29,6 +29,17 @@ function rHome(){
   h+='<div class="stat"><div class="stn">'+(stats.celeb||0)+'</div><div class="stl">'+t('statCelebLbl')+'</div></div>';
   h+='</div>';
 
+  // --- CTA Team Survey ---
+  var _mnHome=(currentUser&&currentUser.name)||(profile&&profile.name)||'';
+  h+='<a href="team-form.html'+(_mnHome?'?manager='+encodeURIComponent(_mnHome):'')+'" style="display:flex;align-items:center;gap:12px;background:var(--bg2);border:1.5px solid var(--brd);border-radius:14px;padding:12px 16px;margin-bottom:12px;text-decoration:none;cursor:pointer">'
+   +'<div style="width:36px;height:36px;border-radius:10px;background:var(--grad);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0">👥</div>'
+   +'<div style="flex:1;min-width:0">'
+   +'<div style="font-size:13px;font-weight:700;color:var(--txt)">'+t('teamSurveyCtaTitle')+'</div>'
+   +'<div style="font-size:11px;color:var(--txt2);margin-top:1px">'+t('teamSurveyCtaSub')+'</div>'
+   +'</div>'
+   +'<div style="font-size:18px;color:var(--txt3)">›</div>'
+   +'</a>';
+
   // --- Limite plan ---
   if(pl.msgs<999){
     const left=Math.max(0,pl.msgs-(stats.msgsM||0));
