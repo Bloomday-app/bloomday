@@ -1,6 +1,7 @@
 self.addEventListener('push', function(event) {
   if (!event.data) return;
-  var data = event.data.json();
+  var data;
+  try { data = event.data.json(); } catch(e) { return; }
   var title = data.title || 'Bloomday';
   var options = {
     body: data.body || '',
@@ -21,7 +22,7 @@ self.addEventListener('notificationclick', function(event) {
     clients.matchAll({ type: 'window', includeUncontrolled: true }).then(function(clientList) {
       for (var i = 0; i < clientList.length; i++) {
         var client = clientList[i];
-        if ('focus' in client) return client.focus();
+        if ('navigate' in client) return client.navigate(url).then(function(c){ if(c&&'focus' in c) c.focus(); });
       }
       if (clients.openWindow) return clients.openWindow(url);
     })
