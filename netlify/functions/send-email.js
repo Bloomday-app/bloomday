@@ -20,7 +20,7 @@ function esc(s) {
   return String(s || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 }
 
-const VALID_TYPES = ['welcome', 'subscription', 'renewal_reminder', 'anniversary'];
+const VALID_TYPES = ['welcome', 'subscription', 'renewal_reminder', 'anniversary', 'survey_invite'];
 
 exports.handler = async function(event) {
   if (event.httpMethod === 'OPTIONS') {
@@ -147,6 +147,17 @@ function buildTemplate(type, d) {
           <p style="margin:8px 0 0;font-size:20px;font-weight:bold;color:#e85d9a;letter-spacing:2px">BLOOM1AN</p>
         </div>
         ${btn('Découvrir les plans', APP_URL)}
+      `)
+    },
+    survey_invite: {
+      subject: `${esc(d.managerName || '')} t'invite à compléter ton profil — ${esc(d.teamName || '')}`,
+      text: `${d.customMessage || `Bonjour ${d.firstName} ! ${d.managerName} t'invite à compléter ton profil pour l'équipe ${d.teamName}.`}\n\nCompléter mon profil : ${d.link}`,
+      html: wrap(`
+        <h2 style="margin:0 0 8px;color:#5b2d8e;font-size:22px">Bonjour ${esc(d.firstName || '')} ! 👋</h2>
+        <p style="color:#444;font-size:15px;line-height:1.6;margin:0 0 16px">${esc(d.customMessage || `${d.managerName} t'invite à compléter ton profil pour l'équipe ${d.teamName}.`)}</p>
+        <p style="color:#444;font-size:15px;line-height:1.6;margin:0 0 20px">Ça prend 2 minutes et permettra de ne jamais rater vos moments importants 🎂</p>
+        ${btn('Compléter mon profil →', esc(d.link || ''))}
+        <p style="text-align:center;color:#aaa;font-size:12px;margin-top:8px">Ou copie ce lien : ${esc(d.link || '')}</p>
       `)
     }
   };
