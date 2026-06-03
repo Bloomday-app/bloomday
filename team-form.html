@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Bloomday — Formulaire d'équipe</title>
+  <style>
+    :root { --b2:#e75480; --b3:#f9a8c9; --txt:#222; --txt2:#666; --bg:#fafafa; --bg2:#fff; --rad:12px; --shadow:0 2px 12px rgba(0,0,0,.08); }
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg);color:var(--txt);min-height:100vh}
+    .tf-wrap{max-width:540px;margin:0 auto;padding:24px 16px 80px}
+    .tf-logo{text-align:center;margin-bottom:24px}
+    .tf-logo a{font-size:22px;font-weight:800;color:var(--b2);text-decoration:none}
+    .tf-card{background:var(--bg2);border-radius:var(--rad);box-shadow:var(--shadow);padding:24px;margin-bottom:16px}
+    h1{font-size:20px;font-weight:700;margin-bottom:4px}
+    h2{font-size:16px;font-weight:600;margin-bottom:16px;color:var(--b2)}
+    label{display:block;font-size:13px;font-weight:600;margin-bottom:4px;color:var(--txt2)}
+    input,select,textarea{width:100%;border:1.5px solid #e0e0e0;border-radius:8px;padding:10px 12px;font-size:14px;outline:none;background:#fff;transition:border-color .2s;margin-bottom:12px;font-family:inherit}
+    input:focus,select:focus,textarea:focus{border-color:var(--b2)}
+    textarea{resize:vertical;min-height:80px}
+    .btn{display:inline-block;padding:12px 20px;border-radius:8px;font-size:14px;font-weight:600;border:none;cursor:pointer;transition:opacity .15s;font-family:inherit}
+    .btn:hover{opacity:.85}
+    .btn-primary{background:var(--b2);color:#fff;width:100%;text-align:center}
+    .btn-ghost{background:transparent;border:1.5px solid #ddd;color:var(--txt2)}
+    .btn-sm{padding:7px 12px;font-size:12px}
+    .tf-steps{display:flex;gap:8px;margin-bottom:20px}
+    .tf-step{flex:1;text-align:center;font-size:12px;font-weight:600;padding:6px 0;border-radius:6px;background:#f0f0f0;color:#999}
+    .tf-step.active{background:var(--b2);color:#fff}
+    .tf-step.done{background:#d4edda;color:#155724}
+    .member-card{border:1.5px solid #eee;border-radius:8px;padding:12px;margin-bottom:10px;display:flex;justify-content:space-between;align-items:center}
+    .member-card .mname{font-weight:600;font-size:14px}
+    .member-card .mmeta{font-size:12px;color:var(--txt2)}
+    .share-btns{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px}
+    .share-btn{padding:8px;border-radius:8px;font-size:12px;font-weight:600;border:1.5px solid #ddd;background:#fff;cursor:pointer;text-align:center;transition:all .15s;font-family:inherit}
+    .share-btn:hover{border-color:var(--b2);color:var(--b2)}
+    .badge{display:inline-block;padding:2px 8px;border-radius:20px;font-size:11px;font-weight:600}
+    .badge-ok{background:#d4edda;color:#155724}
+    .badge-wait{background:#fff3cd;color:#856404}
+    .progress-bar{height:6px;border-radius:3px;background:#eee;margin-bottom:16px}
+    .progress-fill{height:100%;border-radius:3px;background:var(--b2);transition:width .4s}
+    .relation-tag{display:inline-flex;align-items:center;gap:6px;background:#f0f0f0;border-radius:6px;padding:4px 10px;margin:4px}
+    .relation-tag input{border:none;background:transparent;padding:0;margin:0;font-size:13px;width:120px}
+    .relation-tag button{background:none;border:none;cursor:pointer;color:#999;font-size:16px;padding:0;line-height:1}
+    .toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:#333;color:#fff;padding:10px 20px;border-radius:20px;font-size:13px;z-index:999;opacity:0;transition:opacity .3s;pointer-events:none;white-space:nowrap}
+    .toast.show{opacity:1}
+    #tf-view-create,#tf-view-dashboard,#tf-view-member,#tf-view-thanks{display:none}
+    .tf-gender-row{display:flex;gap:10px;margin-bottom:12px}
+    .tf-gender-btn{flex:1;padding:10px;border:1.5px solid #ddd;border-radius:8px;background:#fff;font-size:13px;font-weight:600;cursor:pointer;text-align:center;transition:all .15s;font-family:inherit}
+    .tf-gender-btn.selected{border-color:var(--b2);background:#fde8f0;color:var(--b2)}
+    .tf-toggle{display:flex;align-items:center;gap:10px;margin-bottom:12px}
+    .tf-toggle input[type=checkbox]{width:20px;height:20px;accent-color:var(--b2);margin:0;flex-shrink:0}
+    .tf-dash-card{background:var(--bg2);border-radius:var(--rad);box-shadow:var(--shadow);padding:16px;margin-bottom:12px}
+  </style>
+</head>
+<body>
+  <div class="tf-wrap">
+    <div class="tf-logo"><a href="https://mybloomday.app">🌸 Bloomday</a></div>
+
+    <!-- Mode: Création -->
+    <div id="tf-view-create">
+      <div class="tf-steps" id="tf-wizard-steps"></div>
+      <div id="tf-step-1"></div>
+      <div id="tf-step-2" style="display:none"></div>
+    </div>
+
+    <!-- Mode: Dashboard -->
+    <div id="tf-view-dashboard">
+      <div class="tf-card">
+        <h1 id="tf-dash-title"></h1>
+        <div class="progress-bar"><div class="progress-fill" id="tf-progress-fill" style="width:0%"></div></div>
+        <p id="tf-progress-text" style="font-size:13px;color:var(--txt2);margin-bottom:16px"></p>
+        <div id="tf-dash-actions"></div>
+      </div>
+      <div id="tf-member-cards"></div>
+    </div>
+
+    <!-- Mode: Formulaire membre -->
+    <div id="tf-view-member">
+      <div class="tf-card">
+        <h1 id="tf-member-title"></h1>
+        <p id="tf-member-sub" style="color:var(--txt2);font-size:13px;margin-bottom:20px"></p>
+        <div id="tf-member-form"></div>
+      </div>
+    </div>
+
+    <!-- Confirmation membre -->
+    <div id="tf-view-thanks" style="text-align:center;padding:60px 16px">
+      <div style="font-size:56px">🎉</div>
+      <h1 id="tf-thanks-title" style="margin:16px 0 8px"></h1>
+      <p id="tf-thanks-sub" style="color:var(--txt2)"></p>
+    </div>
+  </div>
+
+  <div class="toast" id="tf-toast"></div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+  <script src="js/supabase-client.js"></script>
+  <script src="lib/qrcode.min.js"></script>
+  <script src="js/team-form-i18n.js"></script>
+  <script src="js/team-form.js"></script>
+</body>
+</html>
