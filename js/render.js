@@ -1147,6 +1147,10 @@ function rMore(){
   h+='<span style="font-size:14px;font-weight:600">'+t('darkModeLabel')+'</span>';
   h+='<button class="btn sm" style="min-width:72px;font-size:13px" onclick="toggleDarkMode()">'+(isDark?'☀️ OFF':'🌙 ON')+'</button>';
   h+='</div>';
+  h+='<div class="card" style="padding:14px 16px;margin-bottom:14px;display:flex;align-items:center;justify-content:space-between">';
+  h+='<span style="font-size:14px;font-weight:600">'+t('notifSettingsTitle')+'</span>';
+  h+='<button class="btn sm" style="min-width:72px;font-size:13px" onclick="showSec(\'settings-notif\',1);renderNotifSettings()">→</button>';
+  h+='</div>';
   h+='<div class="sh">'+t('monProfil')+'</div>';
   h+='<div class="card" style="padding:16px">';
   h+='<label>'+t('liveCountry')+'</label><select id="prof-live"></select>';
@@ -1584,4 +1588,30 @@ function editMemberInline(id){
     var el=document.getElementById('em-name');
     if(el)el.focus();
   },200);
+}
+
+async function renderNotifSettings(){
+  var settings=await loadNotificationSettings()||{enabled:false,daysBefore:1,time:'09:00',festivalsEnabled:false};
+  var body=document.getElementById('notif-settings-body');
+  if(!body)return;
+  var daysOpts=[{v:0,l:t('notifDaysJ')},{v:1,l:t('notifDays1')},{v:3,l:t('notifDays3')},{v:7,l:t('notifDays7')}];
+  var h='';
+  h+='<div style="font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--txt2);margin-bottom:8px">'+t('notifDefault')+'</div>';
+  h+='<div style="background:var(--card);border:1px solid var(--brd);border-radius:12px;padding:12px 14px;margin-bottom:8px;display:flex;align-items:center;justify-content:space-between">';
+  h+='<div><div style="font-size:14px;font-weight:600;color:var(--txt)">'+t('notifEnabled')+'</div><div style="font-size:12px;color:var(--txt2);margin-top:2px">'+t('notifEnabledSub')+'</div></div>';
+  h+='<label style="position:relative;display:inline-block;width:44px;height:24px;flex-shrink:0"><input type="checkbox" id="notif-toggle" '+(settings.enabled?'checked':'')+' style="opacity:0;width:0;height:0" onchange="onNotifToggle(this.checked)"><span style="position:absolute;cursor:pointer;inset:0;border-radius:24px;background:'+(settings.enabled?'var(--b3)':'var(--brd2)')+';transition:.2s"><span style="position:absolute;width:18px;height:18px;left:'+(settings.enabled?'22':'3')+'px;bottom:3px;background:#fff;border-radius:50%;transition:.2s"></span></span></label>';
+  h+='</div>';
+  h+='<div style="font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--txt2);margin-bottom:8px;margin-top:16px">'+t('notifDaysLabel')+'</div>';
+  h+='<div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px">';
+  daysOpts.forEach(function(o){
+    h+='<button onclick="onNotifDaysChange('+o.v+')" style="padding:7px 14px;border-radius:20px;border:1.5px solid '+(settings.daysBefore===o.v?'var(--b1)':'var(--brd)')+';background:'+(settings.daysBefore===o.v?'var(--b1l)':'var(--card)')+';color:'+(settings.daysBefore===o.v?'var(--b1d)':'var(--txt2)')+';font-size:13px;font-weight:600;cursor:pointer;font-family:inherit">'+o.l+'</button>';
+  });
+  h+='</div>';
+  h+='<div style="font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--txt2);margin-bottom:8px">'+t('notifTimeLabel')+'</div>';
+  h+='<div style="background:var(--card);border:1px solid var(--brd);border-radius:12px;padding:12px 14px;margin-bottom:16px;display:flex;align-items:center;justify-content:space-between">';
+  h+='<div style="font-size:14px;font-weight:600;color:var(--txt)">'+t('notifTimeLabel')+'</div>';
+  h+='<input type="time" id="notif-time-input" value="'+settings.time+'" onchange="onNotifTimeChange(this.value)" style="border:1px solid var(--brd);border-radius:8px;padding:5px 10px;font-size:14px;color:var(--txt);background:var(--bg2);font-family:inherit">';
+  h+='</div>';
+  body.innerHTML=h;
+  if(typeof _notifSettings!=='undefined')_notifSettings=Object.assign({},settings);
 }

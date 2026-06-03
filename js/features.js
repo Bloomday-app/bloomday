@@ -942,6 +942,26 @@ async function subscribeToPush(){
     console.warn('Push subscription failed',e);
   }
 }
+var _notifSettings={enabled:false,daysBefore:1,time:'09:00',festivalsEnabled:false};
+
+async function onNotifToggle(checked){
+  _notifSettings.enabled=checked;
+  if(checked&&(typeof Notification==='undefined'||Notification.permission!=='granted')){
+    await activateNotifications();
+    return;
+  }
+  await saveNotificationSettings(_notifSettings);
+}
+async function onNotifDaysChange(days){
+  _notifSettings.daysBefore=days;
+  await saveNotificationSettings(_notifSettings);
+  renderNotifSettings();
+}
+async function onNotifTimeChange(time){
+  _notifSettings.time=time;
+  await saveNotificationSettings(_notifSettings);
+  showToast(t('notifSaved'));
+}
 function showNotifPrompt(){
   if(typeof Notification==='undefined'||Notification.permission==='granted')return;
   var ov=document.getElementById('notif-prompt-overlay');
