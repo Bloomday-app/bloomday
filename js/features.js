@@ -916,7 +916,7 @@ async function sendChat() {
   }
 }
 
-var VAPID_PUBLIC_KEY = 'REMPLACER_PAR_VOTRE_CLE_PUBLIQUE_VAPID';
+var VAPID_PUBLIC_KEY = 'BCNh1fxQGxaCta7mIdYNO7YSjA3iRG5w6gpayFgMgr0gx8o_voP_jTy4nYMY4e2S9_yq32Z12KYRVYn5pXj-VqA';
 
 function urlBase64ToUint8Array(base64String){
   var padding='='.repeat((4-base64String.length%4)%4);
