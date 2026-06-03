@@ -139,3 +139,28 @@ async function dbSaveStats(userId, stats) {
     // silent catch
   }
 }
+
+async function savePushSubscription(endpoint, p256dh, auth){
+  var uid=currentUser&&currentUser.uid;
+  if(!uid)return;
+  await supabase.from('push_subscriptions').upsert({
+    user_id:uid,
+    endpoint:endpoint,
+    p256dh:p256dh,
+    auth:auth,
+    updated_at:new Date().toISOString()
+  },{onConflict:'user_id,endpoint'});
+}
+
+async function saveNotificationSettings(settings){
+  var uid=currentUser&&currentUser.uid;
+  if(!uid)return;
+  await supabase.from('profiles').update({notification_settings:settings}).eq('id',uid);
+}
+
+async function loadNotificationSettings(){
+  var uid=currentUser&&currentUser.uid;
+  if(!uid)return null;
+  var r=await supabase.from('profiles').select('notification_settings').eq('id',uid).single();
+  return r.data&&r.data.notification_settings||{enabled:false,daysBefore:1,time:'09:00',festivalsEnabled:false};
+}

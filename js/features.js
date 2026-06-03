@@ -915,3 +915,30 @@ async function sendChat() {
     _addBubble(t('chatError'), 'bot');
   }
 }
+
+var VAPID_PUBLIC_KEY = 'REMPLACER_PAR_VOTRE_CLE_PUBLIQUE_VAPID';
+
+function urlBase64ToUint8Array(base64String){
+  var padding='='.repeat((4-base64String.length%4)%4);
+  var base64=(base64String+padding).replace(/-/g,'+').replace(/_/g,'/');
+  var rawData=window.atob(base64);
+  var outputArray=new Uint8Array(rawData.length);
+  for(var i=0;i<rawData.length;++i)outputArray[i]=rawData.charCodeAt(i);
+  return outputArray;
+}
+
+async function subscribeToPush(){
+  try{
+    var reg=await navigator.serviceWorker.ready;
+    var existing=await reg.pushManager.getSubscription();
+    if(existing)await existing.unsubscribe();
+    var sub=await reg.pushManager.subscribe({
+      userVisibleOnly:true,
+      applicationServerKey:urlBase64ToUint8Array(VAPID_PUBLIC_KEY)
+    });
+    var subJson=sub.toJSON();
+    await savePushSubscription(subJson.endpoint,subJson.keys.p256dh,subJson.keys.auth);
+  }catch(e){
+    console.warn('Push subscription failed',e);
+  }
+}
