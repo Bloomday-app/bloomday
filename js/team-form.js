@@ -1,5 +1,11 @@
 // ── TEAM-FORM.JS ──
 
+function tfEsc(s) {
+  return String(s == null ? '' : s)
+    .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+}
+
 var TF = {
   survey: null,
   members: [],
@@ -142,8 +148,8 @@ function tfRefreshMemberList() {
   }
   el.innerHTML = TF.pendingMembers.map(function(m, i) {
     return '<div class="member-card">'
-      + '<div><div class="mname">' + m.firstName + ' ' + m.lastName + '</div>'
-      + '<div class="mmeta">' + m.relation + (m.email ? ' · ' + m.email : '') + '</div></div>'
+      + '<div><div class="mname">' + tfEsc(m.firstName) + ' ' + tfEsc(m.lastName) + '</div>'
+      + '<div class="mmeta">' + tfEsc(m.relation) + (m.email ? ' · ' + tfEsc(m.email) : '') + '</div></div>'
       + '<button class="btn btn-ghost btn-sm" onclick="tfRemovePendingMember(' + i + ')">' + tfT('removeMember') + '</button>'
       + '</div>';
   }).join('');
@@ -238,8 +244,8 @@ function tfRenderMemberCard(m) {
   var badgeTxt = m.completed ? tfT('statusCompleted') : tfT('statusPending');
   return '<div class="tf-dash-card">'
     + '<div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px">'
-    + '<div><div style="font-weight:700;font-size:15px">' + m.first_name + ' ' + m.last_name + '</div>'
-    + '<div style="font-size:12px;color:var(--txt2)">' + (m.relation || '') + '</div></div>'
+    + '<div><div style="font-weight:700;font-size:15px">' + tfEsc(m.first_name) + ' ' + tfEsc(m.last_name) + '</div>'
+    + '<div style="font-size:12px;color:var(--txt2)">' + tfEsc(m.relation || '') + '</div></div>'
     + '<span class="badge ' + badgeCls + '">' + badgeTxt + '</span>'
     + '</div>'
     + '<div class="share-btns">'
@@ -305,9 +311,9 @@ function tfShowQR(memberToken) {
   qr.make();
   var win = window.open('', '_blank', 'width=320,height=420');
   win.document.write('<html><body style="text-align:center;font-family:sans-serif;padding:24px">'
-    + '<h3 style="margin:0 0 16px">' + m.first_name + ' ' + m.last_name + '</h3>'
+    + '<h3 style="margin:0 0 16px">' + tfEsc(m.first_name) + ' ' + tfEsc(m.last_name) + '</h3>'
     + qr.createImgTag(4)
-    + '<p style="font-size:11px;color:#aaa;margin-top:12px;word-break:break-all">' + url + '</p>'
+    + '<p style="font-size:11px;color:#aaa;margin-top:12px;word-break:break-all">' + tfEsc(url) + '</p>'
     + '<button onclick="window.print()" style="margin-top:12px;padding:8px 16px;background:#e75480;color:#fff;border:none;border-radius:8px;cursor:pointer;font-size:13px">Imprimer</button>'
     + '</body></html>');
   win.document.close();
@@ -319,7 +325,7 @@ function tfPrintQR() {
     var qr = qrcode(0, 'M');
     qr.addData(tfMemberUrl(m.token));
     qr.make();
-    html += '<div class="item"><h3>' + m.first_name + ' ' + m.last_name + '</h3>' + qr.createImgTag(3) + '</div>';
+    html += '<div class="item"><h3>' + tfEsc(m.first_name) + ' ' + tfEsc(m.last_name) + '</h3>' + qr.createImgTag(3) + '</div>';
   });
   html += '</body></html>';
   var win = window.open('', '_blank');
@@ -419,7 +425,7 @@ function tfRenderMemberForm() {
 
   TF.selectedGender = '';
   document.getElementById('tf-member-form').innerHTML =
-    '<p style="font-size:15px;font-weight:700;margin-bottom:16px">👋 ' + m.first_name + ' ' + m.last_name + '</p>'
+    '<p style="font-size:15px;font-weight:700;margin-bottom:16px">👋 ' + tfEsc(m.first_name) + ' ' + tfEsc(m.last_name) + '</p>'
     + '<label>' + tfT('birthDate') + '</label>'
     + '<div style="display:grid;grid-template-columns:1fr 2fr 1fr;gap:8px;margin-bottom:12px">'
     + '<input id="tf-birth-day" type="number" min="1" max="31" placeholder="' + tfT('day') + '">'
