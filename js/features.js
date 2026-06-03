@@ -943,7 +943,7 @@ async function subscribeToPush(){
   }
 }
 function showNotifPrompt(){
-  if(Notification.permission==='granted')return;
+  if(typeof Notification==='undefined'||Notification.permission==='granted')return;
   var ov=document.getElementById('notif-prompt-overlay');
   var sh=document.getElementById('notif-prompt-sheet');
   if(ov)ov.style.display='block';
