@@ -18,7 +18,8 @@ var TF = {
   pendingInviteMsg: '',
   relationLabels: [],
   currentMember: null,
-  selectedGender: ''
+  selectedGender: '',
+  pollInterval: null
 };
 
 window.addEventListener('DOMContentLoaded', function() {
@@ -185,40 +186,38 @@ function tfBackToStep1() {
 async function tfSubmitCreate() {
   if (!TF.pendingMembers.length) { alert(tfT('noMembers')); return; }
   var adminToken = crypto.randomUUID();
-  var res = await supabase.from('surveys').insert({
-    token: adminToken,
-    team_name: TF.pendingTeamName,
-    manager_name: TF.pendingManagerName,
-    relation_labels: TF.relationLabels,
-    invite_message: TF.pendingInviteMsg
-  }).select().single();
-  if (res.error) { alert('Erreur création équipe : ' + res.error.message); return; }
-  var surveyId = res.data.id;
   var memberRows = TF.pendingMembers.map(function(m) {
-    return { survey_id: surveyId, token: crypto.randomUUID(), first_name: m.firstName, last_name: m.lastName, email: m.email || null, relation: m.relation || null };
+    return { token: crypto.randomUUID(), first_name: m.firstName, last_name: m.lastName, email: m.email || '', relation: m.relation || '' };
   });
-  var mRes = await supabase.from('survey_members').insert(memberRows);
-  if (mRes.error) { alert('Erreur membres : ' + mRes.error.message); return; }
+  var res = await supabase.rpc('tf_create_survey', {
+    p_admin_token:     adminToken,
+    p_team_name:       TF.pendingTeamName,
+    p_manager_name:    TF.pendingManagerName,
+    p_relation_labels: TF.relationLabels,
+    p_invite_message:  TF.pendingInviteMsg,
+    p_members:         memberRows
+  });
+  if (res.error) { alert('Erreur création équipe : ' + res.error.message); return; }
   window.location.href = 'team-form.html?admin=' + adminToken;
 }
 
 // ── MODE DASHBOARD ──
 async function tfInitDashboard() {
   tfShow('tf-view-dashboard');
-  var res = await supabase.from('surveys').select('*').eq('token', TF.adminToken).single();
+  var res = await supabase.rpc('tf_get_dashboard', { p_admin_token: TF.adminToken });
   if (res.error || !res.data) {
     document.getElementById('tf-dash-title').textContent = 'Équipe introuvable.';
     return;
   }
-  TF.survey = res.data;
-  await tfLoadDashboardMembers();
-  tfSubscribeDashboard();
+  TF.survey = res.data.survey;
+  TF.members = res.data.members || [];
+  tfRenderDashboard();
+  tfStartDashboardPolling();
 }
 
 async function tfLoadDashboardMembers() {
-  var res = await supabase.from('survey_members').select('*').eq('survey_id', TF.survey.id).order('created_at');
-  TF.members = res.data || [];
-  tfRenderDashboard();
+  var res = await supabase.rpc('tf_refresh_dashboard', { p_admin_token: TF.adminToken });
+  if (!res.error && res.data) { TF.members = res.data; tfRenderDashboard(); }
 }
 
 function tfRenderDashboard() {
@@ -296,10 +295,9 @@ function tfShareCopy(memberToken) {
   navigator.clipboard.writeText(tfBuildMsg(memberToken)).then(function() { tfToast(tfT('copied')); });
 }
 
-function tfSubscribeDashboard() {
-  supabase.channel('survey-' + TF.survey.id)
-    .on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'survey_members', filter: 'survey_id=eq.' + TF.survey.id }, function() { tfLoadDashboardMembers(); })
-    .subscribe();
+function tfStartDashboardPolling() {
+  if (TF.pollInterval) clearInterval(TF.pollInterval);
+  TF.pollInterval = setInterval(tfLoadDashboardMembers, 30000);
 }
 
 // ── QR CODES ──
@@ -396,7 +394,7 @@ async function tfSyncBloomday() {
 
 // ── MODE FORMULAIRE MEMBRE ──
 async function tfInitMember() {
-  var res = await supabase.from('survey_members').select('*, surveys(manager_name, team_name, invite_message)').eq('token', TF.memberToken).single();
+  var res = await supabase.rpc('tf_get_member_form', { p_member_token: TF.memberToken });
   if (res.error || !res.data) {
     tfShow('tf-view-member');
     document.getElementById('tf-member-title').textContent = 'Lien invalide ou expiré.';
@@ -476,15 +474,15 @@ async function tfSubmitMember() {
   var wedYear = married ? (parseInt(document.getElementById('tf-wed-year').value) || null) : null;
   if (married && (!spouseName || !wedDay || !wedMonth)) { alert(tfT('errorRequired')); return; }
 
-  var res = await supabase.from('survey_members').update({
-    birth_day: birthDay, birth_month: birthMonth, birth_year: birthYear,
-    gender: TF.selectedGender || null,
-    married: married, spouse_name: spouseName,
-    wedding_day: wedDay, wedding_month: wedMonth, wedding_year: wedYear,
-    completed: true, completed_at: new Date().toISOString()
-  }).eq('token', TF.memberToken);
+  var res = await supabase.rpc('tf_submit_member_form', {
+    p_member_token:  TF.memberToken,
+    p_birth_day:     birthDay,  p_birth_month: birthMonth,  p_birth_year: birthYear,
+    p_gender:        TF.selectedGender || null,
+    p_married:       married,   p_spouse_name: spouseName,
+    p_wedding_day:   wedDay,    p_wedding_month: wedMonth,  p_wedding_year: wedYear
+  });
 
-  if (res.error) { alert('Erreur : ' + res.error.message); return; }
+  if (res.error || !res.data) { alert(res.error ? 'Erreur : ' + res.error.message : tfT('errorRequired')); return; }
   tfShow('tf-view-thanks');
   document.getElementById('tf-thanks-title').textContent = tfT('thankYou')
     .replace('[Prénom]', TF.currentMember.first_name)
