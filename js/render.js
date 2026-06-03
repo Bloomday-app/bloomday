@@ -280,6 +280,18 @@ function rMembers(){
     <label>${t('genderLabel')||'Genre'}</label><select id="em-gender"><option value=""${!p.gender?' selected':''}>${t('genderNone')}</option><option value="femme"${p.gender==='femme'?' selected':''}>${t('genderF')}</option><option value="homme"${p.gender==='homme'?' selected':''}>${t('genderM')}</option><option value="enfant"${p.gender==='enfant'?' selected':''}>${t('genderKid')}</option></select>
     <label>${t('notesLabel')||'Notes'}</label><textarea id="em-note">${esc(p.note||'')}</textarea>
     <label>${t('customMsgLabel')||'Message personnalisé'}</label><textarea id="em-custom-msg" style="min-height:70px">${esc(p.customMsg||'')}</textarea>
+    <div style="margin-top:12px;border-top:1px solid var(--brd);padding-top:12px">
+    <div style="font-size:12px;font-weight:700;color:var(--txt2);margin-bottom:8px">${t('notifCustomLabel')}</div>
+    <label style="display:flex;align-items:center;gap:8px;margin-bottom:8px;cursor:pointer">
+      <input type="checkbox" id="notif-use-default-${p.id}" ${!p.notif_days_before&&p.notif_days_before!==0?'checked':''} onchange="toggleContactNotifDefault('${p.id}',this.checked)" style="width:16px;height:16px">
+      <span style="font-size:13px;color:var(--txt2)">${t('notifUseDefault')}</span>
+    </label>
+    <div id="notif-contact-custom-${p.id}" style="display:${p.notif_days_before!=null?'block':'none'}">
+      <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px">
+        ${[{v:0,l:t('notifDaysJ')},{v:1,l:t('notifDays1')},{v:3,l:t('notifDays3')},{v:7,l:t('notifDays7')}].map(o=>`<button onclick="setContactNotifDays('${p.id}',${o.v})" style="padding:5px 12px;border-radius:16px;border:1.5px solid ${p.notif_days_before===o.v?'var(--b1)':'var(--brd)'};background:${p.notif_days_before===o.v?'var(--b1l)':'var(--card)'};color:${p.notif_days_before===o.v?'var(--b1d)':'var(--txt2)'};font-size:12px;font-weight:600;cursor:pointer;font-family:inherit">${o.l}</button>`).join('')}
+      </div>
+    </div>
+    </div>
     <div class="brow" style="margin-top:10px"><button class="btn G" style="flex:1" onclick="saveEdit('${p.id}')">${t('saveBtn')}</button><button class="btn" onclick="togEdit('${p.id}')">${t('cancelBtn')}</button></div></div>`:''}
     <div id="m-msg-${p.id}"></div><div id="m-gift-${p.id}"></div></div>
     <div style="display:flex;flex-direction:column;gap:5px;flex-shrink:0">

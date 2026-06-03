@@ -656,6 +656,26 @@ async function checkAdminNotifications(){
   }catch(e){}
 }
 
+function toggleContactNotifDefault(id,useDefault){
+  var m=mems(),p=m.find(function(x){return String(x.id)===String(id);});
+  if(!p)return;
+  var customDiv=document.getElementById('notif-contact-custom-'+id);
+  if(useDefault){
+    p.notif_days_before=null;p.notif_time=null;
+    if(customDiv)customDiv.style.display='none';
+  }else{
+    p.notif_days_before=1;
+    if(customDiv)customDiv.style.display='block';
+  }
+  setMems(m);saveG();
+}
+function setContactNotifDays(id,days){
+  var m=mems(),p=m.find(function(x){return String(x.id)===String(id);});
+  if(!p)return;
+  p.notif_days_before=days;
+  setMems(m);saveG();rMembers();
+}
+
 // ═══════════════════════════════════
 // RENDER HOME
 // ═══════════════════════════════════
