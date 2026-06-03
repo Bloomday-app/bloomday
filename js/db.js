@@ -23,7 +23,8 @@ async function dbLoadGroups(userId) {
           phone: m.phone,
           note: m.note,
           type: m.type,
-          gender: m.gender
+          gender: m.gender,
+          incomplete: m.incomplete || false
         }))
     }));
 
@@ -60,7 +61,8 @@ async function dbSaveGroups(userId, groups) {
           phone: m.phone || '',
           note: m.note || '',
           type: m.type || 'birthday',
-          gender: m.gender || ''
+          gender: m.gender || '',
+          incomplete: m.incomplete || false
         });
       }
     }
