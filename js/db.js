@@ -24,7 +24,9 @@ async function dbLoadGroups(userId) {
           note: m.note,
           type: m.type,
           gender: m.gender,
-          incomplete: m.incomplete || false
+          incomplete: m.incomplete || false,
+          notif_days_before: m.notif_days_before != null ? m.notif_days_before : null,
+          notif_time: m.notif_time || null
         }))
     }));
 
@@ -62,7 +64,9 @@ async function dbSaveGroups(userId, groups) {
           note: m.note || '',
           type: m.type || 'birthday',
           gender: m.gender || '',
-          incomplete: m.incomplete || false
+          incomplete: m.incomplete || false,
+          notif_days_before: m.notif_days_before != null ? m.notif_days_before : null,
+          notif_time: m.notif_time || null
         });
       }
     }
