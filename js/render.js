@@ -227,9 +227,18 @@ function rMembers(){
     else filtered=filtered.filter(p=>p.type===fType);
   }
   const pl=PL();
+  let h='';
+  // CTA import contacts dynamique (Contact Picker API only)
+  if('contacts' in navigator&&'ContactsManager' in window){
+    if(m.length===0){
+      h+='<div style="margin-bottom:16px"><button onclick="openImportSheet()" style="width:100%;padding:14px;border:none;border-radius:14px;background:var(--grad);color:#fff;font-size:15px;font-weight:700;cursor:pointer;font-family:inherit;box-shadow:0 4px 16px rgba(212,168,67,.3)" data-i18n="importFromContacts">'+t('importFromContacts')+'</button></div>';
+    }else{
+      h+='<div style="margin-bottom:10px"><button onclick="openImportSheet()" style="width:100%;padding:9px;border:1px solid var(--b4);border-radius:10px;background:var(--b4l);color:var(--b4d);font-size:13px;font-weight:600;cursor:pointer;font-family:inherit" data-i18n="importFromContacts">'+t('importFromContacts')+'</button></div>';
+    }
+  }
   // Champ de recherche FIXE — ne se recrée pas à chaque frappe
   // → le clavier reste ouvert sur mobile
-  let h=`<div class="sw">
+  h+=`<div class="sw">
     <svg width="16" height="16" viewBox="0 0 20 20" fill="none"><circle cx="9" cy="9" r="6" stroke="currentColor" stroke-width="1.5"/><path d="M13.5 13.5L17 17" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
     <input type="text" id="search-inp" placeholder="${t('searchMember')}" value="${esc(searchInput)}"
       autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
