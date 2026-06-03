@@ -228,6 +228,17 @@ function rMembers(){
   }
   const pl=PL();
   let h='';
+  // CTA Team Survey — toujours visible, pré-rempli avec le nom du manager connecté
+  var _managerName=(currentUser&&currentUser.name)||(profile&&profile.name)||'';
+  var _teamUrl='team-form.html'+(_managerName?'?manager='+encodeURIComponent(_managerName):'');
+  h+='<a href="'+_teamUrl+'" style="display:flex;align-items:center;gap:12px;background:var(--bg2);border:1.5px solid var(--brd);border-radius:14px;padding:14px 16px;margin-bottom:12px;text-decoration:none;cursor:pointer">'
+   +'<div style="width:40px;height:40px;border-radius:10px;background:var(--grad);display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0">👥</div>'
+   +'<div style="flex:1;min-width:0">'
+   +'<div style="font-size:14px;font-weight:700;color:var(--txt)">'+t('teamSurveyCtaTitle')+'</div>'
+   +'<div style="font-size:12px;color:var(--txt2);margin-top:2px">'+t('teamSurveyCtaSub')+'</div>'
+   +'</div>'
+   +'<div style="font-size:20px;color:var(--txt3)">›</div>'
+   +'</a>';
   // CTA import contacts dynamique (Contact Picker API only)
   if('contacts' in navigator&&'ContactsManager' in window){
     if(m.length===0){

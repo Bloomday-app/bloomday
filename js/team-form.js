@@ -26,6 +26,7 @@ window.addEventListener('DOMContentLoaded', function() {
   var params = new URLSearchParams(window.location.search);
   TF.adminToken = params.get('admin');
   TF.memberToken = params.get('member');
+  TF.prefillManager = params.get('manager') || '';
   if (TF.memberToken) { TF.mode = 'member'; tfInitMember(); }
   else if (TF.adminToken) { TF.mode = 'dashboard'; tfInitDashboard(); }
   else { TF.mode = 'create'; tfInitCreate(); }
@@ -79,6 +80,7 @@ function tfRenderStep1() {
     + '<button class="btn btn-primary" onclick="tfStep1Next()">' + tfT('next') + '</button>'
     + '</div>';
   document.getElementById('tf-invite-msg').value = tfT('defaultInviteMsg');
+  if (TF.prefillManager) document.getElementById('tf-manager-name').value = TF.prefillManager;
   tfRenderRelationTags();
 }
 
