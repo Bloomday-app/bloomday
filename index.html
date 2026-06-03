@@ -625,6 +625,14 @@
   </div>
 </div>
 
+<script>
+if('serviceWorker' in navigator){
+  window.addEventListener('load', function(){
+    navigator.serviceWorker.register('/sw.js').catch(function(e){console.warn('SW registration failed',e);});
+  });
+}
+</script>
+
 <!-- ── IMPORT CONTACTS BOTTOM SHEET ── -->
 <div id="import-sheet-overlay" style="display:none;position:fixed;inset:0;background:rgba(45,27,20,.35);z-index:200" onclick="closeImportSheet()"></div>
 <div id="import-sheet" style="display:none;position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:440px;background:var(--card);border-radius:20px 20px 0 0;z-index:201;padding:0 16px 32px">
