@@ -633,6 +633,17 @@ if('serviceWorker' in navigator){
 }
 </script>
 
+<!-- ── NOTIFICATION PRE-PROMPT ── -->
+<div id="notif-prompt-overlay" style="display:none;position:fixed;inset:0;background:rgba(45,27,20,.35);z-index:300"></div>
+<div id="notif-prompt-sheet" style="display:none;position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:440px;background:var(--card);border-radius:20px 20px 0 0;z-index:301;padding:0 16px 36px;text-align:center">
+  <div style="width:36px;height:3px;background:var(--brd2);border-radius:2px;margin:12px auto 20px"></div>
+  <div style="font-size:32px;margin-bottom:10px">🔔</div>
+  <div style="font-family:'Playfair Display',serif;font-size:18px;font-weight:800;color:var(--txt);margin-bottom:8px" data-i18n="notifPromptTitle">Ne manquez plus un anniversaire</div>
+  <div style="font-size:13px;color:var(--txt2);line-height:1.6;margin-bottom:20px;padding:0 8px" data-i18n="notifPromptBody">Activez les rappels pour recevoir une notification le jour J.</div>
+  <button onclick="activateNotifications()" style="width:100%;padding:14px;border:none;border-radius:12px;background:var(--grad);color:#fff;font-size:15px;font-weight:700;cursor:pointer;font-family:inherit;margin-bottom:8px" data-i18n="notifActivate">Activer les rappels</button>
+  <button onclick="dismissNotifPrompt()" style="width:100%;padding:10px;background:transparent;border:none;font-size:13px;color:var(--txt2);cursor:pointer;font-family:inherit" data-i18n="notifLater">Plus tard</button>
+</div>
+
 <!-- ── IMPORT CONTACTS BOTTOM SHEET ── -->
 <div id="import-sheet-overlay" style="display:none;position:fixed;inset:0;background:rgba(45,27,20,.35);z-index:200" onclick="closeImportSheet()"></div>
 <div id="import-sheet" style="display:none;position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:440px;background:var(--card);border-radius:20px 20px 0 0;z-index:201;padding:0 16px 32px">

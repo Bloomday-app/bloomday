@@ -512,6 +512,9 @@ function addMember(){
   ['inp-day','inp-year','inp-name','inp-phone','inp-note','inp-custom-msg'].forEach(id=>{const e=document.getElementById(id);if(e)e.value='';});
   const pp=document.getElementById('phuprev');
   if(pp)pp.innerHTML='<svg width="28" height="28" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="10" r="3.5" stroke="#D4A843" stroke-width="1.5"/><path d="M4 20c0-4 3.582-7 8-7s8 3 8 7" stroke="#D4A843" stroke-width="1.5" stroke-linecap="round"/><path d="M17 6h4M19 4v4" stroke="#D4A843" stroke-width="1.5" stroke-linecap="round"/></svg>';
+  if(mems().length===1&&!localStorage.getItem('notif-prompt-shown')){
+    setTimeout(showNotifPrompt,800);
+  }
   refresh();showSec('members',1);
 }
 function removeMem(id){if(!confirm(t('removeMemberConfirm')))return;setMems(mems().filter(p=>String(p.id)!==String(id)));saveG();refresh();}

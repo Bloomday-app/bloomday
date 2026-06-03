@@ -942,3 +942,35 @@ async function subscribeToPush(){
     console.warn('Push subscription failed',e);
   }
 }
+function showNotifPrompt(){
+  if(Notification.permission==='granted')return;
+  var ov=document.getElementById('notif-prompt-overlay');
+  var sh=document.getElementById('notif-prompt-sheet');
+  if(ov)ov.style.display='block';
+  if(sh)sh.style.display='block';
+  applyI18n();
+}
+function dismissNotifPrompt(){
+  var ov=document.getElementById('notif-prompt-overlay');
+  var sh=document.getElementById('notif-prompt-sheet');
+  if(ov)ov.style.display='none';
+  if(sh)sh.style.display='none';
+  localStorage.setItem('notif-prompt-shown','deferred');
+}
+async function activateNotifications(){
+  dismissNotifPrompt();
+  if(!('Notification' in window)||!('serviceWorker' in navigator)){
+    showToast(t('notifDenied'));return;
+  }
+  var permission=await Notification.requestPermission();
+  if(permission==='granted'){
+    localStorage.setItem('notif-prompt-shown','granted');
+    await subscribeToPush();
+    showToast(t('notifGranted'));
+    showSec('settings-notif',1);
+    if(typeof renderNotifSettings==='function')renderNotifSettings();
+  }else{
+    localStorage.setItem('notif-prompt-shown','denied');
+    showToast(t('notifDenied'));
+  }
+}
