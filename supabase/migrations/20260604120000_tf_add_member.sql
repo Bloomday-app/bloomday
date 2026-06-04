@@ -10,9 +10,14 @@ SET search_path = public
 LANGUAGE plpgsql AS $$
 DECLARE
   v_survey_id uuid;
+  v_new_id    uuid;
 BEGIN
   SELECT id INTO v_survey_id FROM surveys WHERE token = p_admin_token LIMIT 1;
   IF v_survey_id IS NULL THEN RETURN NULL; END IF;
+
+  IF p_member->>'first_name' IS NULL OR trim(p_member->>'first_name') = '' THEN
+    RETURN NULL;
+  END IF;
 
   INSERT INTO survey_members (survey_id, token, first_name, last_name, email, relation)
   VALUES (
@@ -22,15 +27,10 @@ BEGIN
     p_member->>'last_name',
     NULLIF(p_member->>'email', ''),
     NULLIF(p_member->>'relation', '')
-  );
+  )
+  RETURNING id INTO v_new_id;
 
-  RETURN (
-    SELECT row_to_json(m)
-    FROM survey_members m
-    WHERE m.survey_id = v_survey_id
-    ORDER BY m.created_at DESC
-    LIMIT 1
-  );
+  RETURN (SELECT row_to_json(m) FROM survey_members m WHERE m.id = v_new_id);
 END;
 $$;
 
