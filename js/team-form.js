@@ -495,6 +495,29 @@ function tfExportCSV() {
   URL.revokeObjectURL(url);
 }
 
+// ── SYNC LOCALSTORAGE APRÈS IMPORT ──
+function tfUpdateLocalStorage(groupId, groupName, rows) {
+  try {
+    var stored = localStorage.getItem('bdg16_groups');
+    var localGroups = stored ? JSON.parse(stored) : [];
+    var g = localGroups.find(function(x) { return x.id === groupId; });
+    if (!g) {
+      g = { id: groupId, name: groupName, icon: '👥', mode: 'biz', members: [] };
+      localGroups.push(g);
+    }
+    rows.forEach(function(r) {
+      if (!g.members.find(function(x) { return String(x.id) === String(r.id); })) {
+        g.members.push({
+          id: r.id, name: r.name, day: r.day, month: r.month, year: r.year || null,
+          phone: '', note: r.note || '', type: 'birthday', gender: r.gender || '',
+          incomplete: false, notif_days_before: null, notif_time: null
+        });
+      }
+    });
+    localStorage.setItem('bdg16_groups', JSON.stringify(localGroups));
+  } catch(e) {}
+}
+
 // ── IMPORT UNITAIRE ──
 async function tfImportMember(memberToken) {
   var m = TF.members.find(function(x) { return x.token === memberToken; });
@@ -527,6 +550,7 @@ async function tfImportMember(memberToken) {
   if (!rows.length) { tfToast(tfLang() === 'fr' ? 'Aucune date à importer.' : 'No date to import.'); return; }
   var iRes = await supabase.from('members').insert(rows);
   if (iRes.error) { alert('Erreur import : ' + iRes.error.message); return; }
+  tfUpdateLocalStorage(groupId, TF.survey.team_name, rows);
   tfToast(tfT('syncSuccess').replace('%d', rows.length));
 }
 
@@ -564,6 +588,7 @@ async function tfSyncBloomday() {
 
   var iRes = await supabase.from('members').insert(rows);
   if (iRes.error) { alert('Erreur import : ' + iRes.error.message); return; }
+  tfUpdateLocalStorage(groupId, TF.survey.team_name, rows);
   tfToast(tfT('syncSuccess').replace('%d', rows.length));
 }
 
