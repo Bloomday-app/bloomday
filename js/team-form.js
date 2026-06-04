@@ -306,17 +306,19 @@ function tfStartDashboardPolling() {
 function tfShowQR(memberToken) {
   var m = TF.members.find(function(x) { return x.token === memberToken; });
   var url = tfMemberUrl(memberToken);
+  document.getElementById('tf-modal-qr-name').textContent = m.first_name + ' ' + m.last_name;
+  document.getElementById('tf-modal-qr-url').textContent = url;
+  var container = document.getElementById('tf-modal-qr-code');
+  container.innerHTML = '';
   var qr = qrcode(0, 'M');
   qr.addData(url);
   qr.make();
-  var win = window.open('', '_blank', 'width=320,height=420');
-  win.document.write('<html><body style="text-align:center;font-family:sans-serif;padding:24px">'
-    + '<h3 style="margin:0 0 16px">' + tfEsc(m.first_name) + ' ' + tfEsc(m.last_name) + '</h3>'
-    + qr.createImgTag(4)
-    + '<p style="font-size:11px;color:#aaa;margin-top:12px;word-break:break-all">' + tfEsc(url) + '</p>'
-    + '<button onclick="window.print()" style="margin-top:12px;padding:8px 16px;background:#e75480;color:#fff;border:none;border-radius:8px;cursor:pointer;font-size:13px">Imprimer</button>'
-    + '</body></html>');
-  win.document.close();
+  container.innerHTML = qr.createImgTag(6);
+  document.getElementById('tf-modal-qr').style.display = 'flex';
+}
+
+function tfCloseQRModal() {
+  document.getElementById('tf-modal-qr').style.display = 'none';
 }
 
 function tfPrintQR() {
