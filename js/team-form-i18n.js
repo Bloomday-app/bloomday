@@ -36,6 +36,7 @@ var TF_I18N = {
     thankYou: 'Merci [Prénom] ! 🎉',
     thankYouSub: 'Tes infos ont bien été enregistrées.',
     errorRequired: 'Merci de remplir les champs obligatoires.',
+    errorNetwork: 'Erreur de connexion. Vérifie ta connexion et réessaie.',
     alreadyCompleted: 'Tu as déjà complété ton profil. Merci !',
     defaultRelations: ['Collègue', 'Manager', 'Directeur·rice', 'Stagiaire', 'Ami(e)', 'Autre']
   },
@@ -76,6 +77,7 @@ var TF_I18N = {
     thankYou: 'Thank you [First name]! 🎉',
     thankYouSub: 'Your info has been saved.',
     errorRequired: 'Please fill in all required fields.',
+    errorNetwork: 'Connection error. Check your connection and try again.',
     alreadyCompleted: 'You already completed your profile. Thank you!',
     defaultRelations: ['Colleague', 'Manager', 'Director', 'Intern', 'Friend', 'Other']
   }

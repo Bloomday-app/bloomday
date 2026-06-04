@@ -19,7 +19,8 @@ var TF = {
   relationLabels: [],
   currentMember: null,
   selectedGender: '',
-  pollInterval: null
+  pollInterval: null,
+  submitting: false
 };
 
 window.addEventListener('DOMContentLoaded', function() {
@@ -314,12 +315,31 @@ function tfRenderMemberCard(m) {
   var hasEmail = m.email ? 1 : 0;
   var badgeCls = m.completed ? 'badge-ok' : 'badge-wait';
   var badgeTxt = m.completed ? tfT('statusCompleted') : tfT('statusPending');
+  var months = ['Janv.','Févr.','Mars','Avr.','Mai','Juin','Juil.','Août','Sept.','Oct.','Nov.','Déc.'];
+  var detailsHtml = '';
+  if (m.completed) {
+    var lines = [];
+    if (m.birth_day && m.birth_month) {
+      lines.push('🎂 ' + m.birth_day + ' ' + (months[m.birth_month - 1] || '') + (m.birth_year ? ' ' + m.birth_year : ''));
+    }
+    if (m.gender === 'M') lines.push('♂ Homme');
+    else if (m.gender === 'F') lines.push('♀ Femme');
+    if (m.married && m.wedding_day && m.wedding_month) {
+      lines.push('💍 Marié·e' + (m.spouse_name ? ' avec ' + tfEsc(m.spouse_name) : '') + ' — ' + m.wedding_day + ' ' + (months[m.wedding_month - 1] || '') + (m.wedding_year ? ' ' + m.wedding_year : ''));
+    }
+    if (lines.length) {
+      detailsHtml = '<div style="margin-top:8px;padding:8px 10px;background:var(--bg);border-radius:8px;font-size:12px;color:var(--txt2);line-height:1.9">'
+        + lines.map(function(l) { return '<div>' + l + '</div>'; }).join('')
+        + '</div>';
+    }
+  }
   return '<div class="tf-dash-card">'
     + '<div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px">'
     + '<div><div style="font-weight:700;font-size:15px">' + tfEsc(m.first_name) + ' ' + tfEsc(m.last_name) + '</div>'
     + '<div style="font-size:12px;color:var(--txt2)">' + tfEsc(m.relation || '') + '</div></div>'
     + '<span class="badge ' + badgeCls + '">' + badgeTxt + '</span>'
     + '</div>'
+    + detailsHtml
     + '<div class="share-btns">'
     + (hasEmail ? '<button class="share-btn" data-token="' + m.token + '" onclick="tfShareEmail(this.dataset.token)">' + tfT('sendEmail') + '</button>' : '')
     + '<button class="share-btn" data-token="' + m.token + '" onclick="tfShareWhatsApp(this.dataset.token)">' + tfT('sendWhatsApp') + '</button>'
@@ -526,7 +546,7 @@ function tfRenderMemberForm() {
     + '<input id="tf-wed-year" type="number" min="1950" max="2030" placeholder="' + tfT('year') + '">'
     + '</div>'
     + '</div>'
-    + '<button class="btn btn-primary" onclick="tfSubmitMember()">' + tfT('submit') + '</button>';
+    + '<button id="tf-submit-btn" class="btn btn-primary" onclick="tfSubmitMember()">' + tfT('submit') + '</button>';
 }
 
 function tfSelectGender(g) {
@@ -540,6 +560,7 @@ function tfToggleMarried(checked) {
 }
 
 async function tfSubmitMember() {
+  if (TF.submitting) return;
   var birthDay = parseInt(document.getElementById('tf-birth-day').value) || null;
   var birthMonth = parseInt(document.getElementById('tf-birth-month').value) || null;
   var birthYear = parseInt(document.getElementById('tf-birth-year').value) || null;
@@ -551,6 +572,10 @@ async function tfSubmitMember() {
   var wedYear = married ? (parseInt(document.getElementById('tf-wed-year').value) || null) : null;
   if (married && (!spouseName || !wedDay || !wedMonth)) { alert(tfT('errorRequired')); return; }
 
+  TF.submitting = true;
+  var btn = document.getElementById('tf-submit-btn');
+  if (btn) { btn.disabled = true; btn.textContent = '...'; }
+
   var res = await supabase.rpc('tf_submit_member_form', {
     p_member_token:  TF.memberToken,
     p_birth_day:     birthDay,  p_birth_month: birthMonth,  p_birth_year: birthYear,
@@ -559,7 +584,19 @@ async function tfSubmitMember() {
     p_wedding_day:   wedDay,    p_wedding_month: wedMonth,  p_wedding_year: wedYear
   });
 
-  if (res.error || !res.data) { alert(res.error ? 'Erreur : ' + res.error.message : tfT('errorRequired')); return; }
+  TF.submitting = false;
+  if (btn) { btn.disabled = false; btn.textContent = tfT('submit'); }
+
+  if (res.error || !res.data) {
+    var isNetwork = res.error && (
+      res.error.message.includes('Load failed') ||
+      res.error.message.includes('Failed to fetch') ||
+      res.error.message.includes('NetworkError') ||
+      res.error.message.toLowerCase().includes('network')
+    );
+    alert(isNetwork ? tfT('errorNetwork') : (res.error ? 'Erreur : ' + res.error.message : tfT('errorRequired')));
+    return;
+  }
   tfShow('tf-view-thanks');
   document.getElementById('tf-thanks-title').textContent = tfT('thankYou')
     .replace('[Prénom]', TF.currentMember.first_name)
