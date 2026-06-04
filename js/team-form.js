@@ -238,10 +238,70 @@ function tfRenderDashboard() {
     + '<button class="btn btn-ghost btn-sm" onclick="tfPrintQR()">' + tfT('printQR') + '</button>'
     + '<button class="btn btn-ghost btn-sm" onclick="tfExportCSV()">' + tfT('exportCSV') + '</button>'
     + '<button class="btn btn-primary btn-sm" onclick="tfSyncBloomday()">' + tfT('syncBloomday') + '</button>'
+    + '</div>'
+    + '<div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:8px">'
+    + '<button class="btn btn-ghost btn-sm" onclick="tfToggleAddMember()">' + tfT('addMemberDash') + '</button>'
+    + '<button class="btn btn-ghost btn-sm" onclick="tfNewTeam()">' + tfT('newTeam') + '</button>'
     + '</div>';
   document.getElementById('tf-member-cards').innerHTML = TF.members.map(function(m) {
     return tfRenderMemberCard(m);
   }).join('');
+}
+
+function tfToggleAddMember() {
+  var el = document.getElementById('tf-add-member-inline');
+  if (!el) return;
+  if (el.style.display === 'none' || el.style.display === '') {
+    tfRenderAddMemberForm();
+    el.style.display = 'block';
+  } else {
+    el.style.display = 'none';
+  }
+}
+
+function tfRenderAddMemberForm() {
+  var relLabels = (TF.survey && Array.isArray(TF.survey.relation_labels)) ? TF.survey.relation_labels : [];
+  var relOptions = relLabels.map(function(l) { return '<option>' + tfEsc(l) + '</option>'; }).join('');
+  document.getElementById('tf-add-member-inline').innerHTML =
+    '<div class="tf-card" style="border:1.5px dashed var(--brd2)">'
+    + '<h2>' + tfT('addMemberDash') + '</h2>'
+    + '<label>' + tfT('firstName') + '</label>'
+    + '<input id="tf-dash-inp-first" type="text" placeholder="Prénom">'
+    + '<label>' + tfT('lastName') + '</label>'
+    + '<input id="tf-dash-inp-last" type="text" placeholder="Nom">'
+    + '<label>' + tfT('emailLabel') + '</label>'
+    + '<input id="tf-dash-inp-email" type="email" placeholder="email@exemple.com">'
+    + (relOptions ? '<label>' + tfT('relation') + '</label><select id="tf-dash-inp-relation">' + relOptions + '</select>' : '')
+    + '<div style="display:flex;gap:8px;margin-top:4px">'
+    + '<button class="btn btn-primary" style="flex:1" onclick="tfSubmitAddMember()">' + tfT('addMember') + '</button>'
+    + '<button class="btn btn-ghost" onclick="tfToggleAddMember()">' + tfT('cancelAdd') + '</button>'
+    + '</div>'
+    + '</div>';
+}
+
+async function tfSubmitAddMember() {
+  var firstEl = document.getElementById('tf-dash-inp-first');
+  var firstName = firstEl ? (firstEl.value || '').trim() : '';
+  if (!firstName) { alert(tfT('errorRequired')); return; }
+  var lastName = (document.getElementById('tf-dash-inp-last').value || '').trim();
+  var email = (document.getElementById('tf-dash-inp-email').value || '').trim();
+  var relationEl = document.getElementById('tf-dash-inp-relation');
+  var relation = relationEl ? relationEl.value : '';
+
+  var res = await supabase.rpc('tf_add_member', {
+    p_admin_token: TF.adminToken,
+    p_member: { first_name: firstName, last_name: lastName, email: email || '', relation: relation || '' }
+  });
+
+  if (res.error || !res.data) {
+    alert('Erreur ajout membre' + (res.error ? ' : ' + res.error.message : '.'));
+    return;
+  }
+
+  TF.members.push(res.data);
+  document.getElementById('tf-add-member-inline').style.display = 'none';
+  tfRenderDashboard();
+  tfToast(firstName + ' ajouté·e !');
 }
 
 function tfNewTeam() {
