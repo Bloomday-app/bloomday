@@ -29,7 +29,11 @@ window.addEventListener('DOMContentLoaded', function() {
   TF.prefillManager = params.get('manager') || '';
   if (TF.memberToken) { TF.mode = 'member'; tfInitMember(); }
   else if (TF.adminToken) { TF.mode = 'dashboard'; tfInitDashboard(); }
-  else { TF.mode = 'create'; tfInitCreate(); }
+  else {
+    var saved = localStorage.getItem('tf_admin_token');
+    if (saved) { window.location.href = 'team-form.html?admin=' + saved; return; }
+    TF.mode = 'create'; tfInitCreate();
+  }
 });
 
 function tfShow(id) {
@@ -200,6 +204,7 @@ async function tfSubmitCreate() {
     p_members:         memberRows
   });
   if (res.error) { alert('Erreur création équipe : ' + res.error.message); return; }
+  localStorage.setItem('tf_admin_token', adminToken);
   window.location.href = 'team-form.html?admin=' + adminToken;
 }
 
@@ -237,6 +242,12 @@ function tfRenderDashboard() {
   document.getElementById('tf-member-cards').innerHTML = TF.members.map(function(m) {
     return tfRenderMemberCard(m);
   }).join('');
+}
+
+function tfNewTeam() {
+  if (!confirm('Créer une nouvelle équipe ? Tu perdras l\'accès au dashboard actuel depuis ce navigateur.')) return;
+  localStorage.removeItem('tf_admin_token');
+  window.location.href = 'team-form.html';
 }
 
 function tfRenderMemberCard(m) {
