@@ -680,4 +680,5 @@ async function tfSubmitMember() {
     .replace('[Prénom]', TF.currentMember.first_name)
     .replace('[First name]', TF.currentMember.first_name);
   document.getElementById('tf-thanks-sub').textContent = tfT('thankYouSub');
+  setTimeout(function() { window.location.href = 'https://mybloomday.app'; }, 3000);
 }
