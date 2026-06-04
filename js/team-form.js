@@ -305,6 +305,7 @@ function tfStartDashboardPolling() {
 // ── QR CODES ──
 function tfShowQR(memberToken) {
   var m = TF.members.find(function(x) { return x.token === memberToken; });
+  if (!m) return;
   var url = tfMemberUrl(memberToken);
   document.getElementById('tf-modal-qr-name').textContent = m.first_name + ' ' + m.last_name;
   document.getElementById('tf-modal-qr-url').textContent = url;
@@ -314,6 +315,7 @@ function tfShowQR(memberToken) {
   qr.addData(url);
   qr.make();
   container.innerHTML = qr.createImgTag(6);
+  document.getElementById('tf-modal-print-btn').textContent = tfT('print');
   document.getElementById('tf-modal-qr').style.display = 'flex';
 }
 
