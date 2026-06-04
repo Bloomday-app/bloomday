@@ -31,17 +31,36 @@ window.addEventListener('DOMContentLoaded', function() {
   if (TF.memberToken) { TF.mode = 'member'; tfInitMember(); }
   else if (TF.adminToken) { TF.mode = 'dashboard'; tfInitDashboard(); }
   else {
-    var saved = localStorage.getItem('tf_admin_token');
-    if (saved) { window.location.href = 'team-form.html?admin=' + saved; return; }
+    var savedTeams = tfGetSavedTeams();
+    if (savedTeams.length > 0) { TF.mode = 'teams'; tfInitTeams(); return; }
+    var legacyToken = localStorage.getItem('tf_admin_token');
+    if (legacyToken) { window.location.href = 'team-form.html?admin=' + legacyToken; return; }
     TF.mode = 'create'; tfInitCreate();
   }
 });
 
 function tfShow(id) {
-  ['tf-view-create','tf-view-dashboard','tf-view-member','tf-view-thanks'].forEach(function(v) {
+  ['tf-view-teams','tf-view-create','tf-view-dashboard','tf-view-member','tf-view-thanks'].forEach(function(v) {
     document.getElementById(v).style.display = 'none';
   });
   document.getElementById(id).style.display = 'block';
+}
+
+// ── MULTI-TEAM LOCALSTORAGE ──
+function tfGetSavedTeams() {
+  try {
+    var arr = JSON.parse(localStorage.getItem('tf_admin_tokens') || '[]');
+    return Array.isArray(arr) ? arr : [];
+  } catch(e) { return []; }
+}
+
+function tfSaveAdminToken(token, teamName, managerName) {
+  var teams = tfGetSavedTeams();
+  teams = teams.filter(function(t) { return t.token !== token; });
+  teams.unshift({ token: token, teamName: teamName, managerName: managerName || '', createdAt: Date.now() });
+  if (teams.length > 10) teams = teams.slice(0, 10);
+  localStorage.setItem('tf_admin_tokens', JSON.stringify(teams));
+  localStorage.setItem('tf_admin_token', token);
 }
 
 function tfToast(msg, ms) {
@@ -58,6 +77,29 @@ function tfRenderSteps(current) {
     var cls = n < current ? 'tf-step done' : n === current ? 'tf-step active' : 'tf-step';
     return '<div class="' + cls + '">' + (n < current ? '✓ ' : '') + label + '</div>';
   }).join('');
+}
+
+// ── MODE MES ÉQUIPES ──
+function tfInitTeams() {
+  tfShow('tf-view-teams');
+  var teams = tfGetSavedTeams();
+  var html = '<div class="tf-card"><h1>' + tfT('myTeams') + '</h1>'
+    + '<p style="font-size:13px;color:var(--txt2);margin-bottom:16px">' + teams.length + ' ' + (tfLang() === 'fr' ? (teams.length > 1 ? 'équipes enregistrées' : 'équipe enregistrée') : (teams.length > 1 ? 'saved teams' : 'saved team')) + '</p>';
+  teams.forEach(function(t) {
+    html += '<div style="display:flex;justify-content:space-between;align-items:center;padding:12px 0;border-bottom:1px solid var(--brd)">'
+      + '<div><div style="font-weight:700;font-size:15px">' + tfEsc(t.teamName) + '</div>'
+      + '<div style="font-size:12px;color:var(--txt2)">' + tfT('managerLabel') + ' ' + tfEsc(t.managerName || '') + '</div></div>'
+      + '<a href="team-form.html?admin=' + encodeURIComponent(t.token) + '" class="btn btn-ghost btn-sm">' + tfT('openTeam') + '</a>'
+      + '</div>';
+  });
+  html += '</div>'
+    + '<button class="btn btn-primary" onclick="tfGoCreate()">' + tfT('createNewTeam') + '</button>';
+  document.getElementById('tf-view-teams').innerHTML = html;
+}
+
+function tfGoCreate() {
+  TF.mode = 'create';
+  tfInitCreate();
 }
 
 // ── MODE CRÉATION — Étape 1 ──
@@ -205,7 +247,7 @@ async function tfSubmitCreate() {
     p_members:         memberRows
   });
   if (res.error) { alert('Erreur création équipe : ' + res.error.message); return; }
-  localStorage.setItem('tf_admin_token', adminToken);
+  tfSaveAdminToken(adminToken, TF.pendingTeamName, TF.pendingManagerName);
   window.location.href = 'team-form.html?admin=' + adminToken;
 }
 
@@ -219,6 +261,7 @@ async function tfInitDashboard() {
   }
   TF.survey = res.data.survey;
   TF.members = res.data.members || [];
+  tfSaveAdminToken(TF.adminToken, TF.survey.team_name, TF.survey.manager_name);
   tfRenderDashboard();
   tfStartDashboardPolling();
 }
@@ -238,7 +281,7 @@ function tfRenderDashboard() {
     '<div style="display:flex;gap:8px;flex-wrap:wrap">'
     + '<button class="btn btn-ghost btn-sm" onclick="tfPrintQR()">' + tfT('printQR') + '</button>'
     + '<button class="btn btn-ghost btn-sm" onclick="tfExportCSV()">' + tfT('exportCSV') + '</button>'
-    + '<button class="btn btn-primary btn-sm" onclick="tfSyncBloomday()">' + tfT('syncBloomday') + '</button>'
+    + '<button class="btn btn-primary btn-sm" onclick="tfSyncBloomday()">' + tfT('importAllMembers') + '</button>'
     + '</div>'
     + '<div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:8px">'
     + '<button class="btn btn-ghost btn-sm" onclick="tfToggleAddMember()">' + tfT('addMemberDash') + '</button>'
@@ -306,9 +349,8 @@ async function tfSubmitAddMember() {
 }
 
 function tfNewTeam() {
-  if (!confirm('Créer une nouvelle équipe ? Tu perdras l\'accès au dashboard actuel depuis ce navigateur.')) return;
-  localStorage.removeItem('tf_admin_token');
-  window.location.href = 'team-form.html';
+  TF.mode = 'teams';
+  tfInitTeams();
 }
 
 function tfRenderMemberCard(m) {
@@ -346,6 +388,7 @@ function tfRenderMemberCard(m) {
     + '<button class="share-btn" data-token="' + m.token + '" onclick="tfShareSMS(this.dataset.token)">' + tfT('sendSMS') + '</button>'
     + '<button class="share-btn" data-token="' + m.token + '" onclick="tfShareCopy(this.dataset.token)">' + tfT('copyLink') + '</button>'
     + '<button class="share-btn" data-token="' + m.token + '" onclick="tfShowQR(this.dataset.token)">' + tfT('qrCode') + '</button>'
+    + (m.completed ? '<button class="share-btn" data-token="' + m.token + '" onclick="tfImportMember(this.dataset.token)" style="grid-column:span 2;background:#E3F9F0;border-color:#0A5C3A;color:#0A5C3A;font-weight:700">' + tfT('importMember') + '</button>' : '')
     + '</div></div>';
 }
 
@@ -450,6 +493,41 @@ function tfExportCSV() {
   a.href = url; a.download = TF.survey.team_name.replace(/\s+/g, '-') + '-bloomday.csv';
   a.click();
   URL.revokeObjectURL(url);
+}
+
+// ── IMPORT UNITAIRE ──
+async function tfImportMember(memberToken) {
+  var m = TF.members.find(function(x) { return x.token === memberToken; });
+  if (!m || !m.completed) return;
+
+  var sessRes = await supabase.auth.getSession();
+  var userId = sessRes.data && sessRes.data.session && sessRes.data.session.user && sessRes.data.session.user.id;
+  if (!userId) { alert(tfT('syncNotConnected')); return; }
+
+  var gRes = await supabase.from('groups').select('id').eq('user_id', userId).eq('name', TF.survey.team_name).maybeSingle();
+  var groupId;
+  if (gRes.data && gRes.data.id) {
+    groupId = gRes.data.id;
+  } else {
+    var newG = await supabase.from('groups').insert({ id: 'g' + Date.now(), user_id: userId, name: TF.survey.team_name, icon: '👥', mode: 'biz' }).select('id').single();
+    if (newG.error) { alert('Erreur groupe : ' + newG.error.message); return; }
+    groupId = newG.data.id;
+  }
+
+  var rows = [];
+  var base = Date.now();
+  var fullName = (m.first_name + ' ' + m.last_name).trim();
+  var note = m.relation ? 'Relation : ' + m.relation : '';
+  if (m.birth_day && m.birth_month) {
+    rows.push({ id: String(base), user_id: userId, group_id: groupId, name: fullName, day: m.birth_day, month: m.birth_month, year: m.birth_year || null, phone: '', note: note, type: 'birthday', gender: m.gender || '', incomplete: false, notif_days_before: null, notif_time: null });
+  }
+  if (m.married && m.wedding_day && m.wedding_month) {
+    rows.push({ id: String(base + 1), user_id: userId, group_id: groupId, name: fullName + ' (mariage avec ' + (m.spouse_name || '?') + ')', day: m.wedding_day, month: m.wedding_month, year: m.wedding_year || null, phone: '', note: note, type: 'birthday', gender: '', incomplete: false, notif_days_before: null, notif_time: null });
+  }
+  if (!rows.length) { tfToast(tfLang() === 'fr' ? 'Aucune date à importer.' : 'No date to import.'); return; }
+  var iRes = await supabase.from('members').insert(rows);
+  if (iRes.error) { alert('Erreur import : ' + iRes.error.message); return; }
+  tfToast(tfT('syncSuccess').replace('%d', rows.length));
 }
 
 // ── SYNC DIRECTE BLOOMDAY ──

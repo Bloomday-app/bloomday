@@ -38,7 +38,14 @@ var TF_I18N = {
     errorRequired: 'Merci de remplir les champs obligatoires.',
     errorNetwork: 'Erreur de connexion. Vérifie ta connexion et réessaie.',
     alreadyCompleted: 'Tu as déjà complété ton profil. Merci !',
-    defaultRelations: ['Collègue', 'Manager', 'Directeur·rice', 'Stagiaire', 'Ami(e)', 'Autre']
+    defaultRelations: ['Collègue', 'Manager', 'Directeur·rice', 'Stagiaire', 'Ami(e)', 'Autre'],
+    myTeams: 'Mes équipes',
+    myTeamsEmpty: 'Aucune équipe enregistrée.',
+    openTeam: 'Ouvrir',
+    createNewTeam: '+ Créer une nouvelle équipe',
+    managerLabel: 'Manager :',
+    importMember: '🌸 Importer ce contact',
+    importAllMembers: '🌸 Tout importer dans Bloomday'
   },
   en: {
     title: 'Team Form',
@@ -79,7 +86,14 @@ var TF_I18N = {
     errorRequired: 'Please fill in all required fields.',
     errorNetwork: 'Connection error. Check your connection and try again.',
     alreadyCompleted: 'You already completed your profile. Thank you!',
-    defaultRelations: ['Colleague', 'Manager', 'Director', 'Intern', 'Friend', 'Other']
+    defaultRelations: ['Colleague', 'Manager', 'Director', 'Intern', 'Friend', 'Other'],
+    myTeams: 'My teams',
+    myTeamsEmpty: 'No saved teams.',
+    openTeam: 'Open',
+    createNewTeam: '+ Create a new team',
+    managerLabel: 'Manager:',
+    importMember: '🌸 Import this contact',
+    importAllMembers: '🌸 Import all to Bloomday'
   }
 };
 
