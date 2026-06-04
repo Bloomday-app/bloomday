@@ -3,7 +3,7 @@ async function load(){
   var _defNames=['Mon groupe','My group','Mi grupo','\u0645\u062c\u0645\u0648\u0639\u062a\u064a','\u092e\u0947\u0930\u093e \u0938\u092e\u0942\u0939','\u6211\u7684\u7fa4\u7ec4','Meu grupo'];
   var _migrated=false;
   groups.forEach(function(g){if(!g.isDefault&&_defNames.indexOf(g.name)!==-1){g.isDefault=true;_migrated=true;}});
-  if(_migrated)saveG();
+  if(_migrated)sg('bdg16_groups',groups);
   if(!groups.length)groups=[{id:'g1',name:mode==='biz'?'Mon équipe':t('myGroup'),icon:mode==='biz'?'💼':'🌸',members:[],isDefault:mode!=='biz'}];
   admins=await gg('bdg16_admins',[]);
   hist=await gg('bdg16_hist',{});
