@@ -386,6 +386,12 @@
 </div><!-- end wrap -->
 </div><!-- end app -->
 
+<!-- MENU CONTEXTUEL GROUPE (long-press / clic droit) -->
+<div id="gc-menu" style="display:none;position:fixed;z-index:2000;background:var(--card);border:1.5px solid var(--brd);border-radius:14px;box-shadow:0 8px 24px rgba(45,27,20,.15);overflow:hidden;min-width:150px">
+  <button class="gc-menu-item" onclick="openRenameGroup()" data-i18n="groupRename">✏️ Renommer</button>
+  <button class="gc-menu-item danger" onclick="openDeleteGroup()" data-i18n="groupDelete">🗑️ Supprimer</button>
+</div>
+
 <!-- MODAL GROUPE — création sans prompt() -->
 <div id="mgrp" class="ov">
 <div class="mbox2">
@@ -423,6 +429,37 @@
 .icon-sel:hover{background:var(--bg2);transform:scale(1.1)}
 .icon-sel.on{border-color:var(--b1);background:var(--b1l);transform:scale(1.15);box-shadow:0 2px 8px rgba(245,166,35,.3)}
 </style>
+
+<!-- MODAL RENOMMER GROUPE -->
+<div id="mrename" class="ov">
+<div class="mbox2">
+  <div class="mt" data-i18n="groupRenameTitle">Renommer le groupe</div>
+  <label data-i18n="labelGroupName">Nom du groupe</label>
+  <input type="text" id="mrename-inp" autocomplete="off" autocorrect="off" style="font-size:16px"
+    onkeydown="if(event.key==='Enter')confirmRenameGroup()">
+  <div class="brow">
+    <button class="btn G fw" style="flex:1;padding:13px" onclick="confirmRenameGroup()"><span data-i18n="groupRenameBtn">✓ Renommer</span></button>
+    <button class="btn" style="padding:13px" onclick="closeOv('mrename')" data-i18n="cancelBtn">Annuler</button>
+  </div>
+</div>
+</div>
+
+<!-- MODAL SUPPRIMER GROUPE -->
+<div id="mdelete" class="ov">
+<div class="mbox2">
+  <div class="mt" id="mdelete-title">Supprimer le groupe</div>
+  <p id="mdelete-msg" style="font-size:14px;color:var(--txt2);margin-bottom:12px"></p>
+  <div id="mdelete-members" style="margin-bottom:12px"></div>
+  <div id="mdelete-move" style="display:none;margin-bottom:16px">
+    <label data-i18n="groupDeleteMoveLabel" style="display:block;font-size:12px;font-weight:700;color:var(--txt2);margin-bottom:6px;text-transform:uppercase;letter-spacing:.05em">Déplacer les membres sélectionnés vers :</label>
+    <select id="mdelete-target" style="width:100%;padding:10px 14px;border:1.5px solid var(--brd);border-radius:12px;font-size:15px;background:var(--bg);color:var(--txt)"></select>
+  </div>
+  <div class="brow">
+    <button class="btn R fw" style="flex:1;padding:13px" onclick="confirmDeleteGroup()"><span id="mdelete-btn-label" data-i18n="groupDeleteBtn">Supprimer le groupe</span></button>
+    <button class="btn" style="padding:13px" onclick="closeOv('mdelete')" data-i18n="cancelBtn">Annuler</button>
+  </div>
+</div>
+</div>
 
 <!-- MODAL NOTE -->
 <div id="mnote" class="ov">
