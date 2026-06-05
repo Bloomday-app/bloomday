@@ -345,6 +345,7 @@ function renderPlanDetail(){}
 
 
 // ── GROUPES ──
+var _gcMenuGroupId = null;
 function rGbar(){
   const b=document.getElementById('gbar');if(!b)return;
   var _allDefNames=Object.keys(I18N).map(function(lang){return I18N[lang].myGroup;}).filter(Boolean);
@@ -355,6 +356,11 @@ function rGbar(){
     btn.className='gc'+(g.id===curG?' on':'');
     btn.textContent=g.icon+' '+(isDef?t('myGroup'):g.name);
     btn.onclick=function(){switchG(g.id);};
+    btn.addEventListener('contextmenu',function(e){e.preventDefault();openGroupMenu(g.id,btn);});
+    var _lpt=null;
+    btn.addEventListener('touchstart',function(){_lpt=setTimeout(function(){openGroupMenu(g.id,btn);},600);},{passive:true});
+    btn.addEventListener('touchend',function(){clearTimeout(_lpt);});
+    btn.addEventListener('touchmove',function(){clearTimeout(_lpt);});
     b.appendChild(btn);
   });
   var addBtn=document.createElement('button');
@@ -363,6 +369,20 @@ function rGbar(){
   addBtn.title=t('groupModalTitle')||'Nouveau groupe';
   addBtn.onclick=addGroup;
   b.appendChild(addBtn);
+}
+function openGroupMenu(groupId,triggerBtn){
+  _gcMenuGroupId=groupId;
+  var menu=document.getElementById('gc-menu');
+  if(!menu)return;
+  var rect=triggerBtn.getBoundingClientRect();
+  menu.style.left=Math.min(rect.left,window.innerWidth-160)+'px';
+  menu.style.top=(rect.bottom+4)+'px';
+  menu.style.display='block';
+}
+function closeGroupMenu(){
+  var menu=document.getElementById('gc-menu');
+  if(menu)menu.style.display='none';
+  _gcMenuGroupId=null;
 }
 function switchG(id){curG=id;fMonth=0;fType='';searchInput='';searchFiltered=null;editId=null;refresh();}
 function addGroup(){
@@ -397,6 +417,87 @@ function confirmAddGroup(){
 function selGrpIcon(btn){
   document.querySelectorAll('.icon-sel').forEach(b=>b.classList.remove('on'));
   btn.classList.add('on');
+}
+function openRenameGroup(){
+  closeGroupMenu();
+  if(!_gcMenuGroupId)return;
+  var g=groups.find(function(x){return x.id===_gcMenuGroupId;});
+  if(!g)return;
+  var inp=document.getElementById('mrename-inp');
+  if(inp)inp.value=g.name;
+  openOv('mrename');
+  setTimeout(function(){var i=document.getElementById('mrename-inp');if(i){i.focus();i.select();}},120);
+}
+function confirmRenameGroup(){
+  if(!_gcMenuGroupId)return;
+  var inp=document.getElementById('mrename-inp');
+  var n=(inp&&inp.value||'').trim();
+  if(!n){if(inp){inp.style.borderColor='var(--b2)';setTimeout(function(){inp.style.borderColor='';},2000);inp.focus();}return;}
+  var g=groups.find(function(x){return x.id===_gcMenuGroupId;});
+  if(g)g.name=n;
+  _gcMenuGroupId=null;
+  saveG();closeOv('mrename');refresh();
+}
+function openDeleteGroup(){
+  closeGroupMenu();
+  if(!_gcMenuGroupId)return;
+  if(groups.length<=1){alert(t('groupCannotDeleteLast'));return;}
+  var g=groups.find(function(x){return x.id===_gcMenuGroupId;});
+  if(!g)return;
+  var titleEl=document.getElementById('mdelete-title');
+  var msgEl=document.getElementById('mdelete-msg');
+  var membersEl=document.getElementById('mdelete-members');
+  var moveEl=document.getElementById('mdelete-move');
+  var targetEl=document.getElementById('mdelete-target');
+  if(titleEl)titleEl.textContent=t('groupDeleteTitle')+' « '+g.name+' »';
+  var members=g.members||[];
+  if(!members.length){
+    if(msgEl)msgEl.textContent=t('groupDeleteConfirmEmpty');
+    if(membersEl)membersEl.innerHTML='';
+    if(moveEl)moveEl.style.display='none';
+  }else{
+    if(msgEl)msgEl.textContent=t('groupDeleteMembersHeader').replace('%n',members.length);
+    if(membersEl){
+      membersEl.innerHTML=members.map(function(m){
+        var sub=m.day&&m.month?' ('+m.day+'/'+m.month+(m.year?' '+m.year:'')+')':(m.type==='birthday'?'':' ');
+        return '<label class="gc-member-row"><input type="checkbox" value="'+String(m.id)+'"> '+esc(m.name)+sub+'</label>';
+      }).join('');
+      membersEl.onchange=function(){
+        if(moveEl)moveEl.style.display=membersEl.querySelectorAll('input:checked').length>0?'block':'none';
+      };
+    }
+    if(targetEl)targetEl.innerHTML=groups.filter(function(x){return x.id!==g.id;}).map(function(x){
+      var _allDef=Object.keys(I18N).map(function(l){return I18N[l].myGroup;}).filter(Boolean);
+      var isDef=x.isDefault||_allDef.indexOf(x.name)!==-1;
+      return '<option value="'+esc(x.id)+'">'+esc(x.icon)+' '+(isDef?esc(t('myGroup')):esc(x.name))+'</option>';
+    }).join('');
+    if(moveEl)moveEl.style.display='none';
+  }
+  openOv('mdelete');
+}
+function confirmDeleteGroup(){
+  if(!_gcMenuGroupId)return;
+  var gIdx=groups.findIndex(function(x){return x.id===_gcMenuGroupId;});
+  if(gIdx===-1)return;
+  var g=groups[gIdx];
+  var membersEl=document.getElementById('mdelete-members');
+  var targetEl=document.getElementById('mdelete-target');
+  if(membersEl&&targetEl){
+    var checked=membersEl.querySelectorAll('input:checked');
+    if(checked.length>0){
+      var targetGroup=groups.find(function(x){return x.id===targetEl.value;});
+      if(targetGroup){
+        checked.forEach(function(cb){
+          var m=g.members&&g.members.find(function(x){return String(x.id)===cb.value;});
+          if(m)targetGroup.members.push(m);
+        });
+      }
+    }
+  }
+  if(curG===_gcMenuGroupId)curG=groups[gIdx===0?1:0].id;
+  groups.splice(gIdx,1);
+  _gcMenuGroupId=null;
+  saveG();closeOv('mdelete');refresh();
 }
 
 // ── TOPBAR ──
@@ -533,6 +634,7 @@ function saveEdit(id){
 function openOv(id){const m=document.getElementById(id);if(m){m.classList.add('op');m.style.display='flex';}}
 function closeOv(id){const m=document.getElementById(id);if(m){m.classList.remove('op');setTimeout(()=>{if(!m.classList.contains('op'))m.style.display='none';},300);}}
 document.querySelectorAll('.ov').forEach(m=>m.addEventListener('click',e=>{if(e.target===m)closeOv(m.id);}));
+document.addEventListener('click',function(e){var menu=document.getElementById('gc-menu');if(menu&&menu.style.display!=='none'&&!menu.contains(e.target))closeGroupMenu();});
 function openNoteModal(cb){document.getElementById('ntxt').value='';openOv('mnote');document.getElementById('nok').onclick=()=>{const n=document.getElementById('ntxt').value.trim();closeOv('mnote');if(cb)cb(n);};}
 function openPlanModal(){
   const c=document.getElementById('mplan-c');
