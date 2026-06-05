@@ -46,8 +46,13 @@ async function dbSaveGroups(userId, groups) {
       mode: g.mode || 'perso'
     }));
 
-    await supabase.from('groups').upsert(gRows);
+    // Delete members first (FK constraint: members reference groups)
     await supabase.from('members').delete().eq('user_id', userId);
+    // Delete all groups then re-insert so removed groups don't persist in DB
+    await supabase.from('groups').delete().eq('user_id', userId);
+    if (gRows.length > 0) {
+      await supabase.from('groups').insert(gRows);
+    }
 
     const mRows = [];
     for (const g of groups) {
