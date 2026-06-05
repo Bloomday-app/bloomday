@@ -1,5 +1,12 @@
 const { createClient } = require('@supabase/supabase-js');
 const { verifyJwt } = require('./lib/verify-jwt');
+const webpush = require('web-push');
+
+webpush.setVapidDetails(
+  'mailto:contact@mybloomday.app',
+  'BCNh1fxQGxaCta7mIdYNO7YSjA3iRG5w6gpayFgMgr0gx8o_voP_jTy4nYMY4e2S9_yq32Z12KYRVYn5pXj-VqA',
+  process.env.VAPID_PRIVATE_KEY || ''
+);
 
 const ADMIN_EMAIL = 'zekingfinance@gmail.com';
 const CORS = { 'Access-Control-Allow-Origin': '*', 'Content-Type': 'application/json' };
@@ -65,10 +72,44 @@ exports.handler = async (event) => {
   }
 
   if (action === 'notify') {
+    const title = typeof body.title === 'string' ? body.title.slice(0, 80) : '';
     const message = typeof body.message === 'string' ? body.message.slice(0, 500) : '';
+    const type = ['announce', 'critical'].includes(body.type) ? body.type : 'announce';
+    const targetType = ['all', 'free', 'premium', 'user'].includes(body.target_type) ? body.target_type : 'all';
+    let targetUid = null;
+    if (targetType === 'user' && body.target_email) {
+      const { data: { users }, error: ue } = await supabase.auth.admin.listUsers();
+      const found = (users || []).find(u => u.email === body.target_email);
+      if (!found) return err(404, 'User not found');
+      targetUid = found.id;
+    }
+
     if (!message) return err(400, 'Missing message');
-    const { error } = await supabase.from('admin_notifications').insert({ message, active: true });
+
+    const { data: notif, error } = await supabase
+      .from('admin_notifications')
+      .insert({ title, message, type, target_type: targetType, target_uid: targetUid, active: true })
+      .select('id')
+      .single();
     if (error) return err(500, error.message);
+
+    if (process.env.VAPID_PRIVATE_KEY) {
+      try {
+        const { data: subs } = await supabase
+          .from('push_subscriptions')
+          .select('endpoint, p256dh, auth');
+        const payload = JSON.stringify({ title: title || 'Bloomday', body: message });
+        await Promise.allSettled((subs || []).map(sub =>
+          webpush.sendNotification(
+            { endpoint: sub.endpoint, keys: { p256dh: sub.p256dh, auth: sub.auth } },
+            payload
+          )
+        ));
+      } catch (pushErr) {
+        console.warn('Push sending error:', pushErr.message);
+      }
+    }
+
     return { statusCode: 200, headers: CORS, body: JSON.stringify({ ok: true }) };
   }
 

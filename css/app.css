@@ -686,3 +686,10 @@ html.dark-mode .dsb-btn.on{background:rgba(212,168,67,.22);box-shadow:inset 0 0 
 .gc-member-row{display:flex;align-items:center;gap:10px;padding:9px 0;font-size:14px;border-bottom:1px solid var(--brd);cursor:pointer;user-select:none}
 .gc-member-row:last-child{border-bottom:none}
 .gc-member-row input[type=checkbox]{width:16px;height:16px;cursor:pointer;flex-shrink:0;accent-color:var(--b3)}
+
+/* ── ADMIN NOTIFICATION COMPOSER ── */
+.admin-notif-pill{padding:6px 14px;border-radius:50px;font-size:13px;font-weight:600;cursor:pointer;border:1.5px solid var(--brd2);background:var(--bg);color:var(--txt2);font-family:'DM Sans',sans-serif;transition:all .15s}
+.admin-notif-pill.on{background:var(--grad);color:#fff;border-color:transparent;box-shadow:0 2px 10px rgba(212,168,67,.25)}
+.admin-notif-type{padding:7px 14px;border-radius:50px;font-size:13px;font-weight:600;cursor:pointer;border:1.5px solid var(--brd);background:var(--card);color:var(--txt2);font-family:'DM Sans',sans-serif;transition:all .15s}
+.admin-notif-type.on[data-type="announce"]{background:var(--b1l);color:var(--b1d);border-color:var(--b1)}
+.admin-notif-type.on[data-type="critical"]{background:var(--b2l);color:var(--b2d);border-color:var(--b2)}

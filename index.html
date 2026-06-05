@@ -234,6 +234,11 @@
       <svg viewBox="0 0 22 22" fill="none" width="18" height="18"><circle cx="11" cy="8" r="4" stroke="currentColor" stroke-width="1.4"/><path d="M3 19c0-4.418 3.582-8 8-8s8 3.582 8 8" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
       <span data-i18n="navProfile">Profil</span>
     </button>
+    <button id="dsb-bell" class="dsb-btn" onclick="openNotifDropdown()" style="display:none;position:relative" title="Notifications">
+      <svg viewBox="0 0 24 24" fill="none" width="18" height="18"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/><path d="M13.73 21a2 2 0 0 1-3.46 0" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+      <span data-i18n="navNotif">Notifs</span>
+      <span id="dsb-bell-badge" style="display:none;width:8px;height:8px;background:#e74c3c;border-radius:50%;margin-left:auto;flex-shrink:0;border:1.5px solid var(--dark)"></span>
+    </button>
   </nav>
   <div id="nav-admin-btn" style="display:none;padding:0 8px">
     <button class="dsb-btn" onclick="showSec('admin',99)" style="background:rgba(212,168,67,.15);border:1px solid rgba(212,168,67,.3)" title="Admin">
@@ -270,6 +275,10 @@
     <div class="ptag" id="tbplan" onclick="openPlanModal()" style="display:none">Bloom ▾</div>
     <button id="tb-logout" class="tb-btn" onclick="doLogoutSupabase()" style="display:none">Déconnexion</button>
     <button id="tb-plans-btn" class="tb-btn" onclick="goLand()" data-i18n="backToPlans" style="display:none">← Plans</button>
+    <button id="tb-bell" onclick="openNotifDropdown()" style="display:none;position:relative;background:none;border:none;cursor:pointer;padding:4px;color:var(--txt2);line-height:1" aria-label="Notifications">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/><path d="M13.73 21a2 2 0 0 1-3.46 0" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+      <span id="tb-bell-badge" style="display:none;position:absolute;top:0;right:0;width:9px;height:9px;background:#e74c3c;border-radius:50%;border:2px solid var(--card)"></span>
+    </button>
   </div>
 </div>
 
@@ -353,9 +362,38 @@
       <input type="search" id="admin-search" placeholder="Rechercher par email…" oninput="adminSearchUsers()" class="inp" style="margin-bottom:10px;width:100%">
       <div id="admin-user-list"></div>
       <div id="admin-user-detail" style="display:none"></div>
-      <div class="sh" style="margin-top:20px;margin-bottom:8px" data-i18n="adminNotifTitle">Notification globale</div>
-      <textarea id="admin-notif-text" class="inp" rows="3" style="width:100%;margin-bottom:8px" placeholder="Message à envoyer à tous…"></textarea>
-      <button class="btn P fw" onclick="adminSendNotif()" data-i18n="adminNotifBtn">Envoyer à tous</button>
+      <div class="sh" style="margin-top:24px;margin-bottom:12px" data-i18n="adminNotifTitle">Notifications</div>
+
+      <!-- Composer -->
+      <div style="background:var(--card);border-radius:var(--rad);padding:16px;border:1px solid var(--brd);margin-bottom:16px">
+        <div style="font-size:11px;font-weight:700;color:var(--txt3);text-transform:uppercase;letter-spacing:.08em;margin-bottom:8px" data-i18n="adminNotifDestinataires">Destinataires</div>
+        <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px">
+          <button class="admin-notif-pill on" data-target="all" onclick="adminNotifPickTarget(this)" data-i18n="adminNotifAll">Tous les utilisateurs</button>
+          <button class="admin-notif-pill" data-target="free" onclick="adminNotifPickTarget(this)" data-i18n="adminNotifFree">Plan Free</button>
+          <button class="admin-notif-pill" data-target="premium" onclick="adminNotifPickTarget(this)" data-i18n="adminNotifPremium">Plan Premium</button>
+          <button class="admin-notif-pill" data-target="user" onclick="adminNotifPickTarget(this)" data-i18n="adminNotifSpecific">Personne spécifique…</button>
+        </div>
+        <div id="admin-notif-email-row" style="display:none;margin-bottom:10px">
+          <input type="email" id="admin-notif-email" class="inp" style="width:100%" data-i18n-placeholder="adminNotifEmailPlaceholder" placeholder="Email de l'utilisateur…">
+        </div>
+        <div style="font-size:11px;font-weight:700;color:var(--txt3);text-transform:uppercase;letter-spacing:.08em;margin-bottom:8px" data-i18n="adminNotifTypeLabel">Type de message</div>
+        <div style="display:flex;gap:6px;margin-bottom:14px">
+          <button class="admin-notif-type on" data-type="announce" onclick="adminNotifPickType(this)" data-i18n="adminNotifAnnounce">📣 Annonce</button>
+          <button class="admin-notif-type" data-type="critical" onclick="adminNotifPickType(this)" data-i18n="adminNotifCritical">⚠️ Urgent</button>
+        </div>
+        <input type="text" id="admin-notif-title-inp" class="inp" style="width:100%;margin-bottom:8px" maxlength="80" data-i18n-placeholder="adminNotifTitlePlaceholder" placeholder="Titre — ex : Nouvelle fonctionnalité 🎉">
+        <textarea id="admin-notif-text" class="inp" rows="3" style="width:100%;margin-bottom:12px" maxlength="500" data-i18n-placeholder="adminNotifMsgPlaceholder" placeholder="Ton message…"></textarea>
+        <button class="btn P fw" onclick="adminSendNotif()" data-i18n="adminNotifSendBtn">Envoyer la notification →</button>
+      </div>
+
+      <!-- Suggestions IA -->
+      <div style="background:var(--card);border-radius:var(--rad);padding:16px;border:1px solid var(--brd)">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+          <span style="font-size:11px;font-weight:700;color:var(--txt3);text-transform:uppercase;letter-spacing:.08em" data-i18n="adminNotifSuggestions">Suggestions du moment ✨</span>
+          <button onclick="adminLoadSuggestions()" style="font-size:12px;color:var(--b1d);background:none;border:none;cursor:pointer;font-family:inherit;font-weight:600" data-i18n="adminNotifRefresh">↻ Nouvelles idées</button>
+        </div>
+        <div id="admin-notif-suggestions"></div>
+      </div>
       <div class="sh" style="margin-top:20px;margin-bottom:8px" data-i18n="adminBrowseTitle">Naviguer dans l'app</div>
       <button class="btn O fw" onclick="showSec('home',0)" data-i18n="adminBrowseBtn">Voir l'app comme un utilisateur →</button>
     </div>
@@ -363,6 +401,26 @@
 </div><!-- end scroll -->
 <div class="desktop-right-panel" id="desktop-right-panel"></div>
 </div><!-- end app-content -->
+
+<!-- Notification dropdown -->
+<div id="notif-overlay" onclick="closeNotifDropdown()" style="display:none;position:fixed;inset:0;z-index:1500"></div>
+<div id="notif-dropdown" style="display:none;position:fixed;z-index:1501;background:var(--card);border:1.5px solid var(--brd);border-radius:var(--rad);box-shadow:0 8px 32px rgba(45,27,20,.18);width:min(340px,calc(100vw - 32px));max-height:480px;overflow-y:auto">
+  <div style="display:flex;justify-content:space-between;align-items:center;padding:14px 16px 10px;border-bottom:1px solid var(--brd);position:sticky;top:0;background:var(--card);z-index:1">
+    <span style="font-family:'Playfair Display',serif;font-size:15px;font-weight:800;color:var(--txt)" data-i18n="notifPanelTitle">Notifications</span>
+    <button onclick="markAllNotifsRead()" style="font-size:12px;color:var(--b1d);background:none;border:none;cursor:pointer;font-family:inherit;font-weight:600" data-i18n="notifMarkAllRead">Tout marquer lu</button>
+  </div>
+  <div id="notif-list" style="padding:4px 0"></div>
+</div>
+
+<!-- Notification critique (modal) -->
+<div id="notif-critical-ov" style="display:none;position:fixed;inset:0;background:rgba(45,27,20,.6);z-index:2100;align-items:center;justify-content:center;padding:20px">
+  <div style="background:var(--card);border-radius:var(--rad);padding:28px 24px;max-width:380px;width:100%;text-align:center;box-shadow:0 8px 40px rgba(45,27,20,.25)">
+    <div id="notif-critical-icon" style="font-size:40px;margin-bottom:12px">📣</div>
+    <div id="notif-critical-title" style="font-family:'Playfair Display',serif;font-size:18px;font-weight:800;color:var(--txt);margin-bottom:10px"></div>
+    <div id="notif-critical-body" style="font-size:14px;color:var(--txt2);line-height:1.6;margin-bottom:20px"></div>
+    <button onclick="closeCriticalNotif()" style="width:100%;padding:14px;background:var(--grad);color:#fff;border:none;border-radius:var(--rad-sm);font-size:15px;font-weight:700;cursor:pointer;font-family:inherit" data-i18n="notifCriticalAck">J'ai compris ✓</button>
+  </div>
+</div>
 
 <div class="nav">
   <button class="nb on" id="nb0" onclick="showSec('home',0)">

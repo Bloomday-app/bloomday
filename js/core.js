@@ -346,6 +346,12 @@ function renderPlanDetail(){}
 
 // ── GROUPES ──
 var _gcMenuGroupId = null;
+
+// ── NOTIFICATIONS ──
+var _adminNotifs = [];
+var _adminNotifReads = new Set();
+var _criticalNotifId = null;
+var _adminSuggestions = [];
 function rGbar(){
   const b=document.getElementById('gbar');if(!b)return;
   var _allDefNames=Object.keys(I18N).map(function(lang){return I18N[lang].myGroup;}).filter(Boolean);
@@ -696,6 +702,7 @@ async function rAdmin(){
   var elPrem=document.getElementById('stat-premium');if(elPrem)elPrem.textContent=s.premiumUsers||0;
   var elConv=document.getElementById('stat-conv');if(elConv)elConv.textContent=conv;
   adminLoadUsers(token,0,'');
+  adminLoadSuggestions();
 }
 
 async function adminLoadUsers(token,page,search){
@@ -744,21 +751,265 @@ async function adminShowUser(uid,token){
   el.appendChild(card);
 }
 
+function adminNotifPickTarget(btn){
+  document.querySelectorAll('.admin-notif-pill').forEach(function(b){b.classList.remove('on');});
+  btn.classList.add('on');
+  var emailRow=document.getElementById('admin-notif-email-row');
+  if(emailRow)emailRow.style.display=btn.dataset.target==='user'?'block':'none';
+}
+
+function adminNotifPickType(btn){
+  document.querySelectorAll('.admin-notif-type').forEach(function(b){b.classList.remove('on');});
+  btn.classList.add('on');
+}
+
 async function adminSendNotif(){
-  var msgEl=document.getElementById('admin-notif-text');var msg=msgEl?msgEl.value.trim():'';
-  if(!msg)return;
-  var sess=(await window._supabase.auth.getSession()).data.session;
-  if(!sess)return;
-  var r=await fetch('/.netlify/functions/admin',{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+sess.access_token},body:JSON.stringify({action:'notify',message:msg})});
+  var titleEl=document.getElementById('admin-notif-title-inp');
+  var msgEl=document.getElementById('admin-notif-text');
+  var title=(titleEl&&titleEl.value||'').trim();
+  var msg=(msgEl&&msgEl.value||'').trim();
+  if(!title||!msg){showToast(t('errorRequired')||'Titre et message requis');return;}
+
+  var targetBtn=document.querySelector('.admin-notif-pill.on');
+  var typeBtn=document.querySelector('.admin-notif-type.on');
+  var targetType=(targetBtn&&targetBtn.dataset.target)||'all';
+  var type=(typeBtn&&typeBtn.dataset.type)||'announce';
+
+  var targetEmail=null;
+  if(targetType==='user'){
+    var emailEl=document.getElementById('admin-notif-email');
+    targetEmail=(emailEl&&emailEl.value||'').trim();
+    if(!targetEmail){showToast(t('errorRequired')||'Email requis');return;}
+  }
+
+  var sess=await window._supabase.auth.getSession();
+  var token=sess&&sess.data&&sess.data.session&&sess.data.session.access_token;
+  if(!token)return;
+
+  var r=await fetch('/.netlify/functions/admin',{
+    method:'POST',
+    headers:{'Content-Type':'application/json','Authorization':'Bearer '+token},
+    body:JSON.stringify({action:'notify',title:title,message:msg,type:type,target_type:targetType,target_email:targetEmail})
+  });
   var d=await r.json();
-  if(d.ok){if(msgEl)msgEl.value='';alert(t('adminNotifSent'));}
+  if(d.ok){
+    if(titleEl)titleEl.value='';
+    if(msgEl)msgEl.value='';
+    showToast(t('adminNotifSent')||'Notification envoyée !');
+  }else{
+    showToast(d.error||'Erreur');
+  }
+}
+
+async function adminLoadSuggestions(){
+  var el=document.getElementById('admin-notif-suggestions');
+  if(!el)return;
+  el.innerHTML='<div style="padding:12px;color:var(--txt2);font-size:13px">'+t('adminNotifSugLoading')+'</div>';
+
+  var totalEl=document.getElementById('stat-total');
+  var userCount=totalEl?totalEl.textContent:'?';
+  var month=new Date().toLocaleString('fr',{month:'long'});
+
+  var prompt='Tu es assistant pour Bloomday, une app d\'anniversaires. Génère exactement 3 suggestions de notifications push pour les utilisateurs. Contexte : '+userCount+' utilisateurs, nous sommes en '+month+'. Format JSON strict : [{"tag":"jalon|saison|astuce","title":"...","body":"..."},{"tag":"...","title":"...","body":"..."},{"tag":"...","title":"...","body":"..."}]. Les messages doivent être chaleureux, personnels, max 120 chars pour body. Réponds uniquement avec le JSON.';
+
+  try{
+    var r=await fetch('/.netlify/functions/chat',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({message:prompt,history:[]})
+    });
+    var d=await r.json();
+    var raw=d.reply||'';
+    var match=raw.match(/\[[\s\S]*\]/);
+    if(!match)throw new Error('bad json');
+    var sugs=JSON.parse(match[0]);
+    renderAdminSuggestions(sugs,el);
+  }catch(e){
+    el.innerHTML='<div style="padding:12px;color:var(--txt2);font-size:13px">'+t('adminNotifSugError')+'</div>';
+  }
+}
+
+function renderAdminSuggestions(sugs,el){
+  _adminSuggestions=sugs;
+  var tagColors={jalon:'var(--b1l)|var(--b1d)',saison:'var(--b3l)|var(--b3)',astuce:'var(--b2l)|#8B2A1A'};
+  el.innerHTML=sugs.map(function(s,i){
+    var colors=(tagColors[s.tag]||'var(--bg2)|var(--txt2)').split('|');
+    return '<div style="border:1.5px solid var(--brd);border-radius:var(--rad-sm);padding:14px 16px;margin-bottom:10px">'+
+      '<div style="display:flex;gap:8px;align-items:flex-start;margin-bottom:6px">'+
+      '<div style="font-size:14px;font-weight:700;color:var(--txt);flex:1;line-height:1.35">'+esc(s.title)+'</div>'+
+      '<span style="font-size:10px;font-weight:700;padding:2px 9px;border-radius:10px;background:'+colors[0]+';color:'+colors[1]+';white-space:nowrap">'+esc(s.tag)+'</span>'+
+      '</div>'+
+      '<div style="font-size:13px;color:var(--txt2);line-height:1.5;margin-bottom:10px">'+esc(s.body)+'</div>'+
+      '<div style="display:flex;gap:7px">'+
+      '<button onclick="adminSugEdit('+i+')" style="flex:1;padding:8px;border:1.5px solid var(--brd2);border-radius:9px;font-size:12px;font-weight:600;color:var(--txt2);background:transparent;font-family:\'DM Sans\',sans-serif;cursor:pointer" data-i18n="adminNotifModify">✏️ Modifier</button>'+
+      '<button onclick="adminSugSend('+i+')" style="flex:1;padding:8px;background:var(--grad);border:none;border-radius:9px;font-size:12px;font-weight:700;color:#fff;font-family:\'DM Sans\',sans-serif;cursor:pointer" data-i18n="adminNotifSendBtn">Envoyer →</button>'+
+      '</div>'+
+      '</div>';
+  }).join('');
+}
+
+function adminSugEdit(i){
+  var s=_adminSuggestions[i];
+  if(!s)return;
+  var titleEl=document.getElementById('admin-notif-title-inp');
+  var msgEl=document.getElementById('admin-notif-text');
+  if(titleEl)titleEl.value=s.title||'';
+  if(msgEl)msgEl.value=s.body||'';
+  if(titleEl)titleEl.scrollIntoView({behavior:'smooth',block:'center'});
+}
+
+async function adminSugSend(i){
+  var s=_adminSuggestions[i];
+  if(!s)return;
+  var sess=await window._supabase.auth.getSession();
+  var token=sess&&sess.data&&sess.data.session&&sess.data.session.access_token;
+  if(!token)return;
+  var r=await fetch('/.netlify/functions/admin',{
+    method:'POST',
+    headers:{'Content-Type':'application/json','Authorization':'Bearer '+token},
+    body:JSON.stringify({action:'notify',title:s.title,message:s.body,type:'announce',target_type:'all',target_email:null})
+  });
+  var d=await r.json();
+  if(d.ok)showToast(t('adminNotifSent')||'Notification envoyée !');
+  else showToast(d.error||'Erreur');
 }
 
 async function checkAdminNotifications(){
   if(!window.currentUser)return;
   try{
-    var r=await window._supabase.from('admin_notifications').select('message').eq('active',true).order('created_at',{ascending:false}).limit(1);
-    if(r.data&&r.data.length>0){var b=document.getElementById('offline-banner');if(b){b.textContent=r.data[0].message;b.style.display='block';}}
+    var uid=currentUser.uid;
+    var r=await window._supabase.from('admin_notifications').select('*').eq('active',true).order('created_at',{ascending:false});
+    if(!r.data||!r.data.length){updateBellBadge(0);return;}
+
+    var rr=await window._supabase.from('user_notification_reads').select('notification_id').eq('user_id',uid);
+    var readSet=new Set((rr.data||[]).map(function(x){return x.notification_id;}));
+    _adminNotifReads=readSet;
+
+    var userPlan=(window.stats&&window.stats.plan)||'free';
+    var visible=r.data.filter(function(n){
+      if(n.target_type==='all')return true;
+      if(n.target_type==='free'&&userPlan==='free')return true;
+      if(n.target_type==='premium'&&userPlan!=='free')return true;
+      if(n.target_type==='user'&&n.target_uid===uid)return true;
+      return false;
+    });
+    _adminNotifs=visible;
+
+    var unread=visible.filter(function(n){return!readSet.has(n.id);});
+    updateBellBadge(unread.length);
+
+    var critical=unread.find(function(n){return n.type==='critical';});
+    if(critical)showCriticalNotif(critical);
+  }catch(e){}
+}
+
+function updateBellBadge(count){
+  var tbBell=document.getElementById('tb-bell');
+  var dsbBell=document.getElementById('dsb-bell');
+  var tbBadge=document.getElementById('tb-bell-badge');
+  var dsbBadge=document.getElementById('dsb-bell-badge');
+  if(tbBell)tbBell.style.display=window.currentUser?'flex':'none';
+  if(dsbBell)dsbBell.style.display=window.currentUser?'flex':'none';
+  if(tbBadge)tbBadge.style.display=count>0?'block':'none';
+  if(dsbBadge)dsbBadge.style.display=count>0?'block':'none';
+}
+
+function showCriticalNotif(notif){
+  _criticalNotifId=notif.id;
+  var ov=document.getElementById('notif-critical-ov');
+  var titleEl=document.getElementById('notif-critical-title');
+  var bodyEl=document.getElementById('notif-critical-body');
+  if(!ov)return;
+  if(titleEl)titleEl.textContent=notif.title||'';
+  if(bodyEl)bodyEl.textContent=notif.message||'';
+  ov.style.display='flex';
+}
+
+async function closeCriticalNotif(){
+  var ov=document.getElementById('notif-critical-ov');
+  if(ov)ov.style.display='none';
+  if(_criticalNotifId&&window.currentUser){
+    try{
+      await window._supabase.from('user_notification_reads').upsert({user_id:currentUser.uid,notification_id:_criticalNotifId},{onConflict:'user_id,notification_id'});
+      _adminNotifReads.add(_criticalNotifId);
+    }catch(e){}
+    _criticalNotifId=null;
+    updateBellBadge(_adminNotifs.filter(function(n){return!_adminNotifReads.has(n.id);}).length);
+  }
+}
+
+function formatNotifAge(isoDate){
+  var diff=Date.now()-new Date(isoDate).getTime();
+  var min=Math.floor(diff/60000);
+  var h=Math.floor(min/60);
+  var d=Math.floor(h/24);
+  if(d>=7)return new Date(isoDate).toLocaleDateString();
+  if(d>=1)return (t('daysAgo')||'Il y a %nj').replace('%n',d);
+  if(h>=1)return 'Il y a '+h+'h';
+  if(min>=1)return 'Il y a '+min+' min';
+  return 'À l\'instant';
+}
+
+function openNotifDropdown(){
+  var dropdown=document.getElementById('notif-dropdown');
+  var overlay=document.getElementById('notif-overlay');
+  if(!dropdown||!overlay)return;
+  var bell=document.getElementById('tb-bell')||document.getElementById('dsb-bell');
+  if(bell){
+    var rect=bell.getBoundingClientRect();
+    var rightOffset=window.innerWidth-rect.right;
+    dropdown.style.top=(rect.bottom+8)+'px';
+    dropdown.style.right=Math.max(8,rightOffset)+'px';
+    dropdown.style.left='auto';
+  }
+  renderNotifList();
+  overlay.style.display='block';
+  dropdown.style.display='block';
+  markAllNotifsRead();
+}
+
+function closeNotifDropdown(){
+  var d=document.getElementById('notif-dropdown');
+  var o=document.getElementById('notif-overlay');
+  if(d)d.style.display='none';
+  if(o)o.style.display='none';
+}
+
+function renderNotifList(){
+  var el=document.getElementById('notif-list');
+  if(!el)return;
+  if(!_adminNotifs.length){
+    el.innerHTML='<div style="padding:24px 16px;text-align:center;color:var(--txt3);font-size:13px">'+t('notifEmpty')+'</div>';
+    return;
+  }
+  el.innerHTML=_adminNotifs.map(function(n,i){
+    var isRead=_adminNotifReads.has(n.id);
+    var age=formatNotifAge(n.created_at);
+    var sep=i<_adminNotifs.length-1?'<div style="height:1px;background:var(--brd);margin:0 16px"></div>':'';
+    return '<div style="display:flex;gap:10px;align-items:flex-start;padding:12px 16px;'+(isRead?'opacity:.65':'background:var(--b1l)')+'">'+
+      '<span style="font-size:18px;margin-top:1px">📣</span>'+
+      '<div style="flex:1;min-width:0">'+
+      '<div style="font-size:13px;font-weight:'+(isRead?'600':'700')+';color:var(--txt);margin-bottom:2px">'+esc(n.title||'')+'</div>'+
+      '<div style="font-size:12px;color:var(--txt2);line-height:1.45;word-break:break-word">'+esc(n.message)+'</div>'+
+      '<div style="font-size:11px;color:var(--txt3);margin-top:4px">'+age+'</div>'+
+      '</div>'+
+      (!isRead?'<span style="width:8px;height:8px;background:var(--b1);border-radius:50%;flex-shrink:0;margin-top:5px"></span>':'')+
+      '</div>'+sep;
+  }).join('');
+}
+
+async function markAllNotifsRead(){
+  if(!window.currentUser||!_adminNotifs.length)return;
+  var uid=currentUser.uid;
+  var unread=_adminNotifs.filter(function(n){return!_adminNotifReads.has(n.id);});
+  if(!unread.length)return;
+  try{
+    await window._supabase.from('user_notification_reads').upsert(
+      unread.map(function(n){return{user_id:uid,notification_id:n.id};}),
+      {onConflict:'user_id,notification_id'}
+    );
+    unread.forEach(function(n){_adminNotifReads.add(n.id);});
+    updateBellBadge(0);
   }catch(e){}
 }
 
