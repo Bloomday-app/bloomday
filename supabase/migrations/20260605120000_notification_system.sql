@@ -15,8 +15,10 @@ CREATE TABLE IF NOT EXISTS user_notification_reads (
 
 ALTER TABLE user_notification_reads ENABLE ROW LEVEL SECURITY;
 
-CREATE POLICY "reads_own_select" ON user_notification_reads
+CREATE POLICY IF NOT EXISTS "reads_own_select" ON user_notification_reads
   FOR SELECT USING (auth.uid() = user_id);
 
-CREATE POLICY "reads_own_insert" ON user_notification_reads
+CREATE POLICY IF NOT EXISTS "reads_own_insert" ON user_notification_reads
   FOR INSERT WITH CHECK (auth.uid() = user_id);
+
+CREATE INDEX IF NOT EXISTS idx_unr_notification_id ON user_notification_reads (notification_id);
