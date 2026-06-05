@@ -633,7 +633,9 @@ function showFlowerIdeas(name, eventType) {
 
     var link = document.createElement('a');
     link.className = 'flower-link';
-    link.href = f.url;
+    link.href = (f.url && f.url !== '#')
+      ? f.url
+      : 'https://www.google.fr/search?q=' + encodeURIComponent('livraison ' + f.name + ' france');
     link.target = '_blank';
     link.rel = 'noopener noreferrer';
     link.textContent = t('flowerSeeBtn');
