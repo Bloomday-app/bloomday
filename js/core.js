@@ -419,8 +419,10 @@ function selGrpIcon(btn){
   btn.classList.add('on');
 }
 function openRenameGroup(){
+  var gid=_gcMenuGroupId;
   closeGroupMenu();
-  if(!_gcMenuGroupId)return;
+  if(!gid)return;
+  _gcMenuGroupId=gid;
   var g=groups.find(function(x){return x.id===_gcMenuGroupId;});
   if(!g)return;
   var inp=document.getElementById('mrename-inp');
@@ -439,8 +441,10 @@ function confirmRenameGroup(){
   saveG();closeOv('mrename');refresh();
 }
 function openDeleteGroup(){
+  var gid=_gcMenuGroupId;
   closeGroupMenu();
-  if(!_gcMenuGroupId)return;
+  if(!gid)return;
+  _gcMenuGroupId=gid;
   if(groups.length<=1){alert(t('groupCannotDeleteLast'));return;}
   var g=groups.find(function(x){return x.id===_gcMenuGroupId;});
   if(!g)return;
