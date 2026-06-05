@@ -93,11 +93,14 @@ exports.handler = async (event) => {
       .single();
     if (error) return err(500, error.message);
 
-    if (process.env.VAPID_PRIVATE_KEY) {
+    // Push web : filtré selon la même cible que la notif DB
+    if (process.env.VAPID_PRIVATE_KEY && (targetType === 'all' || targetType === 'user')) {
       try {
-        const { data: subs } = await supabase
-          .from('push_subscriptions')
-          .select('endpoint, p256dh, auth');
+        let subsQuery = supabase.from('push_subscriptions').select('endpoint, p256dh, auth');
+        if (targetType === 'user' && targetUid) {
+          subsQuery = subsQuery.eq('user_id', targetUid);
+        }
+        const { data: subs } = await subsQuery;
         const payload = JSON.stringify({ title: title || 'Bloomday', body: message });
         await Promise.allSettled((subs || []).map(sub =>
           webpush.sendNotification(
