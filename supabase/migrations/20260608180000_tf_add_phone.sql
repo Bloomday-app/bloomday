@@ -31,8 +31,8 @@ BEGIN
   UPDATE survey_members SET
     first_name    = COALESCE(NULLIF(TRIM(p_first_name), ''), first_name),
     last_name     = COALESCE(NULLIF(TRIM(p_last_name),  ''), last_name),
-    phone_code    = p_phone_code,
-    phone_number  = p_phone_number,
+    phone_code    = COALESCE(NULLIF(TRIM(p_phone_code),   ''), phone_code),
+    phone_number  = COALESCE(NULLIF(TRIM(p_phone_number), ''), phone_number),
     birth_day     = p_birth_day,
     birth_month   = p_birth_month,
     birth_year    = p_birth_year,
