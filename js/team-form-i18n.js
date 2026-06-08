@@ -45,7 +45,16 @@ var TF_I18N = {
     createNewTeam: '+ Créer une nouvelle équipe',
     managerLabel: 'Manager :',
     importMember: '🌸 Importer ce contact',
-    importAllMembers: '🌸 Tout importer dans Bloomday'
+    importAllMembers: '🌸 Tout importer dans Bloomday',
+    tfDeleteBtn: 'Supprimer',
+    tfDeleteConfirmTitle: 'Supprimer « %name » ?',
+    tfDeleteConfirmMsg: 'Cette action est irréversible. Le formulaire et toutes les réponses seront définitivement supprimés.',
+    tfDeleteMembersTitle: 'Membres à conserver dans Bloomday',
+    tfDeleteMembersDesc: 'Ces membres ont été importés depuis cette équipe. Décochez ceux que vous voulez supprimer de Bloomday.',
+    tfSelectAll: 'Tout sélectionner',
+    tfDeselectAll: 'Tout décocher',
+    tfDeleting: 'Suppression…',
+    tfDeleteSuccess: 'Équipe supprimée'
   },
   en: {
     title: 'Team Form',
@@ -93,7 +102,16 @@ var TF_I18N = {
     createNewTeam: '+ Create a new team',
     managerLabel: 'Manager:',
     importMember: '🌸 Import this contact',
-    importAllMembers: '🌸 Import all to Bloomday'
+    importAllMembers: '🌸 Import all to Bloomday',
+    tfDeleteBtn: 'Delete',
+    tfDeleteConfirmTitle: 'Delete "%name"?',
+    tfDeleteConfirmMsg: 'This action is irreversible. The form and all responses will be permanently deleted.',
+    tfDeleteMembersTitle: 'Members to keep in Bloomday',
+    tfDeleteMembersDesc: 'These members were imported from this team. Uncheck those you want to remove from Bloomday.',
+    tfSelectAll: 'Select all',
+    tfDeselectAll: 'Deselect all',
+    tfDeleting: 'Deleting…',
+    tfDeleteSuccess: 'Team deleted'
   }
 };
 
