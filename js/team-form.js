@@ -667,7 +667,23 @@ function tfRenderMemberForm() {
 
   TF.selectedGender = '';
   document.getElementById('tf-member-form').innerHTML =
-    '<p style="font-size:15px;font-weight:700;margin-bottom:16px">👋 ' + tfEsc(m.first_name) + ' ' + tfEsc(m.last_name) + '</p>'
+    '<h2 style="font-size:14px;font-weight:700;color:var(--txt2);text-transform:uppercase;letter-spacing:.5px;margin-bottom:12px">' + tfT('yourInfo') + '</h2>'
+    + '<label>' + tfT('firstName') + '</label>'
+    + '<input id="tf-inp-edit-first" type="text" value="' + tfEsc(m.first_name) + '" autocomplete="given-name">'
+    + '<label>' + tfT('lastName') + '</label>'
+    + '<input id="tf-inp-edit-last" type="text" value="' + tfEsc(m.last_name) + '" autocomplete="family-name">'
+    + '<label>' + tfT('phoneOptional') + '</label>'
+    + '<div style="display:flex;gap:8px;margin-bottom:12px">'
+    + '<select id="tf-phone-code" style="width:150px;flex-shrink:0;margin-bottom:0">'
+    + TF_PHONE_CODES.map(function(c) {
+        return '<option value="' + c.code + '"'
+          + (c.code === '+33' && c.name === 'France' ? ' selected' : '')
+          + '>' + c.flag + ' ' + c.code + ' — ' + c.name + '</option>';
+      }).join('')
+    + '</select>'
+    + '<input id="tf-phone-number" type="tel" style="flex:1;margin-bottom:0" placeholder="' + tfT('phonePlaceholder') + '">'
+    + '</div>'
+    + '<hr style="border:none;border-top:1px solid var(--brd);margin:4px 0 16px">'
     + '<label>' + tfT('birthDate') + '</label>'
     + '<div style="display:grid;grid-template-columns:1fr 2fr 1fr;gap:8px;margin-bottom:12px">'
     + '<input id="tf-birth-day" type="number" min="1" max="31" placeholder="' + tfT('day') + '">'
