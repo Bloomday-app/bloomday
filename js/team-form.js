@@ -677,8 +677,8 @@ function tfRenderMemberForm() {
     + '<select id="tf-phone-code" style="width:150px;flex-shrink:0;margin-bottom:0">'
     + TF_PHONE_CODES.map(function(c) {
         return '<option value="' + c.code + '"'
-          + (c.code === '+33' && c.name === 'France' ? ' selected' : '')
-          + '>' + c.flag + ' ' + c.code + ' — ' + c.name + '</option>';
+          + (c.code === '+33' ? ' selected' : '')
+          + '>' + c.flag + ' ' + c.code + ' — ' + tfEsc(c.name) + '</option>';
       }).join('')
     + '</select>'
     + '<input id="tf-phone-number" type="tel" style="flex:1;margin-bottom:0" placeholder="' + tfT('phonePlaceholder') + '">'
