@@ -103,14 +103,18 @@ function tfSaveAdminToken(token, teamName, managerName) {
 }
 
 function tfMergeAndSaveTeams(remoteTeams) {
+  if (!Array.isArray(remoteTeams)) return;
+  var previousLast = localStorage.getItem('tf_admin_token');
   var teams = tfGetSavedTeams();
   var localTokens = {};
   teams.forEach(function(t) { localTokens[t.token] = true; });
   remoteTeams.forEach(function(t) {
+    if (!t.token) return;
     if (!localTokens[t.token]) {
       tfSaveAdminToken(t.token, t.team_name, t.manager_name);
     }
   });
+  if (previousLast !== null) localStorage.setItem('tf_admin_token', previousLast);
 }
 
 function tfToast(msg, ms) {
