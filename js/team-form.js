@@ -553,7 +553,7 @@ function tfUpdateLocalStorage(groupId, groupName, rows) {
       if (!g.members.find(function(x) { return String(x.id) === String(r.id); })) {
         g.members.push({
           id: r.id, name: r.name, day: r.day, month: r.month, year: r.year || null,
-          phone: '', note: r.note || '', type: 'birthday', gender: r.gender || '',
+          phone: r.phone || '', note: r.note || '', type: 'birthday', gender: r.gender || '',
           incomplete: false, notif_days_before: null, notif_time: null
         });
       }
