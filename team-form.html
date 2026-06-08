@@ -63,7 +63,7 @@
     .tf-topbar-logo img{width:26px;height:26px;object-fit:contain;border-radius:6px}
     .tf-topbar-logo span{font-family:'Playfair Display',serif;font-size:18px;font-weight:800;color:var(--txt)}
     .tf-topbar-right{width:80px}
-    #tf-modal-qr{position:fixed;inset:0;background:rgba(45,27,20,.6);z-index:100;align-items:center;justify-content:center;padding:20px}
+    #tf-modal-qr,#tf-modal-delete{position:fixed;inset:0;background:rgba(45,27,20,.6);z-index:100;align-items:center;justify-content:center;padding:20px}
     .tf-modal-inner{background:var(--bg2);border-radius:var(--rad);padding:24px;max-width:300px;width:100%;text-align:center;box-shadow:0 8px 40px rgba(0,0,0,.3)}
     @media print{body>*{display:none!important}#tf-modal-qr{display:flex!important;position:static;background:none;padding:0}}
   </style>
@@ -131,6 +131,10 @@
       <div id="tf-modal-qr-url" style="font-size:11px;color:var(--txt3);word-break:break-all;margin-bottom:16px"></div>
       <button onclick="window.print()" class="btn btn-primary" id="tf-modal-print-btn">Imprimer</button>
     </div>
+  </div>
+
+  <div id="tf-modal-delete" style="display:none">
+    <div class="tf-modal-inner" id="tf-modal-delete-inner"></div>
   </div>
 
   <div class="toast" id="tf-toast"></div>
