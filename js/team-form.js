@@ -24,6 +24,45 @@ var TF = {
 };
 var TF_DELETE = { token: null, teamName: null, groupId: null, bloomdayMembers: [] };
 
+var TF_PHONE_CODES = [
+  { code: '+33',  flag: '🇫🇷', name: 'France' },
+  { code: '+32',  flag: '🇧🇪', name: 'Belgique / Belgium' },
+  { code: '+41',  flag: '🇨🇭', name: 'Suisse / Schweiz' },
+  { code: '+1',   flag: '🇨🇦', name: 'Canada' },
+  { code: '+44',  flag: '🇬🇧', name: 'Royaume-Uni / UK' },
+  { code: '+49',  flag: '🇩🇪', name: 'Allemagne / Deutschland' },
+  { code: '+34',  flag: '🇪🇸', name: 'Espagne / España' },
+  { code: '+39',  flag: '🇮🇹', name: 'Italie / Italia' },
+  { code: '+351', flag: '🇵🇹', name: 'Portugal' },
+  { code: '+31',  flag: '🇳🇱', name: 'Pays-Bas / Nederland' },
+  { code: '+212', flag: '🇲🇦', name: 'Maroc' },
+  { code: '+213', flag: '🇩🇿', name: 'Algérie' },
+  { code: '+216', flag: '🇹🇳', name: 'Tunisie' },
+  { code: '+221', flag: '🇸🇳', name: 'Sénégal' },
+  { code: '+225', flag: '🇨🇮', name: "Côte d'Ivoire" },
+  { code: '+237', flag: '🇨🇲', name: 'Cameroun' },
+  { code: '+243', flag: '🇨🇩', name: 'Congo (RDC)' },
+  { code: '+242', flag: '🇨🇬', name: 'Congo (Brazzaville)' },
+  { code: '+241', flag: '🇬🇦', name: 'Gabon' },
+  { code: '+226', flag: '🇧🇫', name: 'Burkina Faso' },
+  { code: '+223', flag: '🇲🇱', name: 'Mali' },
+  { code: '+229', flag: '🇧🇯', name: 'Bénin' },
+  { code: '+228', flag: '🇹🇬', name: 'Togo' },
+  { code: '+227', flag: '🇳🇪', name: 'Niger' },
+  { code: '+261', flag: '🇲🇬', name: 'Madagascar' },
+  { code: '+262', flag: '🇷🇪', name: 'Réunion' },
+  { code: '+596', flag: '🇲🇶', name: 'Martinique' },
+  { code: '+590', flag: '🇬🇵', name: 'Guadeloupe' },
+  { code: '+689', flag: '🇵🇫', name: 'Polynésie française' },
+  { code: '+55',  flag: '🇧🇷', name: 'Brésil / Brasil' },
+  { code: '+1',   flag: '🇺🇸', name: 'États-Unis / USA' },
+  { code: '+52',  flag: '🇲🇽', name: 'Mexique / México' },
+  { code: '+91',  flag: '🇮🇳', name: 'Inde / India' },
+  { code: '+86',  flag: '🇨🇳', name: 'Chine / China' },
+  { code: '+81',  flag: '🇯🇵', name: 'Japon / Japan' },
+  { code: '+7',   flag: '🇷🇺', name: 'Russie / Россия' }
+];
+
 window.addEventListener('DOMContentLoaded', function() {
   var params = new URLSearchParams(window.location.search);
   TF.adminToken = params.get('admin');
