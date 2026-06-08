@@ -70,14 +70,16 @@ window.addEventListener('DOMContentLoaded', async function() {
   if (TF.memberToken) { TF.mode = 'member'; tfInitMember(); }
   else if (TF.adminToken) { TF.mode = 'dashboard'; tfInitDashboard(); }
   else {
-    var sessRes = await supabase.auth.getSession();
-    var userId = sessRes.data && sessRes.data.session && sessRes.data.session.user && sessRes.data.session.user.id;
-    if (userId) {
-      var syncRes = await supabase.rpc('tf_get_my_surveys');
-      if (!syncRes.error && Array.isArray(syncRes.data)) {
-        tfMergeAndSaveTeams(syncRes.data);
+    try {
+      var sessRes = await supabase.auth.getSession();
+      var userId = sessRes.data && sessRes.data.session && sessRes.data.session.user && sessRes.data.session.user.id;
+      if (userId) {
+        var syncRes = await supabase.rpc('tf_get_my_surveys');
+        if (!syncRes.error && Array.isArray(syncRes.data)) {
+          tfMergeAndSaveTeams(syncRes.data);
+        }
       }
-    }
+    } catch(e) { /* sync failed, fall through to localStorage */ }
     var savedTeams = tfGetSavedTeams();
     if (savedTeams.length > 0) { TF.mode = 'teams'; tfInitTeams(); return; }
     var legacyToken = localStorage.getItem('tf_admin_token');
