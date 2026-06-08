@@ -724,15 +724,20 @@ function tfToggleMarried(checked) {
 
 async function tfSubmitMember() {
   if (TF.submitting) return;
-  var birthDay = parseInt(document.getElementById('tf-birth-day').value) || null;
+  var firstName = (document.getElementById('tf-inp-edit-first').value || '').trim();
+  var lastName  = (document.getElementById('tf-inp-edit-last').value  || '').trim();
+  if (!firstName || !lastName) { alert(tfT('errorRequired')); return; }
+  var phoneCode   = document.getElementById('tf-phone-code').value || null;
+  var phoneNumber = (document.getElementById('tf-phone-number').value || '').trim() || null;
+  var birthDay   = parseInt(document.getElementById('tf-birth-day').value)   || null;
   var birthMonth = parseInt(document.getElementById('tf-birth-month').value) || null;
-  var birthYear = parseInt(document.getElementById('tf-birth-year').value) || null;
+  var birthYear  = parseInt(document.getElementById('tf-birth-year').value)  || null;
   if (!birthDay || !birthMonth) { alert(tfT('errorRequired')); return; }
-  var married = document.getElementById('tf-married').checked;
+  var married    = document.getElementById('tf-married').checked;
   var spouseName = married ? (document.getElementById('tf-spouse-name').value || '').trim() : null;
-  var wedDay = married ? (parseInt(document.getElementById('tf-wed-day').value) || null) : null;
-  var wedMonth = married ? (parseInt(document.getElementById('tf-wed-month').value) || null) : null;
-  var wedYear = married ? (parseInt(document.getElementById('tf-wed-year').value) || null) : null;
+  var wedDay     = married ? (parseInt(document.getElementById('tf-wed-day').value)   || null) : null;
+  var wedMonth   = married ? (parseInt(document.getElementById('tf-wed-month').value) || null) : null;
+  var wedYear    = married ? (parseInt(document.getElementById('tf-wed-year').value)  || null) : null;
   if (married && (!spouseName || !wedDay || !wedMonth)) { alert(tfT('errorRequired')); return; }
 
   TF.submitting = true;
@@ -741,10 +746,14 @@ async function tfSubmitMember() {
 
   var res = await supabase.rpc('tf_submit_member_form', {
     p_member_token:  TF.memberToken,
-    p_birth_day:     birthDay,  p_birth_month: birthMonth,  p_birth_year: birthYear,
+    p_first_name:    firstName,
+    p_last_name:     lastName,
+    p_birth_day:     birthDay,   p_birth_month: birthMonth, p_birth_year: birthYear,
     p_gender:        TF.selectedGender || null,
-    p_married:       married,   p_spouse_name: spouseName,
-    p_wedding_day:   wedDay,    p_wedding_month: wedMonth,  p_wedding_year: wedYear
+    p_married:       married,    p_spouse_name: spouseName,
+    p_wedding_day:   wedDay,     p_wedding_month: wedMonth, p_wedding_year: wedYear,
+    p_phone_code:    phoneNumber ? phoneCode : null,
+    p_phone_number:  phoneNumber || null
   });
 
   TF.submitting = false;
@@ -760,6 +769,8 @@ async function tfSubmitMember() {
     alert(isNetwork ? tfT('errorNetwork') : (res.error ? 'Erreur : ' + res.error.message : tfT('errorRequired')));
     return;
   }
+  TF.currentMember.first_name = firstName;
+  TF.currentMember.last_name  = lastName;
   tfShow('tf-view-thanks');
   document.getElementById('tf-thanks-title').textContent = tfT('thankYou')
     .replace('[Prénom]', TF.currentMember.first_name)
