@@ -586,10 +586,10 @@ async function tfImportMember(memberToken) {
   var fullName = (m.first_name + ' ' + m.last_name).trim();
   var note = m.relation ? 'Relation : ' + m.relation : '';
   if (m.birth_day && m.birth_month) {
-    rows.push({ id: String(base), user_id: userId, group_id: groupId, name: fullName, day: m.birth_day, month: m.birth_month, year: m.birth_year || null, phone: '', note: note, type: 'birthday', gender: m.gender || '', incomplete: false, notif_days_before: null, notif_time: null });
+    rows.push({ id: String(base), user_id: userId, group_id: groupId, name: fullName, day: m.birth_day, month: m.birth_month, year: m.birth_year || null, phone: ((m.phone_code || '') + (m.phone_number || '')).trim(), note: note, type: 'birthday', gender: m.gender || '', incomplete: false, notif_days_before: null, notif_time: null });
   }
   if (m.married && m.wedding_day && m.wedding_month) {
-    rows.push({ id: String(base + 1), user_id: userId, group_id: groupId, name: fullName + ' (mariage avec ' + (m.spouse_name || '?') + ')', day: m.wedding_day, month: m.wedding_month, year: m.wedding_year || null, phone: '', note: note, type: 'birthday', gender: '', incomplete: false, notif_days_before: null, notif_time: null });
+    rows.push({ id: String(base + 1), user_id: userId, group_id: groupId, name: fullName + ' (mariage avec ' + (m.spouse_name || '?') + ')', day: m.wedding_day, month: m.wedding_month, year: m.wedding_year || null, phone: ((m.phone_code || '') + (m.phone_number || '')).trim(), note: note, type: 'birthday', gender: '', incomplete: false, notif_days_before: null, notif_time: null });
   }
   if (!rows.length) { tfToast(tfLang() === 'fr' ? 'Aucune date à importer.' : 'No date to import.'); return; }
   var iRes = await supabase.from('members').insert(rows);
@@ -623,10 +623,10 @@ async function tfSyncBloomday() {
     var fullName = (m.first_name + ' ' + m.last_name).trim();
     var note = m.relation ? 'Relation : ' + m.relation : '';
     if (m.birth_day && m.birth_month) {
-      rows.push({ id: String(base + i * 2), user_id: userId, group_id: groupId, name: fullName, day: m.birth_day, month: m.birth_month, year: m.birth_year || null, phone: '', note: note, type: 'birthday', gender: m.gender || '', incomplete: false, notif_days_before: null, notif_time: null });
+      rows.push({ id: String(base + i * 2), user_id: userId, group_id: groupId, name: fullName, day: m.birth_day, month: m.birth_month, year: m.birth_year || null, phone: ((m.phone_code || '') + (m.phone_number || '')).trim(), note: note, type: 'birthday', gender: m.gender || '', incomplete: false, notif_days_before: null, notif_time: null });
     }
     if (m.married && m.wedding_day && m.wedding_month) {
-      rows.push({ id: String(base + i * 2 + 1), user_id: userId, group_id: groupId, name: fullName + ' (mariage avec ' + (m.spouse_name || '?') + ')', day: m.wedding_day, month: m.wedding_month, year: m.wedding_year || null, phone: '', note: note, type: 'birthday', gender: '', incomplete: false, notif_days_before: null, notif_time: null });
+      rows.push({ id: String(base + i * 2 + 1), user_id: userId, group_id: groupId, name: fullName + ' (mariage avec ' + (m.spouse_name || '?') + ')', day: m.wedding_day, month: m.wedding_month, year: m.wedding_year || null, phone: ((m.phone_code || '') + (m.phone_number || '')).trim(), note: note, type: 'birthday', gender: '', incomplete: false, notif_days_before: null, notif_time: null });
     }
   });
 
