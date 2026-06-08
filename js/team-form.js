@@ -102,6 +102,17 @@ function tfSaveAdminToken(token, teamName, managerName) {
   localStorage.setItem('tf_admin_token', token);
 }
 
+function tfMergeAndSaveTeams(remoteTeams) {
+  var teams = tfGetSavedTeams();
+  var localTokens = {};
+  teams.forEach(function(t) { localTokens[t.token] = true; });
+  remoteTeams.forEach(function(t) {
+    if (!localTokens[t.token]) {
+      tfSaveAdminToken(t.token, t.team_name, t.manager_name);
+    }
+  });
+}
+
 function tfToast(msg, ms) {
   var el = document.getElementById('tf-toast');
   el.textContent = msg;
