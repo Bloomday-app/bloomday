@@ -22,6 +22,7 @@ var TF = {
   pollInterval: null,
   submitting: false
 };
+var TF_DELETE = { token: null, teamName: null, groupId: null, bloomdayMembers: [] };
 
 window.addEventListener('DOMContentLoaded', function() {
   var params = new URLSearchParams(window.location.search);
@@ -89,7 +90,12 @@ function tfInitTeams() {
     html += '<div style="display:flex;justify-content:space-between;align-items:center;padding:12px 0;border-bottom:1px solid var(--brd)">'
       + '<div><div style="font-weight:700;font-size:15px">' + tfEsc(t.teamName) + '</div>'
       + '<div style="font-size:12px;color:var(--txt2)">' + tfT('managerLabel') + ' ' + tfEsc(t.managerName || '') + '</div></div>'
+      + '<div style="display:flex;gap:8px">'
       + '<a href="team-form.html?admin=' + encodeURIComponent(t.token) + '" class="btn btn-ghost btn-sm">' + tfT('openTeam') + '</a>'
+      + '<button class="btn btn-ghost btn-sm" style="color:#c0392b;border-color:#e8c0b8" '
+      + 'data-token="' + tfEsc(t.token) + '" data-teamname="' + tfEsc(t.teamName) + '" '
+      + 'onclick="tfDeleteTeam(this.dataset.token,this.dataset.teamname)">' + tfT('tfDeleteBtn') + '</button>'
+      + '</div>'
       + '</div>';
   });
   html += '</div>'
@@ -706,4 +712,146 @@ async function tfSubmitMember() {
     .replace('[First name]', TF.currentMember.first_name);
   document.getElementById('tf-thanks-sub').textContent = tfT('thankYouSub');
   setTimeout(function() { window.location.href = 'https://mybloomday.app'; }, 3000);
+}
+
+// ── SUPPRESSION D'ÉQUIPE ──
+function tfDeleteTeam(token, teamName) {
+  TF_DELETE.token = token;
+  TF_DELETE.teamName = teamName;
+  TF_DELETE.groupId = null;
+  TF_DELETE.bloomdayMembers = [];
+  var modal = document.getElementById('tf-modal-delete');
+  modal.style.display = 'flex';
+  document.getElementById('tf-modal-delete-inner').innerHTML = tfRenderDeleteStep1(teamName);
+}
+
+function tfRenderDeleteStep1(teamName) {
+  return '<h2 style="font-family:\'Playfair Display\',serif;font-size:17px;font-weight:800;margin-bottom:12px">'
+    + tfT('tfDeleteConfirmTitle').replace('%name', tfEsc(teamName)) + '</h2>'
+    + '<p style="font-size:13px;color:var(--txt2);margin-bottom:20px">' + tfT('tfDeleteConfirmMsg') + '</p>'
+    + '<div style="display:flex;gap:8px">'
+    + '<button class="btn btn-ghost" style="flex:1" onclick="tfCloseDeleteModal()">' + tfT('cancelAdd') + '</button>'
+    + '<button class="btn btn-primary" style="flex:1;background:#c0392b;border:none" onclick="tfDeleteStep2()">'
+    + tfT('tfDeleteBtn') + ' →</button>'
+    + '</div>';
+}
+
+function tfCloseDeleteModal() {
+  document.getElementById('tf-modal-delete').style.display = 'none';
+  TF_DELETE.token = null;
+  TF_DELETE.teamName = null;
+  TF_DELETE.groupId = null;
+  TF_DELETE.bloomdayMembers = [];
+}
+
+async function tfDeleteStep2() {
+  var sessRes = await supabase.auth.getSession();
+  var userId = sessRes.data && sessRes.data.session && sessRes.data.session.user && sessRes.data.session.user.id;
+
+  if (!userId) { await tfExecuteDelete(null, []); return; }
+
+  var gRes = await supabase.from('groups').select('id')
+    .eq('user_id', userId).eq('name', TF_DELETE.teamName).maybeSingle();
+  var groupId = gRes.data && gRes.data.id;
+
+  if (!groupId) { await tfExecuteDelete(null, []); return; }
+
+  var mRes = await supabase.from('members').select('id, name, day, month').eq('group_id', groupId);
+  var members = mRes.data || [];
+
+  if (!members.length) { await tfExecuteDelete(groupId, []); return; }
+
+  TF_DELETE.groupId = groupId;
+  TF_DELETE.bloomdayMembers = members;
+  document.getElementById('tf-modal-delete-inner').innerHTML = tfRenderDeleteStep2(members);
+}
+
+function tfRenderDeleteStep2(members) {
+  var months = ['Janv.','Févr.','Mars','Avr.','Mai','Juin','Juil.','Août','Sept.','Oct.','Nov.','Déc.'];
+  var html = '<h2 style="font-family:\'Playfair Display\',serif;font-size:15px;font-weight:800;margin-bottom:8px">'
+    + tfT('tfDeleteMembersTitle') + '</h2>'
+    + '<p style="font-size:12px;color:var(--txt2);margin-bottom:12px">' + tfT('tfDeleteMembersDesc') + '</p>'
+    + '<div style="display:flex;gap:8px;margin-bottom:10px">'
+    + '<button class="btn btn-ghost btn-sm" onclick="tfToggleAllDeleteMembers(true)">' + tfT('tfSelectAll') + '</button>'
+    + '<button class="btn btn-ghost btn-sm" onclick="tfToggleAllDeleteMembers(false)">' + tfT('tfDeselectAll') + '</button>'
+    + '</div>'
+    + '<div id="tf-delete-members-list" style="max-height:180px;overflow-y:auto;margin-bottom:16px">';
+  members.forEach(function(m) {
+    var dateStr = m.day && m.month ? m.day + ' ' + (months[m.month - 1] || '') : '';
+    html += '<div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--brd)">'
+      + '<input type="checkbox" id="tf-del-m-' + tfEsc(m.id) + '" value="' + tfEsc(m.id) + '" checked '
+      + 'style="width:18px;height:18px;accent-color:var(--b3);flex-shrink:0;margin:0">'
+      + '<label for="tf-del-m-' + tfEsc(m.id) + '" style="font-size:13px;font-weight:600;cursor:pointer;margin:0;flex:1">'
+      + tfEsc(m.name)
+      + (dateStr ? ' <span style="color:var(--txt2);font-weight:400">— 🎂 ' + dateStr + '</span>' : '')
+      + '</label></div>';
+  });
+  html += '</div>'
+    + '<div style="display:flex;gap:8px">'
+    + '<button class="btn btn-ghost" style="flex:1" onclick="tfCloseDeleteModal()">' + tfT('cancelAdd') + '</button>'
+    + '<button class="btn btn-primary" style="flex:1;background:#c0392b;border:none" id="tf-delete-exec-btn" onclick="tfExecuteDeleteFromUI()">'
+    + tfT('tfDeleteBtn') + '</button>'
+    + '</div>';
+  return html;
+}
+
+function tfToggleAllDeleteMembers(checked) {
+  document.querySelectorAll('#tf-delete-members-list input[type=checkbox]').forEach(function(cb) {
+    cb.checked = checked;
+  });
+}
+
+async function tfExecuteDeleteFromUI() {
+  var keepIds = [];
+  document.querySelectorAll('#tf-delete-members-list input[type=checkbox]').forEach(function(cb) {
+    if (cb.checked) keepIds.push(cb.value);
+  });
+  await tfExecuteDelete(TF_DELETE.groupId, keepIds);
+}
+
+async function tfExecuteDelete(groupId, keepIds) {
+  var btn = document.getElementById('tf-delete-exec-btn') || document.querySelector('#tf-modal-delete-inner .btn-primary');
+  if (btn) { btn.disabled = true; btn.textContent = tfT('tfDeleting'); }
+
+  // 1. Supprimer le survey dans Supabase
+  var res = await supabase.rpc('tf_delete_survey', { p_admin_token: TF_DELETE.token });
+  if (res.error || res.data === false) {
+    alert('Erreur lors de la suppression : ' + (res.error ? res.error.message : 'Token invalide.'));
+    if (btn) { btn.disabled = false; btn.textContent = tfT('tfDeleteBtn'); }
+    return;
+  }
+
+  // 2. Supprimer les membres Bloomday non conservés
+  if (groupId && TF_DELETE.bloomdayMembers.length) {
+    var allIds = TF_DELETE.bloomdayMembers.map(function(m) { return m.id; });
+    var toDeleteIds = allIds.filter(function(id) { return keepIds.indexOf(id) === -1; });
+    if (toDeleteIds.length) {
+      var delRes = await supabase.from('members').delete().in('id', toDeleteIds);
+      if (delRes.error) {
+        tfToast('Équipe supprimée, erreur membres : ' + delRes.error.message);
+      }
+    }
+    // Supprimer le groupe s'il est vide
+    var remRes = await supabase.from('members').select('id').eq('group_id', groupId);
+    if ((remRes.data || []).length === 0) {
+      await supabase.from('groups').delete().eq('id', groupId);
+    }
+  }
+
+  // 3. Retirer du localStorage
+  var token = TF_DELETE.token;
+  var teams = tfGetSavedTeams().filter(function(t) { return t.token !== token; });
+  localStorage.setItem('tf_admin_tokens', JSON.stringify(teams));
+  if (teams.length === 0) localStorage.removeItem('tf_admin_token');
+
+  // 4. Fermer modale + rafraîchir
+  tfCloseDeleteModal();
+  tfToast(tfT('tfDeleteSuccess'));
+
+  if (teams.length === 0) {
+    TF.mode = 'create';
+    tfInitCreate();
+  } else {
+    tfInitTeams();
+  }
 }
