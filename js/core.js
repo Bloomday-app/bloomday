@@ -816,7 +816,7 @@ async function adminLoadSuggestions(){
     var r=await fetch('/.netlify/functions/chat',{
       method:'POST',
       headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({message:prompt,history:[]})
+      body:JSON.stringify({messages:[{role:'user',content:prompt}]})
     });
     var d=await r.json();
     var raw=d.reply||'';
