@@ -310,15 +310,16 @@ function tfStep1Next() {
   document.getElementById('tf-step-1').style.display = 'none';
   document.getElementById('tf-step-2').style.display = 'block';
   tfRenderStep2();
+  tfSetBodyClass('tf-step2-active');
 }
 
 // ── MODE CRÉATION — Étape 2 ──
 function tfRenderStep2() {
   var relOptions = TF.relationLabels.map(function(l) { return '<option>' + l.replace(/</g,'&lt;') + '</option>'; }).join('');
   document.getElementById('tf-step-2').innerHTML =
-    '<div class="tf-card"><h2>' + tfT('stepMembers') + '</h2>'
-    + '<div id="tf-member-list" style="margin-bottom:16px"></div>'
-    + '<div style="border:1.5px solid #eee;border-radius:8px;padding:12px;margin-bottom:16px">'
+    '<div class="tf-two-col">'
+    + '<div class="tf-col-left">'
+    + '<div class="tf-card"><h2>' + tfT('stepMembers') + '</h2>'
     + '<label>' + tfT('firstName') + '</label>'
     + '<input id="tf-inp-first" type="text" placeholder="Prénom">'
     + '<label>' + tfT('lastName') + '</label>'
@@ -327,10 +328,15 @@ function tfRenderStep2() {
     + '<input id="tf-inp-email" type="email" placeholder="email@exemple.com">'
     + '<label>' + tfT('relation') + '</label>'
     + '<select id="tf-inp-relation">' + relOptions + '</select>'
-    + '<button class="btn btn-ghost" style="width:100%" onclick="tfAddMember()">' + tfT('addMember') + '</button>'
+    + '<button class="btn btn-ghost" style="width:100%;margin-top:4px" onclick="tfAddMember()">' + tfT('addMember') + '</button>'
+    + '</div></div>'
+    + '<div>'
+    + '<div id="tf-member-list" style="margin-bottom:16px"></div>'
     + '</div>'
-    + '<button class="btn btn-ghost btn-sm" style="margin-bottom:8px" onclick="tfBackToStep1()">' + tfT('back') + '</button>'
-    + '<button class="btn btn-primary" onclick="tfSubmitCreate()">' + tfT('createTeam') + '</button>'
+    + '</div>'
+    + '<div style="display:flex;gap:8px;margin-top:16px">'
+    + '<button class="btn btn-ghost btn-sm" onclick="tfBackToStep1()">' + tfT('back') + '</button>'
+    + '<button class="btn btn-primary" style="flex:1" onclick="tfSubmitCreate()">' + tfT('createTeam') + '</button>'
     + '</div>';
   tfRefreshMemberList();
 }
@@ -376,6 +382,7 @@ function tfBackToStep1() {
   tfRenderSteps(1);
   document.getElementById('tf-step-2').style.display = 'none';
   document.getElementById('tf-step-1').style.display = 'block';
+  tfSetBodyClass('');
 }
 
 async function tfSubmitCreate() {
