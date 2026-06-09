@@ -432,24 +432,21 @@ function tfRenderDashboard() {
     + '<button class="btn btn-primary btn-sm" onclick="tfSyncBloomday()">' + tfT('importAllMembers') + '</button>'
     + '</div>'
     + '<div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:8px">'
-    + '<button class="btn btn-ghost btn-sm" onclick="tfToggleAddMember()">' + tfT('addMemberDash') + '</button>'
     + '<button class="btn btn-ghost btn-sm" onclick="tfNewTeam()">' + tfT('newTeam') + '</button>'
     + '</div>';
   document.getElementById('tf-member-cards').innerHTML = TF.members.map(function(m) {
     return tfRenderMemberCard(m);
   }).join('');
-}
-
-function tfToggleAddMember() {
   tfRenderAddMemberForm();
 }
 
 function tfRenderAddMemberForm() {
+  var formCard = document.getElementById('tf-dash-form-card');
+  if (!formCard) return;
   var relLabels = (TF.survey && Array.isArray(TF.survey.relation_labels)) ? TF.survey.relation_labels : [];
   var relOptions = relLabels.map(function(l) { return '<option>' + tfEsc(l) + '</option>'; }).join('');
-  document.getElementById('tf-dash-form-card').innerHTML =
-    '<div class="tf-card" style="border:1.5px dashed var(--brd2)">'
-    + '<h2>' + tfT('addMemberDash') + '</h2>'
+  formCard.innerHTML =
+    '<h2 style="margin-bottom:16px">' + tfT('addMemberDash') + '</h2>'
     + '<label>' + tfT('firstName') + '</label>'
     + '<input id="tf-dash-inp-first" type="text" placeholder="Prénom">'
     + '<label>' + tfT('lastName') + '</label>'
@@ -457,11 +454,7 @@ function tfRenderAddMemberForm() {
     + '<label>' + tfT('emailLabel') + '</label>'
     + '<input id="tf-dash-inp-email" type="email" placeholder="email@exemple.com">'
     + (relOptions ? '<label>' + tfT('relation') + '</label><select id="tf-dash-inp-relation">' + relOptions + '</select>' : '')
-    + '<div style="display:flex;gap:8px;margin-top:4px">'
-    + '<button class="btn btn-primary" style="flex:1" onclick="tfSubmitAddMember()">' + tfT('addMember') + '</button>'
-    + '<button class="btn btn-ghost" onclick="tfToggleAddMember()">' + tfT('cancelAdd') + '</button>'
-    + '</div>'
-    + '</div>';
+    + '<button class="btn btn-primary" style="width:100%;margin-top:4px" onclick="tfSubmitAddMember()">' + tfT('addMember') + '</button>';
 }
 
 async function tfSubmitAddMember() {
@@ -484,6 +477,13 @@ async function tfSubmitAddMember() {
   }
 
   TF.members.push(res.data);
+  var firstEl2 = document.getElementById('tf-dash-inp-first');
+  var lastEl2 = document.getElementById('tf-dash-inp-last');
+  var emailEl2 = document.getElementById('tf-dash-inp-email');
+  if (firstEl2) firstEl2.value = '';
+  if (lastEl2) lastEl2.value = '';
+  if (emailEl2) emailEl2.value = '';
+  if (firstEl2) firstEl2.focus();
   tfRenderDashboard();
   tfToast(firstName + ' ajouté·e !');
 }
