@@ -20,7 +20,8 @@ var TF = {
   currentMember: null,
   selectedGender: '',
   pollInterval: null,
-  submitting: false
+  submitting: false,
+  user: null
 };
 var TF_DELETE = { token: null, teamName: null, groupId: null, bloomdayMembers: [] };
 
@@ -73,6 +74,7 @@ window.addEventListener('DOMContentLoaded', async function() {
     try {
       var sessRes = await supabase.auth.getSession();
       var userId = sessRes.data && sessRes.data.session && sessRes.data.session.user && sessRes.data.session.user.id;
+      TF.user = (sessRes.data && sessRes.data.session && sessRes.data.session.user) || null;
       if (userId) {
         var localTeams = tfGetSavedTeams();
         if (localTeams.length > 0) {
@@ -139,6 +141,72 @@ function tfToast(msg, ms) {
   setTimeout(function() { el.classList.remove('show'); }, ms || 2500);
 }
 
+function tfSetBodyClass(cls) {
+  document.body.classList.remove('tf-dashboard-active', 'tf-step2-active');
+  if (cls) document.body.classList.add(cls);
+}
+
+function tfInitials(name) {
+  var parts = (name || '').trim().split(/\s+/).filter(Boolean);
+  if (!parts.length) return '?';
+  if (parts.length >= 2) return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
+  return parts[0][0].toUpperCase();
+}
+
+function tfRenderTopbarAvatar() {
+  var el = document.getElementById('tf-topbar-right');
+  if (!el) return;
+  var displayName = '';
+  var avatarUrl = '';
+  if (TF.user) {
+    displayName = (TF.user.user_metadata && (TF.user.user_metadata.full_name || TF.user.user_metadata.name)) || TF.user.email || '';
+    avatarUrl = (TF.user.user_metadata && TF.user.user_metadata.avatar_url) || '';
+  } else if (TF.survey && TF.survey.manager_name) {
+    displayName = TF.survey.manager_name;
+  } else {
+    var teams = tfGetSavedTeams();
+    displayName = teams.length ? teams[0].managerName || teams[0].teamName || '' : '';
+  }
+  var initials = tfInitials(displayName);
+  var avatarInner = avatarUrl
+    ? '<img src="' + tfEsc(avatarUrl) + '" alt="">'
+    : initials;
+  el.innerHTML = '<button class="tf-avatar-btn" onclick="tfToggleAvatarMenu(event)" aria-label="' + tfT('profileMenu') + '">'
+    + avatarInner + '</button>';
+}
+
+function tfToggleAvatarMenu(e) {
+  e.stopPropagation();
+  var el = document.getElementById('tf-topbar-right');
+  var existing = el.querySelector('.tf-avatar-menu');
+  if (existing) { existing.remove(); return; }
+  var displayName = '';
+  var email = '';
+  if (TF.user) {
+    displayName = (TF.user.user_metadata && (TF.user.user_metadata.full_name || TF.user.user_metadata.name)) || TF.user.email || '';
+    email = TF.user.email || '';
+  } else if (TF.survey && TF.survey.manager_name) {
+    displayName = TF.survey.manager_name;
+  } else {
+    var teams = tfGetSavedTeams();
+    displayName = teams.length ? teams[0].managerName || teams[0].teamName || '' : '';
+  }
+  var menu = document.createElement('div');
+  menu.className = 'tf-avatar-menu';
+  menu.innerHTML = (displayName ? '<div class="tf-avatar-menu-name">' + tfEsc(displayName) + '</div>' : '')
+    + (email ? '<div class="tf-avatar-menu-email">' + tfEsc(email) + '</div>' : '')
+    + '<a href="https://mybloomday.app" class="tf-avatar-menu-link">' + tfT('openBloomday') + '</a>';
+  el.appendChild(menu);
+  document.addEventListener('click', tfCloseAvatarMenu, { once: true });
+}
+
+function tfCloseAvatarMenu() {
+  var el = document.getElementById('tf-topbar-right');
+  if (!el) return;
+  var menu = el.querySelector('.tf-avatar-menu');
+  if (menu) menu.remove();
+}
+
 function tfRenderSteps(current) {
   var labels = [tfT('stepTeam'), tfT('stepMembers'), tfT('stepShare')];
   document.getElementById('tf-wizard-steps').innerHTML = labels.map(function(label, i) {
@@ -150,6 +218,7 @@ function tfRenderSteps(current) {
 
 // ── MODE MES ÉQUIPES ──
 function tfInitTeams() {
+  tfSetBodyClass('');
   tfShow('tf-view-teams');
   var teams = tfGetSavedTeams();
   var html = '<div class="tf-card"><h1>' + tfT('myTeams') + '</h1>'
@@ -169,6 +238,7 @@ function tfInitTeams() {
   html += '</div>'
     + '<button class="btn btn-primary" onclick="tfGoCreate()">' + tfT('createNewTeam') + '</button>';
   document.getElementById('tf-view-teams').innerHTML = html;
+  tfRenderTopbarAvatar();
 }
 
 function tfGoCreate() {
@@ -178,12 +248,14 @@ function tfGoCreate() {
 
 // ── MODE CRÉATION — Étape 1 ──
 function tfInitCreate() {
+  tfSetBodyClass('');
   TF.relationLabels = tfT('defaultRelations').slice();
   tfShow('tf-view-create');
   tfRenderSteps(1);
   document.getElementById('tf-step-2').style.display = 'none';
   document.getElementById('tf-step-1').style.display = 'block';
   tfRenderStep1();
+  tfRenderTopbarAvatar();
 }
 
 function tfRenderStep1() {
@@ -338,6 +410,8 @@ async function tfInitDashboard() {
   tfSaveAdminToken(TF.adminToken, TF.survey.team_name, TF.survey.manager_name);
   tfRenderDashboard();
   tfStartDashboardPolling();
+  tfSetBodyClass('tf-dashboard-active');
+  tfRenderTopbarAvatar();
 }
 
 async function tfLoadDashboardMembers() {
@@ -660,6 +734,7 @@ async function tfSyncBloomday() {
 
 // ── MODE FORMULAIRE MEMBRE ──
 async function tfInitMember() {
+  tfSetBodyClass('');
   var res = await supabase.rpc('tf_get_member_form', { p_member_token: TF.memberToken });
   if (res.error || !res.data) {
     tfShow('tf-view-member');
