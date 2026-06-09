@@ -342,8 +342,25 @@ function toggleSidebar(){
   if(!sb)return;
   var collapsed=sb.classList.toggle('collapsed');
   localStorage.setItem('bdg16_sb_collapsed',collapsed?'1':'0');
-  var btn=document.getElementById('dsb-toggle');
-  if(btn)btn.textContent=collapsed?'›':'‹';
+}
+
+function toggleMenu(){
+  if(window.innerWidth<1024)toggleMobileMenu();
+  else toggleSidebar();
+}
+
+function toggleMobileMenu(){
+  var d=document.getElementById('mob-drawer');
+  if(!d)return;
+  var open=d.style.display==='flex';
+  d.style.display=open?'none':'flex';
+  document.body.style.overflow=open?'':'hidden';
+}
+
+function closeMobileMenu(){
+  var d=document.getElementById('mob-drawer');
+  if(d)d.style.display='none';
+  document.body.style.overflow='';
 }
 
 function _restoreSidebar(){
@@ -351,11 +368,7 @@ function _restoreSidebar(){
   if(!sb)return;
   var saved=localStorage.getItem('bdg16_sb_collapsed');
   var collapsed=(saved==='1')||(saved===null&&window.innerWidth<1024);
-  if(collapsed){
-    sb.classList.add('collapsed');
-    var btn=document.getElementById('dsb-toggle');
-    if(btn)btn.textContent='›';
-  }
+  if(collapsed)sb.classList.add('collapsed');
 }
 
 document.addEventListener('DOMContentLoaded',function(){

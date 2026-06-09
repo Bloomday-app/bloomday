@@ -210,7 +210,9 @@
 
 <div class="desktop-sidebar" id="desktop-sidebar">
   <div class="dsb-logo">
-    <div class="dsb-logo-wrap"><img src="img/logo.png" alt="Bloomday" style="width:22px;height:22px;object-fit:contain;border-radius:4px"></div>
+    <button class="dsb-hamburger" onclick="toggleSidebar()" aria-label="Menu">
+      <svg width="18" height="14" viewBox="0 0 18 14" fill="none"><rect width="18" height="2" rx="1" fill="currentColor"/><rect y="6" width="18" height="2" rx="1" fill="currentColor"/><rect y="12" width="18" height="2" rx="1" fill="currentColor"/></svg>
+    </button>
     <span style="color:white;font-size:13px;font-weight:700;letter-spacing:.01em">Bloomday</span>
   </div>
   <nav class="dsb-nav">
@@ -260,15 +262,14 @@
       <div class="lang-opt" data-lang="pt" onclick="pickLang('pt')">🇧🇷 Português</div>
     </div>
   </div>
-  <div class="dsb-toggle-wrap">
-    <button class="dsb-toggle" id="dsb-toggle" onclick="toggleSidebar()" title="Réduire/Agrandir">‹</button>
-  </div>
 </div>
 
 <div class="app-main">
 <div class="topbar">
   <div class="tb-l">
-    <div class="logo-wrap"><img src="img/logo.png" alt="Bloomday" style="width:26px;height:26px;object-fit:contain;border-radius:6px"></div>
+    <button class="mob-hamburger" id="mob-hamburger" onclick="toggleMenu()" aria-label="Menu">
+      <svg width="20" height="15" viewBox="0 0 20 15" fill="none"><rect width="20" height="2.2" rx="1.1" fill="currentColor"/><rect y="6.4" width="20" height="2.2" rx="1.1" fill="currentColor"/><rect y="12.8" width="20" height="2.2" rx="1.1" fill="currentColor"/></svg>
+    </button>
     <div><div class="tb-t">Bloomday</div><div class="tb-s" id="tbdate"></div></div>
   </div>
   <div class="tb-r">
@@ -441,6 +442,26 @@
   </button>
 </div>
 </div><!-- end app-main -->
+
+<!-- MOBILE NAV DRAWER -->
+<div id="mob-drawer" style="display:none;position:fixed;inset:0;z-index:4000;flex-direction:row">
+  <div style="position:absolute;inset:0;background:rgba(0,0,0,.45)" onclick="closeMobileMenu()"></div>
+  <div style="position:relative;width:260px;height:100%;background:var(--card);display:flex;flex-direction:column;box-shadow:4px 0 24px rgba(0,0,0,.15)">
+    <div style="display:flex;align-items:center;gap:10px;padding:18px 20px 14px;border-bottom:1px solid var(--brd)">
+      <img src="img/logo.png" style="width:32px;height:32px;border-radius:8px;object-fit:contain">
+      <span style="font-family:'Playfair Display',serif;font-weight:800;font-size:17px;color:var(--txt)">Bloomday</span>
+      <button onclick="closeMobileMenu()" style="margin-left:auto;background:none;border:none;cursor:pointer;color:var(--txt2);padding:4px;font-size:20px;line-height:1">✕</button>
+    </div>
+    <nav style="display:flex;flex-direction:column;padding:12px 10px;gap:2px">
+      <button class="mob-nav-btn" onclick="showSec('home',0);closeMobileMenu()" data-i18n="navHome">🏠 Accueil</button>
+      <button class="mob-nav-btn" onclick="showSec('members',1);closeMobileMenu()" data-i18n="navMembers">👥 Membres</button>
+      <button class="mob-nav-btn" onclick="showSec('add',2);closeMobileMenu()" data-i18n="navAdd">➕ Ajouter</button>
+      <button class="mob-nav-btn" onclick="showSec('events',3);closeMobileMenu()" data-i18n="navEvents">📍 Fêtes</button>
+      <button class="mob-nav-btn" onclick="showSec('more',4);closeMobileMenu()" data-i18n="navProfile">👤 Profil</button>
+    </nav>
+  </div>
+</div>
+
 </div><!-- end wrap -->
 </div><!-- end app -->
 

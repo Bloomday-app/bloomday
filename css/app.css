@@ -550,13 +550,14 @@ details[open] summary::after{content:" ▾"}
 .desktop-sidebar.collapsed #nav-admin-btn{padding:0 4px}
 .desktop-sidebar.collapsed .lang-sel{flex-direction:column;align-items:center;justify-content:center;padding:8px 0;gap:2px}
 .desktop-sidebar.collapsed .lang-col{display:block;font-size:10px;font-weight:700;letter-spacing:.04em;line-height:1}
-.dsb-toggle-wrap{padding:0 8px;margin-top:auto;padding-bottom:12px}
-.dsb-toggle{width:100%;border:none;background:rgba(255,255,255,.12);border-radius:8px;color:rgba(255,255,255,.6);cursor:pointer;padding:11px 0;font-size:18px;font-weight:700;transition:background .15s;display:flex;align-items:center;justify-content:center}
-.dsb-toggle:hover{background:rgba(255,255,255,.15);color:rgba(255,255,255,.85)}
-.desktop-sidebar.collapsed .dsb-toggle-wrap{padding:0 4px 12px}
 .dsb-logo{margin-bottom:20px;padding:8px 16px;display:flex;align-items:center;gap:8px}
-.dsb-logo-wrap{width:36px;height:36px;border-radius:0;background:none;display:flex;align-items:center;justify-content:center;box-shadow:none}
-.dsb-logo-wrap svg{fill:white;stroke:white}
+.dsb-hamburger{background:none;border:none;cursor:pointer;color:rgba(255,255,255,.85);display:flex;align-items:center;justify-content:center;border-radius:8px;padding:7px;width:36px;height:36px;flex-shrink:0;transition:background .15s}
+.dsb-hamburger:hover{background:rgba(255,255,255,.15)}
+.mob-hamburger{background:none;border:none;cursor:pointer;color:var(--txt);display:flex;align-items:center;justify-content:center;border-radius:8px;padding:6px;width:36px;height:36px;flex-shrink:0;transition:background .15s}
+.mob-hamburger:hover{background:var(--bg2)}
+.mob-nav-btn{background:none;border:none;padding:12px 14px;border-radius:10px;font-size:14px;font-weight:600;color:var(--txt);cursor:pointer;text-align:left;transition:background .15s;width:100%}
+.mob-nav-btn:hover,.mob-nav-btn:active{background:var(--bg2)}
+@media(min-width:1024px){.mob-hamburger{display:none}}
 .dsb-nav{display:flex;flex-direction:column;gap:2px;flex:1;width:100%;padding:0 8px}
 .dsb-btn{width:100%;border:none;background:transparent;border-radius:10px;display:flex;align-items:center;gap:8px;padding:9px 10px;color:var(--b1);cursor:pointer;transition:all .18s;font-size:12px;font-weight:700;letter-spacing:.01em;opacity:.75}
 .dsb-btn:hover{background:rgba(212,168,67,.15);opacity:1}

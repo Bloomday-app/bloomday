@@ -692,7 +692,7 @@ async function tfImportMember(memberToken) {
     rows.push({ id: String(base), user_id: userId, group_id: groupId, name: fullName, day: m.birth_day, month: m.birth_month, year: m.birth_year || null, phone: ((m.phone_code || '') + (m.phone_number || '')).trim(), note: note, type: 'birthday', gender: m.gender || '', incomplete: false, notif_days_before: null, notif_time: null });
   }
   if (m.married && m.wedding_day && m.wedding_month) {
-    rows.push({ id: String(base + 1), user_id: userId, group_id: groupId, name: fullName + ' (mariage avec ' + (m.spouse_name || '?') + ')', day: m.wedding_day, month: m.wedding_month, year: m.wedding_year || null, phone: ((m.phone_code || '') + (m.phone_number || '')).trim(), note: note, type: 'birthday', gender: '', incomplete: false, notif_days_before: null, notif_time: null });
+    rows.push({ id: String(base + 1), user_id: userId, group_id: groupId, name: fullName + ' (mariage avec ' + (m.spouse_name || '?') + ')', day: m.wedding_day, month: m.wedding_month, year: m.wedding_year || null, phone: ((m.phone_code || '') + (m.phone_number || '')).trim(), note: note, type: 'wedding', gender: '', incomplete: false, notif_days_before: null, notif_time: null });
   }
   if (!rows.length) { tfToast(tfLang() === 'fr' ? 'Aucune date à importer.' : 'No date to import.'); return; }
   var iRes = await supabase.from('members').insert(rows);
@@ -722,6 +722,7 @@ async function tfSyncBloomday() {
 
   var rows = [];
   var base = Date.now();
+  var weddingCandidates = [];
   completed.forEach(function(m, i) {
     var fullName = (m.first_name + ' ' + m.last_name).trim();
     var note = m.relation ? 'Relation : ' + m.relation : '';
@@ -729,7 +730,31 @@ async function tfSyncBloomday() {
       rows.push({ id: String(base + i * 2), user_id: userId, group_id: groupId, name: fullName, day: m.birth_day, month: m.birth_month, year: m.birth_year || null, phone: ((m.phone_code || '') + (m.phone_number || '')).trim(), note: note, type: 'birthday', gender: m.gender || '', incomplete: false, notif_days_before: null, notif_time: null });
     }
     if (m.married && m.wedding_day && m.wedding_month) {
-      rows.push({ id: String(base + i * 2 + 1), user_id: userId, group_id: groupId, name: fullName + ' (mariage avec ' + (m.spouse_name || '?') + ')', day: m.wedding_day, month: m.wedding_month, year: m.wedding_year || null, phone: ((m.phone_code || '') + (m.phone_number || '')).trim(), note: note, type: 'birthday', gender: '', incomplete: false, notif_days_before: null, notif_time: null });
+      weddingCandidates.push({ m: m, i: i, fullName: fullName, phone: ((m.phone_code || '') + (m.phone_number || '')).trim() });
+    }
+  });
+
+  // Déduplique les anniversaires de mariage : si deux membres se réfèrent l'un à l'autre, crée une seule fiche "A & B"
+  var weddingPaired = {};
+  weddingCandidates.forEach(function(cand) {
+    if (weddingPaired[cand.i]) return;
+    var m = cand.m;
+    var spouseLower = (m.spouse_name || '').toLowerCase();
+    var partner = null;
+    weddingCandidates.forEach(function(other) {
+      if (other.i === cand.i || weddingPaired[other.i]) return;
+      if (other.m.wedding_day !== m.wedding_day || other.m.wedding_month !== m.wedding_month) return;
+      var otherFirstLower = (other.m.first_name || '').toLowerCase();
+      var otherSpouseLower = (other.m.spouse_name || '').toLowerCase();
+      var myFirstLower = (m.first_name || '').toLowerCase();
+      if (spouseLower.includes(otherFirstLower) && otherSpouseLower.includes(myFirstLower)) partner = other;
+    });
+    if (partner) {
+      weddingPaired[cand.i] = true;
+      weddingPaired[partner.i] = true;
+      rows.push({ id: String(base + completed.length * 2 + rows.length), user_id: userId, group_id: groupId, name: cand.fullName + ' & ' + partner.fullName, day: m.wedding_day, month: m.wedding_month, year: m.wedding_year || null, phone: cand.phone, note: '', type: 'wedding', gender: '', incomplete: false, notif_days_before: null, notif_time: null });
+    } else {
+      rows.push({ id: String(base + cand.i * 2 + 1), user_id: userId, group_id: groupId, name: cand.fullName + ' (mariage avec ' + (m.spouse_name || '?') + ')', day: m.wedding_day, month: m.wedding_month, year: m.wedding_year || null, phone: cand.phone, note: '', type: 'wedding', gender: '', incomplete: false, notif_days_before: null, notif_time: null });
     }
   });
 
