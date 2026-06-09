@@ -99,7 +99,7 @@ function tfShow(id) {
   ['tf-view-teams','tf-view-create','tf-view-dashboard','tf-view-member','tf-view-thanks'].forEach(function(v) {
     document.getElementById(v).style.display = 'none';
   });
-  document.getElementById(id).style.display = 'block';
+  document.getElementById(id).style.display = '';
 }
 
 // ── MULTI-TEAM LOCALSTORAGE ──
