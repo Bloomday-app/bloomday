@@ -57,7 +57,9 @@ var TF_I18N = {
     tfSelectAll: 'Tout sélectionner',
     tfDeselectAll: 'Tout décocher',
     tfDeleting: 'Suppression…',
-    tfDeleteSuccess: 'Équipe supprimée'
+    tfDeleteSuccess: 'Équipe supprimée',
+    openBloomday: 'Ouvrir Bloomday',
+    profileMenu: 'Mon compte'
   },
   en: {
     title: 'Team Form',
@@ -117,7 +119,9 @@ var TF_I18N = {
     tfSelectAll: 'Select all',
     tfDeselectAll: 'Deselect all',
     tfDeleting: 'Deleting…',
-    tfDeleteSuccess: 'Team deleted'
+    tfDeleteSuccess: 'Team deleted',
+    openBloomday: 'Open Bloomday',
+    profileMenu: 'My account'
   }
 };
 
