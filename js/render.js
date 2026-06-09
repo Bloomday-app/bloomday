@@ -1,8 +1,33 @@
+function _dedupWeddings(arr){
+  var byDate={};
+  arr.forEach(function(p){
+    var isW=p.type==='wedding'||(typeof p.name==='string'&&p.name.indexOf('(mariage avec')!==-1);
+    if(!isW)return;
+    var k=p.day+'-'+p.month;
+    if(!byDate[k])byDate[k]=[];
+    byDate[k].push(p);
+  });
+  var drop=new Set();
+  Object.keys(byDate).forEach(function(k){
+    var g=byDate[k];if(g.length<2)return;
+    for(var i=0;i<g.length;i++)for(var j=i+1;j<g.length;j++){
+      var nA=g[i].name||'',nB=g[j].name||'';
+      var baseA=nA.split('(mariage avec')[0].trim().toLowerCase();
+      var baseB=nB.split('(mariage avec')[0].trim().toLowerCase();
+      var spA=(nA.match(/\(mariage avec (.+?)\)/)||['',''])[1].toLowerCase();
+      var spB=(nB.match(/\(mariage avec (.+?)\)/)||['',''])[1].toLowerCase();
+      var fA=baseA.split(' ')[0],fB=baseB.split(' ')[0];
+      if((spA&&fB&&spA.indexOf(fB)!==-1)||(spB&&fA&&spB.indexOf(fA)!==-1))drop.add(g[j].id||nB+g[j].day);
+    }
+  });
+  return drop.size?arr.filter(function(p){return!drop.has(p.id||(p.name||'')+p.day);}):arr;
+}
+
 function rHome(){
   const el=document.getElementById('s-home');
   if(!el)return;
   const now=new Date();
-  const m=mems();
+  const m=_dedupWeddings(mems());
   const todays=m.filter(p=>isToday(p.day,p.month));
   const missed=m.filter(p=>wasYest(p.day,p.month));
   const upcoming=m.filter(p=>{const d=daysTill(p.day,p.month);return d>0&&d<=7;}).sort((a,b)=>daysTill(a.day,a.month)-daysTill(b.day,b.month));

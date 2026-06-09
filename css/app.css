@@ -551,8 +551,8 @@ details[open] summary::after{content:" ▾"}
 .desktop-sidebar.collapsed .lang-sel{flex-direction:column;align-items:center;justify-content:center;padding:8px 0;gap:2px}
 .desktop-sidebar.collapsed .lang-col{display:block;font-size:10px;font-weight:700;letter-spacing:.04em;line-height:1}
 .dsb-logo{margin-bottom:20px;padding:8px 16px;display:flex;align-items:center;gap:8px}
-.dsb-hamburger{background:none;border:none;cursor:pointer;color:rgba(255,255,255,.85);display:flex;align-items:center;justify-content:center;border-radius:8px;padding:7px;width:36px;height:36px;flex-shrink:0;transition:background .15s}
-.dsb-hamburger:hover{background:rgba(255,255,255,.15)}
+.dsb-hamburger{background:none;border:none;cursor:pointer;color:var(--b1);opacity:.75;display:flex;align-items:center;justify-content:center;border-radius:8px;padding:7px;width:36px;height:36px;flex-shrink:0;transition:background .15s}
+.dsb-hamburger:hover{background:rgba(212,168,67,.15);opacity:1}
 .mob-hamburger{background:none;border:none;cursor:pointer;color:var(--txt);display:flex;align-items:center;justify-content:center;border-radius:8px;padding:6px;width:36px;height:36px;flex-shrink:0;transition:background .15s}
 .mob-hamburger:hover{background:var(--bg2)}
 .mob-nav-btn{background:none;border:none;padding:12px 14px;border-radius:10px;font-size:14px;font-weight:600;color:var(--txt);cursor:pointer;text-align:left;transition:background .15s;width:100%}
