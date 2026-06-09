@@ -367,7 +367,7 @@ function _restoreSidebar(){
   var sb=document.getElementById('desktop-sidebar');
   if(!sb)return;
   var saved=localStorage.getItem('bdg16_sb_collapsed');
-  var collapsed=(saved==='1')||(saved===null&&window.innerWidth<1024);
+  var collapsed=(saved==='1')||(saved===null);
   if(collapsed)sb.classList.add('collapsed');
 }
 
