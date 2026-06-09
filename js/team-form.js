@@ -735,6 +735,7 @@ async function tfSyncBloomday() {
 // ── MODE FORMULAIRE MEMBRE ──
 async function tfInitMember() {
   tfSetBodyClass('');
+  tfRenderTopbarAvatar();
   var res = await supabase.rpc('tf_get_member_form', { p_member_token: TF.memberToken });
   if (res.error || !res.data) {
     tfShow('tf-view-member');
