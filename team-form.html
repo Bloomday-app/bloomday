@@ -62,10 +62,22 @@
     .tf-topbar-logo{display:flex;align-items:center;gap:8px;text-decoration:none}
     .tf-topbar-logo img{width:26px;height:26px;object-fit:contain;border-radius:6px}
     .tf-topbar-logo span{font-family:'Playfair Display',serif;font-size:18px;font-weight:800;color:var(--txt)}
-    .tf-topbar-right{width:80px}
+    .tf-topbar-right{width:80px;position:relative;display:flex;justify-content:flex-end;align-items:center}
     #tf-modal-qr,#tf-modal-delete{position:fixed;inset:0;background:rgba(45,27,20,.6);z-index:100;align-items:center;justify-content:center;padding:20px}
     .tf-modal-inner{background:var(--bg2);border-radius:var(--rad);padding:24px;max-width:300px;width:100%;text-align:center;box-shadow:0 8px 40px rgba(0,0,0,.3)}
     @media print{body>*{display:none!important}#tf-modal-qr{display:flex!important;position:static;background:none;padding:0}}
+    /* ── AVATAR TOPBAR ── */
+    .tf-avatar-btn{width:32px;height:32px;border-radius:50%;border:none;cursor:pointer;background:var(--grad);color:#fff;font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center;overflow:hidden;padding:0;font-family:inherit;flex-shrink:0}
+    .tf-avatar-btn img{width:100%;height:100%;object-fit:cover}
+    .tf-avatar-menu{position:absolute;right:0;top:40px;background:var(--bg2);border:1px solid var(--brd);border-radius:var(--rad);box-shadow:var(--sh);padding:12px 14px;min-width:200px;z-index:200}
+    .tf-avatar-menu-name{font-weight:700;font-size:14px;margin-bottom:2px;color:var(--txt)}
+    .tf-avatar-menu-email{font-size:12px;color:var(--txt2);margin-bottom:12px;word-break:break-all}
+    .tf-avatar-menu-link{display:block;text-align:center;padding:8px 12px;background:var(--grad);color:#fff;border-radius:8px;text-decoration:none;font-size:13px;font-weight:700}
+    /* ── LAYOUT DEUX COLONNES ── */
+    .tf-two-col{display:grid;grid-template-columns:40% 60%;gap:24px;align-items:start}
+    .tf-col-left{position:sticky;top:68px}
+    body.tf-dashboard-active .tf-wrap,body.tf-step2-active .tf-wrap{max-width:1200px}
+    @media(max-width:767px){.tf-two-col{display:block}.tf-col-left{position:static}}
   </style>
 </head>
 <body>
