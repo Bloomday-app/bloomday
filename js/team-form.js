@@ -74,6 +74,11 @@ window.addEventListener('DOMContentLoaded', async function() {
       var sessRes = await supabase.auth.getSession();
       var userId = sessRes.data && sessRes.data.session && sessRes.data.session.user && sessRes.data.session.user.id;
       if (userId) {
+        var localTeams = tfGetSavedTeams();
+        if (localTeams.length > 0) {
+          var localTokens = localTeams.map(function(t) { return t.token; });
+          await supabase.rpc('tf_claim_surveys', { p_tokens: localTokens });
+        }
         var syncRes = await supabase.rpc('tf_get_my_surveys');
         if (!syncRes.error && Array.isArray(syncRes.data)) {
           tfMergeAndSaveTeams(syncRes.data);
