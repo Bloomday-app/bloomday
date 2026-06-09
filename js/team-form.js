@@ -827,7 +827,7 @@ function tfRenderDeleteStep1(teamName) {
     + '<div style="display:flex;gap:8px">'
     + '<button class="btn btn-ghost" style="flex:1" onclick="tfCloseDeleteModal()">' + tfT('cancelAdd') + '</button>'
     + '<button class="btn btn-primary" style="flex:1;background:#c0392b;border:none" onclick="tfDeleteStep2()">'
-    + tfT('tfDeleteBtn') + ' →</button>'
+    + tfT('tfDeleteBtn') + '</button>'
     + '</div>';
 }
 
