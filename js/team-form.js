@@ -367,20 +367,13 @@ function tfRenderDashboard() {
 }
 
 function tfToggleAddMember() {
-  var el = document.getElementById('tf-add-member-inline');
-  if (!el) return;
-  if (el.style.display === 'none' || el.style.display === '') {
-    tfRenderAddMemberForm();
-    el.style.display = 'block';
-  } else {
-    el.style.display = 'none';
-  }
+  tfRenderAddMemberForm();
 }
 
 function tfRenderAddMemberForm() {
   var relLabels = (TF.survey && Array.isArray(TF.survey.relation_labels)) ? TF.survey.relation_labels : [];
   var relOptions = relLabels.map(function(l) { return '<option>' + tfEsc(l) + '</option>'; }).join('');
-  document.getElementById('tf-add-member-inline').innerHTML =
+  document.getElementById('tf-dash-form-card').innerHTML =
     '<div class="tf-card" style="border:1.5px dashed var(--brd2)">'
     + '<h2>' + tfT('addMemberDash') + '</h2>'
     + '<label>' + tfT('firstName') + '</label>'
@@ -417,7 +410,6 @@ async function tfSubmitAddMember() {
   }
 
   TF.members.push(res.data);
-  document.getElementById('tf-add-member-inline').style.display = 'none';
   tfRenderDashboard();
   tfToast(firstName + ' ajouté·e !');
 }
