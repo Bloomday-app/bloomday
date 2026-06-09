@@ -409,6 +409,7 @@ async function tfInitDashboard() {
   TF.members = res.data.members || [];
   tfSaveAdminToken(TF.adminToken, TF.survey.team_name, TF.survey.manager_name);
   tfRenderDashboard();
+  tfRenderAddMemberForm();
   tfStartDashboardPolling();
   tfSetBodyClass('tf-dashboard-active');
   tfRenderTopbarAvatar();
@@ -437,7 +438,6 @@ function tfRenderDashboard() {
   document.getElementById('tf-member-cards').innerHTML = TF.members.map(function(m) {
     return tfRenderMemberCard(m);
   }).join('');
-  tfRenderAddMemberForm();
 }
 
 function tfRenderAddMemberForm() {
