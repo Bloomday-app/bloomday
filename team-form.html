@@ -105,15 +105,19 @@
     </div>
 
     <!-- Mode: Dashboard -->
-    <div id="tf-view-dashboard">
-      <div class="tf-card">
-        <h1 id="tf-dash-title"></h1>
-        <div class="progress-bar"><div class="progress-fill" id="tf-progress-fill" style="width:0%"></div></div>
-        <p id="tf-progress-text" style="font-size:13px;color:var(--txt2);margin-bottom:16px"></p>
-        <div id="tf-dash-actions"></div>
+    <div id="tf-view-dashboard" class="tf-two-col">
+      <div id="tf-dash-left" class="tf-col-left">
+        <div class="tf-card">
+          <h1 id="tf-dash-title"></h1>
+          <div class="progress-bar"><div class="progress-fill" id="tf-progress-fill" style="width:0%"></div></div>
+          <p id="tf-progress-text" style="font-size:13px;color:var(--txt2);margin-bottom:16px"></p>
+          <div id="tf-dash-actions"></div>
+        </div>
+        <div class="tf-card" id="tf-dash-form-card" style="border:1.5px dashed var(--brd2)"></div>
       </div>
-      <div id="tf-member-cards"></div>
-      <div id="tf-add-member-inline" style="display:none"></div>
+      <div id="tf-dash-right">
+        <div id="tf-member-cards"></div>
+      </div>
     </div>
 
     <!-- Mode: Formulaire membre -->
