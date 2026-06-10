@@ -446,6 +446,7 @@ function tfRenderDashboard() {
   document.getElementById('tf-member-cards').innerHTML = TF.members.map(function(m) {
     return tfRenderMemberCard(m);
   }).join('');
+  tfInitSwipe();
 }
 
 function tfRenderAddMemberForm() {
@@ -1130,4 +1131,40 @@ async function tfExecuteRemoveMember() {
   tfCloseRemoveModal();
   tfToast(tfT('tfRemoveSuccess'));
   tfRenderDashboard();
+}
+
+// ── SWIPE-TO-DELETE MOBILE ──
+function tfInitSwipe() {
+  document.querySelectorAll('#tf-member-cards .tf-dash-card').forEach(function(card) {
+    var startX = 0, startY = 0, dragging = false, delta = 0;
+    card.addEventListener('touchstart', function(e) {
+      startX = e.touches[0].clientX;
+      startY = e.touches[0].clientY;
+      dragging = true;
+      delta = 0;
+    }, { passive: true });
+    card.addEventListener('touchmove', function(e) {
+      if (!dragging) return;
+      var dx = e.touches[0].clientX - startX;
+      var dy = e.touches[0].clientY - startY;
+      if (Math.abs(dy) > Math.abs(dx)) { dragging = false; return; }
+      if (dx > 0) { delta = 0; return; }
+      delta = Math.max(dx, -80);
+      var inner = card.querySelector('.tf-dash-swipe-inner');
+      if (inner) inner.style.transform = 'translateX(' + delta + 'px)';
+    }, { passive: true });
+    card.addEventListener('touchend', function() {
+      if (!dragging) return;
+      dragging = false;
+      var inner = card.querySelector('.tf-dash-swipe-inner');
+      if (delta < -40) {
+        if (inner) inner.style.transform = 'translateX(-80px)';
+        document.querySelectorAll('#tf-member-cards .tf-dash-swipe-inner').forEach(function(other) {
+          if (other !== inner) other.style.transform = 'translateX(0)';
+        });
+      } else {
+        if (inner) inner.style.transform = 'translateX(0)';
+      }
+    });
+  });
 }
