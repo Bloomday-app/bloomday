@@ -24,6 +24,7 @@ var TF = {
   user: null
 };
 var TF_DELETE = { token: null, teamName: null, groupId: null, bloomdayMembers: [] };
+var TF_REMOVE = { token: null, name: null, userId: null };
 
 var TF_PHONE_CODES = [
   { code: '+33',  flag: '🇫🇷', name: 'France' },
@@ -1057,4 +1058,76 @@ async function tfExecuteDelete(groupId, keepIds) {
   } else {
     tfInitTeams();
   }
+}
+
+// ── SUPPRESSION DE MEMBRE ──
+async function tfOpenRemoveModal(memberToken, memberName) {
+  TF_REMOVE.token = memberToken;
+  TF_REMOVE.name = memberName;
+  var sessRes = await supabase.auth.getSession();
+  TF_REMOVE.userId = sessRes.data && sessRes.data.session && sessRes.data.session.user
+    ? sessRes.data.session.user.id : null;
+  var modal = document.getElementById('tf-modal-remove');
+  modal.style.display = 'flex';
+  document.getElementById('tf-modal-remove-inner').innerHTML = tfRenderRemoveModal(memberName, !!TF_REMOVE.userId);
+}
+
+function tfRenderRemoveModal(memberName, showBloomday) {
+  return '<h2 style="font-family:\'Playfair Display\',serif;font-size:17px;font-weight:800;margin-bottom:12px">'
+    + tfT('tfRemoveConfirmTitle').replace('%name', memberName) + '</h2>'
+    + (showBloomday
+      ? '<label style="display:flex;align-items:center;gap:10px;font-size:13px;margin-bottom:20px;cursor:pointer;text-align:left">'
+        + '<input type="checkbox" id="tf-remove-bloomday-cb" style="width:18px;height:18px;accent-color:var(--b3);flex-shrink:0;margin:0">'
+        + '<span>' + tfT('tfRemoveAlsoBloomday') + '</span>'
+        + '</label>'
+      : '<div style="margin-bottom:20px"></div>')
+    + '<div style="display:flex;gap:8px">'
+    + '<button class="btn btn-ghost" style="flex:1" onclick="tfCloseRemoveModal()">' + tfT('cancelAdd') + '</button>'
+    + '<button class="btn btn-primary" style="flex:1;background:#c0392b;border:none" id="tf-remove-exec-btn" onclick="tfExecuteRemoveMember()">'
+    + tfT('tfRemoveMemberBtn') + '</button>'
+    + '</div>';
+}
+
+function tfCloseRemoveModal() {
+  document.getElementById('tf-modal-remove').style.display = 'none';
+  TF_REMOVE.token = null;
+  TF_REMOVE.name = null;
+  TF_REMOVE.userId = null;
+  document.querySelectorAll('.tf-dash-swipe-inner').forEach(function(el) {
+    el.style.transform = 'translateX(0)';
+  });
+}
+
+async function tfExecuteRemoveMember() {
+  var btn = document.getElementById('tf-remove-exec-btn');
+  if (btn) { btn.disabled = true; btn.textContent = tfT('tfRemoving'); }
+
+  var res = await supabase.rpc('tf_remove_member', {
+    p_admin_token: TF.adminToken,
+    p_member_token: TF_REMOVE.token
+  });
+  if (res.error || res.data === false) {
+    alert('Erreur : ' + (res.error ? res.error.message : 'Token invalide'));
+    if (btn) { btn.disabled = false; btn.textContent = tfT('tfRemoveMemberBtn'); }
+    return;
+  }
+
+  var alsoBloomday = document.getElementById('tf-remove-bloomday-cb') && document.getElementById('tf-remove-bloomday-cb').checked;
+  if (alsoBloomday && TF_REMOVE.userId) {
+    var member = TF.members.find(function(m) { return m.token === TF_REMOVE.token; });
+    if (member) {
+      var fullName = (member.first_name + ' ' + member.last_name).trim();
+      var gRes = await supabase.from('groups').select('id')
+        .eq('user_id', TF_REMOVE.userId).eq('name', TF.survey.team_name).maybeSingle();
+      if (gRes.data && gRes.data.id) {
+        await supabase.from('members').delete().eq('group_id', gRes.data.id).eq('name', fullName);
+        await supabase.from('members').delete().eq('group_id', gRes.data.id).ilike('name', fullName + ' (mariage%');
+      }
+    }
+  }
+
+  TF.members = TF.members.filter(function(m) { return m.token !== TF_REMOVE.token; });
+  tfCloseRemoveModal();
+  tfToast(tfT('tfRemoveSuccess'));
+  tfRenderDashboard();
 }
