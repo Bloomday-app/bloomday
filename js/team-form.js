@@ -23,7 +23,8 @@ var TF = {
   selectedGender: '',
   pollInterval: null,
   submitting: false,
-  user: null
+  user: null,
+  _coAdminShareToken: null
 };
 var TF_DELETE = { token: null, teamName: null, groupId: null, bloomdayMembers: [] };
 var TF_REMOVE = { token: null, name: null, userId: null };
@@ -1251,10 +1252,7 @@ async function tfLoadCoAdminSection() {
       + '<button class="btn btn-ghost btn-sm" style="color:#c0392b;border-color:#e8c0b8" onclick="tfRevokeCoAdmin()">' + tfT('tfRevokeCoAdmin') + '</button>';
   } else {
     el.innerHTML = '<div style="font-size:13px;color:var(--txt3);margin-bottom:10px">' + tfT('tfNoCoAdmin') + '</div>'
-      + '<div style="display:flex;gap:8px;flex-wrap:wrap">'
-      + '<button class="btn btn-ghost btn-sm" onclick="tfOpenCoAdminInviteEmail()">' + tfT('tfInviteByEmail') + '</button>'
-      + '<button class="btn btn-ghost btn-sm" onclick="tfCopyCoAdminLink(\'' + tfEsc(info.co_admin_token) + '\')">' + tfT('tfCopyCoAdminLink') + '</button>'
-      + '</div>';
+      + '<button class="btn btn-primary" style="width:100%" onclick="tfOpenCoAdminShareSheet(\'' + tfEsc(info.co_admin_token) + '\')">' + tfT('tfInviteCoAdmin') + '</button>';
   }
 }
 
@@ -1321,6 +1319,56 @@ async function tfCopyCoAdminLink(coAdminToken) {
   } catch(e) {
     prompt(tfLang() === 'fr' ? 'Copiez ce lien :' : 'Copy this link:', url);
   }
+}
+
+function tfOpenCoAdminShareSheet(coAdminToken) {
+  TF._coAdminShareToken = coAdminToken;
+  var el = document.getElementById('tf-modal-coadmin-share');
+  if (!el) return;
+  document.getElementById('tf-sheet-title').textContent = tfT('tfInviteCoAdmin');
+  document.getElementById('tf-sheet-sub').textContent = tfT('tfInviteCoAdminSub');
+  document.getElementById('tf-share-wa-label').textContent = tfT('tfShareViaWhatsApp');
+  document.getElementById('tf-share-sms-label').textContent = tfT('tfShareViaSMS');
+  document.getElementById('tf-share-email-label').textContent = tfT('tfShareViaEmail');
+  document.getElementById('tf-share-copy-label').textContent = tfT('tfShareViaCopy');
+  document.getElementById('tf-sheet-cancel-btn').textContent = tfT('cancelAdd');
+  el.style.display = 'flex';
+}
+
+function tfCloseCoAdminShareSheet() {
+  var el = document.getElementById('tf-modal-coadmin-share');
+  if (el) el.style.display = 'none';
+  TF._coAdminShareToken = null;
+}
+
+function tfShareCoAdminWhatsApp() {
+  var url = window.location.origin + window.location.pathname + '?coadmin=' + encodeURIComponent(TF._coAdminShareToken);
+  var msg = (TF.survey.manager_name || '') + ' ' + tfT('tfCoAdminMsg') + ' ' + (TF.survey.team_name || '') + ' 🌸\n' + url;
+  window.open('https://wa.me/?text=' + encodeURIComponent(msg));
+  tfCloseCoAdminShareSheet();
+}
+
+function tfShareCoAdminSMS() {
+  var url = window.location.origin + window.location.pathname + '?coadmin=' + encodeURIComponent(TF._coAdminShareToken);
+  var msg = (TF.survey.manager_name || '') + ' ' + tfT('tfCoAdminMsg') + ' ' + (TF.survey.team_name || '') + ' 🌸\n' + url;
+  window.open('sms:?body=' + encodeURIComponent(msg));
+  tfCloseCoAdminShareSheet();
+}
+
+function tfShareCoAdminEmail() {
+  tfCloseCoAdminShareSheet();
+  tfOpenCoAdminInviteEmail();
+}
+
+async function tfShareCoAdminCopy() {
+  var url = window.location.origin + window.location.pathname + '?coadmin=' + encodeURIComponent(TF._coAdminShareToken);
+  try {
+    await navigator.clipboard.writeText(url);
+    tfToast(tfT('tfLinkCopied'));
+  } catch(e) {
+    prompt(tfLang() === 'fr' ? 'Copiez ce lien :' : 'Copy this link:', url);
+  }
+  tfCloseCoAdminShareSheet();
 }
 
 async function tfRevokeCoAdmin() {
