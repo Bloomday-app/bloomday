@@ -54,7 +54,12 @@
     .tf-gender-btn.selected{border-color:var(--b2);background:#FFF0EE;color:var(--b2)}
     .tf-toggle{display:flex;align-items:center;gap:10px;margin-bottom:12px}
     .tf-toggle input[type=checkbox]{width:20px;height:20px;accent-color:var(--b2);margin:0;flex-shrink:0}
-    .tf-dash-card{background:var(--bg2);border-radius:var(--rad);box-shadow:var(--sh);padding:16px;margin-bottom:12px;border:1px solid var(--brd)}
+    .tf-dash-card{background:var(--bg2);border-radius:var(--rad);box-shadow:var(--sh);padding:16px;margin-bottom:12px;border:1px solid var(--brd);position:relative;overflow:hidden}
+    .tf-dash-swipe-inner{transform:translateX(0);transition:transform .25s ease;will-change:transform}
+    .tf-dash-card-del{position:absolute;right:0;top:0;bottom:0;width:80px;background:#c0392b;display:flex;align-items:center;justify-content:center;color:#fff;font-size:12px;font-weight:700;cursor:pointer;border-radius:0 var(--rad) var(--rad) 0;user-select:none}
+    .tf-remove-btn{background:none;border:none;cursor:pointer;color:var(--txt3);font-size:20px;line-height:1;padding:0 4px;transition:color .15s;font-family:inherit}
+    .tf-remove-btn:hover{color:#c0392b}
+    @media(min-width:600px){.tf-dash-card-del{display:none}}
     .tf-topbar{display:flex;align-items:center;justify-content:space-between;padding:12px 16px;background:var(--bg2);border-bottom:1px solid var(--brd);position:sticky;top:0;z-index:50;margin:0 -16px 20px;backdrop-filter:blur(8px)}
     .tf-back{display:flex;align-items:center;gap:6px;background:none;border:none;cursor:pointer;font-size:14px;font-weight:600;color:var(--txt2);font-family:inherit;padding:6px 10px;border-radius:8px;text-decoration:none;transition:background .15s}
     .tf-back:hover{background:var(--brd)}
@@ -62,7 +67,7 @@
     .tf-topbar-logo img{width:26px;height:26px;object-fit:contain;border-radius:6px}
     .tf-topbar-logo span{font-family:'Playfair Display',serif;font-size:18px;font-weight:800;color:var(--txt)}
     .tf-topbar-right{width:80px;position:relative;display:flex;justify-content:flex-end;align-items:center}
-    #tf-modal-qr,#tf-modal-delete{position:fixed;inset:0;background:rgba(45,27,20,.6);z-index:100;align-items:center;justify-content:center;padding:20px}
+    #tf-modal-qr,#tf-modal-delete,#tf-modal-remove{position:fixed;inset:0;background:rgba(45,27,20,.6);z-index:100;align-items:center;justify-content:center;padding:20px}
     .tf-modal-inner{background:var(--bg2);border-radius:var(--rad);padding:24px;max-width:300px;width:100%;text-align:center;box-shadow:0 8px 40px rgba(0,0,0,.3)}
     @media print{body>*{display:none!important}#tf-modal-qr{display:flex!important;position:static;background:none;padding:0}}
     /* ── AVATAR TOPBAR ── */
@@ -150,6 +155,10 @@
 
   <div id="tf-modal-delete" style="display:none">
     <div class="tf-modal-inner" id="tf-modal-delete-inner"></div>
+  </div>
+
+  <div id="tf-modal-remove" style="display:none">
+    <div class="tf-modal-inner" id="tf-modal-remove-inner"></div>
   </div>
 
   <div class="toast" id="tf-toast"></div>
