@@ -254,9 +254,9 @@ function rHome(){
 }
 function rMembers(){
   const el=document.getElementById('s-members');if(!el||el.style.display==='none')return;
-  const m=mems();
+  const m=_dedupWeddings(mems());
   // Axe 2 : filtre appliqué uniquement sur searchFiltered (état local)
-  let filtered=searchFiltered!==null?searchFiltered:m;
+  let filtered=_dedupWeddings(searchFiltered!==null?searchFiltered:m);
   if(fMonth>0)filtered=filtered.filter(p=>p.month===fMonth);
   if(fType){
     if(fType==='other')filtered=filtered.filter(p=>p.type!=='birthday'&&p.type!=='wedding'&&p.type!=='work'&&p.type!=='custom');
@@ -366,7 +366,7 @@ function rEvents(){
   var daysInMonth=new Date(year,month+1,0).getDate();
   var firstDay=new Date(year,month,1).getDay();
   firstDay=firstDay===0?6:firstDay-1;
-  var m=mems();
+  var m=_dedupWeddings(mems());
   var allFetes=getActiveFetes();
 
   // ── CALENDRIER ──
@@ -744,7 +744,7 @@ function getActiveFetes(){
 // ── CALENDRIER ──
 function rCal(){
   var el=document.getElementById('s-cal');if(!el)return;
-  var m=mems();
+  var m=_dedupWeddings(mems());
   var h='<div class="sh">'+t('calendarTitle')+'</div>';
   var found=false;
   for(var mo=1;mo<=12;mo++){
