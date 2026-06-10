@@ -20,7 +20,7 @@ function esc(s) {
   return String(s || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 }
 
-const VALID_TYPES = ['welcome', 'subscription', 'renewal_reminder', 'anniversary', 'survey_invite'];
+const VALID_TYPES = ['welcome', 'subscription', 'renewal_reminder', 'anniversary', 'survey_invite', 'coadmin_invite'];
 
 exports.handler = async function(event) {
   if (event.httpMethod === 'OPTIONS') {
@@ -158,6 +158,22 @@ function buildTemplate(type, d) {
         <p style="color:#444;font-size:15px;line-height:1.6;margin:0 0 20px">Ça prend 2 minutes et permettra de ne jamais rater vos moments importants 🎂</p>
         ${btn('Compléter mon profil →', esc(d.link || ''))}
         <p style="text-align:center;color:#aaa;font-size:12px;margin-top:8px">Ou copie ce lien : ${esc(d.link || '')}</p>
+      `)
+    },
+    coadmin_invite: {
+      subject: `Vous avez été nommé co-administrateur d'une équipe Bloomday`,
+      text: `Bonjour,\n\n${esc(d.managerName || 'Un manager')} vous invite à co-gérer l'équipe "${esc(d.teamName || '')}" sur Bloomday.\n\nPour accéder à cette équipe, vous avez besoin d'un compte Bloomday. Si vous n'en avez pas encore, créez-en un gratuitement.\n\nAccéder à l'équipe :\n${d.claimUrl || ''}\n\n— L'équipe Bloomday`,
+      html: wrap(`
+        <h2 style="margin:0 0 8px;color:#5b2d8e;font-size:22px">Vous êtes co-administrateur ! 🤝</h2>
+        <p style="color:#444;font-size:15px;line-height:1.6;margin:0 0 16px"><strong>${esc(d.managerName || 'Un manager')}</strong> vous invite à co-gérer l'équipe <strong>"${esc(d.teamName || '')}"</strong> sur <strong>Bloomday</strong>.</p>
+        <div style="background:#f9f4ff;border-radius:10px;padding:20px;margin-bottom:24px">
+          <p style="margin:0 0 8px;font-weight:bold;color:#5b2d8e">Pour accéder à cette équipe :</p>
+          <p style="margin:4px 0;color:#555;font-size:14px">✅ Vous avez besoin d'un compte Bloomday</p>
+          <p style="margin:4px 0;color:#555;font-size:14px">✅ Créez-en un gratuitement si vous n'en avez pas</p>
+          <p style="margin:4px 0;color:#555;font-size:14px">✅ Puis cliquez le bouton ci-dessous</p>
+        </div>
+        ${btn('Accéder à l\'équipe →', d.claimUrl || APP_URL)}
+        <p style="text-align:center;color:#888;font-size:12px;margin-top:8px">Ce lien est personnel. Ne le partagez pas.</p>
       `)
     }
   };
