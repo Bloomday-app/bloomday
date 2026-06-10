@@ -58,6 +58,11 @@ var TF_I18N = {
     tfDeselectAll: 'Tout décocher',
     tfDeleting: 'Suppression…',
     tfDeleteSuccess: 'Équipe supprimée',
+    tfRemoveMemberBtn: 'Retirer',
+    tfRemoveConfirmTitle: 'Retirer %name ?',
+    tfRemoveAlsoBloomday: 'Supprimer aussi de mes contacts Bloomday',
+    tfRemoving: 'Suppression…',
+    tfRemoveSuccess: 'Membre retiré',
     openBloomday: 'Ouvrir Bloomday',
     profileMenu: 'Mon compte'
   },
@@ -120,6 +125,11 @@ var TF_I18N = {
     tfDeselectAll: 'Deselect all',
     tfDeleting: 'Deleting…',
     tfDeleteSuccess: 'Team deleted',
+    tfRemoveMemberBtn: 'Remove',
+    tfRemoveConfirmTitle: 'Remove %name?',
+    tfRemoveAlsoBloomday: 'Also delete from my Bloomday contacts',
+    tfRemoving: 'Removing…',
+    tfRemoveSuccess: 'Member removed',
     openBloomday: 'Open Bloomday',
     profileMenu: 'My account'
   }
