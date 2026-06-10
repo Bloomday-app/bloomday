@@ -172,7 +172,7 @@ function buildTemplate(type, d) {
           <p style="margin:4px 0;color:#555;font-size:14px">✅ Créez-en un gratuitement si vous n'en avez pas</p>
           <p style="margin:4px 0;color:#555;font-size:14px">✅ Puis cliquez le bouton ci-dessous</p>
         </div>
-        ${btn('Accéder à l\'équipe →', d.claimUrl || APP_URL)}
+        ${btn('Accéder à l\'équipe →', /^https:\/\//.test(d.claimUrl) ? esc(d.claimUrl) : APP_URL)}
         <p style="text-align:center;color:#888;font-size:12px;margin-top:8px">Ce lien est personnel. Ne le partagez pas.</p>
       `)
     }
