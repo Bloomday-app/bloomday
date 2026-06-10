@@ -591,6 +591,7 @@ function tfRenderMemberCard(m) {
   }
   var fullName = tfEsc(m.first_name + ' ' + m.last_name);
   return '<div class="tf-dash-card">'
+    + (TF.isCoadmin ? '' : '<div class="tf-dash-swipe-track">')
     + '<div class="tf-dash-swipe-inner">'
     + '<div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px">'
     + '<div><div style="font-weight:700;font-size:15px">' + tfEsc(m.first_name) + ' ' + tfEsc(m.last_name) + '</div>'
@@ -611,6 +612,7 @@ function tfRenderMemberCard(m) {
     + '</div>'
     + '</div>'
     + (TF.isCoadmin ? '' : '<div class="tf-dash-card-del" data-token="' + m.token + '" data-name="' + fullName + '" onclick="tfOpenRemoveModal(this.dataset.token,this.dataset.name)">' + tfT('tfRemoveMemberBtn') + '</div>')
+    + (TF.isCoadmin ? '' : '</div>')
     + '</div>';
 }
 
@@ -1159,7 +1161,7 @@ function tfCloseRemoveModal() {
   TF_REMOVE.token = null;
   TF_REMOVE.name = null;
   TF_REMOVE.userId = null;
-  document.querySelectorAll('.tf-dash-swipe-inner').forEach(function(el) {
+  document.querySelectorAll('.tf-dash-swipe-track').forEach(function(el) {
     el.style.transform = 'translateX(0)';
   });
 }
@@ -1215,16 +1217,16 @@ function tfInitSwipe() {
       if (Math.abs(dy) > Math.abs(dx)) { dragging = false; return; }
       if (dx > 0) { delta = 0; return; }
       delta = Math.max(dx, -80);
-      var inner = card.querySelector('.tf-dash-swipe-inner');
+      var inner = card.querySelector('.tf-dash-swipe-track');
       if (inner) inner.style.transform = 'translateX(' + delta + 'px)';
     }, { passive: true });
     card.addEventListener('touchend', function() {
       if (!dragging) return;
       dragging = false;
-      var inner = card.querySelector('.tf-dash-swipe-inner');
+      var inner = card.querySelector('.tf-dash-swipe-track');
       if (delta < -40) {
         if (inner) inner.style.transform = 'translateX(-80px)';
-        document.querySelectorAll('#tf-member-cards .tf-dash-swipe-inner').forEach(function(other) {
+        document.querySelectorAll('#tf-member-cards .tf-dash-swipe-track').forEach(function(other) {
           if (other !== inner) other.style.transform = 'translateX(0)';
         });
       } else {
