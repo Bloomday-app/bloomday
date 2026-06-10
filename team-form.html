@@ -67,7 +67,7 @@
     .tf-topbar-logo img{width:26px;height:26px;object-fit:contain;border-radius:6px}
     .tf-topbar-logo span{font-family:'Playfair Display',serif;font-size:18px;font-weight:800;color:var(--txt)}
     .tf-topbar-right{width:80px;position:relative;display:flex;justify-content:flex-end;align-items:center}
-    #tf-modal-qr,#tf-modal-delete,#tf-modal-remove{position:fixed;inset:0;background:rgba(45,27,20,.6);z-index:100;align-items:center;justify-content:center;padding:20px}
+    #tf-modal-qr,#tf-modal-delete,#tf-modal-remove,#tf-modal-coadmin,#tf-modal-coadmin-invite{position:fixed;inset:0;background:rgba(45,27,20,.6);z-index:100;align-items:center;justify-content:center;padding:20px}
     .tf-modal-inner{background:var(--bg2);border-radius:var(--rad);padding:24px;max-width:300px;width:100%;text-align:center;box-shadow:0 8px 40px rgba(0,0,0,.3)}
     @media print{body>*{display:none!important}#tf-modal-qr{display:flex!important;position:static;background:none;padding:0}}
     /* ── AVATAR TOPBAR ── */
@@ -159,6 +159,13 @@
 
   <div id="tf-modal-remove" style="display:none">
     <div class="tf-modal-inner" id="tf-modal-remove-inner"></div>
+  </div>
+
+  <div id="tf-modal-coadmin" style="display:none">
+    <div class="tf-modal-inner" id="tf-modal-coadmin-inner"></div>
+  </div>
+  <div id="tf-modal-coadmin-invite" style="display:none">
+    <div class="tf-modal-inner" id="tf-modal-coadmin-invite-inner"></div>
   </div>
 
   <div class="toast" id="tf-toast"></div>
