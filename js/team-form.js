@@ -233,10 +233,12 @@ function tfInitTeams() {
       + '<div><div style="font-weight:700;font-size:15px">' + tfEsc(t.teamName) + '</div>'
       + '<div style="font-size:12px;color:var(--txt2)">' + tfT('managerLabel') + ' ' + tfEsc(t.managerName || '') + '</div></div>'
       + '<div style="display:flex;gap:8px">'
-      + '<a href="team-form.html?admin=' + encodeURIComponent(t.token) + '" class="btn btn-ghost btn-sm">' + tfT('openTeam') + '</a>'
-      + '<button class="btn btn-ghost btn-sm" style="color:#c0392b;border-color:#e8c0b8" '
-      + 'data-token="' + tfEsc(t.token) + '" data-teamname="' + tfEsc(t.teamName) + '" '
-      + 'onclick="tfDeleteTeam(this.dataset.token,this.dataset.teamname)">' + tfT('tfDeleteBtn') + '</button>'
+      + '<a href="team-form.html?' + (t.is_coadmin ? 'coadmin' : 'admin') + '=' + encodeURIComponent(t.token) + '" class="btn btn-ghost btn-sm">' + tfT('openTeam') + '</a>'
+      + (!t.is_coadmin
+        ? '<button class="btn btn-ghost btn-sm" style="color:#c0392b;border-color:#e8c0b8" '
+          + 'data-token="' + tfEsc(t.token) + '" data-teamname="' + tfEsc(t.teamName) + '" '
+          + 'onclick="tfDeleteTeam(this.dataset.token,this.dataset.teamname)">' + tfT('tfDeleteBtn') + '</button>'
+        : '')
       + '</div>'
       + '</div>';
   });
@@ -471,7 +473,9 @@ async function tfInitCoadminDashboard() {
 }
 
 async function tfLoadDashboardMembers() {
-  var res = await supabase.rpc('tf_refresh_dashboard', { p_admin_token: TF.adminToken });
+  var res = TF.isCoadmin
+    ? await supabase.rpc('tf_refresh_dashboard_coadmin', { p_coadmin_token: TF.coadminToken })
+    : await supabase.rpc('tf_refresh_dashboard', { p_admin_token: TF.adminToken });
   if (!res.error && res.data) { TF.members = res.data; tfRenderDashboard(); }
 }
 
@@ -531,10 +535,15 @@ async function tfSubmitAddMember() {
   var relationEl = document.getElementById('tf-dash-inp-relation');
   var relation = relationEl ? relationEl.value : '';
 
-  var res = await supabase.rpc('tf_add_member', {
-    p_admin_token: TF.adminToken,
-    p_member: { first_name: firstName, last_name: lastName, email: email || '', relation: relation || '' }
-  });
+  var res = TF.isCoadmin
+    ? await supabase.rpc('tf_add_member_coadmin', {
+        p_coadmin_token: TF.coadminToken,
+        p_member: { first_name: firstName, last_name: lastName, email: email || '', relation: relation || '' }
+      })
+    : await supabase.rpc('tf_add_member', {
+        p_admin_token: TF.adminToken,
+        p_member: { first_name: firstName, last_name: lastName, email: email || '', relation: relation || '' }
+      });
 
   if (res.error || !res.data) {
     alert('Erreur ajout membre' + (res.error ? ' : ' + res.error.message : '.'));
@@ -588,7 +597,7 @@ function tfRenderMemberCard(m) {
     + '<div style="font-size:12px;color:var(--txt2)">' + tfEsc(m.relation || '') + '</div></div>'
     + '<div style="display:flex;align-items:center;gap:6px">'
     + '<span class="badge ' + badgeCls + '">' + badgeTxt + '</span>'
-    + '<button class="tf-remove-btn" data-token="' + m.token + '" data-name="' + fullName + '" onclick="tfOpenRemoveModal(this.dataset.token,this.dataset.name)" title="' + tfT('tfRemoveMemberBtn') + '">×</button>'
+    + (TF.isCoadmin ? '' : '<button class="tf-remove-btn" data-token="' + m.token + '" data-name="' + fullName + '" onclick="tfOpenRemoveModal(this.dataset.token,this.dataset.name)" title="' + tfT('tfRemoveMemberBtn') + '">×</button>')
     + '</div>'
     + '</div>'
     + detailsHtml
@@ -601,7 +610,7 @@ function tfRenderMemberCard(m) {
     + (m.completed ? '<button class="share-btn" data-token="' + m.token + '" onclick="tfImportMember(this.dataset.token)" style="grid-column:span 2;background:#E3F9F0;border-color:#0A5C3A;color:#0A5C3A;font-weight:700">' + tfT('importMember') + '</button>' : '')
     + '</div>'
     + '</div>'
-    + '<div class="tf-dash-card-del" data-token="' + m.token + '" data-name="' + fullName + '" onclick="tfOpenRemoveModal(this.dataset.token,this.dataset.name)">' + tfT('tfRemoveMemberBtn') + '</div>'
+    + (TF.isCoadmin ? '' : '<div class="tf-dash-card-del" data-token="' + m.token + '" data-name="' + fullName + '" onclick="tfOpenRemoveModal(this.dataset.token,this.dataset.name)">' + tfT('tfRemoveMemberBtn') + '</div>')
     + '</div>';
 }
 
