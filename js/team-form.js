@@ -1074,7 +1074,7 @@ async function tfOpenRemoveModal(memberToken, memberName) {
 
 function tfRenderRemoveModal(memberName, showBloomday) {
   return '<h2 style="font-family:\'Playfair Display\',serif;font-size:17px;font-weight:800;margin-bottom:12px">'
-    + tfT('tfRemoveConfirmTitle').replace('%name', memberName) + '</h2>'
+    + tfT('tfRemoveConfirmTitle').replace('%name', tfEsc(memberName)) + '</h2>'
     + (showBloomday
       ? '<label style="display:flex;align-items:center;gap:10px;font-size:13px;margin-bottom:20px;cursor:pointer;text-align:left">'
         + '<input type="checkbox" id="tf-remove-bloomday-cb" style="width:18px;height:18px;accent-color:var(--b3);flex-shrink:0;margin:0">'
