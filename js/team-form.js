@@ -12,6 +12,8 @@ var TF = {
   mode: null,
   adminToken: null,
   memberToken: null,
+  coadminToken: null,
+  isCoadmin: false,
   pendingMembers: [],
   pendingTeamName: '',
   pendingManagerName: '',
@@ -68,9 +70,11 @@ window.addEventListener('DOMContentLoaded', async function() {
   var params = new URLSearchParams(window.location.search);
   TF.adminToken = params.get('admin');
   TF.memberToken = params.get('member');
+  TF.coadminToken = params.get('coadmin');
   TF.prefillManager = params.get('manager') || '';
   if (TF.memberToken) { TF.mode = 'member'; tfInitMember(); }
   else if (TF.adminToken) { TF.mode = 'dashboard'; tfInitDashboard(); }
+  else if (TF.coadminToken) { TF.mode = 'coadmin'; tfInitCoadminClaim(); }
   else {
     try {
       var sessRes = await supabase.auth.getSession();
@@ -111,10 +115,10 @@ function tfGetSavedTeams() {
   } catch(e) { return []; }
 }
 
-function tfSaveAdminToken(token, teamName, managerName) {
+function tfSaveAdminToken(token, teamName, managerName, isCoadmin) {
   var teams = tfGetSavedTeams();
   teams = teams.filter(function(t) { return t.token !== token; });
-  teams.unshift({ token: token, teamName: teamName, managerName: managerName || '', createdAt: Date.now() });
+  teams.unshift({ token: token, teamName: teamName, managerName: managerName || '', createdAt: Date.now(), is_coadmin: !!isCoadmin });
   if (teams.length > 10) teams = teams.slice(0, 10);
   localStorage.setItem('tf_admin_tokens', JSON.stringify(teams));
   localStorage.setItem('tf_admin_token', token);
@@ -129,7 +133,7 @@ function tfMergeAndSaveTeams(remoteTeams) {
   remoteTeams.forEach(function(t) {
     if (!t.token) return;
     if (!localTokens[t.token]) {
-      tfSaveAdminToken(t.token, t.team_name, t.manager_name);
+      tfSaveAdminToken(t.token, t.team_name, t.manager_name, t.is_coadmin);
     }
   });
   if (previousLast !== null) localStorage.setItem('tf_admin_token', previousLast);
@@ -421,6 +425,49 @@ async function tfInitDashboard() {
   tfStartDashboardPolling();
   tfSetBodyClass('tf-dashboard-active');
   tfRenderTopbarAvatar();
+}
+
+async function tfInitCoadminClaim() {
+  var sessRes = await supabase.auth.getSession();
+  var userId = sessRes.data && sessRes.data.session && sessRes.data.session.user
+    ? sessRes.data.session.user.id : null;
+
+  if (!userId) {
+    var wrapEl = document.querySelector('.tf-wrap');
+    wrapEl.innerHTML = '<div class="tf-card" style="text-align:center;padding:40px 24px">'
+      + '<div style="font-size:40px;margin-bottom:16px">🤝</div>'
+      + '<h1 style="margin-bottom:12px">' + tfT('tfCoAdminClaimTitle') + '</h1>'
+      + '<p style="color:var(--txt2);font-size:14px;margin-bottom:24px">' + tfT('tfCoAdminClaimMsg').replace('%name', '') + '</p>'
+      + '<a href="index.html" class="btn btn-primary" style="display:inline-block;text-decoration:none">' + tfT('tfCoAdminSignIn') + '</a>'
+      + '</div>';
+    return;
+  }
+
+  var res = await supabase.rpc('tf_claim_coadmin', { p_token: TF.coadminToken });
+  if (!res.data || res.data.error) {
+    var errMsg = res.data && res.data.error === 'already_owner'
+      ? (tfLang() === 'fr' ? 'Vous êtes déjà propriétaire de cette équipe.' : 'You are already the owner.')
+      : (tfLang() === 'fr' ? 'Lien invalide ou expiré.' : 'Invalid or expired link.');
+    document.querySelector('.tf-wrap').innerHTML = '<div class="tf-card" style="text-align:center;padding:40px 24px"><p style="color:var(--txt2)">' + errMsg + '</p><a href="team-form.html" class="btn btn-primary" style="display:inline-block;text-decoration:none;margin-top:16px">Retour</a></div>';
+    return;
+  }
+
+  tfSaveAdminToken(res.data.co_admin_token, res.data.team_name, res.data.manager_name, true);
+  TF.isCoadmin = true;
+  await tfInitCoadminDashboard();
+}
+
+async function tfInitCoadminDashboard() {
+  var res = await supabase.rpc('tf_get_dashboard_coadmin', { p_coadmin_token: TF.coadminToken });
+  if (res.error || !res.data) {
+    document.querySelector('.tf-wrap').innerHTML = '<div class="tf-card" style="text-align:center;padding:40px 24px"><p style="color:var(--txt2)">' + (tfLang() === 'fr' ? 'Accès refusé ou session expirée.' : 'Access denied or session expired.') + '</p></div>';
+    return;
+  }
+  TF.survey = res.data.survey || {};
+  TF.members = res.data.members || [];
+  TF.isCoadmin = true;
+  tfShow('tf-view-dashboard');
+  tfRenderDashboard();
 }
 
 async function tfLoadDashboardMembers() {
