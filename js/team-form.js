@@ -481,6 +481,12 @@ function tfRenderDashboard() {
   document.getElementById('tf-dash-title').textContent = '🌸 ' + TF.survey.team_name;
   document.getElementById('tf-progress-fill').style.width = (total ? Math.round(done / total * 100) : 0) + '%';
   document.getElementById('tf-progress-text').textContent = tfT('progress').replace('%done', done).replace('%total', total);
+  var coAdminSection = TF.isCoadmin ? '' :
+    '<div style="margin-top:16px;padding-top:16px;border-top:1px solid var(--brd)">'
+    + '<div style="font-size:12px;font-weight:700;color:var(--txt2);margin-bottom:8px;text-transform:uppercase;letter-spacing:0.5px">' + tfT('tfCoAdmin') + '</div>'
+    + '<div id="tf-coadmin-section"><div style="font-size:13px;color:var(--txt3)">' + tfT('tfCoAdminClaiming') + '</div></div>'
+    + '</div>';
+
   document.getElementById('tf-dash-actions').innerHTML =
     '<div style="display:flex;gap:8px;flex-wrap:wrap">'
     + '<button class="btn btn-ghost btn-sm" onclick="tfPrintQR()">' + tfT('printQR') + '</button>'
@@ -489,7 +495,10 @@ function tfRenderDashboard() {
     + '</div>'
     + '<div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:8px">'
     + '<button class="btn btn-ghost btn-sm" onclick="tfNewTeam()">' + tfT('newTeam') + '</button>'
-    + '</div>';
+    + '</div>'
+    + coAdminSection;
+
+  if (!TF.isCoadmin) tfLoadCoAdminSection();
   document.getElementById('tf-member-cards').innerHTML = TF.members.map(function(m) {
     return tfRenderMemberCard(m);
   }).join('');
@@ -1214,4 +1223,99 @@ function tfInitSwipe() {
       }
     });
   });
+}
+
+// ── CO-ADMIN SECTION ──
+async function tfLoadCoAdminSection() {
+  var el = document.getElementById('tf-coadmin-section');
+  if (!el) return;
+  var res = await supabase.rpc('tf_get_coadmin_info', { p_admin_token: TF.adminToken });
+  if (res.error || !res.data) { el.innerHTML = ''; return; }
+  var info = res.data;
+  if (info.has_active_coadmin) {
+    el.innerHTML = '<div style="font-size:13px;color:var(--txt2);margin-bottom:8px">'
+      + (tfLang() === 'fr' ? 'Co-admin actif' : 'Active co-admin')
+      + (info.invited_email ? ' : <strong>' + tfEsc(info.invited_email) + '</strong>' : '')
+      + '</div>'
+      + '<button class="btn btn-ghost btn-sm" style="color:#c0392b;border-color:#e8c0b8" onclick="tfRevokeCoAdmin()">' + tfT('tfRevokeCoAdmin') + '</button>';
+  } else {
+    el.innerHTML = '<div style="font-size:13px;color:var(--txt3);margin-bottom:10px">' + tfT('tfNoCoAdmin') + '</div>'
+      + '<div style="display:flex;gap:8px;flex-wrap:wrap">'
+      + '<button class="btn btn-ghost btn-sm" onclick="tfOpenCoAdminInviteEmail()">' + tfT('tfInviteByEmail') + '</button>'
+      + '<button class="btn btn-ghost btn-sm" onclick="tfCopyCoAdminLink(\'' + tfEsc(info.co_admin_token) + '\')">' + tfT('tfCopyCoAdminLink') + '</button>'
+      + '</div>';
+  }
+}
+
+function tfOpenCoAdminInviteEmail() {
+  document.getElementById('tf-modal-coadmin-invite').style.display = 'flex';
+  document.getElementById('tf-modal-coadmin-invite-inner').innerHTML =
+    '<h2 style="font-family:\'Playfair Display\',serif;font-size:17px;font-weight:800;margin-bottom:16px">' + tfT('tfInviteByEmail') + '</h2>'
+    + '<label style="text-align:left;display:block">' + tfT('tfCoAdminEmailLabel') + '</label>'
+    + '<input id="tf-coadmin-email-inp" type="email" placeholder="email@exemple.com" style="margin-bottom:16px">'
+    + '<div style="display:flex;gap:8px">'
+    + '<button class="btn btn-ghost" style="flex:1" onclick="document.getElementById(\'tf-modal-coadmin-invite\').style.display=\'none\'">' + tfT('cancelAdd') + '</button>'
+    + '<button class="btn btn-primary" style="flex:1" id="tf-coadmin-invite-btn" onclick="tfSendCoAdminInvite()">' + tfT('tfInviteByEmail') + '</button>'
+    + '</div>';
+  setTimeout(function() {
+    var inp = document.getElementById('tf-coadmin-email-inp');
+    if (inp) inp.focus();
+  }, 100);
+}
+
+async function tfSendCoAdminInvite() {
+  var inp = document.getElementById('tf-coadmin-email-inp');
+  var email = inp ? inp.value.trim() : '';
+  if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    alert(tfT('errorRequired'));
+    return;
+  }
+  var btn = document.getElementById('tf-coadmin-invite-btn');
+  if (btn) { btn.disabled = true; btn.textContent = '…'; }
+
+  var infoRes = await supabase.rpc('tf_get_coadmin_info', { p_admin_token: TF.adminToken });
+  if (infoRes.error || !infoRes.data) {
+    alert(tfLang() === 'fr' ? 'Erreur lors de la récupération du lien.' : 'Error fetching link.');
+    if (btn) { btn.disabled = false; btn.textContent = tfT('tfInviteByEmail'); }
+    return;
+  }
+  var claimUrl = window.location.origin + window.location.pathname + '?coadmin=' + encodeURIComponent(infoRes.data.co_admin_token);
+
+  await supabase.rpc('tf_save_coadmin_invitation', { p_admin_token: TF.adminToken, p_email: email });
+
+  await fetch('/.netlify/functions/send-email', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      type: 'coadmin_invite',
+      data: {
+        email: email,
+        managerName: TF.survey.manager_name || '',
+        teamName: TF.survey.team_name || '',
+        claimUrl: claimUrl
+      }
+    })
+  });
+
+  document.getElementById('tf-modal-coadmin-invite').style.display = 'none';
+  tfToast(tfT('tfCoAdminInviteSent'));
+  tfLoadCoAdminSection();
+}
+
+async function tfCopyCoAdminLink(coAdminToken) {
+  var url = window.location.origin + window.location.pathname + '?coadmin=' + encodeURIComponent(coAdminToken);
+  try {
+    await navigator.clipboard.writeText(url);
+    tfToast(tfT('tfLinkCopied'));
+  } catch(e) {
+    prompt(tfLang() === 'fr' ? 'Copiez ce lien :' : 'Copy this link:', url);
+  }
+}
+
+async function tfRevokeCoAdmin() {
+  if (!confirm(tfLang() === 'fr' ? 'Révoquer l\'accès du co-admin ?' : 'Revoke co-admin access?')) return;
+  var res = await supabase.rpc('tf_revoke_coadmin', { p_admin_token: TF.adminToken });
+  if (res.error) { alert('Erreur : ' + res.error.message); return; }
+  tfToast(tfLang() === 'fr' ? 'Accès révoqué.' : 'Access revoked.');
+  tfLoadCoAdminSection();
 }
