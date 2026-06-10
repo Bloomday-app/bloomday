@@ -76,7 +76,14 @@ var TF_I18N = {
     tfCoAdminSignIn: 'Se connecter à Bloomday',
     tfCoAdminClaiming: 'Connexion en cours…',
     openBloomday: 'Ouvrir Bloomday',
-    profileMenu: 'Mon compte'
+    profileMenu: 'Mon compte',
+    tfInviteCoAdmin: 'Inviter un co-admin',
+    tfInviteCoAdminSub: 'Choisis comment partager le lien',
+    tfShareViaWhatsApp: 'WhatsApp',
+    tfShareViaSMS: 'SMS',
+    tfShareViaEmail: 'Email',
+    tfShareViaCopy: 'Copier le lien',
+    tfCoAdminMsg: 't\'invite à co-gérer l\'équipe'
   },
   en: {
     title: 'Team Form',
@@ -155,7 +162,14 @@ var TF_I18N = {
     tfCoAdminSignIn: 'Sign in to Bloomday',
     tfCoAdminClaiming: 'Connecting…',
     openBloomday: 'Open Bloomday',
-    profileMenu: 'My account'
+    profileMenu: 'My account',
+    tfInviteCoAdmin: 'Invite a co-admin',
+    tfInviteCoAdminSub: 'Choose how to share the link',
+    tfShareViaWhatsApp: 'WhatsApp',
+    tfShareViaSMS: 'SMS',
+    tfShareViaEmail: 'Email',
+    tfShareViaCopy: 'Copy link',
+    tfCoAdminMsg: 'invites you to co-manage the team'
   }
 };
 
