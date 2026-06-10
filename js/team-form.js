@@ -522,11 +522,16 @@ function tfRenderMemberCard(m) {
         + '</div>';
     }
   }
+  var fullName = tfEsc(m.first_name + ' ' + m.last_name);
   return '<div class="tf-dash-card">'
+    + '<div class="tf-dash-swipe-inner">'
     + '<div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px">'
     + '<div><div style="font-weight:700;font-size:15px">' + tfEsc(m.first_name) + ' ' + tfEsc(m.last_name) + '</div>'
     + '<div style="font-size:12px;color:var(--txt2)">' + tfEsc(m.relation || '') + '</div></div>'
+    + '<div style="display:flex;align-items:center;gap:6px">'
     + '<span class="badge ' + badgeCls + '">' + badgeTxt + '</span>'
+    + '<button class="tf-remove-btn" data-token="' + m.token + '" data-name="' + fullName + '" onclick="tfOpenRemoveModal(this.dataset.token,this.dataset.name)" title="' + tfT('tfRemoveMemberBtn') + '">×</button>'
+    + '</div>'
     + '</div>'
     + detailsHtml
     + '<div class="share-btns">'
@@ -536,7 +541,10 @@ function tfRenderMemberCard(m) {
     + '<button class="share-btn" data-token="' + m.token + '" onclick="tfShareCopy(this.dataset.token)">' + tfT('copyLink') + '</button>'
     + '<button class="share-btn" data-token="' + m.token + '" onclick="tfShowQR(this.dataset.token)">' + tfT('qrCode') + '</button>'
     + (m.completed ? '<button class="share-btn" data-token="' + m.token + '" onclick="tfImportMember(this.dataset.token)" style="grid-column:span 2;background:#E3F9F0;border-color:#0A5C3A;color:#0A5C3A;font-weight:700">' + tfT('importMember') + '</button>' : '')
-    + '</div></div>';
+    + '</div>'
+    + '</div>'
+    + '<div class="tf-dash-card-del" data-token="' + m.token + '" data-name="' + fullName + '" onclick="tfOpenRemoveModal(this.dataset.token,this.dataset.name)">' + tfT('tfRemoveMemberBtn') + '</div>'
+    + '</div>';
 }
 
 function tfMemberUrl(memberToken) {
