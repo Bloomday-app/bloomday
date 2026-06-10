@@ -54,9 +54,10 @@
     .tf-gender-btn.selected{border-color:var(--b2);background:#FFF0EE;color:var(--b2)}
     .tf-toggle{display:flex;align-items:center;gap:10px;margin-bottom:12px}
     .tf-toggle input[type=checkbox]{width:20px;height:20px;accent-color:var(--b2);margin:0;flex-shrink:0}
-    .tf-dash-card{background:var(--bg2);border-radius:var(--rad);box-shadow:var(--sh);padding:16px;margin-bottom:12px;border:1px solid var(--brd);position:relative;overflow:hidden}
-    .tf-dash-swipe-inner{transform:translateX(0);transition:transform .25s ease;will-change:transform}
-    .tf-dash-card-del{position:absolute;right:0;top:0;bottom:0;width:80px;background:#c0392b;display:flex;align-items:center;justify-content:center;color:#fff;font-size:12px;font-weight:700;cursor:pointer;border-radius:0 var(--rad) var(--rad) 0;user-select:none}
+    .tf-dash-card{background:var(--bg2);border-radius:var(--rad);box-shadow:var(--sh);padding:16px;margin-bottom:12px;border:1px solid var(--brd);overflow:hidden}
+    .tf-dash-swipe-track{display:flex;width:calc(100% + 80px);transform:translateX(0);transition:transform .25s ease;will-change:transform}
+    .tf-dash-swipe-inner{flex:1;min-width:0}
+    .tf-dash-card-del{width:80px;flex-shrink:0;background:#c0392b;display:flex;align-items:center;justify-content:center;color:#fff;font-size:12px;font-weight:700;cursor:pointer;user-select:none}
     .tf-remove-btn{background:none;border:none;cursor:pointer;color:var(--txt3);font-size:20px;line-height:1;padding:0 4px;transition:color .15s;font-family:inherit}
     .tf-remove-btn:hover{color:#c0392b}
     @media(min-width:600px){.tf-dash-card-del{display:none}}
