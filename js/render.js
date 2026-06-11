@@ -1439,7 +1439,7 @@ async function genGift(id,elId){
     clearTimeout(tid2);
     var data=await resp.json();
     if(!resp.ok){console.error('[AI]',resp.status,data.error);throw new Error(data.error||'HTTP '+resp.status);}
-    var raw=(data.message||'').trim();
+    var raw=(data.message||'').trim().replace(/^`{1,3}(?:json)?\s*/i,'').replace(/\s*`{1,3}$/,'');
     var gifts=null;
     try{var m=raw.match(/\[[\s\S]*\]/);if(m)gifts=JSON.parse(m[0]);}catch(e2){}
     if(gifts&&gifts.length){
@@ -1493,7 +1493,7 @@ async function genGiftModal(id){
     clearTimeout(tid);
     var data=await resp.json();
     if(!resp.ok)throw new Error(data.error||'HTTP '+resp.status);
-    var raw=(data.message||'').trim();
+    var raw=(data.message||'').trim().replace(/^`{1,3}(?:json)?\s*/i,'').replace(/\s*`{1,3}$/,'');
     var gifts=null;
     try{var mx=raw.match(/\[[\s\S]*\]/);if(mx)gifts=JSON.parse(mx[0]);}catch(e2){}
     if(gifts&&gifts.length){
