@@ -176,7 +176,7 @@ function rHome(){
         h+='<div style="font-size:14px;font-weight:700;color:var(--b1d);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+tIco(p.type)+' '+esc(wname(p))+'</div>';
         h+='<div style="font-size:11px;color:var(--b1d);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+p.day+' '+MN[p.month-1]+(age?' · '+age+' '+t(isWed(p)?'yearsTogether':'yearsOld'):'')+'</div>';
         h+='</div>';
-        h+='<span style="font-size:10px;font-weight:700;color:var(--b1);background:var(--b1l);padding:3px 8px;border-radius:20px;white-space:nowrap;flex-shrink:0">'+t('inDays')+' '+d+' '+(d>1?t('daysUnit'):t('dayUnit'))+'</span>';
+        h+='<span class="pbdg pbs" style="flex-shrink:0">'+t('inDays')+' '+d+' '+(d>1?t('daysUnit'):t('dayUnit'))+'</span>';
         h+='</div>';
         h+='<div id="prep-'+p.id+'" style="margin-top:10px"><button class="btn O fw" onclick="genMsg(\''+p.id+'\',\'prep-'+p.id+'\')">'+t('prepareBtn')+'</button></div>';
         h+='</div>';
