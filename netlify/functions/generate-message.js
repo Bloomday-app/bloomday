@@ -6,6 +6,7 @@ const ALLOWED_ORIGINS = [
   'https://rococo-chimera-459249.netlify.app',
   'https://bloomday-day.netlify.app',
   'https://bloomday.app',
+  'https://mybloomday.app',
 ];
 
 const CORS = { 'Access-Control-Allow-Origin': '*', 'Content-Type': 'application/json' };

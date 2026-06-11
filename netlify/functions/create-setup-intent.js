@@ -4,6 +4,7 @@ const ALLOWED_ORIGINS = [
   'https://rococo-chimera-459249.netlify.app',
   'https://bloomday-day.netlify.app',
   'https://bloomday.app',
+  'https://mybloomday.app',
 ];
 
 exports.handler = async function(event) {
