@@ -198,10 +198,10 @@ function rHome(){
       h+='<div style="font-size:14px;font-weight:700;color:var(--b1d);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+tIco(p.type)+' '+esc(wname(p))+'</div>';
       h+='<div style="font-size:11px;color:var(--b1d);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+tLbl(p.type)+' · '+p.day+' '+MN[p.month-1]+(age?' — '+age+' '+t(isWed(p)?'yearsTogether':'yearsOld'):'')+'</div>';
       h+='</div>';
-      h+='<span class="pbdg pbs" style="flex-shrink:0">'+t('inDays')+' '+d+'j</span>';
+      h+='<span class="pbdg pbs" style="flex-shrink:0">'+t('inDays')+' '+d+' '+(d>1?t('daysUnit'):t('dayUnit'))+'</span>';
       h+='</div>';
       h+='<div id="up-'+p.id+'" style="margin-top:8px"><button class="btn sm" onclick="genMsg(\''+p.id+'\',\'up-'+p.id+'\')">'+t('prepareBtn')+'</button></div>';
-      h+='<div style="margin-top:6px"><button class="btn sm O" onclick="showFlowerIdeas(\''+esc(p.name)+'\',\''+p.type+'\')">'+t('flowerIdeasBtn')+'</button></div>';
+      h+='<div style="margin-top:8px"><button class="btn sm O" onclick="showFlowerIdeas(\''+esc(p.name)+'\',\''+p.type+'\')">'+t('flowerIdeasBtn')+'</button></div>';
       h+='</div>';
     });
   }
