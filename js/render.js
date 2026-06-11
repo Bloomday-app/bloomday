@@ -1322,6 +1322,72 @@ function _renderMsgActions(elId,msg,phone){
     '<button class="btn sm" style="font-size:11px" onclick="openRipple(\''+_c(msg)+'\',\''+elId+'\')" title="Bloomday Ripple">🌊</button>'+
     '</div>';
 }
+
+function buildMsgPrompt(p, tpl, age, isTod, lang, prevMsgs) {
+  var lines = [];
+  var gender = p.gender || '';
+  var genderFr = gender === 'femme' ? "C'est une femme."
+    : gender === 'homme' ? "C'est un homme."
+    : gender === 'enfant' ? "C'est un enfant."
+    : '';
+
+  if (p.type === 'wedding') {
+    var base = (p.name || '').split('(mariage avec')[0].trim();
+    var spMatch = (p.name || '').match(/\(mariage avec (.+?)\)/);
+    var prenom1 = base.split(' ')[0];
+    var prenom2 = spMatch ? spMatch[1].split(' ')[0] : '';
+    var couple = prenom2 ? prenom1 + ' et ' + prenom2 : prenom1;
+    lines.push("Génère en " + lang + " un message " + tpl.t + " pour l'anniversaire de mariage de " + couple + ".");
+    if (age && isTod)  lines.push("Ils célèbrent " + age + " an" + (age > 1 ? 's' : '') + " de mariage aujourd'hui.");
+    else if (age)      lines.push("Ils vont fêter " + age + " an" + (age > 1 ? 's' : '') + " de mariage.");
+    else if (isTod)    lines.push("C'est leur anniversaire de mariage aujourd'hui.");
+    lines.push("Célèbre leur parcours commun, leur amour et ce qu'ils ont construit ensemble.");
+
+  } else if (p.type === 'work') {
+    var ancPrefix = age
+      ? age + " an" + (age > 1 ? 's' : '') + " d'ancienneté de"
+      : "l'anniversaire d'entrée en entreprise de";
+    lines.push("Génère en " + lang + " un message " + tpl.t + " pour célébrer " + ancPrefix + " " + p.name + ".");
+    if (age === 1)     lines.push("C'est sa première année dans l'équipe.");
+    else if (age > 1)  lines.push(age + " ans de fidélité et d'engagement dans l'équipe.");
+    if (genderFr)      lines.push(genderFr);
+    lines.push("Valorise sa contribution, son engagement et l'impact qu'il/elle a dans l'équipe. Ton professionnel et chaleureux, pas trop formel.");
+
+  } else if (p.type === 'custom' || p.type === 'other') {
+    var occasion = p.note ? "cet événement (voir détails ci-dessous)" : "cet événement spécial";
+    lines.push("Génère en " + lang + " un message " + tpl.t + " pour célébrer " + p.name + " à l'occasion de " + occasion + ".");
+    if (age && isTod)  lines.push("Cela fait " + age + " an" + (age > 1 ? 's' : '') + " — c'est aujourd'hui.");
+    else if (age)      lines.push("Cela fait " + age + " an" + (age > 1 ? 's' : '') + ".");
+    else if (isTod)    lines.push("C'est aujourd'hui.");
+    if (genderFr)      lines.push(genderFr);
+    lines.push("Sois créatif et adapte complètement le message au contexte fourni.");
+
+  } else {
+    // birthday (défaut)
+    lines.push("Génère en " + lang + " un message " + tpl.t + " pour l'anniversaire de " + p.name + ".");
+    if (age && isTod)  lines.push(p.name + " fête ses " + age + " ans aujourd'hui.");
+    else if (age)      lines.push(p.name + " va avoir " + age + " ans.");
+    else if (isTod)    lines.push("C'est son anniversaire aujourd'hui.");
+    if (genderFr)      lines.push(genderFr);
+  }
+
+  if (p.note) {
+    lines.push("Personnalise vraiment le message en intégrant ces caractéristiques dans le texte — ne les liste pas, inspire-toi en pour créer des phrases spécifiques à cette personne : " + p.note);
+  }
+
+  if (prevMsgs && prevMsgs.length > 0) {
+    var excerpts = prevMsgs.map(function(m) {
+      return '"' + (m.text || '').substring(0, 80) + '"';
+    }).join(' / ');
+    lines.push("Évite impérativement les formulations et tournures des messages précédents : " + excerpts);
+  }
+
+  var lengthTarget = p.type === 'work' ? '3 à 4 phrases' : '3 à 5 phrases';
+  lines.push("Écris " + lengthTarget + " courtes et percutantes. Commence directement par le message, sans guillemets, sans titre, sans explication.");
+
+  return lines.join('\n');
+}
+
 async function genMsg(id,elId){
   var el=document.getElementById(elId);if(!el)return;
   var p=mems().find(function(x){return String(x.id)===String(id);});if(!p)return;
