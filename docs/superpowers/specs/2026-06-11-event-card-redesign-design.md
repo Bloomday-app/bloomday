@@ -64,14 +64,18 @@ Le `div#prep-id` est un 3ème flex-item dans la ligne horizontale — le message
     </div>
     <span style="...;flex-shrink:0">dans {N} j</span>
   </div>
-  <div id="up-{id}">
-    <div style="display:flex;gap:6px;margin-top:10px">
-      <button class="btn sm" ...>Préparer</button>
-      <button class="btn sm O" ...>Fleurs</button>
-    </div>
+  <!-- Zone message (cible de genMsg) — séparée du bouton Fleurs -->
+  <div id="up-{id}" style="margin-top:10px">
+    <button class="btn sm" onclick="genMsg(...)">Préparer</button>
+  </div>
+  <!-- Bouton Fleurs : hors de #up-{id}, reste visible après génération -->
+  <div style="margin-top:6px">
+    <button class="btn sm O" onclick="showFlowerIdeas(...)">Fleurs</button>
   </div>
 </div>
 ```
+
+**Important :** `#up-{id}` ne contient plus que le bouton Préparer. Le bouton Fleurs est dans un div séparé, hors de portée de `genMsg()`, donc il reste visible après la génération du message.
 
 ### Règles clés
 
@@ -83,7 +87,7 @@ Le `div#prep-id` est un 3ème flex-item dans la ligne horizontale — le message
 
 4. **Panneau message inline (C1)** : le `div#prep-{id}` est en dehors du flex-row, en pleine largeur sous le header. Quand `genMsg()` injecte le message, il remplace ce div en pleine largeur.
 
-5. **Section "7 jours" après génération** : le bouton Préparer disparaît (remplacé par le message), le bouton Fleurs reste visible séparément.
+5. **Section "7 jours" après génération** : le bouton Préparer disparaît (remplacé par le message dans `#up-{id}`), le bouton Fleurs est dans un div séparé — il reste toujours visible.
 
 ### Panneau message injecté
 
