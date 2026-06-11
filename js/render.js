@@ -169,14 +169,16 @@ function rHome(){
         const d=daysTill(p.day,p.month);
         const age=ageBday(p.day,p.month,p.year);
         const idx=m.indexOf(p);
-        h+='<div class="card cb" style="display:flex;align-items:center;gap:12px">';
-        h+='<div class="av '+AV[idx%4]+'" style="width:46px;height:46px;font-size:15px">'+(p.photo?'<img src="'+p.photo+'" alt="">':ini(p.name))+'</div>';
+        h+='<div class="card cb">';
+        h+='<div style="display:flex;align-items:center;gap:10px">';
+        h+='<div class="av '+AV[idx%4]+'" style="width:40px;height:40px;font-size:13px">'+(p.photo?'<img src="'+p.photo+'" alt="">':ini(p.name))+'</div>';
         h+='<div style="flex:1;min-width:0">';
-        h+='<div style="font-size:15px;font-weight:700;color:var(--b1d)">'+tIco(p.type)+' '+esc(wname(p))+'</div>';
-        h+='<div style="font-size:12px;color:var(--b1d);margin-top:2px">'+p.day+' '+MN[p.month-1]+(age?' · '+age+' '+t(isWed(p)?'yearsTogether':'yearsOld'):'')+'</div>';
-        h+='<div style="font-size:11px;font-weight:700;color:var(--b1);margin-top:3px">'+t('inDays')+' '+d+' '+(d>1?t('daysUnit'):t('dayUnit'))+'</div>';
+        h+='<div style="font-size:14px;font-weight:700;color:var(--b1d);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+tIco(p.type)+' '+esc(wname(p))+'</div>';
+        h+='<div style="font-size:11px;color:var(--b1d);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+p.day+' '+MN[p.month-1]+(age?' · '+age+' '+t(isWed(p)?'yearsTogether':'yearsOld'):'')+'</div>';
         h+='</div>';
-        h+='<div id="prep-'+p.id+'"><button class="btn O sm" onclick="genMsg(\''+p.id+'\',\'prep-'+p.id+'\')">'+t('prepareBtn')+'</button></div>';
+        h+='<span style="font-size:10px;font-weight:700;color:var(--b1);background:var(--b1l);padding:3px 8px;border-radius:20px;white-space:nowrap;flex-shrink:0">'+t('inDays')+' '+d+' '+(d>1?t('daysUnit'):t('dayUnit'))+'</span>';
+        h+='</div>';
+        h+='<div id="prep-'+p.id+'" style="margin-top:10px"><button class="btn O fw" onclick="genMsg(\''+p.id+'\',\'prep-'+p.id+'\')">'+t('prepareBtn')+'</button></div>';
         h+='</div>';
       });
     }
