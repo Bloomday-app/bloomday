@@ -1332,11 +1332,7 @@ function buildMsgPrompt(p, tpl, age, isTod, lang, prevMsgs) {
     : '';
 
   if (p.type === 'wedding') {
-    var base = (p.name || '').split('(mariage avec')[0].trim();
-    var spMatch = (p.name || '').match(/\(mariage avec (.+?)\)/);
-    var prenom1 = base.split(' ')[0];
-    var prenom2 = spMatch ? spMatch[1].split(' ')[0] : '';
-    var couple = prenom2 ? prenom1 + ' et ' + prenom2 : prenom1;
+    var couple = wname(p);
     lines.push("Génère en " + lang + " un message " + tpl.t + " pour l'anniversaire de mariage de " + couple + ".");
     if (age && isTod)  lines.push("Ils célèbrent " + age + " an" + (age > 1 ? 's' : '') + " de mariage aujourd'hui.");
     else if (age)      lines.push("Ils vont fêter " + age + " an" + (age > 1 ? 's' : '') + " de mariage.");
@@ -1351,7 +1347,8 @@ function buildMsgPrompt(p, tpl, age, isTod, lang, prevMsgs) {
     if (age === 1)     lines.push("C'est sa première année dans l'équipe.");
     else if (age > 1)  lines.push(age + " ans de fidélité et d'engagement dans l'équipe.");
     if (genderFr)      lines.push(genderFr);
-    lines.push("Valorise sa contribution, son engagement et l'impact qu'il/elle a dans l'équipe. Ton professionnel et chaleureux, pas trop formel.");
+    var pronoun = gender === 'femme' ? 'elle' : gender === 'homme' ? 'il' : 'il/elle';
+    lines.push("Valorise sa contribution, son engagement et l'impact que " + pronoun + " a dans l'équipe. Ton professionnel et chaleureux, pas trop formel.");
 
   } else if (p.type === 'custom' || p.type === 'other') {
     var occasion = p.note ? "cet événement (voir détails ci-dessous)" : "cet événement spécial";
