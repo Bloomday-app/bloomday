@@ -23,6 +23,9 @@ function _dedupWeddings(arr){
   return drop.size?arr.filter(function(p){return!drop.has(p.id||(p.name||'')+p.day);}):arr;
 }
 
+function isWed(p){return p.type==='wedding'||(typeof p.name==='string'&&p.name.indexOf('(mariage avec')!==-1);}
+function wname(p){if(!isWed(p))return p.name;var base=(p.name||'').split('(mariage avec')[0].trim();var sp=((p.name||'').match(/\(mariage avec (.+?)\)/)||['',''])[1];var f1=base.split(' ')[0];var f2=sp?sp.split(' ')[0]:'';return f2?f1+' & '+f2:f1;}
+
 function rHome(){
   const el=document.getElementById('s-home');
   if(!el)return;
@@ -95,8 +98,8 @@ function rHome(){
     h+='<div style="font-size:11px;font-weight:700;color:var(--b4);text-transform:uppercase;letter-spacing:.06em;margin-bottom:4px">'+t('nextEventLabel')+' '+tLbl(nextEv.type)+'</div>';
     h+='<div style="display:flex;align-items:center;gap:8px">';
     h+='<div class="av '+AV[idx%4]+'" style="width:34px;height:34px;font-size:11px">'+(nextEv.photo?'<img src="'+nextEv.photo+'" alt="">':ini(nextEv.name))+'</div>';
-    h+='<div><div style="font-size:15px;font-weight:700;color:var(--b4d)">'+esc(nextEv.name.split(' ')[0])+'</div>';
-    h+='<div style="font-size:12px;color:var(--b4);margin-top:1px">'+nextEv.day+' '+MN[nextEv.month-1]+(age?' — '+age+' '+t('yearsOld'):'')+'</div>';
+    h+='<div><div style="font-size:15px;font-weight:700;color:var(--b4d)">'+esc(isWed(nextEv)?wname(nextEv):nextEv.name.split(' ')[0])+'</div>';
+    h+='<div style="font-size:12px;color:var(--b4);margin-top:1px">'+nextEv.day+' '+MN[nextEv.month-1]+(age?' — '+age+' '+t(isWed(nextEv)?'yearsTogether':'yearsOld'):'')+'</div>';
     if(MS[age])h+='<div style="font-size:11px;color:var(--b4d);margin-top:3px;font-weight:700">'+MS[age]+'</div>';
     h+='</div></div></div></div>';
   }
@@ -132,8 +135,8 @@ function rHome(){
       h+='<div class="card cr">';
       h+='<div style="display:flex;align-items:center;gap:12px;margin-bottom:10px">';
       h+='<div class="av '+AV[idx%4]+'" style="width:50px;height:50px;font-size:16px">'+(p.photo?'<img src="'+p.photo+'" alt="">':ini(p.name))+'</div>';
-      h+='<div><div style="font-family:var(--ff-title);font-size:18px;font-weight:700;color:var(--b2d)">'+tIco(p.type)+' '+esc(p.name)+'</div>';
-      h+='<div style="font-size:13px;color:var(--b2);margin-top:2px">'+tLbl(p.type)+' · '+p.day+' '+MN[p.month-1]+(p.year?' '+p.year:'')+(age?' — '+age+' '+t('yearsOld'):'')+'</div>';
+      h+='<div><div style="font-family:var(--ff-title);font-size:18px;font-weight:700;color:var(--b2d)">'+tIco(p.type)+' '+esc(wname(p))+'</div>';
+      h+='<div style="font-size:13px;color:var(--b2);margin-top:2px">'+tLbl(p.type)+' · '+p.day+' '+MN[p.month-1]+(p.year?' '+p.year:'')+(age?' — '+age+' '+t(isWed(p)?'yearsTogether':'yearsOld'):'')+'</div>';
       if(ms)h+='<div style="display:inline-block;background:var(--b4l);color:var(--b4d);font-size:11px;padding:3px 10px;border-radius:20px;margin-top:5px;font-weight:700">'+ms+'</div>';
       h+='</div></div>';
       if(p.phone)h+='<div style="font-size:12px;color:var(--b2);margin-bottom:8px">📞 '+esc(p.phone)+'</div>';
@@ -169,8 +172,8 @@ function rHome(){
         h+='<div class="card cb" style="display:flex;align-items:center;gap:12px">';
         h+='<div class="av '+AV[idx%4]+'" style="width:46px;height:46px;font-size:15px">'+(p.photo?'<img src="'+p.photo+'" alt="">':ini(p.name))+'</div>';
         h+='<div style="flex:1;min-width:0">';
-        h+='<div style="font-size:15px;font-weight:700;color:var(--b1d)">'+tIco(p.type)+' '+esc(p.name)+'</div>';
-        h+='<div style="font-size:12px;color:var(--b1d);margin-top:2px">'+p.day+' '+MN[p.month-1]+(age?' · '+age+' '+t('yearsOld'):'')+'</div>';
+        h+='<div style="font-size:15px;font-weight:700;color:var(--b1d)">'+tIco(p.type)+' '+esc(wname(p))+'</div>';
+        h+='<div style="font-size:12px;color:var(--b1d);margin-top:2px">'+p.day+' '+MN[p.month-1]+(age?' · '+age+' '+t(isWed(p)?'yearsTogether':'yearsOld'):'')+'</div>';
         h+='<div style="font-size:11px;font-weight:700;color:var(--b1);margin-top:3px">'+t('inDays')+' '+d+' '+(d>1?t('daysUnit'):t('dayUnit'))+'</div>';
         h+='</div>';
         h+='<div id="prep-'+p.id+'"><button class="btn O sm" onclick="genMsg(\''+p.id+'\',\'prep-'+p.id+'\')">'+t('prepareBtn')+'</button></div>';
@@ -190,8 +193,8 @@ function rHome(){
       h+='<div style="display:flex;align-items:center;gap:10px">';
       h+='<div class="av '+AV[idx%4]+'">'+(p.photo?'<img src="'+p.photo+'" alt="">':ini(p.name))+'</div>';
       h+='<div style="flex:1;min-width:0">';
-      h+='<div style="font-size:14px;font-weight:700;color:var(--b1d)">'+tIco(p.type)+' '+esc(p.name)+'<span class="pbdg pbs">'+t('inDays')+' '+d+'j</span></div>';
-      h+='<div style="font-size:12px;color:var(--b1d)">'+tLbl(p.type)+' · '+p.day+' '+MN[p.month-1]+(age?' — '+age+' '+t('yearsOld'):'')+'</div>';
+      h+='<div style="font-size:14px;font-weight:700;color:var(--b1d)">'+tIco(p.type)+' '+esc(wname(p))+'<span class="pbdg pbs">'+t('inDays')+' '+d+'j</span></div>';
+      h+='<div style="font-size:12px;color:var(--b1d)">'+tLbl(p.type)+' · '+p.day+' '+MN[p.month-1]+(age?' — '+age+' '+t(isWed(p)?'yearsTogether':'yearsOld'):'')+'</div>';
       h+='</div></div>';
       h+='<div id="up-'+p.id+'"><div class="brow" style="margin-top:8px"><button class="btn sm" onclick="genMsg(\''+p.id+'\',\'up-'+p.id+'\')">'+t('prepareBtn')+'</button><button class="btn sm O" style="margin-left:6px" onclick="showFlowerIdeas(\''+esc(p.name)+'\',\''+p.type+'\')">'+t('flowerIdeasBtn')+'</button></div></div>';
       h+='</div>';
@@ -210,8 +213,8 @@ function rHome(){
       h+='<div class="me">';
       h+='<div class="med'+(isPast&&!isTod?' past':'')+'">'+p.day+'</div>';
       h+='<div style="flex:1;min-width:0">';
-      h+='<div style="font-size:13px;font-weight:'+(isTod?700:500)+';color:'+(isTod?'var(--b2d)':'var(--txt)')+'">'+tIco(p.type)+' '+esc(p.name)+'</div>';
-      h+='<div style="font-size:11px;color:var(--txt2)">'+tLbl(p.type)+(age?' · '+age+' '+t('yearsOld'):'')+'</div>';
+      h+='<div style="font-size:13px;font-weight:'+(isTod?700:500)+';color:'+(isTod?'var(--b2d)':'var(--txt)')+'">'+tIco(p.type)+' '+esc(wname(p))+'</div>';
+      h+='<div style="font-size:11px;color:var(--txt2)">'+tLbl(p.type)+(age?' · '+age+' '+t(isWed(p)?'yearsTogether':'yearsOld'):'')+'</div>';
       h+='</div>';
       if(isTod)h+='<span class="pbdg pbt">'+t('todayLabel')+'</span>';
       h+='</div>';
@@ -314,8 +317,8 @@ function rMembers(){
     const age=ageBday(p.day,p.month,p.year),ms=MS[age],isEd=editId===p.id;
     const h2=hist[String(p.id)]||[];const isBiz=p.type==='work',ancOk=isBiz&&age&&[1,3,5,10,15,20,25,30].includes(age);
     h+=`<div class="prow"><div class="av ${isBiz?'av4':AV[idx%4]}">${p.photo?`<img src="${p.photo}" alt="">`:ini(p.name)}</div>
-    <div class="pinfo"><div class="pname">${tIco(p.type)} ${esc(p.name)}${p.incomplete?`<span style="display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--b2);margin-left:5px;vertical-align:middle"></span>`:''}${tod?'<span class="pbdg pbt">'+t('todayLabel')+'</span>':''}${soon&&!tod?`<span class="pbdg pbs">${t('inDays')} ${days}j</span>`:''}${ms&&(tod||soon)&&!isBiz?'<span class="pbdg pbk">'+t('yearsOld')+'</span>':''}</div>
-    <div class="pmeta">${p.day} ${MN[p.month-1]}${p.year?' '+p.year:''}${age&&!isBiz?' — '+age+' '+t('yearsOld'):isBiz&&age?' — '+age+' '+t('yearsOld'):''}</div>
+    <div class="pinfo"><div class="pname">${tIco(p.type)} ${esc(wname(p))}${p.incomplete?`<span style="display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--b2);margin-left:5px;vertical-align:middle"></span>`:''}${tod?'<span class="pbdg pbt">'+t('todayLabel')+'</span>':''}${soon&&!tod?`<span class="pbdg pbs">${t('inDays')} ${days}j</span>`:''}${ms&&(tod||soon)&&!isBiz?'<span class="pbdg pbk">'+t('yearsOld')+'</span>':''}</div>
+    <div class="pmeta">${p.day} ${MN[p.month-1]}${p.year?' '+p.year:''}${age&&!isBiz?' — '+age+' '+t(isWed(p)?'yearsTogether':'yearsOld'):isBiz&&age?' — '+age+' '+t('yearsOld'):''}</div>
     ${ancOk?`<div style="font-size:11px;color:var(--bizd);margin-top:2px;font-weight:700">🏆 ${age} ${t('yearsOld')}</div>`:''}
     ${ms&&!isBiz?`<div style="font-size:11px;color:var(--b4d);margin-top:2px;font-weight:600">${ms}</div>`:''}
     ${p.phone?`<div class="pmeta">📞 ${esc(p.phone)}</div>`:''}
@@ -757,8 +760,8 @@ function rCal(){
       var tod=isToday(p.day,p.month);
       h+='<div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--brd)">';
       h+='<div style="min-width:32px;text-align:center;font-size:14px;font-weight:700;color:'+(tod?'var(--b2d)':'var(--b1d)')+'">'+p.day+'</div>';
-      h+='<div style="flex:1"><div style="font-size:14px;font-weight:600">'+tIco(p.type)+' '+esc(p.name)+(tod?'<span class="pbdg pbt" style="margin-left:6px">'+t('calendarToday')+'</span>':'')+'</div>';
-      if(age)h+='<div style="font-size:12px;color:var(--txt2)">'+age+' '+t('yearsOld')+'</div>';
+      h+='<div style="flex:1"><div style="font-size:14px;font-weight:600">'+tIco(p.type)+' '+esc(wname(p))+(tod?'<span class="pbdg pbt" style="margin-left:6px">'+t('calendarToday')+'</span>':'')+'</div>';
+      if(age)h+='<div style="font-size:12px;color:var(--txt2)">'+age+' '+t(isWed(p)?'yearsTogether':'yearsOld')+'</div>';
       h+='</div></div>';
     });
   }
@@ -987,12 +990,12 @@ function showDayDetails(day, month, members) {
 
     var nm = document.createElement('div');
     nm.style.cssText = 'font-size:13px;font-weight:700;color:var(--txt)';
-    nm.textContent = tIco(p.type) + ' ' + p.name;
+    nm.textContent = tIco(p.type) + ' ' + wname(p);
 
     var sub = document.createElement('div');
     sub.style.cssText = 'font-size:11px;color:var(--txt2);margin-top:1px';
     var age = ageBday(p.day, p.month, p.year);
-    sub.textContent = tLbl(p.type) + ' · ' + p.day + ' ' + MN[p.month - 1] + (p.year ? ' ' + p.year : '') + (age ? ' — ' + age + ' ' + t('yearsOld') : '');
+    sub.textContent = tLbl(p.type) + ' · ' + p.day + ' ' + MN[p.month - 1] + (p.year ? ' ' + p.year : '') + (age ? ' — ' + age + ' ' + t(isWed(p)?'yearsTogether':'yearsOld') : '');
 
     var dl = daysTill(p.day, p.month);
     var dlEl = document.createElement('div');
