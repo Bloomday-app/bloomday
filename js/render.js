@@ -1403,7 +1403,8 @@ async function genMsg(id,elId){
   var tpl=DTPL.find(function(x){return x.id===actTpl;})||DTPL[0];
   var age=ageBday(p.day,p.month,p.year);
   var isTod=isToday(p.day,p.month);
-  var prompt='Génère en '+(window.__aiLang||'français')+' un message '+tpl.t+' pour '+p.name+(age?' ('+age+' ans'+(isTod?' aujourd\'hui':'')+')':''+(isTod?" dont c'est l'événement aujourd'hui":''))+(p.note?'. Notes personnelles : '+p.note:'')+'. Maximum 3-4 phrases.';
+  var prevMsgs=(hist[String(id)]||[]).slice(-2);
+  var prompt=buildMsgPrompt(p,tpl,age,isTod,window.__aiLang||'français',prevMsgs);
   try{
     var ac=new AbortController();var tid=setTimeout(function(){ac.abort();},15000);
     var resp=await fetch('/.netlify/functions/generate-message',{method:'POST',headers:await getAuthHeaders(),body:JSON.stringify({prompt:prompt,plan:plan}),signal:ac.signal});
