@@ -11,6 +11,8 @@
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;800&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
   <style>
     :root{--b1:#D4A843;--b2:#FF8C7A;--b3:#18A86B;--bg:#FFF8F0;--bg2:#FFFDF9;--txt:#2D1B14;--txt2:#8B6F60;--txt3:#C8B0A4;--brd:#EEE0D4;--brd2:#DDD0C0;--grad:linear-gradient(135deg,#D4A843,#FF8C7A);--sh:0 4px 24px rgba(45,27,20,.08);--rad:18px}
+    @media(prefers-color-scheme:dark){html:not(.light-mode){--bg:#131008;--bg2:#1C1810;--txt:#F5EEE2;--txt2:#A09080;--txt3:#60584C;--brd:#2C2618;--brd2:#3C3426;--sh:0 2px 20px rgba(0,0,0,.5)}}
+    html.dark-mode{--bg:#131008;--bg2:#1C1810;--txt:#F5EEE2;--txt2:#A09080;--txt3:#60584C;--brd:#2C2618;--brd2:#3C3426;--sh:0 2px 20px rgba(0,0,0,.5)}
     *{box-sizing:border-box;margin:0;padding:0}
     body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--txt);min-height:100vh}
     .tf-wrap{max-width:540px;margin:0 auto;padding:24px 16px 80px}
@@ -32,7 +34,7 @@
     .tf-steps{display:flex;gap:8px;margin-bottom:20px}
     .tf-step{flex:1;text-align:center;font-size:12px;font-weight:600;padding:6px 0;border-radius:8px;background:var(--bg2);border:1px solid var(--brd);color:var(--txt2)}
     .tf-step.active{background:var(--grad);color:#fff;border-color:transparent}
-    .tf-step.done{background:#E3F9F0;color:#0A5C3A;border-color:transparent}
+    .tf-step.done{background:var(--b3l,#E3F9F0);color:var(--b3d,#0A5C3A);border-color:transparent}
     .member-card{border:1.5px solid var(--brd);border-radius:12px;padding:12px;margin-bottom:10px;display:flex;justify-content:space-between;align-items:center}
     .member-card .mname{font-weight:700;font-size:14px}
     .member-card .mmeta{font-size:12px;color:var(--txt2)}
@@ -40,8 +42,8 @@
     .share-btn{padding:8px;border-radius:10px;font-size:12px;font-weight:600;border:1.5px solid var(--brd);background:var(--bg2);cursor:pointer;text-align:center;transition:all .15s;font-family:inherit;color:var(--txt2)}
     .share-btn:hover{border-color:var(--b2);color:var(--b2)}
     .badge{display:inline-block;padding:2px 8px;border-radius:20px;font-size:11px;font-weight:600}
-    .badge-ok{background:#E3F9F0;color:#0A5C3A}
-    .badge-wait{background:#FDF6E3;color:#7A5A10}
+    .badge-ok{background:var(--b3l,#E3F9F0);color:var(--b3d,#0A5C3A)}
+    .badge-wait{background:var(--b1l,#FDF6E3);color:var(--b1,#7A5A10)}
     .progress-bar{height:6px;border-radius:3px;background:var(--brd);margin-bottom:16px}
     .progress-fill{height:100%;border-radius:3px;background:var(--grad);transition:width .4s}
     .relation-tag{display:inline-flex;align-items:center;gap:6px;background:var(--bg2);border:1px solid var(--brd);border-radius:8px;padding:4px 10px;margin:4px}
@@ -51,7 +53,7 @@
     .toast.show{opacity:1}
     .tf-gender-row{display:flex;gap:10px;margin-bottom:12px}
     .tf-gender-btn{flex:1;padding:10px;border:1.5px solid var(--brd);border-radius:10px;background:var(--bg2);font-size:13px;font-weight:600;cursor:pointer;text-align:center;transition:all .15s;font-family:inherit;color:var(--txt)}
-    .tf-gender-btn.selected{border-color:var(--b2);background:#FFF0EE;color:var(--b2)}
+    .tf-gender-btn.selected{border-color:var(--b2);background:var(--b2l,#FFF0EE);color:var(--b2)}
     .tf-toggle{display:flex;align-items:center;gap:10px;margin-bottom:12px}
     .tf-toggle input[type=checkbox]{width:20px;height:20px;accent-color:var(--b2);margin:0;flex-shrink:0}
     .tf-dash-card{background:var(--bg2);border-radius:var(--rad);box-shadow:var(--sh);padding:0;margin-bottom:12px;border:1px solid var(--brd);position:relative;overflow:hidden}
@@ -87,6 +89,9 @@
     .tf-share-tile{display:flex;flex-direction:column;align-items:center;gap:8px;padding:14px 8px;border-radius:14px;border:1.5px solid var(--brd);background:var(--bg);cursor:pointer;font-size:12px;font-weight:600;color:var(--txt);font-family:inherit;transition:background .15s}
     .tf-share-tile:active{background:var(--bg2)}
   </style>
+  <script>
+    (function(){var s=localStorage.getItem('bdg16_dark_mode');var dark=s==='1'||(s!=='0'&&window.matchMedia&&window.matchMedia('(prefers-color-scheme:dark)').matches);document.documentElement.classList.toggle('dark-mode',dark);document.documentElement.classList.toggle('light-mode',!dark);})();
+  </script>
 </head>
 <body>
   <div class="tf-wrap">
@@ -173,8 +178,8 @@
   </div>
 
   <div id="tf-modal-coadmin-share" onclick="tfCloseCoAdminShareSheet()">
-    <div style="width:100%;background:#fff;border-radius:24px 24px 0 0;padding:12px 20px 40px;box-shadow:0 -8px 32px rgba(0,0,0,.15)" onclick="event.stopPropagation()">
-      <div style="width:36px;height:4px;background:#ddd;border-radius:2px;margin:0 auto 16px"></div>
+    <div style="width:100%;background:var(--bg2);border-radius:24px 24px 0 0;padding:12px 20px 40px;box-shadow:0 -8px 32px rgba(0,0,0,.15)" onclick="event.stopPropagation()">
+      <div style="width:36px;height:4px;background:var(--brd);border-radius:2px;margin:0 auto 16px"></div>
       <h2 id="tf-sheet-title" style="font-family:'Playfair Display',serif;font-size:17px;font-weight:800;text-align:center;margin-bottom:4px"></h2>
       <p id="tf-sheet-sub" style="font-size:12px;color:var(--txt3);text-align:center;margin-bottom:16px"></p>
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px">
