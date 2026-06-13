@@ -25,6 +25,7 @@ function _dedupWeddings(arr){
 
 function isWed(p){return p.type==='wedding'||(typeof p.name==='string'&&p.name.indexOf('(mariage avec')!==-1);}
 function wname(p){if(!isWed(p))return p.name;var base=(p.name||'').split('(mariage avec')[0].trim();var sp=((p.name||'').match(/\(mariage avec (.+?)\)/)||['',''])[1];var f1=base.split(' ')[0];var f2=sp?sp.split(' ')[0]:'';return f2?f1+' & '+f2:f1;}
+function expandTlCard(id){var cl=document.getElementById('tl-cl-'+id);var op=document.getElementById('tl-op-'+id);if(cl)cl.style.display='none';if(op)op.style.display='block';}
 
 function rHome(){
   const el=document.getElementById('s-home');
@@ -165,20 +166,69 @@ function rHome(){
     h+='</div>';
     if(nextFew.length>0){
       h+='<div class="sh">'+t('toPrepare')+'</div>';
-      nextFew.forEach(function(p){
+      nextFew.forEach(function(p,i){
         const d=daysTill(p.day,p.month);
         const age=ageBday(p.day,p.month,p.year);
         const idx=m.indexOf(p);
-        h+='<div class="card cb">';
-        h+='<div style="display:flex;align-items:center;gap:10px">';
-        h+='<div class="av '+AV[idx%4]+'" style="width:40px;height:40px;font-size:13px">'+(p.photo?'<img src="'+p.photo+'" alt="">':ini(p.name))+'</div>';
-        h+='<div style="flex:1;min-width:0">';
-        h+='<div style="font-size:14px;font-weight:700;color:var(--b1d);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+tIco(p.type)+' '+esc(wname(p))+'</div>';
-        h+='<div style="font-size:11px;color:var(--b1d);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+p.day+' '+MN[p.month-1]+(age?' · '+age+' '+t(isWed(p)?'yearsTogether':'yearsOld'):'')+'</div>';
+        const isLast=i===nextFew.length-1;
+        const metaLine=tLbl(p.type)+' · '+p.day+' '+MN[p.month-1]+(age?' · '+age+' '+t(isWed(p)?'yearsTogether':'yearsOld'):'');
+        const dlText=p.day+' '+MN[p.month-1]+(age?' · '+age+' '+t(isWed(p)?'yearsTogether':'yearsOld'):'')+' · '+t('inDays')+' '+d+' '+(d>1?t('daysUnit'):t('dayUnit'));
+        h+='<div style="display:flex;gap:14px">';
+        // axe timeline
+        h+='<div style="display:flex;flex-direction:column;align-items:center;width:24px;flex-shrink:0;padding-top:3px">';
+        if(i===0){
+          h+='<div style="width:12px;height:12px;border-radius:50%;border:2px solid var(--b1);background:var(--b1l);flex-shrink:0"></div>';
+        } else {
+          h+='<div style="width:10px;height:10px;border-radius:50%;border:2px solid var(--brd2);background:var(--card);flex-shrink:0"></div>';
+        }
+        if(!isLast) h+='<div style="flex:1;width:2px;background:var(--brd);min-height:16px;margin:3px 0"></div>';
         h+='</div>';
-        h+='<span class="pbdg pbs" style="flex-shrink:0">'+t('inDays')+' '+d+' '+(d>1?t('daysUnit'):t('dayUnit'))+'</span>';
+        // contenu
+        h+='<div style="flex:1;min-width:0;padding-bottom:'+(isLast?'0':'14px')+'">';
+        if(i===0){
+          h+='<div style="font-size:11px;font-weight:700;color:var(--b1d);margin-bottom:8px;letter-spacing:.02em">'+dlText+'</div>';
+          // carte ouverte
+          h+='<div class="card cb" style="padding:0;overflow:hidden">';
+          h+='<div style="display:flex;align-items:center;gap:10px;padding:12px 14px">';
+          h+='<div class="av '+AV[idx%4]+'" style="width:40px;height:40px;font-size:13px">'+(p.photo?'<img src="'+p.photo+'" alt="">':ini(p.name))+'</div>';
+          h+='<div style="flex:1;min-width:0">';
+          h+='<div style="font-size:14px;font-weight:800;color:var(--b1d);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+tIco(p.type)+' '+esc(wname(p))+'</div>';
+          h+='<div style="font-size:11px;color:var(--b1d);margin-top:2px;opacity:.8;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+metaLine+'</div>';
+          h+='</div>';
+          h+='</div>';
+          h+='<div style="border-top:1px solid var(--brd);padding:12px 14px">';
+          h+='<div id="prep-'+p.id+'" style="margin-bottom:8px"><button class="btn O fw" onclick="genMsg(\''+p.id+'\',\'prep-'+p.id+'\')">'+t('prepareBtn')+'</button></div>';
+          h+='<div><button class="btn sm O" onclick="showFlowerIdeas(\''+esc(p.name)+'\',\''+p.type+'\')">'+t('flowerIdeasBtn')+'</button></div>';
+          h+='</div>';
+          h+='</div>';
+        } else {
+          h+='<div style="font-size:11px;font-weight:600;color:var(--txt3);margin-bottom:6px">'+dlText+'</div>';
+          // carte repliée
+          h+='<div id="tl-cl-'+p.id+'" class="card" style="padding:10px 14px;display:flex;align-items:center;gap:10px;cursor:pointer" onclick="expandTlCard(\''+p.id+'\')">';
+          h+='<div class="av '+AV[idx%4]+'" style="width:32px;height:32px;font-size:10px">'+(p.photo?'<img src="'+p.photo+'" alt="">':ini(p.name))+'</div>';
+          h+='<div style="flex:1;min-width:0">';
+          h+='<div style="font-size:13px;font-weight:700;color:var(--txt);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+tIco(p.type)+' '+esc(wname(p))+'</div>';
+          h+='<div style="font-size:11px;color:var(--txt2);margin-top:1px">'+tLbl(p.type)+'</div>';
+          h+='</div>';
+          h+='<span style="font-size:11px;font-weight:700;color:var(--txt2);flex-shrink:0;margin-right:4px">'+d+' '+(d>1?t('daysUnit'):t('dayUnit'))+'</span>';
+          h+='<span style="color:var(--txt3);font-size:18px">›</span>';
+          h+='</div>';
+          // carte dépliée (cachée)
+          h+='<div id="tl-op-'+p.id+'" class="card cb" style="display:none;padding:0;overflow:hidden;margin-top:0">';
+          h+='<div style="display:flex;align-items:center;gap:10px;padding:12px 14px">';
+          h+='<div class="av '+AV[idx%4]+'" style="width:40px;height:40px;font-size:13px">'+(p.photo?'<img src="'+p.photo+'" alt="">':ini(p.name))+'</div>';
+          h+='<div style="flex:1;min-width:0">';
+          h+='<div style="font-size:14px;font-weight:800;color:var(--b1d);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+tIco(p.type)+' '+esc(wname(p))+'</div>';
+          h+='<div style="font-size:11px;color:var(--b1d);margin-top:2px;opacity:.8;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+metaLine+'</div>';
+          h+='</div>';
+          h+='</div>';
+          h+='<div style="border-top:1px solid var(--brd);padding:12px 14px">';
+          h+='<div id="prep-'+p.id+'" style="margin-bottom:8px"><button class="btn O fw" onclick="genMsg(\''+p.id+'\',\'prep-'+p.id+'\')">'+t('prepareBtn')+'</button></div>';
+          h+='<div><button class="btn sm O" onclick="showFlowerIdeas(\''+esc(p.name)+'\',\''+p.type+'\')">'+t('flowerIdeasBtn')+'</button></div>';
+          h+='</div>';
+          h+='</div>';
+        }
         h+='</div>';
-        h+='<div id="prep-'+p.id+'" style="margin-top:10px"><button class="btn O fw" onclick="genMsg(\''+p.id+'\',\'prep-'+p.id+'\')">'+t('prepareBtn')+'</button></div>';
         h+='</div>';
       });
     }
