@@ -26,6 +26,7 @@ function _dedupWeddings(arr){
 function isWed(p){return p.type==='wedding'||(typeof p.name==='string'&&p.name.indexOf('(mariage avec')!==-1);}
 function wname(p){if(!isWed(p))return p.name;var base=(p.name||'').split('(mariage avec')[0].trim();var sp=((p.name||'').match(/\(mariage avec (.+?)\)/)||['',''])[1];var f1=base.split(' ')[0];var f2=sp?sp.split(' ')[0]:'';return f2?f1+' & '+f2:f1;}
 function expandTlCard(id){var cl=document.getElementById('tl-cl-'+id);var op=document.getElementById('tl-op-'+id);if(cl)cl.style.display='none';if(op)op.style.display='block';}
+function collapseTlCard(id){var cl=document.getElementById('tl-cl-'+id);var op=document.getElementById('tl-op-'+id);if(op)op.style.display='none';if(cl)cl.style.display='';}
 function escJs(v){return esc(JSON.stringify(String(v||'')));}
 
 function rHome(){
@@ -198,8 +199,12 @@ function rHome(){
           h+='</div>';
           h+='</div>';
           h+='<div style="border-top:1px solid var(--brd);padding:12px 14px">';
-          h+='<div id="prep-'+p.id+'" style="margin-bottom:8px"><button class="btn O fw" onclick="genMsg(\''+p.id+'\',\'prep-'+p.id+'\')">'+t('prepareBtn')+'</button></div>';
-          h+='<div><button class="btn sm O" onclick="showFlowerIdeas('+escJs(p.name)+','+escJs(p.type)+')">'+t('flowerIdeasBtn')+'</button></div>';
+          h+='<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:10px">';
+          h+='<button class="btn sm O" onclick="genGiftModal(\''+p.id+'\')">🎁 '+t('flowerIdeasBtn')+'</button>';
+          h+='<button class="btn O" onclick="genMsg(\''+p.id+'\',\'prep-'+p.id+'\')">'+t('prepareBtn')+'</button>';
+          h+='<button class="btn sm O" onclick="showFlowerIdeas('+escJs(p.name)+','+escJs(p.type)+')">🌸 '+t('fleurBtn')+'</button>';
+          h+='</div>';
+          h+='<div id="prep-'+p.id+'"></div>';
           h+='</div>';
           h+='</div>';
         } else {
@@ -216,7 +221,7 @@ function rHome(){
           h+='</div>';
           // carte dépliée (cachée)
           h+='<div id="tl-op-'+p.id+'" class="card cb" style="display:none;padding:0;overflow:hidden;margin-top:0">';
-          h+='<div style="display:flex;align-items:center;gap:10px;padding:12px 14px">';
+          h+='<div style="display:flex;align-items:center;gap:10px;padding:12px 14px;cursor:pointer" onclick="collapseTlCard(\''+p.id+'\')">';
           h+='<div class="av '+AV[idx%4]+'" style="width:40px;height:40px;font-size:13px">'+(p.photo?'<img src="'+p.photo+'" alt="">':ini(p.name))+'</div>';
           h+='<div style="flex:1;min-width:0">';
           h+='<div style="font-size:14px;font-weight:800;color:var(--b1d);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+tIco(p.type)+' '+esc(wname(p))+'</div>';
@@ -224,8 +229,12 @@ function rHome(){
           h+='</div>';
           h+='</div>';
           h+='<div style="border-top:1px solid var(--brd);padding:12px 14px">';
-          h+='<div id="prep-'+p.id+'" style="margin-bottom:8px"><button class="btn O fw" onclick="genMsg(\''+p.id+'\',\'prep-'+p.id+'\')">'+t('prepareBtn')+'</button></div>';
-          h+='<div><button class="btn sm O" onclick="showFlowerIdeas('+escJs(p.name)+','+escJs(p.type)+')">'+t('flowerIdeasBtn')+'</button></div>';
+          h+='<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:10px">';
+          h+='<button class="btn sm O" onclick="genGiftModal(\''+p.id+'\')">🎁 '+t('flowerIdeasBtn')+'</button>';
+          h+='<button class="btn O" onclick="genMsg(\''+p.id+'\',\'prep-'+p.id+'\')">'+t('prepareBtn')+'</button>';
+          h+='<button class="btn sm O" onclick="showFlowerIdeas('+escJs(p.name)+','+escJs(p.type)+')">🌸 '+t('fleurBtn')+'</button>';
+          h+='</div>';
+          h+='<div id="prep-'+p.id+'"></div>';
           h+='</div>';
           h+='</div>';
         }
@@ -1535,9 +1544,9 @@ async function genGiftModal(id){
   var age=ageBday(p.day,p.month,p.year);
   var rel=tLbl(p.type)||'';
   var lang=window.__aiLang||'français';
-  var genderTxt=p.gender==='femme'?'femme':p.gender==='homme'?'homme':p.gender==='enfant'?'enfant':'';
-  var ctx=[p.name,age?age+' ans':'',rel,genderTxt,p.note?'intérêts: '+p.note:''].filter(Boolean).join(', ');
-  var prompt='Tu es un assistant cadeaux. Génère en '+lang+' exactement 6 idées cadeaux créatives et personnalisées pour '+ctx+'. Réponds UNIQUEMENT en JSON valide, format : [{"emoji":"...","nom":"...","desc":"courte description","prix":"fourchette prix","search":"mot-clé court pour Amazon"}]. Juste le JSON, sans explication.';
+  var genderTxt=p.gender==='femme'?'une femme':p.gender==='homme'?'un homme':p.gender==='enfant'?'un enfant':'';
+  var ctx=p.name+(age?' ('+age+' ans)':'')+(genderTxt?', '+genderTxt:'')+(rel?', occasion : '+rel:'')+(p.note?', intérêts et personnalité : '+p.note:'');
+  var prompt='Tu es un expert en idées cadeaux personnalisées. Génère en '+lang+' exactement 6 idées cadeaux très spécifiques, créatives et parfaitement adaptées à cette personne : '+ctx+'. Tiens compte de l\'âge, du genre, de l\'occasion et surtout des intérêts mentionnés pour proposer des cadeaux vraiment pertinents. Évite les cadeaux trop génériques. Réponds UNIQUEMENT en JSON valide, format : [{"emoji":"...","nom":"...","desc":"description courte et personnalisée","prix":"fourchette prix","search":"mot-clé précis pour Amazon"}]. Juste le JSON, sans explication.';
   try{
     var ac=new AbortController();var tid=setTimeout(function(){ac.abort();},15000);
     var resp=await fetch('/.netlify/functions/generate-message',{method:'POST',headers:await getAuthHeaders(),body:JSON.stringify({prompt:prompt,plan:plan}),signal:ac.signal});
