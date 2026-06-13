@@ -26,6 +26,7 @@ function _dedupWeddings(arr){
 function isWed(p){return p.type==='wedding'||(typeof p.name==='string'&&p.name.indexOf('(mariage avec')!==-1);}
 function wname(p){if(!isWed(p))return p.name;var base=(p.name||'').split('(mariage avec')[0].trim();var sp=((p.name||'').match(/\(mariage avec (.+?)\)/)||['',''])[1];var f1=base.split(' ')[0];var f2=sp?sp.split(' ')[0]:'';return f2?f1+' & '+f2:f1;}
 function expandTlCard(id){var cl=document.getElementById('tl-cl-'+id);var op=document.getElementById('tl-op-'+id);if(cl)cl.style.display='none';if(op)op.style.display='block';}
+function escJs(v){return esc(JSON.stringify(String(v||'')));}
 
 function rHome(){
   const el=document.getElementById('s-home');
@@ -198,7 +199,7 @@ function rHome(){
           h+='</div>';
           h+='<div style="border-top:1px solid var(--brd);padding:12px 14px">';
           h+='<div id="prep-'+p.id+'" style="margin-bottom:8px"><button class="btn O fw" onclick="genMsg(\''+p.id+'\',\'prep-'+p.id+'\')">'+t('prepareBtn')+'</button></div>';
-          h+='<div><button class="btn sm O" onclick="showFlowerIdeas(\''+esc(p.name)+'\',\''+p.type+'\')">'+t('flowerIdeasBtn')+'</button></div>';
+          h+='<div><button class="btn sm O" onclick="showFlowerIdeas('+escJs(p.name)+','+escJs(p.type)+')">'+t('flowerIdeasBtn')+'</button></div>';
           h+='</div>';
           h+='</div>';
         } else {
@@ -224,7 +225,7 @@ function rHome(){
           h+='</div>';
           h+='<div style="border-top:1px solid var(--brd);padding:12px 14px">';
           h+='<div id="prep-'+p.id+'" style="margin-bottom:8px"><button class="btn O fw" onclick="genMsg(\''+p.id+'\',\'prep-'+p.id+'\')">'+t('prepareBtn')+'</button></div>';
-          h+='<div><button class="btn sm O" onclick="showFlowerIdeas(\''+esc(p.name)+'\',\''+p.type+'\')">'+t('flowerIdeasBtn')+'</button></div>';
+          h+='<div><button class="btn sm O" onclick="showFlowerIdeas('+escJs(p.name)+','+escJs(p.type)+')">'+t('flowerIdeasBtn')+'</button></div>';
           h+='</div>';
           h+='</div>';
         }
@@ -251,7 +252,7 @@ function rHome(){
       h+='<span class="pbdg pbs" style="flex-shrink:0">'+t('inDays')+' '+d+' '+(d>1?t('daysUnit'):t('dayUnit'))+'</span>';
       h+='</div>';
       h+='<div id="up-'+p.id+'" style="margin-top:8px"><button class="btn sm" onclick="genMsg(\''+p.id+'\',\'up-'+p.id+'\')">'+t('prepareBtn')+'</button></div>';
-      h+='<div style="margin-top:8px"><button class="btn sm O" onclick="showFlowerIdeas(\''+esc(p.name)+'\',\''+p.type+'\')">'+t('flowerIdeasBtn')+'</button></div>';
+      h+='<div style="margin-top:8px"><button class="btn sm O" onclick="showFlowerIdeas('+escJs(p.name)+','+escJs(p.type)+')">'+t('flowerIdeasBtn')+'</button></div>';
       h+='</div>';
     });
   }
