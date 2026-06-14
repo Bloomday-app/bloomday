@@ -100,9 +100,9 @@
 #land .iphone::before{content:'';position:absolute;top:100px;left:-5px;width:4px;height:36px;background:linear-gradient(180deg,#6A6A70,#4A4A50);border-radius:2px 0 0 2px}
 #land .iphone-inner{border-radius:53px;background:#0a0a0a;overflow:hidden;position:relative;aspect-ratio:9/19.5}
 #land .iphone-inner::before{content:'';position:absolute;top:14px;left:50%;transform:translateX(-50%);width:112px;height:32px;background:#000;border-radius:18px;z-index:10}
-#land .iphone-screen{position:absolute;inset:0;overflow:hidden;border-radius:53px;background:#FFFFFF}
-#land .iphone.sm{width:240px;height:520px}
-#land .iphone.sm .iphone-inner{aspect-ratio:unset;height:100%}
+#land .iphone-screen{position:absolute;inset:0;width:100%;height:100%;overflow:hidden;border-radius:53px;background:#FFFFFF}
+#land .iphone.sm{width:240px;height:520px;display:block}
+#land .iphone.sm .iphone-inner{aspect-ratio:unset;height:100%;width:100%}
 #land .iphone.sm .iphone-inner::before{width:88px;height:24px;top:11px}
 #land .iphone.sm .iphone-screen{border-radius:50px}
 
