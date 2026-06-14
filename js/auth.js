@@ -109,6 +109,10 @@ function initAuth() {
         if (sbProfile.phone) profile.phone = sbProfile.phone;
         if (sbProfile.origin) profile.origin = sbProfile.origin;
         if (sbProfile.origin2) profile.origin2 = sbProfile.origin2;
+        if (sbProfile.photo_url) {
+          localStorage.setItem('bdg16_user_photo', sbProfile.photo_url);
+          if (typeof updateNavAvatar === 'function') updateNavAvatar();
+        }
         await sg('bdg16_profile', profile);
       }
 
@@ -122,6 +126,7 @@ function initAuth() {
       var wasUser = currentUser;
       currentUser = null;
       localStorage.removeItem('bdg16_user');
+      localStorage.removeItem('bdg16_user_photo');
       showLogoutScreen(wasUser);
       updateTopbar();
       checkAdmin(null);

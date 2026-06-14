@@ -110,6 +110,14 @@ async function dbSaveProfile(userId, profile) {
   }
 }
 
+async function dbSaveProfilePhoto(userId, photoUrl) {
+  try {
+    await supabase.from('profiles').upsert({ id: userId, photo_url: photoUrl });
+  } catch (e) {
+    // silent catch
+  }
+}
+
 async function dbLoadStats(userId) {
   try {
     const res = await supabase.from('stats').select('*').eq('user_id', userId).maybeSingle();

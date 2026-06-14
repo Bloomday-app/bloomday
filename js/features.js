@@ -674,12 +674,23 @@ function updateUserPhoto(input){
   var file=input.files[0];
   var reader=new FileReader();
   reader.onload=function(e){
-    var dataUrl=e.target.result;
-    localStorage.setItem('bdg16_user_photo',dataUrl);
-    updateNavAvatar();
-    showToast('Photo mise à jour !','success');
-    var el=document.getElementById('s-more');
-    if(el&&el.style.display!=='none') rMore();
+    var img=new Image();
+    img.onload=function(){
+      var MAX=256;
+      var w=img.width,h=img.height;
+      if(w>MAX||h>MAX){if(w>h){h=Math.round(h*MAX/w);w=MAX;}else{w=Math.round(w*MAX/h);h=MAX;}}
+      var canvas=document.createElement('canvas');
+      canvas.width=w;canvas.height=h;
+      canvas.getContext('2d').drawImage(img,0,0,w,h);
+      var dataUrl=canvas.toDataURL('image/jpeg',0.75);
+      localStorage.setItem('bdg16_user_photo',dataUrl);
+      updateNavAvatar();
+      showToast(t('photoUpdated'),'success');
+      var el=document.getElementById('s-more');
+      if(el&&el.style.display!=='none') rMore();
+      if(currentUser&&currentUser.uid) dbSaveProfilePhoto(currentUser.uid,dataUrl);
+    };
+    img.src=e.target.result;
   };
   reader.readAsDataURL(file);
 }

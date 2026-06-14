@@ -350,6 +350,7 @@ const I18N = {
 
     newMemberTitle:'🌸 Nouveau membre',
     photoOptional:'Optionnelle',
+    photoUpdated:'Photo de profil mise à jour !',
     eventType:'Type d\'événement',
     evtBirthday:'🎂 Anniversaire',
     evtWedding:'💍 Anniversaire de mariage',
@@ -1230,6 +1231,7 @@ const I18N = {
 
     newMemberTitle:'🌸 New member',
     photoOptional:'Optional',
+    photoUpdated:'Profile photo updated!',
     eventType:'Event type',
     evtBirthday:'🎂 Birthday',
     evtWedding:'💍 Wedding anniversary',
@@ -1978,6 +1980,7 @@ const I18N = {
 
     newMemberTitle:'🌸 Nuevo miembro',
     photoOptional:'Opcional',
+    photoUpdated:'Foto de perfil actualizada!',
     eventType:'Tipo de evento',
     evtBirthday:'🎂 Cumpleanos',
     evtWedding:'💍 Aniversario de boda',
@@ -2726,6 +2729,7 @@ const I18N = {
 
     newMemberTitle:'عضو جديد',
     photoOptional:'اختياري',
+    photoUpdated:'تم تحديث صورة الملف الشخصي!',
     eventType:'نوع الحدث',
     evtBirthday:'عيد ميلاد',
     evtWedding:'ذكرى الزواج',
@@ -3474,6 +3478,7 @@ const I18N = {
 
     newMemberTitle:'नया सदस्य',
     photoOptional:'वैकल्पिक',
+    photoUpdated:'प्रोफाइल फोटो अपडेट हो गई!',
     eventType:'इवेंट का प्रकार',
     evtBirthday:'जन्मदिन',
     evtWedding:'विवाह वर्षगांठ',
@@ -4222,6 +4227,7 @@ const I18N = {
 
     newMemberTitle:'新成员',
     photoOptional:'可选',
+    photoUpdated:'头像已更新！',
     eventType:'活动类型',
     evtBirthday:'生日',
     evtWedding:'结婚纪念日',
@@ -4970,6 +4976,7 @@ const I18N = {
 
     newMemberTitle:'Novo membro',
     photoOptional:'Opcional',
+    photoUpdated:'Foto de perfil atualizada!',
     eventType:'Tipo de evento',
     evtBirthday:'Aniversario',
     evtWedding:'Aniversario de casamento',
