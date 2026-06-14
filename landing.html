@@ -1,0 +1,841 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Bloomday — Page Vitrine v2</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,800;1,700&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* ── VRAIES COULEURS BLOOMDAY ── */
+:root{
+  --gold:#D4A843;
+  --coral:#FF8C7A;
+  --green:#18A86B;
+  --dark:#0D0915;
+  --dark2:#17102A;
+  --bg:#FFFFFF;
+  --bg2:#FFF0F5;
+  --bg3:#FFD6E5;
+  --txt:#2D1B14;
+  --txt2:#8B6F60;
+  --txt3:#C8B0A4;
+  --card:#FFFFFF;
+  --brd:#F0E0EA;
+  --grad:linear-gradient(135deg,#D4A843,#FF8C7A);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:'DM Sans',sans-serif;background:#FFFFFF;color:var(--txt);overflow-x:hidden}
+
+/* ── LOGO SVG ── */
+.bl-logo{display:inline-flex;align-items:center;gap:9px;font-size:18px;font-weight:700;color:var(--gold);text-decoration:none}
+.bl-logo svg{flex-shrink:0}
+
+/* ── ANNONCE BANNER ── */
+.announce{
+  background:linear-gradient(90deg,#B8891F,#D4A843,#E8B84B,#D4A843,#B8891F);
+  background-size:300% 100%;animation:shimmer 5s linear infinite;
+  color:white;font-size:13px;font-weight:600;
+  text-align:center;padding:10px 24px;
+  display:flex;align-items:center;justify-content:center;gap:12px;
+}
+.announce a{color:white;text-decoration:underline;text-underline-offset:3px;opacity:.9}
+@keyframes shimmer{0%{background-position:100% 0}100%{background-position:-100% 0}}
+
+/* ── NAV ── */
+.nav{
+  position:sticky;top:0;z-index:200;height:66px;padding:0 48px;
+  display:flex;align-items:center;justify-content:space-between;
+  background:rgba(19,16,8,.9);backdrop-filter:blur(24px);
+  border-bottom:1px solid rgba(212,168,67,.12);
+}
+.nav-links{display:flex;gap:28px;font-size:14px}
+.nav-links a{text-decoration:none;color:rgba(255,255,255,.6);transition:color .2s}
+.nav-links a:hover{color:white}
+.nav-ctas{display:flex;gap:10px;align-items:center}
+.btn-ghost{padding:9px 20px;border:1px solid rgba(255,255,255,.18);border-radius:30px;font-size:14px;color:rgba(255,255,255,.75);cursor:pointer;transition:all .2s;background:transparent}
+.btn-ghost:hover{border-color:rgba(255,255,255,.4);color:white}
+.btn-cta{padding:10px 22px;background:var(--grad);border-radius:30px;font-size:14px;font-weight:700;color:white;cursor:pointer;transition:all .2s;box-shadow:0 4px 20px rgba(212,168,67,.3)}
+.btn-cta:hover{transform:translateY(-1px);box-shadow:0 8px 30px rgba(212,168,67,.4)}
+
+/* ── HERO ── */
+.hero{
+  min-height:100vh;background:var(--dark);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  text-align:center;padding:80px 48px 60px;position:relative;overflow:hidden;
+}
+.hero-glow{position:absolute;top:-80px;left:50%;transform:translateX(-50%);width:800px;height:600px;background:radial-gradient(ellipse,rgba(212,168,67,.17) 0%,transparent 65%);animation:gPulse 6s ease-in-out infinite alternate;pointer-events:none}
+.hero-glow2{position:absolute;bottom:-100px;left:15%;width:500px;height:400px;background:radial-gradient(ellipse,rgba(255,140,122,.1) 0%,transparent 65%);pointer-events:none}
+@keyframes gPulse{0%{opacity:.7;transform:translateX(-50%) scale(1)}100%{opacity:1;transform:translateX(-50%) scale(1.18)}}
+
+.particles{position:absolute;inset:0;pointer-events:none;overflow:hidden}
+.p{position:absolute;opacity:0;animation:floatUp 14s ease-in-out infinite;font-size:22px}
+.p:nth-child(1){left:5%;top:90%;animation-delay:0s;font-size:18px}
+.p:nth-child(2){left:18%;top:85%;animation-delay:3s;font-size:14px}
+.p:nth-child(3){left:78%;top:88%;animation-delay:1.5s;font-size:24px}
+.p:nth-child(4){left:90%;top:92%;animation-delay:5s;font-size:16px}
+.p:nth-child(5){left:45%;top:95%;animation-delay:7s;font-size:20px}
+.p:nth-child(6){left:62%;top:80%;animation-delay:2s;font-size:12px}
+.p:nth-child(7){left:30%;top:87%;animation-delay:9s;font-size:16px}
+@keyframes floatUp{0%{opacity:0;transform:translateY(0) rotate(-10deg)}8%{opacity:.55}90%{opacity:.25}100%{opacity:0;transform:translateY(-520px) rotate(18deg)}}
+
+.hero-badge{
+  display:inline-flex;align-items:center;gap:8px;
+  background:rgba(212,168,67,.1);border:1px solid rgba(212,168,67,.25);
+  padding:7px 20px;border-radius:30px;font-size:13px;color:rgba(212,168,67,.95);font-weight:500;
+  margin-bottom:32px;animation:fadeDown .8s ease both;
+}
+@keyframes fadeDown{from{opacity:0;transform:translateY(-12px)}to{opacity:1;transform:translateY(0)}}
+.hero-title{
+  font-family:'Playfair Display',serif;font-size:74px;font-weight:800;line-height:1.05;
+  color:white;margin-bottom:22px;animation:fadeUp .9s .15s ease both;
+}
+.hero-title em{font-style:italic;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+@keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+.hero-sub{font-size:20px;color:rgba(255,255,255,.6);max-width:540px;margin:0 auto 44px;line-height:1.7;animation:fadeUp .9s .3s ease both}
+.hero-ctas{display:flex;gap:14px;justify-content:center;margin-bottom:70px;animation:fadeUp .9s .45s ease both}
+.cta-big{padding:17px 42px;background:var(--grad);border-radius:50px;font-size:17px;font-weight:700;color:white;cursor:pointer;box-shadow:0 8px 36px rgba(212,168,67,.4);transition:all .25s}
+.cta-big:hover{transform:translateY(-3px);box-shadow:0 18px 52px rgba(212,168,67,.5)}
+.cta-ghost{padding:17px 38px;border:1.5px solid rgba(255,255,255,.18);border-radius:50px;font-size:17px;font-weight:600;color:rgba(255,255,255,.8);cursor:pointer;backdrop-filter:blur(10px);transition:all .2s}
+.cta-ghost:hover{border-color:rgba(255,255,255,.4);color:white}
+.hero-phone-wrap{position:relative;animation:fadeUp .9s .6s ease both;display:flex;justify-content:center}
+.hero-phone-glow{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:340px;height:340px;background:radial-gradient(circle,rgba(212,168,67,.22) 0%,transparent 65%);filter:blur(20px);pointer-events:none}
+
+/* ── IPHONE 17 PRO MAX ── */
+.iphone{width:290px;border-radius:56px;background:linear-gradient(145deg,#9A9A9F 0%,#5A5A60 30%,#3A3A3F 60%,#5A5A60 100%);padding:3px;box-shadow:0 0 0 1px rgba(0,0,0,.6),0 60px 120px rgba(0,0,0,.7),inset 0 1px 0 rgba(255,255,255,.25),inset 0 -1px 0 rgba(0,0,0,.3);position:relative}
+.iphone::before{content:'';position:absolute;top:100px;left:-5px;width:4px;height:36px;background:linear-gradient(180deg,#6A6A70,#4A4A50);border-radius:2px 0 0 2px}
+.iphone-inner{border-radius:53px;background:#0a0a0a;overflow:hidden;position:relative;aspect-ratio:9/19.5}
+.iphone-inner::before{content:'';position:absolute;top:14px;left:50%;transform:translateX(-50%);width:112px;height:32px;background:#000;border-radius:18px;z-index:10}
+.iphone-screen{position:absolute;inset:0;overflow:hidden;border-radius:53px;background:#FFFFFF}
+.iphone.sm{width:220px}
+.iphone.sm .iphone-inner::before{width:84px;height:24px;top:11px}
+
+/* ── APP SCREENS ── */
+.app-home{background:#FFFFFF;height:100%;display:flex;flex-direction:column;padding:60px 0 0}
+.app-topbar{padding:0 16px 12px;display:flex;align-items:center;justify-content:space-between}
+.app-logo-sm{font-size:12px;font-weight:700;color:var(--gold)}
+.app-date{font-size:11px;color:var(--txt2)}
+.app-today{background:var(--grad);margin:0 12px 10px;border-radius:18px;padding:14px 14px 10px}
+.app-today-label{font-size:9px;font-weight:700;color:rgba(255,255,255,.8);letter-spacing:1px;margin-bottom:4px}
+.app-today-name{font-size:15px;font-weight:800;color:white;margin-bottom:2px}
+.app-today-age{font-size:11px;color:rgba(255,255,255,.8)}
+.app-msg-preview{background:rgba(255,255,255,.2);border-radius:10px;margin-top:8px;padding:8px 10px;font-size:9px;color:white;line-height:1.5;font-style:italic;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.app-upcoming{padding:10px 12px 0}
+.app-upcoming-title{font-size:10px;font-weight:700;color:var(--txt2);letter-spacing:.5px;margin-bottom:8px}
+.app-upcoming-item{display:flex;align-items:center;gap:8px;padding:8px 10px;background:#FFFFFF;border-radius:12px;margin-bottom:6px;box-shadow:0 1px 4px rgba(45,27,20,.06);border:1px solid #F0E0EA}
+.app-av{width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:white;flex-shrink:0}
+.app-av.g1{background:var(--grad)}.app-av.g2{background:linear-gradient(135deg,#5B8DEF,#9B5DEA)}.app-av.g3{background:linear-gradient(135deg,#20B2AA,#3CB371)}
+.app-item-name{font-size:10px;font-weight:700;color:var(--txt)}.app-item-date{font-size:9px;color:var(--txt2)}.app-item-days{margin-left:auto;font-size:9px;font-weight:600;color:var(--gold)}
+
+.app-notif{background:#1C1C1E;height:100%;display:flex;flex-direction:column;align-items:center;padding:60px 14px 20px}
+.app-notif-time{color:white;font-size:36px;font-weight:300;text-align:center;margin-bottom:2px}
+.app-notif-dow{color:rgba(255,255,255,.6);font-size:12px;text-align:center;margin-bottom:24px}
+.app-notif-card{background:rgba(255,255,255,.12);backdrop-filter:blur(20px);border-radius:16px;padding:14px;width:100%;border:1px solid rgba(255,255,255,.1)}
+.app-notif-header{display:flex;align-items:center;gap:8px;margin-bottom:8px}
+.app-notif-app{font-size:11px;font-weight:600;color:rgba(255,255,255,.8)}.app-notif-time2{margin-left:auto;font-size:10px;color:rgba(255,255,255,.4)}
+.app-notif-title{font-size:13px;font-weight:700;color:white;margin-bottom:3px}
+.app-notif-body{font-size:11px;color:rgba(255,255,255,.7);line-height:1.5}
+
+.app-wa{background:#0B141A;height:100%;display:flex;flex-direction:column;padding-top:60px}
+.app-wa-header{background:#1F2C34;padding:8px 12px;display:flex;align-items:center;gap:8px;border-bottom:1px solid rgba(255,255,255,.06)}
+.app-wa-av{width:28px;height:28px;border-radius:50%;background:var(--grad);display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;color:white;flex-shrink:0}
+.app-wa-name{font-size:12px;font-weight:700;color:white}.app-wa-status{font-size:9px;color:#00A884}
+.app-wa-msgs{flex:1;padding:10px;display:flex;flex-direction:column;gap:6px;overflow:hidden}
+.msg-out{align-self:flex-end;background:#005C4B;border-radius:12px 12px 2px 12px;padding:7px 9px;max-width:82%;font-size:9.5px;color:rgba(255,255,255,.9);line-height:1.5}
+.msg-tick{font-size:8px;color:#53BDEB;text-align:right;margin-top:2px}
+.msg-in{align-self:flex-start;background:#1F2C34;border-radius:12px 12px 12px 2px;padding:7px 9px;max-width:80%;font-size:9.5px;color:rgba(255,255,255,.9);line-height:1.5}
+
+.app-gen{background:#FFFFFF;height:100%;padding:55px 12px 12px;display:flex;flex-direction:column}
+.app-gen-person{display:flex;align-items:center;gap:10px;margin-bottom:14px}
+.app-gen-av{width:36px;height:36px;border-radius:50%;background:var(--grad);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:white}
+.app-gen-name{font-size:13px;font-weight:700;color:var(--txt)}.app-gen-note{font-size:10px;color:var(--txt2)}
+.app-gen-msg{background:#FFFFFF;border-radius:16px;padding:12px;font-size:10px;line-height:1.7;color:var(--txt);border-left:3px solid var(--gold);flex:1;box-shadow:0 2px 8px rgba(45,27,20,.06);font-style:italic;margin-bottom:10px;border:1px solid #F0E0EA;border-left:3px solid var(--gold)}
+.app-gen-btns{display:flex;gap:6px}
+.app-gen-btn{flex:1;padding:8px;border-radius:10px;font-size:9px;font-weight:700;text-align:center}
+.app-gen-btn.p{background:var(--grad);color:white}
+.app-gen-btn.g{background:rgba(212,168,67,.1);border:1px solid rgba(212,168,67,.3);color:var(--gold)}
+
+.app-gifts{background:#FFFFFF;height:100%;padding:55px 12px 12px;display:flex;flex-direction:column}
+.app-gifts-title{font-size:13px;font-weight:700;margin-bottom:4px;color:var(--txt)}
+.app-gifts-sub{font-size:9px;color:var(--txt2);margin-bottom:12px}
+.gift-item{background:#FFFFFF;border-radius:12px;padding:10px;display:flex;align-items:center;gap:10px;margin-bottom:6px;box-shadow:0 1px 4px rgba(45,27,20,.06);border:1px solid #F0E0EA}
+.gift-icon{font-size:18px}.gift-name{font-size:10px;font-weight:600;color:var(--txt)}.gift-desc{font-size:9px;color:var(--txt2)}.gift-price{margin-left:auto;font-size:10px;font-weight:700;color:var(--gold)}
+
+/* Fleurs avec VRAIES PHOTOS */
+.app-flowers{background:#FFFFFF;height:100%;padding:55px 12px 12px;display:flex;flex-direction:column;gap:7px}
+.flower-item{border-radius:14px;overflow:hidden;background:#FFFFFF;box-shadow:0 2px 8px rgba(45,27,20,.08);display:flex;border:1px solid #F0E0EA}
+.flower-img{width:64px;height:64px;flex-shrink:0;object-fit:cover}
+.flower-info{padding:8px;flex:1}
+.flower-name{font-size:10px;font-weight:700;color:var(--txt)}.flower-desc{font-size:8px;color:var(--txt2);margin-bottom:5px}
+.flower-btn{display:inline-block;background:var(--grad);color:white;font-size:8px;font-weight:700;padding:3px 8px;border-radius:8px}
+
+/* ── SCROLL FADE IN ── */
+.fi{opacity:0;transform:translateY(28px);transition:opacity .75s ease,transform .75s ease}
+.fi.visible{opacity:1;transform:translateY(0)}
+.fi-d1{transition-delay:.1s}.fi-d2{transition-delay:.2s}.fi-d3{transition-delay:.3s}.fi-d4{transition-delay:.4s}
+
+/* ── WAVE TRANSITIONS ── */
+.wave svg{display:block;width:100%;height:60px}
+
+/* ── STORY ── */
+.story{background:#FFFFFF;padding:100px 48px}
+.story-inner{max-width:1000px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:center}
+.story-phone-side{display:flex;justify-content:center;position:relative}
+.story-glow{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:260px;height:260px;background:radial-gradient(circle,rgba(212,168,67,.15) 0%,transparent 65%);filter:blur(16px)}
+.story-kicker{display:inline-flex;align-items:center;gap:6px;background:rgba(212,168,67,.08);border:1px solid rgba(212,168,67,.18);padding:5px 14px;border-radius:20px;font-size:12px;color:var(--gold);font-weight:600;margin-bottom:24px}
+.story-h{font-family:'Playfair Display',serif;font-size:40px;font-weight:800;line-height:1.15;color:var(--txt);margin-bottom:20px}
+.story-h em{font-style:italic;color:var(--gold)}
+.story-p{font-size:16px;color:var(--txt2);line-height:1.8;margin-bottom:14px}
+.story-quote{background:#FFFFFF;border-radius:16px;padding:20px;border-left:3px solid var(--gold);font-size:15px;color:var(--txt);line-height:1.7;font-style:italic;margin-top:24px;box-shadow:0 4px 16px rgba(45,27,20,.05);border:1px solid #F0E0EA;border-left:3px solid var(--gold)}
+.story-quote-author{font-size:13px;font-weight:600;color:var(--txt2);font-style:normal;margin-top:10px;display:block}
+
+/* ── FEATURE SPLITS ── */
+.feat-wrap-light{background:#FFF0F5;padding:80px 48px}
+.feat-wrap-dark{background:var(--dark2);padding:80px 48px}
+.feat-split{max-width:1000px;margin:0 auto;display:flex;gap:80px;align-items:center}
+.feat-split.rev{flex-direction:row-reverse}
+.feat-phone-side{flex:0 0 auto;display:flex;justify-content:center;position:relative}
+.feat-text{flex:1}
+.feat-num{font-size:11px;font-weight:700;letter-spacing:3px;color:var(--gold);text-transform:uppercase;margin-bottom:12px;display:block}
+.feat-h{font-family:'Playfair Display',serif;font-size:36px;font-weight:800;line-height:1.15;margin-bottom:16px;color:var(--txt)}
+.feat-p{font-size:16px;color:var(--txt2);line-height:1.8;margin-bottom:20px}
+.feat-dark .feat-h{color:white}.feat-dark .feat-p{color:rgba(255,255,255,.6)}
+.feat-bullets{list-style:none;display:flex;flex-direction:column;gap:10px}
+.feat-bullets li{display:flex;align-items:center;gap:10px;font-size:14px;color:var(--txt);font-weight:500}
+.feat-dark .feat-bullets li{color:rgba(255,255,255,.85)}
+.feat-bullets li::before{content:'✦';color:var(--gold);font-size:10px;flex-shrink:0}
+
+/* ── MINI FEATURES ── */
+.mini-section{background:#FFFFFF;padding:80px 48px}
+.mini-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;max-width:900px;margin:0 auto}
+.mini-card{background:#FFFFFF;border-radius:20px;padding:28px 24px;border:1px solid #F0E0EA;transition:all .25s;position:relative;overflow:hidden}
+.mini-card::after{content:'';position:absolute;bottom:0;left:0;right:0;height:3px;background:var(--grad);transform:scaleX(0);transform-origin:left;transition:transform .3s}
+.mini-card:hover{transform:translateY(-4px);box-shadow:0 12px 40px rgba(212,168,67,.1);border-color:rgba(212,168,67,.2)}
+.mini-card:hover::after{transform:scaleX(1)}
+.mini-icon{font-size:32px;margin-bottom:14px}
+.mini-name{font-size:16px;font-weight:700;margin-bottom:8px;color:var(--txt)}
+.mini-desc{font-size:13px;color:var(--txt2);line-height:1.7}
+
+/* ── STEPS ── */
+.steps-section{background:var(--dark);padding:100px 48px;text-align:center;position:relative;overflow:hidden}
+.steps-bg{position:absolute;inset:0;background:radial-gradient(ellipse 80% 50% at 50% 50%,rgba(212,168,67,.07) 0%,transparent 65%)}
+.steps-section .sec-tag{color:var(--gold)}
+.sec-tag{font-size:11px;font-weight:700;letter-spacing:3px;text-transform:uppercase;margin-bottom:14px;display:block;color:var(--gold)}
+.sec-h{font-family:'Playfair Display',serif;font-size:46px;font-weight:800;line-height:1.1;margin-bottom:16px}
+.sec-sub{font-size:17px;color:var(--txt2);max-width:480px;margin:0 auto}
+.sec-h.white{color:white}.sec-sub.white{color:rgba(255,255,255,.5)}
+.steps-row{display:flex;gap:0;max-width:900px;margin:0 auto;position:relative}
+.steps-row::before{content:'';position:absolute;top:28px;left:calc(100%/8);right:calc(100%/8);height:1px;background:linear-gradient(90deg,rgba(212,168,67,.4),rgba(255,140,122,.4))}
+.step-item{flex:1;padding:0 12px;position:relative}
+.step-n{width:56px;height:56px;border-radius:50%;background:var(--grad);display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:800;color:white;margin:0 auto 20px;z-index:1;position:relative;box-shadow:0 0 0 8px rgba(212,168,67,.1)}
+.step-t{font-size:15px;font-weight:700;color:white;margin-bottom:8px}
+.step-d{font-size:13px;color:rgba(255,255,255,.5);line-height:1.7}
+
+/* ── AVIS ── */
+.reviews-section{background:#FFFFFF;padding:100px 48px}
+.reviews-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;max-width:1000px;margin:0 auto}
+.review-c{background:#FFFFFF;border-radius:20px;padding:28px;box-shadow:0 4px 20px rgba(45,27,20,.05);border:1px solid #F0E0EA;transition:box-shadow .2s}
+.review-c:hover{box-shadow:0 8px 40px rgba(212,168,67,.1);border-color:rgba(212,168,67,.2)}
+.r-stars{color:var(--gold);letter-spacing:2px;margin-bottom:14px}
+.r-text{font-size:14px;color:var(--txt2);line-height:1.8;margin-bottom:20px;font-style:italic}
+.r-name{font-size:14px;font-weight:700;color:var(--txt)}
+.r-role{font-size:12px;color:var(--txt3)}
+
+/* ── PRICING TABLE (fidèle au screenshot) ── */
+.pricing-section{background:var(--dark);padding:100px 48px;text-align:center}
+.pricing-section .sec-h{color:white}.pricing-section .sec-sub{color:rgba(255,255,255,.5);margin-bottom:56px}
+.price-table-wrap{overflow-x:auto;max-width:1000px;margin:0 auto}
+.price-table{width:100%;border-collapse:separate;border-spacing:0}
+.price-table th,.price-table td{padding:0}
+/* Headers */
+.price-table .th-plan{padding:28px 20px 20px;vertical-align:top;min-width:180px}
+.th-plan.th-empty{min-width:200px}
+.plan-name{font-size:13px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,.5);margin-bottom:10px}
+.plan-price{font-size:36px;font-weight:800;color:white;line-height:1}
+.plan-price span{font-size:16px;font-weight:400;color:rgba(255,255,255,.4)}
+.plan-period{font-size:12px;color:rgba(255,255,255,.35);margin-top:4px}
+/* Featured column */
+.col-bloom{background:linear-gradient(180deg,rgba(212,168,67,.12),rgba(255,140,122,.08));border:1px solid rgba(212,168,67,.3);border-radius:16px 16px 0 0}
+.col-bloom-body{background:rgba(212,168,67,.06);border-left:1px solid rgba(212,168,67,.2);border-right:1px solid rgba(212,168,67,.2)}
+.col-bloom-foot{border-left:1px solid rgba(212,168,67,.2);border-right:1px solid rgba(212,168,67,.2);border-bottom:1px solid rgba(212,168,67,.2);border-radius:0 0 16px 16px}
+.pop-badge{background:var(--grad);color:white;font-size:11px;font-weight:700;padding:4px 14px;border-radius:20px;display:inline-block;margin-bottom:12px}
+/* Rows */
+.price-table tbody tr{border-bottom:1px solid rgba(255,255,255,.05)}
+.price-table tbody tr:last-child{border-bottom:none}
+.price-table td{padding:14px 20px;font-size:14px;color:rgba(255,255,255,.65);text-align:center;vertical-align:middle}
+.price-table td:first-child{text-align:left;color:rgba(255,255,255,.5);font-weight:500}
+.price-table td.val{color:white;font-weight:700}
+.price-table td.val.gold{color:var(--gold)}
+.price-table td.check{color:var(--green);font-size:18px}
+.price-table td.cross{color:rgba(255,255,255,.2);font-size:16px}
+.price-table td.red{color:var(--coral)}
+/* CTA row */
+.price-table tfoot td{padding:20px}
+.price-btn-table{width:100%;padding:13px;border-radius:30px;font-size:14px;font-weight:700;text-align:center;cursor:pointer;transition:all .2s}
+.price-btn-table.outline{border:1.5px solid rgba(255,255,255,.15);color:rgba(255,255,255,.8);background:transparent}
+.price-btn-table.outline:hover{border-color:rgba(255,255,255,.4);color:white}
+.price-btn-table.grad{background:var(--grad);color:white;box-shadow:0 6px 24px rgba(212,168,67,.3)}
+.price-btn-table.grad:hover{transform:translateY(-1px);box-shadow:0 12px 36px rgba(212,168,67,.45)}
+.price-table tfoot{border-top:1px solid rgba(255,255,255,.08)}
+.price-safe{margin-top:20px;font-size:13px;color:rgba(255,255,255,.3)}
+
+/* ── FINAL CTA ── */
+.final{background:var(--dark);padding:120px 48px;text-align:center;position:relative;overflow:hidden}
+.final-glow{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:600px;height:400px;background:radial-gradient(ellipse,rgba(212,168,67,.14) 0%,transparent 60%);animation:gPulse 5s ease-in-out infinite alternate}
+.final-h{font-family:'Playfair Display',serif;font-size:60px;font-weight:800;line-height:1.1;color:white;margin-bottom:20px;position:relative}
+.final-sub{font-size:18px;color:rgba(255,255,255,.5);margin-bottom:44px;position:relative}
+.final-note{font-size:14px;color:rgba(255,255,255,.3);margin-top:16px;position:relative}
+
+/* ── FOOTER ── */
+footer{background:#08050F;border-top:1px solid rgba(212,168,67,.08);padding:64px 48px 40px}
+.footer-grid{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:40px;max-width:1100px;margin:0 auto 48px}
+.f-brand{font-size:18px;font-weight:700;color:var(--gold);margin-bottom:12px}
+.f-desc{font-size:14px;color:rgba(255,255,255,.35);line-height:1.8}
+.f-col-title{font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,.3);margin-bottom:16px}
+.f-link{display:block;font-size:14px;color:rgba(255,255,255,.4);margin-bottom:10px;transition:color .2s;cursor:pointer}
+.f-link:hover{color:rgba(255,255,255,.9)}
+.f-bottom{border-top:1px solid rgba(255,255,255,.05);padding-top:24px;font-size:13px;color:rgba(255,255,255,.2);display:flex;justify-content:space-between;align-items:center;max-width:1100px;margin:0 auto}
+
+/* section center helper */
+.sc{text-align:center;margin-bottom:56px}
+</style>
+</head>
+<body>
+
+<!-- SVG DEFS (logo Bloomday) -->
+<svg style="display:none">
+  <defs>
+    <linearGradient id="blg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#D4A843"/>
+      <stop offset="100%" stop-color="#FF8C7A"/>
+    </linearGradient>
+  </defs>
+  <symbol id="bi" viewBox="0 0 36 36">
+    <path d="M7 4h12c3.5 0 6 2 6 5.5 0 1.8-.8 3.2-2 4.2 2 .9 3.2 2.6 3.2 4.8C26.2 22.5 23.5 25 19.5 25H7V4z" fill="url(#blg)"/>
+    <path d="M13 11.5c0-1.4 1.1-2.5 2.5-2.5 .7 0 1.3.3 1.7.7.4-.4 1-.7 1.7-.7 1.4 0 2.5 1.1 2.5 2.5 0 .8-.4 1.5-.9 2l-3.3 3.2-3.3-3.2c-.5-.5-.9-1.2-.9-2z" fill="white"/>
+    <path d="M11 25c0 0 1-4 4-5s5 1 5 1-2 5-5 5.5-4-1.5-4-1.5z" fill="#8BC34A"/>
+  </symbol>
+</svg>
+
+<!-- BANNIÈRE ANNONCE -->
+<div class="announce" data-i18n="landingAnnounce">
+  🎉 Nouveau · Cartes virtuelles fleuries animées — envoie de la beauté par WhatsApp &amp; email
+  <a href="#" data-i18n="landingAnnounceLink">Découvrir →</a>
+</div>
+
+<!-- NAV -->
+<nav class="nav">
+  <a class="bl-logo" href="#">
+    <img src="img/logo.png" height="30" alt="Bloomday" style="object-fit:contain">
+    <span data-i18n="appName">Bloomday</span>
+  </a>
+  <div class="nav-links">
+    <a href="#" data-i18n="navFeatures">Fonctionnalités</a>
+    <a href="#" data-i18n="navHow">Comment ça marche</a>
+    <a href="#" data-i18n="navReviews">Avis</a>
+    <a href="#" data-i18n="navPricing">Tarifs</a>
+  </div>
+  <div class="nav-ctas">
+    <div class="btn-ghost" data-i18n="navLogin">Se connecter</div>
+    <div class="btn-cta" data-i18n="navStart">Commencer</div>
+  </div>
+</nav>
+
+<!-- ══════════════ HERO ══════════════ -->
+<section class="hero">
+  <div class="hero-glow"></div>
+  <div class="hero-glow2"></div>
+  <div class="particles">
+    <span class="p">🌸</span><span class="p">🎂</span><span class="p">✨</span>
+    <span class="p">🎁</span><span class="p">💌</span><span class="p">🌷</span><span class="p">🎊</span>
+  </div>
+
+  <div class="hero-badge" data-i18n="heroBadge">🌍 150 pays · 7 langues · Messages IA en 5 secondes</div>
+
+  <h1 class="hero-title">
+    <span data-i18n="heroTitle1">Ne rate plus jamais</span><br>
+    <em data-i18n="heroTitle2">le jour qui compte.</em>
+  </h1>
+
+  <p class="hero-sub" data-i18n="heroSub">
+    Bloomday se souvient pour toi. Messages touchants générés par l'IA, idées cadeaux sur mesure, livraison de fleurs — pour chaque proche, dans leur langue.
+  </p>
+
+  <div class="hero-ctas">
+    <div class="cta-big" data-i18n="heroCta">Commencer gratuitement →</div>
+    <div class="cta-ghost" data-i18n="heroDemo">Voir la démo</div>
+  </div>
+
+  <!-- iPhone hero -->
+  <div class="hero-phone-wrap">
+    <div class="hero-phone-glow"></div>
+    <div class="iphone">
+      <div class="iphone-inner">
+        <div class="iphone-screen">
+          <div class="app-home">
+            <div class="app-topbar">
+              <div class="app-logo-sm">🌸 Bloomday</div>
+              <div class="app-date" data-i18n="appDateDemo">Vendredi 13 juin</div>
+            </div>
+            <div class="app-today">
+              <div class="app-today-label" data-i18n="appTodayLabel">🎂 AUJOURD'HUI</div>
+              <div class="app-today-name" data-i18n="appTodayName">Léa Martin · 38 ans</div>
+              <div class="app-today-age" data-i18n="appTodayNote">Aime les fleurs et le chocolat noir</div>
+              <div class="app-msg-preview" data-i18n="appMsgPreview">"Chère Léa, en ce jour si spécial, je voulais te dire à quel point ta présence illumine nos vies..."</div>
+            </div>
+            <div class="app-upcoming">
+              <div class="app-upcoming-title" data-i18n="appUpcoming">PROCHAINEMENT</div>
+              <div class="app-upcoming-item">
+                <div class="app-av g2">TM</div>
+                <div><div class="app-item-name" data-i18n="appName1">Thomas Martin</div><div class="app-item-date" data-i18n="appDate1">Fête des pères · 15 juin</div></div>
+                <div class="app-item-days" data-i18n="appDays1">dans 2j</div>
+              </div>
+              <div class="app-upcoming-item">
+                <div class="app-av g3">SK</div>
+                <div><div class="app-item-name" data-i18n="appName2">Sofia Khelil</div><div class="app-item-date" data-i18n="appDate2">Anniversaire · 20 juin</div></div>
+                <div class="app-item-days" data-i18n="appDays2">dans 7j</div>
+              </div>
+              <div class="app-upcoming-item">
+                <div class="app-av g1">PA</div>
+                <div><div class="app-item-name" data-i18n="appName3">Papa</div><div class="app-item-date" data-i18n="appDate3">Anniversaire · 28 juin</div></div>
+                <div class="app-item-days" data-i18n="appDays3">dans 15j</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Wave hero → story -->
+<div class="wave" style="background:var(--dark)"><svg viewBox="0 0 1440 60" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"><path d="M0,0 C360,60 1080,60 1440,0 L1440,60 L0,60Z" fill="#FFF8F0"/></svg></div>
+
+<!-- ══════════════ STORY HUMAINE ══════════════ -->
+<section class="story">
+  <div class="story-inner">
+    <div class="story-phone-side fi">
+      <div class="story-glow"></div>
+      <div class="iphone">
+        <div class="iphone-inner">
+          <div class="iphone-screen">
+            <div class="app-wa">
+              <div class="app-wa-header">
+                <div class="app-wa-av">LM</div>
+                <div>
+                  <div class="app-wa-name" data-i18n="waName">Léa Martin 🎂</div>
+                  <div class="app-wa-status" data-i18n="waOnline">en ligne</div>
+                </div>
+              </div>
+              <div class="app-wa-msgs">
+                <div class="msg-out" data-i18n="waMsgOut">
+                  "Chère Léa, en ce jour si spécial, je voulais te dire à quel point ta présence illumine nos vies. Que cette nouvelle année t'apporte autant de douceur que le chocolat noir que tu adores 🌸"
+                  <div class="msg-tick">✓✓</div>
+                </div>
+                <div class="msg-in">
+                  <span data-i18n="waMsgIn1">Oh mon Dieu 😭❤️</span><br>
+                  <span data-i18n="waMsgIn2">Tu me fais trop plaisir, c'est exactement ce dont j'avais besoin aujourd'hui 🌸</span>
+                </div>
+                <div class="msg-out">
+                  <span data-i18n="waMsgOut2">Joyeux anniversaire ma belle ✨</span>
+                  <div class="msg-tick">✓✓</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="story-text fi fi-d2">
+      <div class="story-kicker" data-i18n="storyKicker">💬 L'histoire vraie derrière Bloomday</div>
+      <h2 class="story-h">
+        <span data-i18n="storyTitle1">Ce n'est pas juste de l'IA.</span><br>
+        <span data-i18n="storyTitle2">C'est <em>ton attention</em>,</span><br>
+        <span data-i18n="storyTitle3">amplifiée.</span>
+      </h2>
+      <p class="story-p" data-i18n="storyP1">Tu connaissais déjà Léa — ses goûts, sa personnalité, ce qui la fait sourire. Bloomday ne remplace pas cette connaissance. Il la transforme en mots, au bon moment.</p>
+      <p class="story-p" data-i18n="storyP2">Ce message, c'est toi qui l'as envoyé. Bloomday t'a juste aidé à dire ce que tu ressentais déjà.</p>
+      <div class="story-quote">
+        <span data-i18n="storyQuote">"Léa a pleuré de joie en recevant mon message. Elle pensait que j'avais tout écrit moi-même. En fait, j'avais juste dit à Bloomday qu'elle aimait les fleurs et le chocolat."</span>
+        <span class="story-quote-author" data-i18n="storyQuoteAuthor">— Marie L., utilisatrice depuis 6 mois</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Wave story → feat1 -->
+<div class="wave" style="background:#FFFFFF"><svg viewBox="0 0 1440 60" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"><path d="M0,60 C720,0 1440,60 1440,60 L0,60Z" fill="#FFF2E4"/></svg></div>
+
+<!-- ══════════════ FEAT 1 — RAPPELS ══════════════ -->
+<div class="feat-wrap-light">
+  <div class="feat-split">
+    <div class="feat-phone-side fi"><div class="iphone sm"><div class="iphone-inner"><div class="iphone-screen"><div class="app-notif">
+      <div class="app-notif-time" data-i18n="notifTime">09:00</div>
+      <div class="app-notif-dow" data-i18n="notifDow">Vendredi 13 juin 2026</div>
+      <div class="app-notif-card">
+        <div class="app-notif-header">
+          <img src="img/logo.png" height="14" alt="Bloomday" style="object-fit:contain">
+          <div class="app-notif-app" data-i18n="appName">Bloomday</div>
+          <div class="app-notif-time2" data-i18n="notifNow">maintenant</div>
+        </div>
+        <div class="app-notif-title" data-i18n="notifTitle">🎂 C'est l'anniversaire de Léa !</div>
+        <div class="app-notif-body" data-i18n="notifBody">Elle a 38 ans aujourd'hui. Un message est prêt pour toi — touche pour voir.</div>
+      </div>
+    </div></div></div></div></div>
+    <div class="feat-text fi fi-d2">
+      <span class="feat-num" data-i18n="feat1Num">01 · Rappels</span>
+      <h3 class="feat-h" data-i18n="feat1Title">Tu n'oublieras plus jamais.</h3>
+      <p class="feat-p" data-i18n="feat1Desc">Bloomday t'envoie une notification avant chaque date — le jour J, 3 jours ou 1 semaine avant. Anniversaires, fêtes nationales, Ramadan, Diwali, Saint-Valentin — pour tous tes proches, partout dans le monde.</p>
+      <ul class="feat-bullets">
+        <li data-i18n="feat1b1">Rappels personnalisables par personne</li>
+        <li data-i18n="feat1b2">Import depuis tes contacts</li>
+        <li data-i18n="feat1b3">150 pays, toutes les fêtes mondiales</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- Wave feat1 → feat2 dark -->
+<div class="wave" style="background:#FFF0F5"><svg viewBox="0 0 1440 60" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"><path d="M0,0 C480,60 960,60 1440,0 L1440,60 L0,60Z" fill="#17102A"/></svg></div>
+
+<!-- ══════════════ FEAT 2 — MESSAGES IA ══════════════ -->
+<div class="feat-wrap-dark feat-dark">
+  <div class="feat-split rev">
+    <div class="feat-phone-side fi"><div class="iphone sm"><div class="iphone-inner"><div class="iphone-screen"><div class="app-gen">
+      <div class="app-gen-person">
+        <div class="app-gen-av">LM</div>
+        <div>
+          <div class="app-gen-name" data-i18n="genName">Léa Martin · 38 ans</div>
+          <div class="app-gen-note" data-i18n="genNote">Aime les fleurs et le chocolat noir</div>
+        </div>
+      </div>
+      <div class="app-gen-msg" data-i18n="genMsg">
+        "Chère Léa, en ce jour si spécial, je voulais te dire à quel point ta présence illumine nos vies. Que cette nouvelle année t'apporte autant de douceur que le chocolat noir que tu adores 🌸"
+      </div>
+      <div class="app-gen-btns">
+        <div class="app-gen-btn p" data-i18n="genRegen">✨ Regénérer</div>
+        <div class="app-gen-btn g" data-i18n="genCopy">📋 Copier</div>
+      </div>
+    </div></div></div></div></div>
+    <div class="feat-text fi fi-d2">
+      <span class="feat-num" data-i18n="feat2Num">02 · Messages IA</span>
+      <h3 class="feat-h" data-i18n="feat2Title">Le message parfait, en 5 secondes.</h3>
+      <p class="feat-p" data-i18n="feat2Desc">L'IA connaît ton proche comme toi. Ses goûts, son âge, sa personnalité — elle compose un message qui vient vraiment du cœur. Regénère jusqu'à ce que ce soit parfait.</p>
+      <ul class="feat-bullets">
+        <li data-i18n="feat2b1">Adapté à l'âge, au profil et à l'historique</li>
+        <li data-i18n="feat2b2">Dans la langue de ton proche (7 langues)</li>
+        <li data-i18n="feat2b3">Ton chaleureux et authentique, jamais robotique</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- Wave feat2 → feat3 -->
+<div class="wave" style="background:var(--dark2)"><svg viewBox="0 0 1440 60" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"><path d="M0,60 C480,0 960,0 1440,60 L1440,60 L0,60Z" fill="#FFF8F0"/></svg></div>
+
+<!-- ══════════════ FEAT 3 — CADEAUX ══════════════ -->
+<div class="feat-wrap-light" style="background:#FFFFFF">
+  <div class="feat-split">
+    <div class="feat-phone-side fi"><div class="iphone sm"><div class="iphone-inner"><div class="iphone-screen"><div class="app-gifts">
+      <div class="app-gifts-title" data-i18n="giftsTitle">🎁 Idées cadeaux pour Léa</div>
+      <div class="app-gifts-sub" data-i18n="giftsSub">Personnalisées · 38 ans · Aime les fleurs</div>
+      <div class="gift-item"><div class="gift-icon">🌿</div><div><div class="gift-name" data-i18n="gift1Name">Bougie parfumée artisanale</div><div class="gift-desc" data-i18n="gift1Desc">Jasmin et vanille · Made in France</div></div><div class="gift-price">28€</div></div>
+      <div class="gift-item"><div class="gift-icon">📚</div><div><div class="gift-name" data-i18n="gift2Name">Livre art floral japonais</div><div class="gift-desc" data-i18n="gift2Desc">Ikebana · Édition illustrée</div></div><div class="gift-price">35€</div></div>
+      <div class="gift-item"><div class="gift-icon">🍫</div><div><div class="gift-name" data-i18n="gift3Name">Coffret chocolats noirs</div><div class="gift-desc" data-i18n="gift3Desc">Artisan · 24 pièces sélectionnées</div></div><div class="gift-price">42€</div></div>
+      <div class="gift-item"><div class="gift-icon">💐</div><div><div class="gift-name" data-i18n="gift4Name">Abonnement fleurs mensuel</div><div class="gift-desc" data-i18n="gift4Desc">1 bouquet / mois · Livré chez elle</div></div><div class="gift-price">49€</div></div>
+    </div></div></div></div></div>
+    <div class="feat-text fi fi-d2">
+      <span class="feat-num" data-i18n="feat3Num">03 · Cadeaux IA</span>
+      <h3 class="feat-h" data-i18n="feat3Title">Finis les cadeaux génériques.</h3>
+      <p class="feat-p" data-i18n="feat3Desc">L'IA connaît les goûts de tes proches. Elle te propose des idées sur mesure — selon le genre, l'âge, les passions et ton budget. Plus de "je savais pas quoi offrir".</p>
+      <ul class="feat-bullets">
+        <li data-i18n="feat3b1">Suggestions basées sur le profil réel</li>
+        <li data-i18n="feat3b2">Budget personnalisable</li>
+        <li data-i18n="feat3b3">Idées uniques, jamais génériques</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- Wave feat3 → feat4 -->
+<div class="wave" style="background:#FFFFFF"><svg viewBox="0 0 1440 60" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"><path d="M0,0 C720,60 1440,0 1440,0 L1440,60 L0,60Z" fill="#FFF2E4"/></svg></div>
+
+<!-- ══════════════ FEAT 4 — FLEURS avec vraies photos ══════════════ -->
+<div class="feat-wrap-light">
+  <div class="feat-split rev">
+    <div class="feat-phone-side fi"><div class="iphone sm"><div class="iphone-inner"><div class="iphone-screen"><div class="app-flowers">
+      <div style="font-size:12px;font-weight:700;color:var(--txt);margin-bottom:3px" data-i18n="flowersTitle">🌸 Envoyer des fleurs à Léa</div>
+      <div style="font-size:9px;color:var(--txt2);margin-bottom:9px" data-i18n="flowersSub">Livraison demain à domicile</div>
+      <div class="flower-item">
+        <img class="flower-img" src="https://images.unsplash.com/photo-1710344062551-d62090c55bbb?w=200&h=200&fit=crop&q=80" alt="Roses rouges" loading="lazy" onerror="this.style.background='#FFF0F0';this.textContent='🌹'">
+        <div class="flower-info">
+          <div class="flower-name" data-i18n="flower1Name">Bouquet roses rouges</div>
+          <div class="flower-desc" data-i18n="flower1Desc">12 roses · Livraison J+1</div>
+          <div class="flower-btn" data-i18n="flower1Btn">Commander · 45€</div>
+        </div>
+      </div>
+      <div class="flower-item">
+        <img class="flower-img" src="https://images.unsplash.com/photo-1714385272470-f70c12dd5dcd?w=200&h=200&fit=crop&q=80" alt="Tulipes" loading="lazy" onerror="this.style.background='#FFF4FC';this.textContent='🌷'">
+        <div class="flower-info">
+          <div class="flower-name" data-i18n="flower2Name">Tulipes printanières</div>
+          <div class="flower-desc" data-i18n="flower2Desc">20 tulipes · Lilas et blanc</div>
+          <div class="flower-btn" data-i18n="flower2Btn">Commander · 38€</div>
+        </div>
+      </div>
+      <div class="flower-item">
+        <img class="flower-img" src="https://images.unsplash.com/photo-1560601732-cf2b10058f30?w=200&h=200&fit=crop&q=80" alt="Bouquet champêtre" loading="lazy" onerror="this.style.background='#FFFBE6';this.textContent='🌻'">
+        <div class="flower-info">
+          <div class="flower-name" data-i18n="flower3Name">Bouquet champêtre</div>
+          <div class="flower-desc" data-i18n="flower3Desc">Tournesols, lavande, eucalyptus</div>
+          <div class="flower-btn" data-i18n="flower3Btn">Commander · 52€</div>
+        </div>
+      </div>
+    </div></div></div></div></div>
+    <div class="feat-text fi fi-d2">
+      <span class="feat-num" data-i18n="feat4Num">04 · Livraison de fleurs</span>
+      <h3 class="feat-h" data-i18n="feat4Title">Envoie de la beauté, pas juste des mots.</h3>
+      <p class="feat-p" data-i18n="feat4Desc">Depuis l'app, commande des fleurs directement chez tes fleuristes partenaires. Livraison à domicile partout en France et à l'international. Le même jour ou le lendemain.</p>
+      <ul class="feat-bullets">
+        <li data-i18n="feat4b1">Fleuristes partenaires sélectionnés</li>
+        <li data-i18n="feat4b2">Livraison express disponible</li>
+        <li data-i18n="feat4b3">En France et à l'international</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- Wave feat4 → mini -->
+<div class="wave" style="background:#FFF0F5"><svg viewBox="0 0 1440 40" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"><path d="M0,40 L1440,40 C1440,40 720,0 0,40Z" fill="#FFF8F0"/></svg></div>
+
+<!-- ══════════════ MINI FEATURES ══════════════ -->
+<section class="mini-section">
+  <div class="sc fi">
+    <span class="sec-tag" data-i18n="miniTag">Et aussi</span>
+    <h2 class="sec-h" data-i18n="miniTitle">Tout ce que tu ne vois pas encore.</h2>
+  </div>
+  <div class="mini-grid">
+    <div class="mini-card fi"><div class="mini-icon">👥</div><div class="mini-name" data-i18n="mini1Name">Groupes &amp; équipes</div><div class="mini-desc" data-i18n="mini1Desc">Gère les anniversaires de ton équipe. Formulaire de collecte, multi-admins, notifications groupées.</div></div>
+    <div class="mini-card fi fi-d1"><div class="mini-icon">🌍</div><div class="mini-name" data-i18n="mini2Name">150 pays · 7 langues</div><div class="mini-desc" data-i18n="mini2Desc">Ramadan, Diwali, Pâques, fêtes nationales — toutes les célébrations du monde, dans leur langue.</div></div>
+    <div class="mini-card fi fi-d2"><div class="mini-icon">💌</div><div class="mini-name" data-i18n="mini3Name">Cartes virtuelles fleuries</div><div class="mini-desc" data-i18n="mini3Desc">Belles cartes animées à envoyer sur WhatsApp ou email — pour marquer le coup avec élégance.</div></div>
+    <div class="mini-card fi fi-d1"><div class="mini-icon">📅</div><div class="mini-name" data-i18n="mini4Name">Timeline "À préparer"</div><div class="mini-desc" data-i18n="mini4Desc">Checklist intelligente avant chaque événement — quand commander, quoi prévoir, comment surprendre.</div></div>
+    <div class="mini-card fi fi-d2"><div class="mini-icon">💰</div><div class="mini-name" data-i18n="mini5Name">Programme Ambassador</div><div class="mini-desc" data-i18n="mini5Desc">Parraine tes amis et gagne jusqu'à 30% de commission. Des mois gratuits en bonus.</div></div>
+    <div class="mini-card fi fi-d3"><div class="mini-icon">📲</div><div class="mini-name" data-i18n="mini6Name">App installable (PWA)</div><div class="mini-desc" data-i18n="mini6Desc">Installe Bloomday sur ton téléphone comme une vraie app, sans passer par un store.</div></div>
+  </div>
+</section>
+
+<!-- Wave mini → steps -->
+<div class="wave" style="background:#FFFFFF"><svg viewBox="0 0 1440 60" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"><path d="M0,0 C360,60 1080,60 1440,0 L1440,60 L0,60Z" fill="#0D0915"/></svg></div>
+
+<!-- ══════════════ STEPS ══════════════ -->
+<section class="steps-section">
+  <div class="steps-bg"></div>
+  <div class="sc fi">
+    <span class="sec-tag" data-i18n="stepsTag">Simple comme bonjour</span>
+    <h2 class="sec-h white" data-i18n="stepsTitle">En 4 étapes, tout change.</h2>
+    <p class="sec-sub white" style="margin-bottom:64px" data-i18n="stepsSub">Prêt en 2 minutes. Vraiment.</p>
+  </div>
+  <div class="steps-row fi">
+    <div class="step-item"><div class="step-n">1</div><div class="step-t" data-i18n="step1T">Ajoute tes proches</div><div class="step-d" data-i18n="step1D">Prénom, date, quelques mots. Import depuis tes contacts.</div></div>
+    <div class="step-item"><div class="step-n">2</div><div class="step-t" data-i18n="step2T">Bloomday t'alerte</div><div class="step-d" data-i18n="step2D">Avant chaque date — jour J, 3 jours ou 1 semaine avant.</div></div>
+    <div class="step-item"><div class="step-n">3</div><div class="step-t" data-i18n="step3T">L'IA compose</div><div class="step-d" data-i18n="step3D">Message personnalisé en 5 sec. Dans leur langue.</div></div>
+    <div class="step-item"><div class="step-n">4</div><div class="step-t" data-i18n="step4T">Tu envoies l'amour</div><div class="step-d" data-i18n="step4D">Copie, envoie, commande fleurs ou cadeaux en 1 clic.</div></div>
+  </div>
+</section>
+
+<!-- Wave steps → reviews -->
+<div class="wave" style="background:var(--dark)"><svg viewBox="0 0 1440 60" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"><path d="M0,60 C360,0 1080,0 1440,60 L1440,60 L0,60Z" fill="#FFF8F0"/></svg></div>
+
+<!-- ══════════════ AVIS ══════════════ -->
+<section class="reviews-section">
+  <div class="sc fi">
+    <span class="sec-tag" data-i18n="reviewsTag">Ils adorent Bloomday</span>
+    <h2 class="sec-h" data-i18n="reviewsTitle">Des milliers de proches célébrés chaque jour.</h2>
+  </div>
+  <div class="reviews-grid">
+    <div class="review-c fi"><div class="r-stars">★★★★★</div><div class="r-text" data-i18n="review1Text">"Bloomday a changé la dynamique de notre groupe. Tout le monde se sent vraiment célébré. Les messages IA sont tellement bien que personne ne se doute."</div><div class="r-name" data-i18n="review1Name">Marie L.</div><div class="r-role" data-i18n="review1Role">Responsable d'association · Paris</div></div>
+    <div class="review-c fi fi-d1"><div class="r-stars">★★★★★</div><div class="r-text" data-i18n="review2Text">"80 collaborateurs gérés sans effort. Les messages sont parfaitement adaptés à chaque personne. Outil incontournable."</div><div class="r-name" data-i18n="review2Name">Thomas B.</div><div class="r-role" data-i18n="review2Role">DRH, agence de communication · Lyon</div></div>
+    <div class="review-c fi fi-d2"><div class="r-stars">★★★★★</div><div class="r-text" data-i18n="review3Text">"Mon ami japonais a reçu son message en japonais. Il n'en revenait pas. Et les fleurs étaient parfaites !"</div><div class="r-name" data-i18n="review3Name">Amina K.</div><div class="r-role" data-i18n="review3Role">Utilisatrice depuis 1 an · Casablanca</div></div>
+  </div>
+</section>
+
+<!-- Wave reviews → pricing -->
+<div class="wave" style="background:#FFFFFF"><svg viewBox="0 0 1440 60" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"><path d="M0,0 C480,60 960,60 1440,0 L1440,60 L0,60Z" fill="#0D0915"/></svg></div>
+
+<!-- ══════════════ PRICING TABLE ══════════════ -->
+<section class="pricing-section">
+  <div class="sc fi">
+    <span class="sec-tag" data-i18n="pricingTag">Simple &amp; transparent</span>
+    <h2 class="sec-h white" data-i18n="pricingTitle">Choisis ton plan.</h2>
+    <p class="sec-sub white" data-i18n="pricingSub">Commence gratuitement. Upgrade quand tu veux. Annule à tout moment.</p>
+  </div>
+  <div class="price-table-wrap fi">
+    <table class="price-table">
+      <thead>
+        <tr>
+          <th class="th-plan th-empty"></th>
+          <th class="th-plan">
+            <div class="plan-name" data-i18n="planNameFree">STARTER</div>
+            <div class="plan-price">0€</div>
+            <div class="plan-period" data-i18n="planPeriodFree">pour toujours</div>
+          </th>
+          <th class="th-plan col-bloom">
+            <div class="pop-badge" data-i18n="planPopular">⭐ Bloom</div>
+            <div class="plan-price" style="background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text">4,99€<span>/mois</span></div>
+            <div class="plan-period" data-i18n="planPeriodBloom">7 jours gratuits</div>
+          </th>
+          <th class="th-plan">
+            <div class="plan-name" data-i18n="planNameBusiness">BUSINESS</div>
+            <div class="plan-price">19,99€<span>/mois</span></div>
+            <div class="plan-period" data-i18n="planPeriodBusiness">par mois</div>
+          </th>
+          <th class="th-plan">
+            <div class="plan-name" data-i18n="planNameEnterprise">ENTERPRISE</div>
+            <div class="plan-price" style="font-size:26px" data-i18n="planPriceEnterprise">Sur devis</div>
+            <div class="plan-period">&nbsp;</div>
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td data-i18n="rowMembers">Membres max</td>
+          <td class="val">10</td>
+          <td class="val gold col-bloom-body" data-i18n="rowUnlimited">Illimité</td>
+          <td class="val">50</td>
+          <td class="val" data-i18n="rowUnlimited2">Illimité</td>
+        </tr>
+        <tr>
+          <td data-i18n="rowGroups">Groupes</td>
+          <td class="val">1</td>
+          <td class="val gold col-bloom-body">5</td>
+          <td class="val" data-i18n="rowUnlimited3">Illimité</td>
+          <td class="val" data-i18n="rowUnlimited4">Illimité</td>
+        </tr>
+        <tr>
+          <td data-i18n="rowMessages">Messages IA/mois</td>
+          <td class="val">5</td>
+          <td class="val gold col-bloom-body" data-i18n="rowUnlimited5">Illimité</td>
+          <td class="val" data-i18n="rowUnlimited6">Illimité</td>
+          <td class="val" data-i18n="rowUnlimited7">Illimité</td>
+        </tr>
+        <tr>
+          <td data-i18n="rowGifts">Cadeaux IA</td>
+          <td class="cross col-bloom-body" style="background:transparent">✗</td>
+          <td class="check col-bloom-body">✓</td>
+          <td class="check">✓</td>
+          <td class="check">✓</td>
+        </tr>
+        <tr>
+          <td data-i18n="rowCards">Cartes virtuelles</td>
+          <td class="cross">✗</td>
+          <td class="check col-bloom-body">✓</td>
+          <td class="check">✓</td>
+          <td class="check">✓</td>
+        </tr>
+        <tr>
+          <td data-i18n="rowAdmins">Admins de groupe</td>
+          <td class="val">0</td>
+          <td class="val gold col-bloom-body">2</td>
+          <td class="val">5</td>
+          <td class="val" data-i18n="rowUnlimited8">Illimité</td>
+        </tr>
+        <tr>
+          <td data-i18n="rowCSV">Import CSV</td>
+          <td class="cross">✗</td>
+          <td class="cross col-bloom-body">✗</td>
+          <td class="check">✓</td>
+          <td class="check">✓</td>
+        </tr>
+        <tr>
+          <td data-i18n="rowWhiteLabel">Marque blanche</td>
+          <td class="cross">✗</td>
+          <td class="cross col-bloom-body">✗</td>
+          <td class="cross">✗</td>
+          <td class="check">✓</td>
+        </tr>
+        <tr>
+          <td data-i18n="rowAds">Publicités</td>
+          <td class="red" data-i18n="rowAdsYes">Oui</td>
+          <td class="check col-bloom-body" data-i18n="rowAdsNo">✗ Aucune</td>
+          <td class="check" data-i18n="rowAdsNo2">✗ Aucune</td>
+          <td class="check" data-i18n="rowAdsNo3">✗ Aucune</td>
+        </tr>
+      </tbody>
+      <tfoot>
+        <tr>
+          <td></td>
+          <td><div class="price-btn-table outline" data-i18n="planCtaFree">Commencer gratuitement</div></td>
+          <td class="col-bloom-foot"><div class="price-btn-table grad" data-i18n="planCtaBloom">🌸 Essayer 7 jours gratuits</div></td>
+          <td><div class="price-btn-table outline" data-i18n="planCtaBusiness">Essai 14 jours →</div></td>
+          <td><div class="price-btn-table outline" data-i18n="planCtaEnterprise">Nous contacter</div></td>
+        </tr>
+      </tfoot>
+    </table>
+    <div class="price-safe" data-i18n="pricingSafe">🔒 RGPD · Paiement sécurisé · Annulation à tout moment</div>
+  </div>
+</section>
+
+<!-- Wave pricing → final -->
+<div class="wave" style="background:var(--dark)"><svg viewBox="0 0 1440 60" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"><path d="M0,0 C360,60 1080,60 1440,0 L1440,60 L0,60Z" fill="#0D0915"/></svg></div>
+
+<!-- ══════════════ FINAL CTA ══════════════ -->
+<section class="final">
+  <div class="final-glow"></div>
+  <h2 class="final-h fi">
+    <span data-i18n="finalTitle1">Prêt à ne plus jamais</span><br>
+    <em style="background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;font-style:italic" data-i18n="finalTitle2">oublier ?</em>
+  </h2>
+  <p class="final-sub fi fi-d1" data-i18n="finalSub">Rejoins les personnes qui célèbrent mieux, chaque jour.</p>
+  <div class="cta-big fi fi-d2" style="display:inline-block;position:relative" data-i18n="finalCta">Créer mon compte gratuit →</div>
+  <div class="final-note fi fi-d3" data-i18n="finalNote">Gratuit · Sans carte bancaire · Prêt en 2 minutes</div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-grid">
+    <div>
+      <a class="bl-logo f-brand" href="#" style="margin-bottom:12px;display:inline-flex">
+        <img src="img/logo.png" height="24" alt="Bloomday" style="object-fit:contain">
+        <span data-i18n="appName">Bloomday</span>
+      </a>
+      <p class="f-desc" data-i18n="footerDesc">Ne rate plus jamais le jour qui compte.<br>Messages IA · Cadeaux · Fleurs · 150 pays · 7 langues.</p>
+    </div>
+    <div>
+      <div class="f-col-title" data-i18n="footerProduct">Produit</div>
+      <div class="f-link" data-i18n="footerFeatures">Fonctionnalités</div>
+      <div class="f-link" data-i18n="footerPricing">Tarifs</div>
+      <div class="f-link" data-i18n="footerAmbassador">Programme Ambassador</div>
+      <div class="f-link" data-i18n="footerChangelog">Changelog</div>
+    </div>
+    <div>
+      <div class="f-col-title" data-i18n="footerResources">Ressources</div>
+      <div class="f-link" data-i18n="footerHelp">Aide</div>
+      <div class="f-link" data-i18n="footerBlog">Blog</div>
+      <div class="f-link" data-i18n="footerContact">Contact</div>
+    </div>
+    <div>
+      <div class="f-col-title" data-i18n="footerLegal">Légal</div>
+      <div class="f-link" data-i18n="footerPrivacy">Confidentialité</div>
+      <div class="f-link" data-i18n="footerTos">CGU</div>
+      <div class="f-link" data-i18n="footerCookies">Cookies</div>
+    </div>
+  </div>
+  <div class="f-bottom">
+    <span data-i18n="footerCopyright">© 2026 Bloomday · Fait avec 🌸</span>
+    <span>mybloomday.app</span>
+  </div>
+</footer>
+
+<script>
+/* Scroll fade-in avec IntersectionObserver */
+const obs = new IntersectionObserver((entries) => {
+  entries.forEach(e => {
+    if(e.isIntersecting) {
+      e.target.classList.add('visible');
+      obs.unobserve(e.target);
+    }
+  });
+}, { threshold: 0.12 });
+document.querySelectorAll('.fi').forEach(el => obs.observe(el));
+</script>
+</body>
+</html>
