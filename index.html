@@ -36,6 +36,7 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
 <script src="https://js.stripe.com/v3/"></script>
   <link rel="stylesheet" href="css/app.css?v=20260613a">
+  <link rel="stylesheet" href="css/landing.css?v=20260614a">
 </head>
 <body>
 
@@ -129,56 +130,477 @@
 
 <!-- ═══════ LANDING ═══════ -->
 <div id="land">
-<div class="wrap">
-<div class="hero">
-  <div class="hb1"></div><div class="hb2"></div>
-  <div class="hi2">
-    <div class="bl" style="justify-content:center">
-      <svg width="36" height="36" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
-  <defs>
-    <linearGradient id="lg1" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0%" stop-color="#D4A843"/>
-      <stop offset="50%" stop-color="#FF8C7A"/>
-      <stop offset="100%" stop-color="#FF8C7A"/>
-    </linearGradient>
-  </defs>
-  <path d="M7 4h12c3.5 0 6 2 6 5.5 0 1.8-.8 3.2-2 4.2 2 .9 3.2 2.6 3.2 4.8C26.2 22.5 23.5 25 19.5 25H7V4z" fill="url(#lg1)"/>
-  <path d="M13 11.5c0-1.4 1.1-2.5 2.5-2.5 .7 0 1.3.3 1.7.7.4-.4 1-.7 1.7-.7 1.4 0 2.5 1.1 2.5 2.5 0 .8-.4 1.5-.9 2l-3.3 3.2-3.3-3.2c-.5-.5-.9-1.2-.9-2z" fill="white"/>
-  <path d="M11 25c0 0 1-4 4-5s5 1 5 1-2 5-5 5.5-4-1.5-4-1.5z" fill="#8BC34A"/>
-  <path d="M15 25v3" stroke="#8BC34A" stroke-width="1.5" stroke-linecap="round"/>
-</svg>
-      <div><div class="bwm" style="font-size:24px;color:#2D1B14">Bloomday</div><span class="btag" style="color:#8B6F60" data-i18n="heroTagline">Le jour où tu fleuris</span></div>
-      <button onclick="openAuth('login')" style="background:none;border:1px solid var(--b2);color:var(--b2);font-size:13px;font-weight:600;padding:6px 14px;border-radius:20px;cursor:pointer" data-i18n="authLogin">Connexion</button>
+
+<!-- BANNIÈRE ANNONCE -->
+<div class="announce">
+  🎉 <span data-i18n="landingAnnounce">Nouveau · Cartes virtuelles fleuries animées — envoie de la beauté par WhatsApp &amp; email</span>
+  <a href="#lp-mini" data-i18n="landingAnnounceLink">Découvrir →</a>
+</div>
+
+<!-- NAV -->
+<nav class="lp-nav">
+  <a class="bl-logo" href="#" onclick="return false;">
+    <img src="img/logo.png" height="30" alt="Bloomday" style="object-fit:contain">
+    <span>Bloomday</span>
+  </a>
+  <div class="nav-links">
+    <a href="#lp-story" data-i18n="navFeatures">Fonctionnalités</a>
+    <a href="#lp-steps" data-i18n="navHow">Comment ça marche</a>
+    <a href="#lp-reviews" data-i18n="navReviews">Avis</a>
+    <a href="#lp-pricing" data-i18n="navPricing">Tarifs</a>
+  </div>
+  <div class="nav-ctas">
+    <button class="btn-ghost" onclick="openAuth('login')" data-i18n="navLogin">Se connecter</button>
+    <button class="btn-cta" onclick="openAuth('signup')" data-i18n="navStart">Commencer</button>
+  </div>
+</nav>
+
+<!-- ══════════════ HERO ══════════════ -->
+<section class="lp-hero">
+  <div class="hero-glow"></div>
+  <div class="hero-glow2"></div>
+  <div class="particles">
+    <span class="p">🌸</span><span class="p">🎂</span><span class="p">✨</span>
+    <span class="p">🎁</span><span class="p">💌</span><span class="p">🌷</span><span class="p">🎊</span>
+  </div>
+
+  <div class="hero-badge" data-i18n="heroBadge">🌍 150 pays · 7 langues · Messages IA en 5 secondes</div>
+
+  <h1 class="hero-title">
+    <span data-i18n="heroTitle1">Ne rate plus jamais</span><br>
+    <em data-i18n="heroTitle2">le jour qui compte.</em>
+  </h1>
+
+  <p class="hero-sub" data-i18n="heroSub">
+    Bloomday se souvient pour toi. Messages touchants générés par l'IA, idées cadeaux sur mesure, livraison de fleurs — pour chaque proche, dans leur langue.
+  </p>
+
+  <div class="hero-ctas">
+    <button class="cta-big" onclick="openAuth('signup')" data-i18n="heroCta">Commencer gratuitement →</button>
+    <button class="cta-ghost" onclick="document.getElementById('lp-story').scrollIntoView({behavior:'smooth'})" data-i18n="heroDemo">Voir la démo</button>
+  </div>
+
+  <!-- iPhone mockup -->
+  <div class="hero-phone-wrap">
+    <div class="hero-phone-glow"></div>
+    <div class="iphone">
+      <div class="iphone-inner">
+        <div class="iphone-screen">
+          <div class="app-home">
+            <div class="app-topbar">
+              <div class="app-logo-sm">🌸 Bloomday</div>
+              <div class="app-date">Vendredi 13 juin</div>
+            </div>
+            <div class="app-today">
+              <div class="app-today-label">🎂 AUJOURD'HUI</div>
+              <div class="app-today-name">Léa Martin · 38 ans</div>
+              <div class="app-today-age">Aime les fleurs et le chocolat noir</div>
+              <div class="app-msg-preview">"Chère Léa, en ce jour si spécial, je voulais te dire à quel point ta présence illumine nos vies..."</div>
+            </div>
+            <div class="app-upcoming">
+              <div class="app-upcoming-title">PROCHAINEMENT</div>
+              <div class="app-upcoming-item">
+                <div class="app-av g2">TM</div>
+                <div><div class="app-item-name">Thomas Martin</div><div class="app-item-date">Fête des pères · 15 juin</div></div>
+                <div class="app-item-days">dans 2j</div>
+              </div>
+              <div class="app-upcoming-item">
+                <div class="app-av g3">SK</div>
+                <div><div class="app-item-name">Sofia Khelil</div><div class="app-item-date">Anniversaire · 20 juin</div></div>
+                <div class="app-item-days">dans 7j</div>
+              </div>
+              <div class="app-upcoming-item">
+                <div class="app-av g1">PA</div>
+                <div><div class="app-item-name">Papa</div><div class="app-item-date">Anniversaire · 28 juin</div></div>
+                <div class="app-item-days">dans 15j</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
-    <h1><span data-i18n="heroTitle1">Célébrez chaque personne</span><br><span data-i18n="heroTitle2">qui compte pour vous</span></h1>
-    <p data-i18n="heroSub2">Messages IA personnalisés, idées cadeaux, fêtes du monde entier.</p>
-    <div class="hbdg" data-i18n="heroCta">🌸 7 jours gratuits · Sans carte bancaire</div>
-    <button class="btn P" style="margin-top:16px;padding:14px 28px;font-size:16px" onclick="openAuth('signup')" data-i18n="landCta">🌸 Créer mon Bloomday gratuit</button>
+  </div>
+</section>
+
+<!-- Wave hero → story -->
+<div class="wave" style="background:#0D0915"><svg viewBox="0 0 1440 60" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"><path d="M0,0 C360,60 1080,60 1440,0 L1440,60 L0,60Z" fill="#FFFFFF"/></svg></div>
+
+<!-- ══════════════ STORY ══════════════ -->
+<section class="story" id="lp-story">
+  <div class="story-inner">
+    <div class="story-phone-side lp-fi">
+      <div class="story-glow"></div>
+      <div class="iphone">
+        <div class="iphone-inner">
+          <div class="iphone-screen">
+            <div class="app-wa">
+              <div class="app-wa-header">
+                <div class="app-wa-av">LM</div>
+                <div>
+                  <div class="app-wa-name">Léa Martin 🎂</div>
+                  <div class="app-wa-status">en ligne</div>
+                </div>
+              </div>
+              <div class="app-wa-msgs">
+                <div class="msg-out">
+                  "Chère Léa, en ce jour si spécial, je voulais te dire à quel point ta présence illumine nos vies. Que cette nouvelle année t'apporte autant de douceur que le chocolat noir que tu adores 🌸"
+                  <div class="msg-tick">✓✓</div>
+                </div>
+                <div class="msg-in">Oh mon Dieu 😭❤️<br>Tu me fais trop plaisir, c'est exactement ce dont j'avais besoin 🌸</div>
+                <div class="msg-out">Joyeux anniversaire ma belle ✨<div class="msg-tick">✓✓</div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="story-text lp-fi lp-fi-d2">
+      <div class="story-kicker" data-i18n="storyKicker">💬 L'histoire vraie derrière Bloomday</div>
+      <h2 class="story-h">
+        <span data-i18n="storyTitle1">Ce n'est pas juste de l'IA.</span><br>
+        <span data-i18n="storyTitle2">C'est <em>ton attention</em>,</span><br>
+        <span data-i18n="storyTitle3">amplifiée.</span>
+      </h2>
+      <p class="story-p" data-i18n="storyP1">Tu connaissais déjà Léa — ses goûts, sa personnalité, ce qui la fait sourire. Bloomday ne remplace pas cette connaissance. Il la transforme en mots, au bon moment.</p>
+      <p class="story-p" data-i18n="storyP2">Ce message, c'est toi qui l'as envoyé. Bloomday t'a juste aidé à dire ce que tu ressentais déjà.</p>
+      <div class="story-quote">
+        <span data-i18n="storyQuote">"Léa a pleuré de joie en recevant mon message. Elle pensait que j'avais tout écrit moi-même. En fait, j'avais juste dit à Bloomday qu'elle aimait les fleurs et le chocolat."</span>
+        <span class="story-quote-author" data-i18n="storyQuoteAuthor">— Marie L., utilisatrice depuis 6 mois</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Wave story → feat1 -->
+<div class="wave" style="background:#FFFFFF"><svg viewBox="0 0 1440 60" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"><path d="M0,60 C720,0 1440,60 1440,60 L0,60Z" fill="#FFF0F5"/></svg></div>
+
+<!-- ══════════════ FEAT 1 — RAPPELS ══════════════ -->
+<div class="feat-wrap-light">
+  <div class="feat-split">
+    <div class="feat-phone-side lp-fi">
+      <div class="iphone sm"><div class="iphone-inner"><div class="iphone-screen"><div class="app-notif">
+        <div class="app-notif-time">09:00</div>
+        <div class="app-notif-dow">Vendredi 13 juin 2026</div>
+        <div class="app-notif-card">
+          <div class="app-notif-header">
+            <img src="img/logo.png" height="14" alt="Bloomday" style="object-fit:contain">
+            <div class="app-notif-app">Bloomday</div>
+            <div class="app-notif-time2">maintenant</div>
+          </div>
+          <div class="app-notif-title">🎂 C'est l'anniversaire de Léa !</div>
+          <div class="app-notif-body">Elle a 38 ans aujourd'hui. Un message est prêt pour toi — touche pour voir.</div>
+        </div>
+      </div></div></div></div>
+    </div>
+    <div class="feat-text lp-fi lp-fi-d2">
+      <span class="feat-num" data-i18n="feat1Num">01 · Rappels</span>
+      <h3 class="feat-h" data-i18n="feat1Title">Tu n'oublieras plus jamais.</h3>
+      <p class="feat-p" data-i18n="feat1Desc">Bloomday t'envoie une notification avant chaque date — le jour J, 3 jours ou 1 semaine avant. Anniversaires, fêtes nationales, Ramadan, Diwali, Saint-Valentin — pour tous tes proches, partout dans le monde.</p>
+      <ul class="feat-bullets">
+        <li data-i18n="feat1b1">Rappels personnalisables par personne</li>
+        <li data-i18n="feat1b2">Import depuis tes contacts</li>
+        <li data-i18n="feat1b3">150 pays, toutes les fêtes mondiales</li>
+      </ul>
+    </div>
   </div>
 </div>
 
-<div style="padding:0 16px 20px;max-width:900px;margin:0 auto">
-  <img src="img/Banni%C3%A8re%20Bloomday.png" alt="Bloomday" style="width:100%;max-width:100%;height:auto;border-radius:16px;display:block;box-shadow:0 4px 20px rgba(0,0,0,.10)">
-</div>
-<div id="pricing-table-container" class="pricing-wrap"></div>
-<div style="padding:0 16px">
-<div style="font-family:var(--ff-title);font-size:20px;font-weight:700;margin-bottom:14px" data-i18n="reviewsTitle">Ils ont fleuri avec Bloomday</div>
-<div class="tstc"><p data-i18n="review1q">Bloomday a changé la dynamique de notre groupe.</p><div class="tstc-a" data-i18n="review1a">Marie L. — Responsable d'association</div></div>
-<div class="tstc"><p data-i18n="review2q">80 collaborateurs gérés sans effort. Les messages IA sont parfaitement adaptés.</p><div class="tstc-a" data-i18n="review2a">Thomas B. — DRH, agence de communication</div></div>
-<div class="tstc"><p data-i18n="review3q">Ambassador Bronze depuis 3 mois. Déjà 2 mois gratuits !</p><div class="tstc-a" data-i18n="review3a">Karim M. — Ambassador Bloomday</div></div>
-<div style="text-align:center;font-size:12px;color:var(--txt2);padding-bottom:30px;margin-top:10px" data-i18n="securePayment">🔒 RGPD · Paiement sécurisé · Annulation à tout moment</div>
-</div>
-<!-- ═══════ FOOTER LÉGAL ═══════ -->
-<div id="footer-legal">
-  <div class="footer-links">
-    <span onclick="showLegal('faq')" data-i18n="footerFaq">FAQ</span>
-    <span onclick="showLegal('cgu')" data-i18n="footerCgu">Conditions d'utilisation</span>
-    <span onclick="showLegal('rgpd')" data-i18n="footerRgpd">Politique de confidentialité</span>
-    <span onclick="showLegal('about')" data-i18n="footerAbout">À propos</span>
+<!-- Wave feat1 → feat2 dark -->
+<div class="wave" style="background:#FFF0F5"><svg viewBox="0 0 1440 60" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"><path d="M0,0 C480,60 960,60 1440,0 L1440,60 L0,60Z" fill="#17102A"/></svg></div>
+
+<!-- ══════════════ FEAT 2 — MESSAGES IA ══════════════ -->
+<div class="feat-wrap-dark feat-dark">
+  <div class="feat-split rev">
+    <div class="feat-phone-side lp-fi">
+      <div class="iphone sm"><div class="iphone-inner"><div class="iphone-screen"><div class="app-gen">
+        <div class="app-gen-person">
+          <div class="app-gen-av">LM</div>
+          <div>
+            <div class="app-gen-name">Léa Martin · 38 ans</div>
+            <div class="app-gen-note">Aime les fleurs et le chocolat noir</div>
+          </div>
+        </div>
+        <div class="app-gen-msg">"Chère Léa, en ce jour si spécial, je voulais te dire à quel point ta présence illumine nos vies. Que cette nouvelle année t'apporte autant de douceur que le chocolat noir que tu adores 🌸"</div>
+        <div class="app-gen-btns">
+          <div class="app-gen-btn p" data-i18n="genRegen">✨ Regénérer</div>
+          <div class="app-gen-btn g" data-i18n="genCopy">📋 Copier</div>
+        </div>
+      </div></div></div></div>
+    </div>
+    <div class="feat-text lp-fi lp-fi-d2">
+      <span class="feat-num" data-i18n="feat2Num">02 · Messages IA</span>
+      <h3 class="feat-h" data-i18n="feat2Title">Le message parfait, en 5 secondes.</h3>
+      <p class="feat-p" data-i18n="feat2Desc">L'IA connaît ton proche comme toi. Ses goûts, son âge, sa personnalité — elle compose un message qui vient vraiment du cœur. Regénère jusqu'à ce que ce soit parfait.</p>
+      <ul class="feat-bullets">
+        <li data-i18n="feat2b1">Adapté à l'âge, au profil et à l'historique</li>
+        <li data-i18n="feat2b2">Dans la langue de ton proche (7 langues)</li>
+        <li data-i18n="feat2b3">Ton chaleureux et authentique, jamais robotique</li>
+      </ul>
+    </div>
   </div>
-  <div class="footer-copy" data-i18n="footerCopy">© 2026 Bloomday · mybloomday.app</div>
 </div>
+
+<!-- Wave feat2 → feat3 -->
+<div class="wave" style="background:#17102A"><svg viewBox="0 0 1440 60" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"><path d="M0,60 C480,0 960,0 1440,60 L1440,60 L0,60Z" fill="#FFFFFF"/></svg></div>
+
+<!-- ══════════════ FEAT 3 — CADEAUX ══════════════ -->
+<div class="feat-wrap-light" style="background:#FFFFFF">
+  <div class="feat-split">
+    <div class="feat-phone-side lp-fi">
+      <div class="iphone sm"><div class="iphone-inner"><div class="iphone-screen"><div class="app-gifts">
+        <div class="app-gifts-title">🎁 Idées cadeaux pour Léa</div>
+        <div class="app-gifts-sub">Personnalisées · 38 ans · Aime les fleurs</div>
+        <div class="gift-item"><div class="gift-icon">🌿</div><div><div class="gift-name">Bougie parfumée artisanale</div><div class="gift-desc">Jasmin et vanille · Made in France</div></div><div class="gift-price">28€</div></div>
+        <div class="gift-item"><div class="gift-icon">📚</div><div><div class="gift-name">Livre art floral japonais</div><div class="gift-desc">Ikebana · Édition illustrée</div></div><div class="gift-price">35€</div></div>
+        <div class="gift-item"><div class="gift-icon">🍫</div><div><div class="gift-name">Coffret chocolats noirs</div><div class="gift-desc">Artisan · 24 pièces</div></div><div class="gift-price">42€</div></div>
+        <div class="gift-item"><div class="gift-icon">💐</div><div><div class="gift-name">Abonnement fleurs mensuel</div><div class="gift-desc">1 bouquet / mois · Livré chez elle</div></div><div class="gift-price">49€</div></div>
+      </div></div></div></div>
+    </div>
+    <div class="feat-text lp-fi lp-fi-d2">
+      <span class="feat-num" data-i18n="feat3Num">03 · Cadeaux IA</span>
+      <h3 class="feat-h" data-i18n="feat3Title">Finis les cadeaux génériques.</h3>
+      <p class="feat-p" data-i18n="feat3Desc">L'IA connaît les goûts de tes proches. Elle te propose des idées sur mesure — selon le genre, l'âge, les passions et ton budget. Plus de "je savais pas quoi offrir".</p>
+      <ul class="feat-bullets">
+        <li data-i18n="feat3b1">Suggestions basées sur le profil réel</li>
+        <li data-i18n="feat3b2">Budget personnalisable</li>
+        <li data-i18n="feat3b3">Idées uniques, jamais génériques</li>
+      </ul>
+    </div>
+  </div>
 </div>
+
+<!-- Wave feat3 → feat4 -->
+<div class="wave" style="background:#FFFFFF"><svg viewBox="0 0 1440 60" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"><path d="M0,0 C720,60 1440,0 1440,0 L1440,60 L0,60Z" fill="#FFF0F5"/></svg></div>
+
+<!-- ══════════════ FEAT 4 — FLEURS ══════════════ -->
+<div class="feat-wrap-light">
+  <div class="feat-split rev">
+    <div class="feat-phone-side lp-fi">
+      <div class="iphone sm"><div class="iphone-inner"><div class="iphone-screen"><div class="app-flowers">
+        <div style="font-size:12px;font-weight:700;color:#2D1B14;margin-bottom:3px">🌸 Envoyer des fleurs à Léa</div>
+        <div style="font-size:9px;color:#8B6F60;margin-bottom:9px">Livraison demain à domicile</div>
+        <div class="flower-item">
+          <img class="flower-img" src="https://images.unsplash.com/photo-1710344062551-d62090c55bbb?w=200&h=200&fit=crop&q=80" alt="Roses" loading="lazy" onerror="this.style.background='#FFF0F0'">
+          <div class="flower-info">
+            <div class="flower-name">Bouquet roses rouges</div>
+            <div class="flower-desc">12 roses · Livraison J+1</div>
+            <div class="flower-btn">Commander · 45€</div>
+          </div>
+        </div>
+        <div class="flower-item">
+          <img class="flower-img" src="https://images.unsplash.com/photo-1714385272470-f70c12dd5dcd?w=200&h=200&fit=crop&q=80" alt="Tulipes" loading="lazy" onerror="this.style.background='#FFF4FC'">
+          <div class="flower-info">
+            <div class="flower-name">Tulipes printanières</div>
+            <div class="flower-desc">20 tulipes · Lilas et blanc</div>
+            <div class="flower-btn">Commander · 38€</div>
+          </div>
+        </div>
+        <div class="flower-item">
+          <img class="flower-img" src="https://images.unsplash.com/photo-1560601732-cf2b10058f30?w=200&h=200&fit=crop&q=80" alt="Champêtre" loading="lazy" onerror="this.style.background='#FFFBE6'">
+          <div class="flower-info">
+            <div class="flower-name">Bouquet champêtre</div>
+            <div class="flower-desc">Tournesols, lavande, eucalyptus</div>
+            <div class="flower-btn">Commander · 52€</div>
+          </div>
+        </div>
+      </div></div></div></div>
+    </div>
+    <div class="feat-text lp-fi lp-fi-d2">
+      <span class="feat-num" data-i18n="feat4Num">04 · Livraison de fleurs</span>
+      <h3 class="feat-h" data-i18n="feat4Title">Envoie de la beauté, pas juste des mots.</h3>
+      <p class="feat-p" data-i18n="feat4Desc">Depuis l'app, commande des fleurs directement chez tes fleuristes partenaires. Livraison à domicile partout en France et à l'international. Le même jour ou le lendemain.</p>
+      <ul class="feat-bullets">
+        <li data-i18n="feat4b1">Fleuristes partenaires sélectionnés</li>
+        <li data-i18n="feat4b2">Livraison express disponible</li>
+        <li data-i18n="feat4b3">En France et à l'international</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- Wave feat4 → mini -->
+<div class="wave" style="background:#FFF0F5"><svg viewBox="0 0 1440 40" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"><path d="M0,40 L1440,40 C1440,40 720,0 0,40Z" fill="#FFFFFF"/></svg></div>
+
+<!-- ══════════════ MINI FEATURES ══════════════ -->
+<section class="mini-section" id="lp-mini">
+  <div class="lp-sc lp-fi">
+    <span class="sec-tag" data-i18n="miniTag">Et aussi</span>
+    <h2 class="sec-h" data-i18n="miniTitle">Tout ce que tu ne vois pas encore.</h2>
+  </div>
+  <div class="mini-grid">
+    <div class="mini-card lp-fi"><div class="mini-icon">👥</div><div class="mini-name" data-i18n="mini1Name">Groupes &amp; équipes</div><div class="mini-desc" data-i18n="mini1Desc">Gère les anniversaires de ton équipe. Formulaire de collecte, multi-admins, notifications groupées.</div></div>
+    <div class="mini-card lp-fi lp-fi-d1"><div class="mini-icon">🌍</div><div class="mini-name" data-i18n="mini2Name">150 pays · 7 langues</div><div class="mini-desc" data-i18n="mini2Desc">Ramadan, Diwali, Pâques, fêtes nationales — toutes les célébrations du monde, dans leur langue.</div></div>
+    <div class="mini-card lp-fi lp-fi-d2"><div class="mini-icon">💌</div><div class="mini-name" data-i18n="mini3Name">Cartes virtuelles fleuries</div><div class="mini-desc" data-i18n="mini3Desc">Belles cartes animées à envoyer sur WhatsApp ou email — pour marquer le coup avec élégance.</div></div>
+    <div class="mini-card lp-fi lp-fi-d1"><div class="mini-icon">📅</div><div class="mini-name" data-i18n="mini4Name">Timeline À préparer</div><div class="mini-desc" data-i18n="mini4Desc">Checklist intelligente avant chaque événement — quand commander, quoi prévoir, comment surprendre.</div></div>
+    <div class="mini-card lp-fi lp-fi-d2"><div class="mini-icon">💰</div><div class="mini-name" data-i18n="mini5Name">Programme Ambassador</div><div class="mini-desc" data-i18n="mini5Desc">Parraine tes amis et gagne jusqu'à 30% de commission. Des mois gratuits en bonus.</div></div>
+    <div class="mini-card lp-fi lp-fi-d3"><div class="mini-icon">📲</div><div class="mini-name" data-i18n="mini6Name">App installable (PWA)</div><div class="mini-desc" data-i18n="mini6Desc">Installe Bloomday sur ton téléphone comme une vraie app, sans passer par un store.</div></div>
+  </div>
+</section>
+
+<!-- Wave mini → steps -->
+<div class="wave" style="background:#FFFFFF"><svg viewBox="0 0 1440 60" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"><path d="M0,0 C360,60 1080,60 1440,0 L1440,60 L0,60Z" fill="#0D0915"/></svg></div>
+
+<!-- ══════════════ STEPS ══════════════ -->
+<section class="steps-section" id="lp-steps">
+  <div class="steps-bg"></div>
+  <div class="lp-sc lp-fi">
+    <span class="sec-tag" data-i18n="stepsTag">Simple comme bonjour</span>
+    <h2 class="sec-h white" data-i18n="stepsTitle">En 4 étapes, tout change.</h2>
+    <p class="sec-sub white" style="margin-bottom:64px" data-i18n="stepsSub">Prêt en 2 minutes. Vraiment.</p>
+  </div>
+  <div class="steps-row lp-fi">
+    <div class="step-item"><div class="step-n">1</div><div class="step-t" data-i18n="step1T">Ajoute tes proches</div><div class="step-d" data-i18n="step1D">Prénom, date, quelques mots. Import depuis tes contacts.</div></div>
+    <div class="step-item"><div class="step-n">2</div><div class="step-t" data-i18n="step2T">Bloomday t'alerte</div><div class="step-d" data-i18n="step2D">Avant chaque date — jour J, 3 jours ou 1 semaine avant.</div></div>
+    <div class="step-item"><div class="step-n">3</div><div class="step-t" data-i18n="step3T">L'IA compose</div><div class="step-d" data-i18n="step3D">Message personnalisé en 5 sec. Dans leur langue.</div></div>
+    <div class="step-item"><div class="step-n">4</div><div class="step-t" data-i18n="step4T">Tu envoies l'amour</div><div class="step-d" data-i18n="step4D">Copie, envoie, commande fleurs ou cadeaux en 1 clic.</div></div>
+  </div>
+</section>
+
+<!-- Wave steps → reviews -->
+<div class="wave" style="background:#0D0915"><svg viewBox="0 0 1440 60" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"><path d="M0,60 C360,0 1080,0 1440,60 L1440,60 L0,60Z" fill="#FFFFFF"/></svg></div>
+
+<!-- ══════════════ AVIS ══════════════ -->
+<section class="reviews-section" id="lp-reviews">
+  <div class="lp-sc lp-fi">
+    <span class="sec-tag" data-i18n="reviewsTag">Ils adorent Bloomday</span>
+    <h2 class="sec-h" data-i18n="reviewsTitle">Des milliers de proches célébrés chaque jour.</h2>
+  </div>
+  <div class="reviews-grid">
+    <div class="review-c lp-fi"><div class="r-stars">★★★★★</div><div class="r-text" data-i18n="review1Text">"Bloomday a changé la dynamique de notre groupe. Tout le monde se sent vraiment célébré. Les messages IA sont tellement bien que personne ne se doute."</div><div class="r-name" data-i18n="review1Name">Marie L.</div><div class="r-role" data-i18n="review1Role">Responsable d'association · Paris</div></div>
+    <div class="review-c lp-fi lp-fi-d1"><div class="r-stars">★★★★★</div><div class="r-text" data-i18n="review2Text">"80 collaborateurs gérés sans effort. Les messages sont parfaitement adaptés à chaque personne. Outil incontournable."</div><div class="r-name" data-i18n="review2Name">Thomas B.</div><div class="r-role" data-i18n="review2Role">DRH, agence de communication · Lyon</div></div>
+    <div class="review-c lp-fi lp-fi-d2"><div class="r-stars">★★★★★</div><div class="r-text" data-i18n="review3Text">"Mon ami japonais a reçu son message en japonais. Il n'en revenait pas. Et les fleurs étaient parfaites !"</div><div class="r-name" data-i18n="review3Name">Amina K.</div><div class="r-role" data-i18n="review3Role">Utilisatrice depuis 1 an · Casablanca</div></div>
+  </div>
+</section>
+
+<!-- Wave reviews → pricing -->
+<div class="wave" style="background:#FFFFFF"><svg viewBox="0 0 1440 60" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"><path d="M0,0 C480,60 960,60 1440,0 L1440,60 L0,60Z" fill="#0D0915"/></svg></div>
+
+<!-- ══════════════ PRICING ══════════════ -->
+<section class="pricing-section" id="lp-pricing">
+  <div class="lp-sc lp-fi">
+    <span class="sec-tag" data-i18n="pricingTag">Simple &amp; transparent</span>
+    <h2 class="sec-h white" data-i18n="pricingTitle">Choisis ton plan.</h2>
+    <p class="sec-sub white" data-i18n="pricingSub">Commence gratuitement. Upgrade quand tu veux. Annule à tout moment.</p>
+  </div>
+  <div class="price-table-wrap lp-fi">
+    <table class="price-table">
+      <thead>
+        <tr>
+          <th class="th-plan th-empty"></th>
+          <th class="th-plan">
+            <div class="plan-name" data-i18n="planNameFree">STARTER</div>
+            <div class="plan-price">0€</div>
+            <div class="plan-period" data-i18n="planPeriodFree">pour toujours</div>
+          </th>
+          <th class="th-plan col-bloom">
+            <div class="pop-badge" data-i18n="planPopular">⭐ Bloom</div>
+            <div class="plan-price" style="background:linear-gradient(135deg,#D4A843,#FF8C7A);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text">4,99€<span>/mois</span></div>
+            <div class="plan-period" data-i18n="planPeriodBloom">7 jours gratuits</div>
+          </th>
+          <th class="th-plan">
+            <div class="plan-name" data-i18n="planNameBusiness">BUSINESS</div>
+            <div class="plan-price">19,99€<span>/mois</span></div>
+            <div class="plan-period" data-i18n="planPeriodBusiness">par mois</div>
+          </th>
+          <th class="th-plan">
+            <div class="plan-name" data-i18n="planNameEnterprise">ENTERPRISE</div>
+            <div class="plan-price" style="font-size:26px" data-i18n="planPriceEnterprise">Sur devis</div>
+            <div class="plan-period">&nbsp;</div>
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td data-i18n="rowMembers">Membres max</td><td class="val">10</td><td class="val gold col-bloom-body" data-i18n="rowUnlimited">Illimité</td><td class="val">50</td><td class="val" data-i18n="rowUnlimited">Illimité</td></tr>
+        <tr><td data-i18n="rowGroups">Groupes</td><td class="val">1</td><td class="val gold col-bloom-body">5</td><td class="val" data-i18n="rowUnlimited">Illimité</td><td class="val" data-i18n="rowUnlimited">Illimité</td></tr>
+        <tr><td data-i18n="rowMessages">Messages IA/mois</td><td class="val">5</td><td class="val gold col-bloom-body" data-i18n="rowUnlimited">Illimité</td><td class="val" data-i18n="rowUnlimited">Illimité</td><td class="val" data-i18n="rowUnlimited">Illimité</td></tr>
+        <tr><td data-i18n="rowGifts">Cadeaux IA</td><td class="cross">✗</td><td class="check col-bloom-body">✓</td><td class="check">✓</td><td class="check">✓</td></tr>
+        <tr><td data-i18n="rowCards">Cartes virtuelles</td><td class="cross">✗</td><td class="check col-bloom-body">✓</td><td class="check">✓</td><td class="check">✓</td></tr>
+        <tr><td data-i18n="rowAdmins">Admins de groupe</td><td class="val">0</td><td class="val gold col-bloom-body">2</td><td class="val">5</td><td class="val" data-i18n="rowUnlimited">Illimité</td></tr>
+        <tr><td data-i18n="rowCSV">Import CSV</td><td class="cross">✗</td><td class="cross col-bloom-body">✗</td><td class="check">✓</td><td class="check">✓</td></tr>
+        <tr><td data-i18n="rowWhiteLabel">Marque blanche</td><td class="cross">✗</td><td class="cross col-bloom-body">✗</td><td class="cross">✗</td><td class="check">✓</td></tr>
+        <tr><td data-i18n="rowAds">Publicités</td><td class="red" data-i18n="rowAdsYes">Oui</td><td class="check col-bloom-body" data-i18n="rowAdsNo">✗ Aucune</td><td class="check" data-i18n="rowAdsNo">✗ Aucune</td><td class="check" data-i18n="rowAdsNo">✗ Aucune</td></tr>
+      </tbody>
+      <tfoot>
+        <tr>
+          <td></td>
+          <td><button class="price-btn-table outline" onclick="openAuth('signup')" data-i18n="planCtaFree">Commencer gratuitement</button></td>
+          <td class="col-bloom-foot"><button class="price-btn-table grad" onclick="openAuth('signup')" data-i18n="planCtaBloom">🌸 Essayer 7 jours gratuits</button></td>
+          <td><button class="price-btn-table outline" onclick="openAuth('signup')" data-i18n="planCtaBusiness">Essai 14 jours →</button></td>
+          <td><button class="price-btn-table outline" onclick="window.location.href='mailto:bloomday.app@gmail.com'" data-i18n="planCtaEnterprise">Nous contacter</button></td>
+        </tr>
+      </tfoot>
+    </table>
+    <div class="price-safe" data-i18n="pricingSafe">🔒 RGPD · Paiement sécurisé · Annulation à tout moment</div>
+  </div>
+</section>
+
+<!-- Wave pricing → final -->
+<div class="wave" style="background:#0D0915"><svg viewBox="0 0 1440 60" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"><path d="M0,0 C360,60 1080,60 1440,0 L1440,60 L0,60Z" fill="#0D0915"/></svg></div>
+
+<!-- ══════════════ FINAL CTA ══════════════ -->
+<section class="final">
+  <div class="final-glow"></div>
+  <h2 class="final-h lp-fi">
+    <span data-i18n="finalTitle1">Prêt à ne plus jamais</span><br>
+    <em style="background:linear-gradient(135deg,#D4A843,#FF8C7A);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;font-style:italic" data-i18n="finalTitle2">oublier ?</em>
+  </h2>
+  <p class="final-sub lp-fi lp-fi-d1" data-i18n="finalSub">Rejoins les personnes qui célèbrent mieux, chaque jour.</p>
+  <button class="cta-big lp-fi lp-fi-d2" onclick="openAuth('signup')" data-i18n="finalCta">Créer mon compte gratuit →</button>
+  <div class="final-note lp-fi lp-fi-d3" data-i18n="finalNote">Gratuit · Sans carte bancaire · Prêt en 2 minutes</div>
+</section>
+
+<!-- ══════════════ FOOTER ══════════════ -->
+<footer>
+  <div class="footer-grid">
+    <div>
+      <a class="bl-logo f-brand" href="#" onclick="return false;" style="margin-bottom:12px;display:inline-flex">
+        <img src="img/logo.png" height="24" alt="Bloomday" style="object-fit:contain">
+        <span>Bloomday</span>
+      </a>
+      <p class="f-desc" data-i18n="footerDesc">Ne rate plus jamais le jour qui compte.<br>Messages IA · Cadeaux · Fleurs · 150 pays · 7 langues.</p>
+    </div>
+    <div>
+      <div class="f-col-title" data-i18n="footerProduct">Produit</div>
+      <span class="f-link" onclick="document.getElementById('lp-story').scrollIntoView({behavior:'smooth'})" data-i18n="footerFeatures">Fonctionnalités</span>
+      <span class="f-link" onclick="document.getElementById('lp-pricing').scrollIntoView({behavior:'smooth'})" data-i18n="footerPricing">Tarifs</span>
+      <span class="f-link" onclick="openAuth('signup')" data-i18n="footerAmbassador">Programme Ambassador</span>
+      <span class="f-link" data-i18n="footerChangelog">Changelog</span>
+    </div>
+    <div>
+      <div class="f-col-title" data-i18n="footerResources">Ressources</div>
+      <span class="f-link" onclick="showLegal('faq')" data-i18n="footerHelp">Aide</span>
+      <span class="f-link" data-i18n="footerBlog">Blog</span>
+      <span class="f-link" data-i18n="footerContact">Contact</span>
+    </div>
+    <div>
+      <div class="f-col-title" data-i18n="footerLegal">Légal</div>
+      <span class="f-link" onclick="showLegal('rgpd')" data-i18n="footerPrivacy">Confidentialité</span>
+      <span class="f-link" onclick="showLegal('cgu')" data-i18n="footerTos">CGU</span>
+      <span class="f-link" onclick="showLegal('faq')" data-i18n="footerFaq">FAQ</span>
+    </div>
+  </div>
+  <div class="f-bottom">
+    <span data-i18n="footerCopyright">© 2026 Bloomday · Fait avec 🌸</span>
+    <span>mybloomday.app</span>
+  </div>
+</footer>
+
+<script>
+/* Scroll fade-in for landing page */
+(function(){
+  if(!('IntersectionObserver' in window)) {
+    document.querySelectorAll('#land .lp-fi').forEach(function(el){el.classList.add('visible');});
+    return;
+  }
+  var lpObs = new IntersectionObserver(function(entries){
+    entries.forEach(function(e){
+      if(e.isIntersecting){e.target.classList.add('visible');lpObs.unobserve(e.target);}
+    });
+  }, {threshold:0.12});
+  document.querySelectorAll('#land .lp-fi').forEach(function(el){lpObs.observe(el);});
+})();
+</script>
+
 </div>
 
 <!-- ═══════ RIPPLE PAGE (Axe 6 — destinataire) ═══════ -->
