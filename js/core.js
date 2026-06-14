@@ -691,7 +691,7 @@ function _clearEl(el){while(el.firstChild)el.removeChild(el.firstChild);}
 
 async function rAdmin(){
   if(!window.isAdmin)return;
-  var sess=(await window._supabase.auth.getSession()).data.session;
+  var sess=(await supabase.auth.getSession()).data.session;
   if(!sess)return;
   var token=sess.access_token;
   var r=await fetch('/.netlify/functions/admin',{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+token},body:JSON.stringify({action:'stats'})});
@@ -724,7 +724,7 @@ async function adminLoadUsers(token,page,search){
 
 async function adminSearchUsers(){
   var q=document.getElementById('admin-search');var search=q?q.value:'';
-  var sess=(await window._supabase.auth.getSession()).data.session;
+  var sess=(await supabase.auth.getSession()).data.session;
   if(sess)adminLoadUsers(sess.access_token,0,search);
 }
 
@@ -782,7 +782,7 @@ async function adminSendNotif(){
     if(!targetEmail){showToast(t('errorRequired')||'Email requis');return;}
   }
 
-  var sess=await window._supabase.auth.getSession();
+  var sess=await supabase.auth.getSession();
   var token=sess&&sess.data&&sess.data.session&&sess.data.session.access_token;
   if(!token)return;
 
@@ -861,7 +861,7 @@ function adminSugEdit(i){
 async function adminSugSend(i){
   var s=_adminSuggestions[i];
   if(!s)return;
-  var sess=await window._supabase.auth.getSession();
+  var sess=await supabase.auth.getSession();
   var token=sess&&sess.data&&sess.data.session&&sess.data.session.access_token;
   if(!token)return;
   var r=await fetch('/.netlify/functions/admin',{
@@ -878,10 +878,10 @@ async function checkAdminNotifications(){
   if(!window.currentUser)return;
   try{
     var uid=currentUser.uid;
-    var r=await window._supabase.from('admin_notifications').select('*').eq('active',true).order('created_at',{ascending:false});
+    var r=await supabase.from('admin_notifications').select('*').eq('active',true).order('created_at',{ascending:false});
     if(!r.data||!r.data.length){updateBellBadge(0);return;}
 
-    var rr=await window._supabase.from('user_notification_reads').select('notification_id').eq('user_id',uid);
+    var rr=await supabase.from('user_notification_reads').select('notification_id').eq('user_id',uid);
     var readSet=new Set((rr.data||[]).map(function(x){return x.notification_id;}));
     _adminNotifReads=readSet;
 
@@ -930,7 +930,7 @@ async function closeCriticalNotif(){
   if(ov)ov.style.display='none';
   if(_criticalNotifId&&window.currentUser){
     try{
-      await window._supabase.from('user_notification_reads').upsert({user_id:currentUser.uid,notification_id:_criticalNotifId},{onConflict:'user_id,notification_id'});
+      await supabase.from('user_notification_reads').upsert({user_id:currentUser.uid,notification_id:_criticalNotifId},{onConflict:'user_id,notification_id'});
       _adminNotifReads.add(_criticalNotifId);
     }catch(e){}
     _criticalNotifId=null;
@@ -1004,7 +1004,7 @@ async function markAllNotifsRead(){
   var unread=_adminNotifs.filter(function(n){return!_adminNotifReads.has(n.id);});
   if(!unread.length)return;
   try{
-    await window._supabase.from('user_notification_reads').upsert(
+    await supabase.from('user_notification_reads').upsert(
       unread.map(function(n){return{user_id:uid,notification_id:n.id};}),
       {onConflict:'user_id,notification_id'}
     );
