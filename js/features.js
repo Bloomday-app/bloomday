@@ -964,8 +964,11 @@ async function subscribeToPush(){
     });
     var subJson=sub.toJSON();
     await savePushSubscription(subJson.endpoint,subJson.keys.p256dh,subJson.keys.auth);
+    return true;
   }catch(e){
     console.warn('Push subscription failed',e);
+    showToast('Push non activé : '+e.message);
+    return false;
   }
 }
 var _notifSettings={enabled:false,daysBefore:1,time:'09:00',festivalsEnabled:false};
@@ -976,6 +979,7 @@ async function onNotifToggle(checked){
     await activateNotifications();
     return;
   }
+  if(checked) await subscribeToPush();
   await saveNotificationSettings(_notifSettings);
 }
 async function onNotifDaysChange(days){
