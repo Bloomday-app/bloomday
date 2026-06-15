@@ -674,7 +674,7 @@ function changePlan(p){
 // ── NAVIGATION SECTIONS ──
 function showSec(name,idx){
   window._curSection=name;
-  ['home','members','add','events','cal','more','admin'].forEach(s=>{const e=document.getElementById('s-'+s);if(e)e.style.display=s===name?'block':'none';});
+  ['home','members','add','events','cal','more','admin','settings-notif'].forEach(s=>{const e=document.getElementById('s-'+s);if(e)e.style.display=s===name?'block':'none';});
   document.querySelectorAll('.nb').forEach((b,i)=>{b.classList.toggle('on',i===idx);});
   for(var di=0;di<5;di++){var sb=document.getElementById('dsb'+di);if(sb)sb.classList.toggle('on',di===idx);}
   const ms=document.getElementById('mscroll');if(ms)ms.scrollTo(0,0);
@@ -684,6 +684,7 @@ function showSec(name,idx){
   if(name==='more')rMore();
   if(name==='members')rMembers();
   if(name==='admin')rAdmin();
+  if(name==='settings-notif'&&typeof renderNotifSettings==='function')renderNotifSettings();
   if(typeof renderDesktopRightPanel==='function')renderDesktopRightPanel(name);
 }
 
