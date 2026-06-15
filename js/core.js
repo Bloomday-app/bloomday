@@ -782,22 +782,31 @@ async function adminSendNotif(){
     if(!targetEmail){showToast(t('errorRequired')||'Email requis');return;}
   }
 
-  var sess=await supabase.auth.getSession();
-  var token=sess&&sess.data&&sess.data.session&&sess.data.session.access_token;
-  if(!token)return;
+  var sendBtn=document.querySelector('[onclick="adminSendNotif()"]');
+  if(sendBtn){sendBtn.disabled=true;sendBtn.textContent='...';}
 
-  var r=await fetch('/.netlify/functions/admin',{
-    method:'POST',
-    headers:{'Content-Type':'application/json','Authorization':'Bearer '+token},
-    body:JSON.stringify({action:'notify',title:title,message:msg,type:type,target_type:targetType,target_email:targetEmail})
-  });
-  var d=await r.json();
-  if(d.ok){
-    if(titleEl)titleEl.value='';
-    if(msgEl)msgEl.value='';
-    showToast(t('adminNotifSent')||'Notification envoyée !');
-  }else{
-    showToast(d.error||'Erreur');
+  try{
+    var sess=await supabase.auth.getSession();
+    var token=sess&&sess.data&&sess.data.session&&sess.data.session.access_token;
+    if(!token){showToast('Session expirée — reconnectez-vous');return;}
+
+    var r=await fetch('/.netlify/functions/admin',{
+      method:'POST',
+      headers:{'Content-Type':'application/json','Authorization':'Bearer '+token},
+      body:JSON.stringify({action:'notify',title:title,message:msg,type:type,target_type:targetType,target_email:targetEmail})
+    });
+    var d=await r.json();
+    if(d.ok){
+      if(titleEl)titleEl.value='';
+      if(msgEl)msgEl.value='';
+      showToast(t('adminNotifSent')||'Notification envoyée !');
+    }else{
+      showToast(d.error||'Erreur serveur');
+    }
+  }catch(e){
+    showToast('Erreur : '+e.message);
+  }finally{
+    if(sendBtn){sendBtn.disabled=false;sendBtn.textContent=t('adminNotifSendBtn')||'Envoyer la notification →';}
   }
 }
 

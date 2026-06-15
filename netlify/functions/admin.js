@@ -2,11 +2,13 @@ const { createClient } = require('@supabase/supabase-js');
 const { verifyJwt } = require('./lib/verify-jwt');
 const webpush = require('web-push');
 
-webpush.setVapidDetails(
-  'mailto:contact@mybloomday.app',
-  'BCNh1fxQGxaCta7mIdYNO7YSjA3iRG5w6gpayFgMgr0gx8o_voP_jTy4nYMY4e2S9_yq32Z12KYRVYn5pXj-VqA',
-  process.env.VAPID_PRIVATE_KEY || ''
-);
+if (process.env.VAPID_PRIVATE_KEY) {
+  webpush.setVapidDetails(
+    'mailto:contact@mybloomday.app',
+    'BCNh1fxQGxaCta7mIdYNO7YSjA3iRG5w6gpayFgMgr0gx8o_voP_jTy4nYMY4e2S9_yq32Z12KYRVYn5pXj-VqA',
+    process.env.VAPID_PRIVATE_KEY
+  );
+}
 
 const ADMIN_EMAIL = 'zekingfinance@gmail.com';
 const CORS = { 'Access-Control-Allow-Origin': '*', 'Content-Type': 'application/json' };
