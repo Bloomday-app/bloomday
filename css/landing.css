@@ -319,11 +319,13 @@
   #land .cta-big,#land .cta-ghost{width:100%;max-width:300px;text-align:center}
   #land .story{padding:60px 24px}
   #land .story-inner{grid-template-columns:1fr;gap:40px}
-  #land .story-phone-side{display:none}
+  #land .story-phone-side{justify-content:center}
   #land .story-h{font-size:28px}
   #land .feat-wrap-light,#land .feat-wrap-dark{padding:60px 24px}
-  #land .feat-split{flex-direction:column!important;gap:40px}
-  #land .feat-phone-side{display:none}
+  #land .feat-split{flex-direction:column!important;gap:36px}
+  #land .feat-phone-side{display:flex;justify-content:center;width:100%}
+  #land .iphone.sm{width:200px;height:434px}
+  #land .iphone.sm .iphone-inner::before{width:74px;height:20px;top:9px}
   #land .feat-h{font-size:26px}
   #land .mini-section{padding:60px 24px}
   #land .mini-grid{grid-template-columns:1fr 1fr}
