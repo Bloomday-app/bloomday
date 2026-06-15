@@ -96,26 +96,35 @@ exports.handler = async (event) => {
     if (error) return err(500, error.message);
 
     // Push web : filtré selon la même cible que la notif DB
+    let pushSent = 0, pushFailed = 0, pushTotal = 0;
     if (process.env.VAPID_PRIVATE_KEY && (targetType === 'all' || targetType === 'user')) {
       try {
         let subsQuery = supabase.from('push_subscriptions').select('endpoint, p256dh, auth');
         if (targetType === 'user' && targetUid) {
           subsQuery = subsQuery.eq('user_id', targetUid);
         }
-        const { data: subs } = await subsQuery;
+        const { data: subs, error: subsErr } = await subsQuery;
+        if (subsErr) console.warn('Push subscriptions query error:', subsErr.message);
+        pushTotal = (subs || []).length;
+        console.log(`Push: ${pushTotal} subscription(s) found for target=${targetType}`);
         const payload = JSON.stringify({ title: title || 'Bloomday', body: message });
-        await Promise.allSettled((subs || []).map(sub =>
+        const results = await Promise.allSettled((subs || []).map(sub =>
           webpush.sendNotification(
             { endpoint: sub.endpoint, keys: { p256dh: sub.p256dh, auth: sub.auth } },
             payload
           )
         ));
+        results.forEach((r, i) => {
+          if (r.status === 'fulfilled') { pushSent++; }
+          else { pushFailed++; console.warn(`Push[${i}] failed:`, r.reason && r.reason.message); }
+        });
+        console.log(`Push result: sent=${pushSent} failed=${pushFailed}`);
       } catch (pushErr) {
         console.warn('Push sending error:', pushErr.message);
       }
     }
 
-    return { statusCode: 200, headers: CORS, body: JSON.stringify({ ok: true }) };
+    return { statusCode: 200, headers: CORS, body: JSON.stringify({ ok: true, pushTotal, pushSent, pushFailed }) };
   }
 
   return err(400, 'Unknown action');
