@@ -1,6 +1,48 @@
 const { createClient } = require('@supabase/supabase-js');
 const { verifyJwt } = require('./lib/verify-jwt');
 const webpush = require('web-push');
+const https = require('https');
+
+const LANG_NAMES = { en:'English', es:'Spanish', ar:'Arabic', hi:'Hindi', zh:'Chinese', pt:'Portuguese' };
+
+function groqTranslate(title, message, targetLang) {
+  return new Promise(function(resolve) {
+    var langName = LANG_NAMES[targetLang];
+    if (!langName) return resolve({ title, message });
+    var prompt = 'Translate to ' + langName + '. Return ONLY valid JSON, no explanation: {"title":"...","message":"..."}\nTitle: ' + title + '\nMessage: ' + message;
+    var payload = JSON.stringify({
+      model: 'llama-3.1-8b-instant',
+      messages: [{ role: 'user', content: prompt }],
+      max_tokens: 300,
+      temperature: 0.1
+    });
+    var options = {
+      hostname: 'api.groq.com', port: 443,
+      path: '/openai/v1/chat/completions', method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + process.env.GROQ_API_KEY, 'Content-Length': Buffer.byteLength(payload) }
+    };
+    var req = https.request(options, function(res) {
+      var body = '';
+      res.on('data', function(d) { body += d; });
+      res.on('end', function() {
+        try {
+          var data = JSON.parse(body);
+          var text = data.choices[0].message.content.trim();
+          var match = text.match(/\{[\s\S]*\}/);
+          if (match) {
+            var parsed = JSON.parse(match[0]);
+            return resolve({ title: parsed.title || title, message: parsed.message || message });
+          }
+        } catch(e) {}
+        resolve({ title, message });
+      });
+    });
+    req.on('error', function() { resolve({ title, message }); });
+    req.setTimeout(4000, function() { req.destroy(); resolve({ title, message }); });
+    req.write(payload);
+    req.end();
+  });
+}
 
 if (process.env.VAPID_PRIVATE_KEY) {
   webpush.setVapidDetails(
@@ -99,7 +141,7 @@ exports.handler = async (event) => {
     let pushTotal = 0, pushSent = 0, pushFailed = 0;
     if (process.env.VAPID_PRIVATE_KEY && (targetType === 'all' || targetType === 'user')) {
       try {
-        let subsQuery = supabase.from('push_subscriptions').select('endpoint, p256dh, auth, user_id');
+        let subsQuery = supabase.from('push_subscriptions').select('endpoint, p256dh, auth, user_id, lang');
         if (targetType === 'user' && targetUid) {
           subsQuery = subsQuery.eq('user_id', targetUid);
         }
@@ -108,15 +150,29 @@ exports.handler = async (event) => {
         pushTotal = (subs || []).length;
         console.log(`Push: ${pushTotal} subscription(s) found for target=${targetType}`);
         if (pushTotal > 0) {
-          const payload = JSON.stringify({ title: 'Bloomday', body: title ? title + '\n' + message : message });
-          const withTimeout = (p) => Promise.race([p, new Promise((_, rej) => setTimeout(() => rej(new Error('timeout')), 4000))]);
-          const results = await Promise.allSettled((subs || []).map(sub =>
-            withTimeout(webpush.sendNotification(
-              { endpoint: sub.endpoint, keys: { p256dh: sub.p256dh, auth: sub.auth } },
-              payload
-            ))
+          // Grouper par langue
+          const byLang = {};
+          (subs || []).forEach(sub => {
+            const l = sub.lang || 'fr';
+            if (!byLang[l]) byLang[l] = [];
+            byLang[l].push(sub);
+          });
+          // Traduire toutes les langues non-fr en parallèle
+          const langs = Object.keys(byLang);
+          const translations = await Promise.all(langs.map(l =>
+            l === 'fr' ? Promise.resolve({ title, message }) : groqTranslate(title, message, l)
           ));
-          results.forEach((r, i) => {
+          // Envoyer à chaque groupe
+          const withTimeout = (p) => Promise.race([p, new Promise((_, rej) => setTimeout(() => rej(new Error('timeout')), 4000))]);
+          const allResults = await Promise.allSettled(langs.flatMap((l, i) => {
+            const tr = translations[i];
+            const body = tr.title ? tr.title + '\n' + tr.message : tr.message;
+            const payload = JSON.stringify({ title: 'Bloomday', body });
+            return byLang[l].map(sub => withTimeout(webpush.sendNotification(
+              { endpoint: sub.endpoint, keys: { p256dh: sub.p256dh, auth: sub.auth } }, payload
+            )));
+          }));
+          allResults.forEach((r, i) => {
             if (r.status === 'fulfilled') { pushSent++; }
             else { pushFailed++; console.warn(`Push[${i}] failed:`, r.reason && r.reason.message); }
           });

@@ -963,7 +963,8 @@ async function subscribeToPush(){
       applicationServerKey:urlBase64ToUint8Array(VAPID_PUBLIC_KEY)
     });
     var subJson=sub.toJSON();
-    await savePushSubscription(subJson.endpoint,subJson.keys.p256dh,subJson.keys.auth);
+    var lang=(typeof appLang!=='undefined'&&appLang)||localStorage.getItem('bdg16_lang')||'fr';
+    await savePushSubscription(subJson.endpoint,subJson.keys.p256dh,subJson.keys.auth,lang);
     return true;
   }catch(e){
     console.warn('Push subscription failed',e);

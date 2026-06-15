@@ -153,7 +153,7 @@ async function dbSaveStats(userId, stats) {
   }
 }
 
-async function savePushSubscription(endpoint, p256dh, auth){
+async function savePushSubscription(endpoint, p256dh, auth, lang){
   var uid=currentUser&&currentUser.uid;
   if(!uid)return;
   await supabase.from('push_subscriptions').upsert({
@@ -161,6 +161,7 @@ async function savePushSubscription(endpoint, p256dh, auth){
     endpoint:endpoint,
     p256dh:p256dh,
     auth:auth,
+    lang:lang||'fr',
     updated_at:new Date().toISOString()
   },{onConflict:'user_id,endpoint'});
 }
