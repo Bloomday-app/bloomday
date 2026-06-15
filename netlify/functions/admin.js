@@ -5,7 +5,7 @@ const webpush = require('web-push');
 if (process.env.VAPID_PRIVATE_KEY) {
   webpush.setVapidDetails(
     'mailto:contact@mybloomday.app',
-    'BFlM-dGmhVtoLBnYiy1pdv0y2Kbt5DgFV7frLB3qZX0HvdF41Vo2BvxvwgOeXw28AM_yR9cdeJYaEFBBSsd9Urv0',
+    'BFILQwBNmFyg3v3Far-dHOTm2VhgGWf6hLQKJryHcwKwJLo-8cqBii138Xds0-1M7PtabUs6LDaPTyuOcA8a01U',
     process.env.VAPID_PRIVATE_KEY
   );
 }

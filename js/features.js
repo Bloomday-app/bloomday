@@ -942,7 +942,7 @@ async function sendChat() {
   }
 }
 
-var VAPID_PUBLIC_KEY = 'BFlM-dGmhVtoLBnYiy1pdv0y2Kbt5DgFV7frLB3qZX0HvdF41Vo2BvxvwgOeXw28AM_yR9cdeJYaEFBBSsd9Urv0';
+var VAPID_PUBLIC_KEY = 'BFILQwBNmFyg3v3Far-dHOTm2VhgGWf6hLQKJryHcwKwJLo-8cqBii138Xds0-1M7PtabUs6LDaPTyuOcA8a01U';
 
 function urlBase64ToUint8Array(base64String){
   var padding='='.repeat((4-base64String.length%4)%4);
