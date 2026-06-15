@@ -108,7 +108,7 @@ exports.handler = async (event) => {
         pushTotal = (subs || []).length;
         console.log(`Push: ${pushTotal} subscription(s) found for target=${targetType}`);
         if (pushTotal > 0) {
-          const payload = JSON.stringify({ title: title || 'Bloomday', body: message });
+          const payload = JSON.stringify({ title: 'Bloomday', body: title ? title + '\n' + message : message });
           const withTimeout = (p) => Promise.race([p, new Promise((_, rej) => setTimeout(() => rej(new Error('timeout')), 4000))]);
           const results = await Promise.allSettled((subs || []).map(sub =>
             withTimeout(webpush.sendNotification(
