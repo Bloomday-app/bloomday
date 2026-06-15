@@ -95,36 +95,37 @@ exports.handler = async (event) => {
       .single();
     if (error) return err(500, error.message);
 
-    // Push web : filtré selon la même cible que la notif DB
-    let pushSent = 0, pushFailed = 0, pushTotal = 0;
+    // Push web en arrière-plan (fire & forget — ne pas bloquer la réponse)
+    let pushTotal = 0;
     if (process.env.VAPID_PRIVATE_KEY && (targetType === 'all' || targetType === 'user')) {
-      try {
-        let subsQuery = supabase.from('push_subscriptions').select('endpoint, p256dh, auth');
-        if (targetType === 'user' && targetUid) {
-          subsQuery = subsQuery.eq('user_id', targetUid);
-        }
-        const { data: subs, error: subsErr } = await subsQuery;
-        if (subsErr) console.warn('Push subscriptions query error:', subsErr.message);
-        pushTotal = (subs || []).length;
-        console.log(`Push: ${pushTotal} subscription(s) found for target=${targetType}`);
-        const payload = JSON.stringify({ title: title || 'Bloomday', body: message });
-        const results = await Promise.allSettled((subs || []).map(sub =>
-          webpush.sendNotification(
-            { endpoint: sub.endpoint, keys: { p256dh: sub.p256dh, auth: sub.auth } },
-            payload
-          )
-        ));
-        results.forEach((r, i) => {
-          if (r.status === 'fulfilled') { pushSent++; }
-          else { pushFailed++; console.warn(`Push[${i}] failed:`, r.reason && r.reason.message); }
-        });
-        console.log(`Push result: sent=${pushSent} failed=${pushFailed}`);
-      } catch (pushErr) {
-        console.warn('Push sending error:', pushErr.message);
-      }
+      (async () => {
+        try {
+          let subsQuery = supabase.from('push_subscriptions').select('endpoint, p256dh, auth, user_id');
+          if (targetType === 'user' && targetUid) {
+            subsQuery = subsQuery.eq('user_id', targetUid);
+          }
+          const { data: subs, error: subsErr } = await subsQuery;
+          if (subsErr) { console.warn('Push subscriptions query error:', subsErr.message); return; }
+          pushTotal = (subs || []).length;
+          console.log(`Push: ${pushTotal} subscription(s) found for target=${targetType}`);
+          const payload = JSON.stringify({ title: title || 'Bloomday', body: message });
+          const results = await Promise.allSettled((subs || []).map(sub =>
+            webpush.sendNotification(
+              { endpoint: sub.endpoint, keys: { p256dh: sub.p256dh, auth: sub.auth } },
+              payload
+            )
+          ));
+          let sent = 0, failed = 0;
+          results.forEach((r, i) => {
+            if (r.status === 'fulfilled') { sent++; }
+            else { failed++; console.warn(`Push[${i}] failed:`, r.reason && r.reason.message); }
+          });
+          console.log(`Push result: sent=${sent} failed=${failed} total=${pushTotal}`);
+        } catch (e) { console.warn('Push background error:', e.message); }
+      })();
     }
 
-    return { statusCode: 200, headers: CORS, body: JSON.stringify({ ok: true, pushTotal, pushSent, pushFailed }) };
+    return { statusCode: 200, headers: CORS, body: JSON.stringify({ ok: true }) };
   }
 
   return err(400, 'Unknown action');

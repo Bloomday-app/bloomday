@@ -799,8 +799,7 @@ async function adminSendNotif(){
     if(d.ok){
       if(titleEl)titleEl.value='';
       if(msgEl)msgEl.value='';
-      var pushInfo=typeof d.pushTotal==='number'?' (push: '+d.pushSent+'/'+d.pushTotal+')':'';
-      showToast((t('adminNotifSent')||'Notification envoyée !')+pushInfo);
+      showToast(t('adminNotifSent')||'Notification envoyée !');
     }else{
       showToast(d.error||'Erreur serveur');
     }
