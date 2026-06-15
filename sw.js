@@ -1,3 +1,12 @@
+// Auto-update: activate immediately when a new SW version is detected
+self.addEventListener('install', function(event) {
+  self.skipWaiting();
+});
+
+self.addEventListener('activate', function(event) {
+  event.waitUntil(clients.claim());
+});
+
 self.addEventListener('push', function(event) {
   if (!event.data) return;
   var data;
