@@ -1178,14 +1178,18 @@ if('serviceWorker' in navigator){
   var _swPreviousController = navigator.serviceWorker.controller;
   var _swRefreshing = false;
   navigator.serviceWorker.addEventListener('controllerchange', function() {
-    // Reload only on update (not on first install where _swPreviousController is null)
     if(_swPreviousController && !_swRefreshing){
       _swRefreshing = true;
       window.location.reload();
     }
   });
   window.addEventListener('load', function(){
-    navigator.serviceWorker.register('/sw.js', { updateViaCache: 'none' }).catch(function(e){console.warn('SW registration failed',e);});
+    navigator.serviceWorker.register('/sw.js', { updateViaCache: 'none' }).then(function(reg){
+      // Force SW update check when app comes back to foreground (iOS PWA resume)
+      document.addEventListener('visibilitychange', function() {
+        if(document.visibilityState === 'visible') reg.update();
+      });
+    }).catch(function(e){console.warn('SW registration failed',e);});
   });
 }
 </script>
