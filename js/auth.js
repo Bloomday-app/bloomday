@@ -118,6 +118,7 @@ function initAuth() {
 
       // Mettre à jour l'UI avec les données fraîches
       if (typeof refresh === 'function') refresh();
+      if (typeof checkAdminNotifications === 'function') checkAdminNotifications();
       if (isBrandNew && event === 'SIGNED_IN') {
         showToast(t('welcomeUser') + ' ' + currentUser.firstName + ' !', 'success');
         sendEmail('welcome', { name: currentUser.name, email: currentUser.email });
