@@ -298,6 +298,80 @@ footer{background:#08050F;border-top:1px solid rgba(212,168,67,.08);padding:64px
 
 /* section center helper */
 .sc{text-align:center;margin-bottom:56px}
+
+/* ── RESPONSIVE MOBILE ── */
+@media (max-width:768px){
+  /* Nav */
+  .nav{padding:0 20px;height:58px}
+  .nav-links{display:none}
+  .nav-ctas{gap:7px}
+  .btn-ghost{padding:7px 14px;font-size:13px}
+  .btn-cta{padding:8px 16px;font-size:13px}
+
+  /* Announce */
+  .announce{font-size:11px;padding:8px 16px;flex-direction:column;gap:4px;text-align:center}
+
+  /* Hero */
+  .hero{padding:60px 20px 48px;min-height:auto}
+  .hero-title{font-size:42px}
+  .hero-sub{font-size:16px;margin-bottom:32px}
+  .hero-ctas{flex-direction:column;align-items:center;gap:10px;margin-bottom:48px}
+  .cta-big,.cta-ghost{width:100%;max-width:300px;text-align:center;padding:15px 28px;font-size:16px}
+  .iphone{width:220px}
+  .iphone.sm{width:180px}
+  .iphone.sm .iphone-inner::before{width:68px;height:20px;top:9px}
+
+  /* Story */
+  .story{padding:64px 20px}
+  .story-inner{grid-template-columns:1fr;gap:40px}
+  .story-h{font-size:30px}
+  .story-p{font-size:14px}
+
+  /* Feature splits */
+  .feat-wrap-light,.feat-wrap-dark{padding:56px 20px}
+  .feat-split,.feat-split.rev{flex-direction:column;gap:36px}
+  .feat-phone-side{width:100%;justify-content:center}
+  .feat-h{font-size:26px}
+  .feat-p{font-size:14px}
+
+  /* Section headings */
+  .sec-h{font-size:32px}
+  .sec-sub{font-size:14px}
+
+  /* Mini features */
+  .mini-section{padding:64px 20px}
+  .mini-grid{grid-template-columns:1fr;gap:12px}
+
+  /* Steps */
+  .steps-section{padding:72px 20px}
+  .steps-row{flex-direction:column;align-items:center;gap:32px}
+  .steps-row::before{display:none}
+  .step-item{padding:0}
+
+  /* Avis */
+  .reviews-section{padding:72px 20px}
+  .reviews-grid{grid-template-columns:1fr}
+
+  /* Pricing */
+  .pricing-section{padding:72px 20px}
+  .price-table-wrap{margin:0 -20px;padding:0 20px}
+
+  /* Final CTA */
+  .final{padding:80px 20px}
+  .final-h{font-size:38px}
+  .final-sub{font-size:15px}
+
+  /* Footer */
+  footer{padding:48px 20px 32px}
+  .footer-grid{grid-template-columns:1fr 1fr;gap:28px}
+  .f-bottom{flex-direction:column;gap:12px;text-align:center}
+}
+
+@media (max-width:400px){
+  .hero-title{font-size:34px}
+  .final-h{font-size:30px}
+  .footer-grid{grid-template-columns:1fr}
+}
 </style>
 </head>
 <body>
