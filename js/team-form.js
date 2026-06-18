@@ -24,7 +24,9 @@ var TF = {
   pollInterval: null,
   submitting: false,
   user: null,
-  _coAdminShareToken: null
+  _coAdminShareToken: null,
+  _coAdminShareName: '',
+  coAdminName: ''
 };
 var TF_DELETE = { token: null, teamName: null, groupId: null, bloomdayMembers: [] };
 var TF_REMOVE = { token: null, name: null, userId: null };
@@ -72,6 +74,7 @@ window.addEventListener('DOMContentLoaded', async function() {
   TF.adminToken = params.get('admin');
   TF.memberToken = params.get('member');
   TF.coadminToken = params.get('coadmin');
+  TF.coAdminName = params.get('nom') || '';
   TF.prefillManager = params.get('manager') || '';
   if (TF.memberToken) { TF.mode = 'member'; tfInitMember(); }
   else if (TF.adminToken) { TF.mode = 'dashboard'; tfInitDashboard(); }
@@ -167,6 +170,10 @@ function tfRenderTopbarAvatar() {
   if (TF.user) {
     displayName = (TF.user.user_metadata && (TF.user.user_metadata.full_name || TF.user.user_metadata.name)) || TF.user.email || '';
     avatarUrl = (TF.user.user_metadata && TF.user.user_metadata.avatar_url) || '';
+  } else if (TF.isCoadmin) {
+    var savedTs = tfGetSavedTeams();
+    var matchedT = savedTs.find(function(t) { return t.is_coadmin && t.token === TF.coadminToken; });
+    displayName = TF.coAdminName || (matchedT && matchedT.managerName) || (TF.survey && TF.survey.manager_name) || '';
   } else if (TF.survey && TF.survey.manager_name) {
     displayName = TF.survey.manager_name;
   } else {
@@ -191,6 +198,10 @@ function tfToggleAvatarMenu(e) {
   if (TF.user) {
     displayName = (TF.user.user_metadata && (TF.user.user_metadata.full_name || TF.user.user_metadata.name)) || TF.user.email || '';
     email = TF.user.email || '';
+  } else if (TF.isCoadmin) {
+    var savedTs2 = tfGetSavedTeams();
+    var matchedT2 = savedTs2.find(function(t) { return t.is_coadmin && t.token === TF.coadminToken; });
+    displayName = TF.coAdminName || (matchedT2 && matchedT2.managerName) || (TF.survey && TF.survey.manager_name) || '';
   } else if (TF.survey && TF.survey.manager_name) {
     displayName = TF.survey.manager_name;
   } else {
@@ -434,11 +445,13 @@ async function tfInitCoadminClaim() {
   var sessRes = await supabase.auth.getSession();
   var userId = sessRes.data && sessRes.data.session && sessRes.data.session.user
     ? sessRes.data.session.user.id : null;
+  var coAdminName = TF.coAdminName || '';
 
   if (!userId) {
     var wrapEl = document.querySelector('.tf-wrap');
     wrapEl.innerHTML = '<div class="tf-card" style="text-align:center;padding:40px 24px">'
       + '<div style="font-size:40px;margin-bottom:16px">🤝</div>'
+      + (coAdminName ? '<p style="font-size:18px;font-weight:700;margin-bottom:4px">👋 ' + tfEsc(coAdminName) + '</p>' : '')
       + '<h1 style="margin-bottom:12px">' + tfT('tfCoAdminClaimTitle') + '</h1>'
       + '<p style="color:var(--txt2);font-size:14px;margin-bottom:24px">' + tfT('tfCoAdminClaimMsg').replace('%name', '') + '</p>'
       + '<a href="index.html" class="btn btn-primary" style="display:inline-block;text-decoration:none">' + tfT('tfCoAdminSignIn') + '</a>'
@@ -455,7 +468,7 @@ async function tfInitCoadminClaim() {
     return;
   }
 
-  tfSaveAdminToken(res.data.co_admin_token, res.data.team_name, res.data.manager_name, true);
+  tfSaveAdminToken(res.data.co_admin_token, res.data.team_name, coAdminName || res.data.manager_name, true);
   TF.isCoadmin = true;
   await tfInitCoadminDashboard();
 }
@@ -1260,6 +1273,8 @@ function tfOpenCoAdminInviteEmail() {
   document.getElementById('tf-modal-coadmin-invite').style.display = 'flex';
   document.getElementById('tf-modal-coadmin-invite-inner').innerHTML =
     '<h2 style="font-family:\'Playfair Display\',serif;font-size:17px;font-weight:800;margin-bottom:16px">' + tfT('tfInviteByEmail') + '</h2>'
+    + '<label style="text-align:left;display:block">' + tfT('tfCoAdminNameLabel') + '</label>'
+    + '<input id="tf-coadmin-name-inp" type="text" placeholder="' + tfT('tfCoAdminNamePlaceholder') + '" value="' + tfEsc(TF._coAdminShareName || '') + '" style="margin-bottom:12px">'
     + '<label style="text-align:left;display:block">' + tfT('tfCoAdminEmailLabel') + '</label>'
     + '<input id="tf-coadmin-email-inp" type="email" placeholder="email@exemple.com" style="margin-bottom:16px">'
     + '<div style="display:flex;gap:8px">'
@@ -1267,12 +1282,16 @@ function tfOpenCoAdminInviteEmail() {
     + '<button class="btn btn-primary" style="flex:1" id="tf-coadmin-invite-btn" onclick="tfSendCoAdminInvite()">' + tfT('tfInviteByEmail') + '</button>'
     + '</div>';
   setTimeout(function() {
-    var inp = document.getElementById('tf-coadmin-email-inp');
-    if (inp) inp.focus();
+    var nameInp = document.getElementById('tf-coadmin-name-inp');
+    var emailInp = document.getElementById('tf-coadmin-email-inp');
+    if (nameInp && !nameInp.value) nameInp.focus();
+    else if (emailInp) emailInp.focus();
   }, 100);
 }
 
 async function tfSendCoAdminInvite() {
+  var nameInp = document.getElementById('tf-coadmin-name-inp');
+  var coAdminName = nameInp ? nameInp.value.trim() : '';
   var inp = document.getElementById('tf-coadmin-email-inp');
   var email = inp ? inp.value.trim() : '';
   if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
@@ -1288,7 +1307,8 @@ async function tfSendCoAdminInvite() {
     if (btn) { btn.disabled = false; btn.textContent = tfT('tfInviteByEmail'); }
     return;
   }
-  var claimUrl = window.location.origin + window.location.pathname + '?coadmin=' + encodeURIComponent(infoRes.data.co_admin_token);
+  var claimUrl = window.location.origin + window.location.pathname + '?coadmin=' + encodeURIComponent(infoRes.data.co_admin_token)
+    + (coAdminName ? '&nom=' + encodeURIComponent(coAdminName) : '');
 
   await supabase.rpc('tf_save_coadmin_invitation', { p_admin_token: TF.adminToken, p_email: email });
 
@@ -1299,6 +1319,7 @@ async function tfSendCoAdminInvite() {
       type: 'coadmin_invite',
       data: {
         email: email,
+        coAdminName: coAdminName,
         managerName: TF.survey.manager_name || '',
         teamName: TF.survey.team_name || '',
         claimUrl: claimUrl
@@ -1321,18 +1342,34 @@ async function tfCopyCoAdminLink(coAdminToken) {
   }
 }
 
+function tfGetCoAdminShareName() {
+  var inp = document.getElementById('tf-sheet-name-inp');
+  return inp ? inp.value.trim() : '';
+}
+
+function tfBuildCoAdminUrl(coAdminToken) {
+  var name = tfGetCoAdminShareName();
+  return window.location.origin + window.location.pathname + '?coadmin=' + encodeURIComponent(coAdminToken)
+    + (name ? '&nom=' + encodeURIComponent(name) : '');
+}
+
 function tfOpenCoAdminShareSheet(coAdminToken) {
   TF._coAdminShareToken = coAdminToken;
+  TF._coAdminShareName = '';
   var el = document.getElementById('tf-modal-coadmin-share');
   if (!el) return;
   document.getElementById('tf-sheet-title').textContent = tfT('tfInviteCoAdmin');
   document.getElementById('tf-sheet-sub').textContent = tfT('tfInviteCoAdminSub');
+  document.getElementById('tf-sheet-name-label').textContent = tfT('tfCoAdminNameLabel');
+  var nameInp = document.getElementById('tf-sheet-name-inp');
+  if (nameInp) { nameInp.value = ''; nameInp.placeholder = tfT('tfCoAdminNamePlaceholder'); }
   document.getElementById('tf-share-wa-label').textContent = tfT('tfShareViaWhatsApp');
   document.getElementById('tf-share-sms-label').textContent = tfT('tfShareViaSMS');
   document.getElementById('tf-share-email-label').textContent = tfT('tfShareViaEmail');
   document.getElementById('tf-share-copy-label').textContent = tfT('tfShareViaCopy');
   document.getElementById('tf-sheet-cancel-btn').textContent = tfT('cancelAdd');
   el.style.display = 'flex';
+  if (nameInp) nameInp.focus();
 }
 
 function tfCloseCoAdminShareSheet() {
@@ -1342,26 +1379,27 @@ function tfCloseCoAdminShareSheet() {
 }
 
 function tfShareCoAdminWhatsApp() {
-  var url = window.location.origin + window.location.pathname + '?coadmin=' + encodeURIComponent(TF._coAdminShareToken);
+  var url = tfBuildCoAdminUrl(TF._coAdminShareToken);
   var msg = (TF.survey.manager_name || '') + ' ' + tfT('tfCoAdminMsg') + ' ' + (TF.survey.team_name || '') + ' 🌸\n' + url;
   window.open('https://wa.me/?text=' + encodeURIComponent(msg));
   tfCloseCoAdminShareSheet();
 }
 
 function tfShareCoAdminSMS() {
-  var url = window.location.origin + window.location.pathname + '?coadmin=' + encodeURIComponent(TF._coAdminShareToken);
+  var url = tfBuildCoAdminUrl(TF._coAdminShareToken);
   var msg = (TF.survey.manager_name || '') + ' ' + tfT('tfCoAdminMsg') + ' ' + (TF.survey.team_name || '') + ' 🌸\n' + url;
   window.open('sms:?body=' + encodeURIComponent(msg));
   tfCloseCoAdminShareSheet();
 }
 
 function tfShareCoAdminEmail() {
+  TF._coAdminShareName = tfGetCoAdminShareName();
   tfCloseCoAdminShareSheet();
   tfOpenCoAdminInviteEmail();
 }
 
 async function tfShareCoAdminCopy() {
-  var url = window.location.origin + window.location.pathname + '?coadmin=' + encodeURIComponent(TF._coAdminShareToken);
+  var url = tfBuildCoAdminUrl(TF._coAdminShareToken);
   try {
     await navigator.clipboard.writeText(url);
     tfToast(tfT('tfLinkCopied'));
