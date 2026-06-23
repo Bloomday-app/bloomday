@@ -36,7 +36,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700;800&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
 <script src="https://js.stripe.com/v3/"></script>
-  <link rel="stylesheet" href="css/app.css?v=20260613a">
+  <link rel="stylesheet" href="css/app.css?v=20260624a">
   <link rel="stylesheet" href="css/landing.css?v=20260615a">
 </head>
 <body>
@@ -61,72 +61,160 @@
 
 <!-- ═══════ ONBOARDING MAGIQUE (Axe 1) ═══════ -->
 <div id="ob-screen">
-<div class="wrap" style="min-height:100vh;background:var(--bg)">
-  <div class="ob-wrap">
-    <div class="ob-steps">
-      <div class="ob-step on" id="obs0"></div>
-      <div class="ob-step" id="obs1"></div>
-      <div class="ob-step" id="obs2"></div>
-    </div>
 
-    <!-- Step 0 : DÉMO LIVE avec faux membres -->
-    <div id="ob0">
-      <div class="ob-icon">🌸</div>
-      <div class="ob-title" data-i18n="obIntroTitle">Voici Bloomday en action</div>
-      <div class="ob-desc" data-i18n="obIntroDesc">Ce message a été généré en 5 secondes par l'IA pour une vraie personne de votre groupe. C'est ça, Bloomday.</div>
-      <div class="demo-card">
-        <div class="demo-member">
-          <div class="av av1" style="width:44px;height:44px;font-size:15px">LM</div>
-          <div>
-            <div style="font-size:15px;font-weight:700" data-i18n="ob0Name">🎂 Léa Martin</div>
-            <div style="font-size:12px;color:var(--txt2)" data-i18n="ob0Age">38 ans aujourd'hui</div>
-            <div class="demo-badge" data-i18n="ob0Today">🌸 Aujourd'hui !</div>
-          </div>
-        </div>
-        <div class="demo-msg" id="demo-ai-msg">
-          <span class="mload"><span class="spin">⟳</span> Génération du message...</span>
-        </div>
-      </div>
-      <button class="btn P fw" style="max-width:360px" onclick="obNext()" data-i18n="ob0Next2">C'est parti ! →</button>
-      <button class="btn" style="margin-top:10px;width:100%;max-width:360px;padding:12px" onclick="skipOb()" data-i18n="ob0Skip">Passer l'intro</button>
+  <!-- Slide 0 — Le problème -->
+  <div class="ob-slide ob-active" id="obs-0">
+    <div class="ob-illo">
+      <svg viewBox="0 0 160 160" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <ellipse cx="80" cy="32" rx="16" ry="36" fill="#FF6B6B" opacity="0.9" transform="rotate(0 80 80)"/>
+        <ellipse cx="80" cy="32" rx="16" ry="36" fill="#FF8C80" opacity="0.82" transform="rotate(60 80 80)"/>
+        <ellipse cx="80" cy="32" rx="16" ry="36" fill="#FFB3A8" opacity="0.75" transform="rotate(120 80 80)"/>
+        <ellipse cx="80" cy="32" rx="16" ry="36" fill="#FF6B6B" opacity="0.9" transform="rotate(180 80 80)"/>
+        <ellipse cx="80" cy="32" rx="16" ry="36" fill="#FF8C80" opacity="0.82" transform="rotate(240 80 80)"/>
+        <ellipse cx="80" cy="32" rx="16" ry="36" fill="#FFB3A8" opacity="0.75" transform="rotate(300 80 80)"/>
+        <circle cx="80" cy="80" r="24" fill="#FFE9E4"/>
+        <circle cx="80" cy="80" r="16" fill="#FF6B6B"/>
+        <circle cx="80" cy="8" r="4" fill="#FF6B6B" opacity="0.22"/>
+        <circle cx="127" cy="35" r="3" fill="#FF8C80" opacity="0.22"/>
+        <circle cx="127" cy="125" r="3" fill="#FFB3A8" opacity="0.22"/>
+        <circle cx="80" cy="152" r="4" fill="#FF6B6B" opacity="0.22"/>
+        <circle cx="33" cy="125" r="3" fill="#FF8C80" opacity="0.22"/>
+        <circle cx="33" cy="35" r="3" fill="#FFB3A8" opacity="0.22"/>
+      </svg>
     </div>
-
-    <!-- Step 1 : AJOUT 1er membre -->
-    <div id="ob1" style="display:none">
-      <div class="ob-icon">👤</div>
-      <div class="ob-title" data-i18n="ob1Title">Ajoutez votre premier membre</div>
-      <div class="ob-desc" data-i18n="ob1Desc">Commencez par une personne qui compte vraiment pour vous. Juste son prénom et sa date d'anniversaire.</div>
-      <div class="ob-form">
-        <label data-i18n="nameLabel">Prénom &amp; Nom</label>
-        <input type="text" id="ob-name" data-i18n-placeholder="namePlaceholder" placeholder="Ex: Maman, Jean-Pierre, Pastor David…" autocomplete="off">
-        <div class="f2" style="margin-top:8px">
-          <div><label data-i18n="dayLabel">Jour</label><input type="number" id="ob-day" placeholder="15" inputmode="numeric" pattern="[0-9]*" maxlength="2"></div>
-          <div><label data-i18n="monthLabel">Mois</label><select id="ob-month">
-            <option value="1">Jan</option><option value="2">Fév</option><option value="3">Mar</option>
-            <option value="4">Avr</option><option value="5">Mai</option><option value="6">Juin</option>
-            <option value="7">Juil</option><option value="8">Aoû</option><option value="9">Sep</option>
-            <option value="10">Oct</option><option value="11">Nov</option><option value="12">Déc</option>
-          </select></div>
-        </div>
-        <button class="btn P fw" style="margin-top:14px" onclick="obAddMember()" data-i18n="ob1AddBtn">Ajouter &amp; voir la magie →</button>
-      </div>
-      <button class="btn" style="margin-top:10px;width:100%;max-width:360px;padding:12px" onclick="skipOb()" data-i18n="obSkipBtn">Passer</button>
-    </div>
-
-    <!-- Step 2 : PREMIER MESSAGE IA généré -->
-    <div id="ob2" style="display:none">
-      <div class="ob-icon">✨</div>
-      <div class="ob-title" id="ob2-title">Message généré pour <span id="ob2-name">votre membre</span> !</div>
-      <div class="ob-desc" data-i18n="ob2Subtitle">Voici ce que Bloomday crée automatiquement. Vous pouvez le copier et l'envoyer sur WhatsApp.</div>
-      <div class="ob-ai-preview" id="ob2-msg">
-        <div class="mload"><span class="spin">⟳</span> Génération en cours...</div>
-      </div>
-      <div style="margin-top:16px;width:100%;max-width:360px">
-        <button class="btn P fw" onclick="finishOb()" data-i18n="ob2StartBtn">🌸 Commencer à utiliser Bloomday</button>
+    <div class="ob-body-inner">
+      <h1 class="ob-title" data-i18n="obE1Title" aria-live="polite">Ne laissez plus les moments importants passer inaperçus.</h1>
+      <p class="ob-desc" data-i18n="obE1Desc">Les anniversaires, les fêtes et les moments précieux méritent d'être célébrés.</p>
+      <div class="ob-actions">
+        <button class="btn P fw" onclick="obGoTo(1)" data-i18n="obBtnContinue">Continuer</button>
+        <button class="ob-skip-btn" onclick="skipOb()" data-i18n="obBtnSkip">Passer</button>
       </div>
     </div>
   </div>
-</div>
+
+  <!-- Slide 1 — La promesse -->
+  <div class="ob-slide" id="obs-1">
+    <div class="ob-illo">
+      <svg viewBox="0 0 220 155" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <g class="ob-sil-1">
+          <circle cx="52" cy="52" r="22" fill="#FFD2C8"/>
+          <path d="M26 108 C26 84 78 84 78 108 L78 155 L26 155 Z" fill="#FFB3A8"/>
+        </g>
+        <g class="ob-sil-2">
+          <circle cx="110" cy="44" r="28" fill="#FF6B6B"/>
+          <path d="M78 104 C78 76 142 76 142 104 L142 155 L78 155 Z" fill="#FF8C80"/>
+        </g>
+        <g class="ob-sil-3">
+          <circle cx="168" cy="52" r="22" fill="#FFD2C8"/>
+          <path d="M142 108 C142 84 194 84 194 108 L194 155 L142 155 Z" fill="#FFB3A8"/>
+        </g>
+        <g class="ob-sil-hearts">
+          <g transform="translate(52,22) scale(0.65)"><path d="M0,-9 C-3,-14 -11,-13 -11,-6 C-11,2 0,11 0,11 C0,11 11,2 11,-6 C11,-13 3,-14 0,-9Z" fill="#FF6B6B" opacity="0.5"/></g>
+          <g transform="translate(110,8) scale(0.9)"><path d="M0,-9 C-3,-14 -11,-13 -11,-6 C-11,2 0,11 0,11 C0,11 11,2 11,-6 C11,-13 3,-14 0,-9Z" fill="#FF6B6B"/></g>
+          <g transform="translate(168,22) scale(0.65)"><path d="M0,-9 C-3,-14 -11,-13 -11,-6 C-11,2 0,11 0,11 C0,11 11,2 11,-6 C11,-13 3,-14 0,-9Z" fill="#FF6B6B" opacity="0.5"/></g>
+        </g>
+      </svg>
+    </div>
+    <div class="ob-body-inner">
+      <h1 class="ob-title" data-i18n="obE2Title" aria-live="polite">Prenez soin des personnes qui comptent.</h1>
+      <p class="ob-desc" data-i18n="obE2Desc">Recevez les bons rappels au bon moment pour ne jamais oublier une occasion de montrer votre affection.</p>
+      <div class="ob-actions">
+        <button class="btn P fw" onclick="obGoTo(2)" data-i18n="obBtnContinue">Continuer</button>
+        <button class="ob-skip-btn" onclick="obGoTo(0)" data-i18n="obBtnBack">Retour</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Slide 2 — La transformation -->
+  <div class="ob-slide" id="obs-2">
+    <div class="ob-illo">
+      <svg viewBox="0 0 240 160" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <g class="ob-cel-1">
+          <rect x="20" y="70" width="56" height="56" rx="6" fill="#FFD2C8"/>
+          <rect x="16" y="58" width="64" height="16" rx="5" fill="#FF8C80"/>
+          <rect x="44" y="58" width="8" height="68" fill="#FF6B6B" opacity="0.55"/>
+          <rect x="16" y="63" width="64" height="6" fill="#FF6B6B" opacity="0.55"/>
+          <path d="M48 58 C36 46 22 50 28 58 C34 66 48 58 48 58Z" fill="#FF6B6B"/>
+          <path d="M48 58 C60 46 74 50 68 58 C62 66 48 58 48 58Z" fill="#FF6B6B"/>
+          <circle cx="48" cy="58" r="5" fill="#FFB3A8"/>
+        </g>
+        <g class="ob-cel-2">
+          <g transform="translate(120,80)">
+            <path d="M0,-28 C-5,-38 -26,-36 -26,-18 C-26,0 0,22 0,22 C0,22 26,0 26,-18 C26,-36 5,-38 0,-28Z" fill="#FF6B6B"/>
+          </g>
+        </g>
+        <g class="ob-cel-3">
+          <rect x="165" y="40" width="50" height="90" rx="10" fill="#1F1F1F"/>
+          <rect x="169" y="50" width="42" height="70" rx="6" fill="#FFFDFB"/>
+          <rect x="175" y="60" width="30" height="5" rx="2.5" fill="#FFE9E4"/>
+          <rect x="175" y="70" width="20" height="4" rx="2" fill="#FFE9E4"/>
+          <rect x="169" y="88" width="42" height="26" rx="6" fill="#FF6B6B"/>
+          <circle cx="178" cy="101" r="5" fill="#FFE9E4"/>
+          <rect x="186" y="97" width="20" height="3" rx="1.5" fill="#FFFDFB"/>
+          <rect x="186" y="104" width="14" height="3" rx="1.5" fill="rgba(255,255,255,0.7)"/>
+          <circle cx="211" cy="44" r="8" fill="#FF6B6B"/>
+          <rect x="208" y="41" width="6" height="6" rx="1.5" fill="#FFFDFB"/>
+        </g>
+      </svg>
+    </div>
+    <div class="ob-body-inner">
+      <h1 class="ob-title" data-i18n="obE3Title" aria-live="polite">Transformez chaque date en souvenir mémorable.</h1>
+      <p class="ob-desc" data-i18n="obE3Desc">Bloomday vous aide à célébrer chaque personne importante de votre vie avec attention et simplicité.</p>
+      <div class="ob-actions">
+        <button class="btn P fw ob-mobile-show" onclick="finishOb()" data-i18n="obBtnStart">Commencer mon Bloomday</button>
+        <button class="btn P fw ob-desktop-show" onclick="obGoTo(3)" data-i18n="obBtnContinue">Continuer</button>
+        <button class="ob-skip-btn" onclick="obGoTo(1)" data-i18n="obBtnBack">Retour</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Slide 3 — Desktop uniquement -->
+  <div class="ob-slide ob-desktop-only" id="obs-3">
+    <div class="ob-illo">
+      <svg viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <ellipse cx="100" cy="28" rx="13" ry="30" fill="#FFD2C8" opacity="0.42" transform="rotate(30 100 100)"/>
+        <ellipse cx="100" cy="28" rx="13" ry="30" fill="#FFD2C8" opacity="0.42" transform="rotate(90 100 100)"/>
+        <ellipse cx="100" cy="28" rx="13" ry="30" fill="#FFD2C8" opacity="0.42" transform="rotate(150 100 100)"/>
+        <ellipse cx="100" cy="28" rx="13" ry="30" fill="#FFD2C8" opacity="0.42" transform="rotate(210 100 100)"/>
+        <ellipse cx="100" cy="28" rx="13" ry="30" fill="#FFD2C8" opacity="0.42" transform="rotate(270 100 100)"/>
+        <ellipse cx="100" cy="28" rx="13" ry="30" fill="#FFD2C8" opacity="0.42" transform="rotate(330 100 100)"/>
+        <ellipse cx="100" cy="32" rx="15" ry="34" fill="#FF6B6B" opacity="0.9" transform="rotate(0 100 100)"/>
+        <ellipse cx="100" cy="32" rx="15" ry="34" fill="#FF8C80" opacity="0.85" transform="rotate(60 100 100)"/>
+        <ellipse cx="100" cy="32" rx="15" ry="34" fill="#FFB3A8" opacity="0.8" transform="rotate(120 100 100)"/>
+        <ellipse cx="100" cy="32" rx="15" ry="34" fill="#FF6B6B" opacity="0.9" transform="rotate(180 100 100)"/>
+        <ellipse cx="100" cy="32" rx="15" ry="34" fill="#FF8C80" opacity="0.85" transform="rotate(240 100 100)"/>
+        <ellipse cx="100" cy="32" rx="15" ry="34" fill="#FFB3A8" opacity="0.8" transform="rotate(300 100 100)"/>
+        <circle cx="100" cy="100" r="26" fill="#FFE9E4"/>
+        <circle cx="100" cy="100" r="18" fill="#FF6B6B"/>
+        <circle class="ob-particle" cx="100" cy="5" r="4" fill="#FF6B6B" opacity="0.38"/>
+        <circle class="ob-particle" cx="149" cy="22" r="3" fill="#FF8C80" opacity="0.42"/>
+        <circle class="ob-particle" cx="175" cy="68" r="5" fill="#FFB3A8" opacity="0.38"/>
+        <circle class="ob-particle" cx="164" cy="148" r="3" fill="#FF6B6B" opacity="0.3"/>
+        <circle class="ob-particle" cx="120" cy="185" r="4" fill="#FF8C80" opacity="0.38"/>
+        <circle class="ob-particle" cx="80" cy="185" r="3" fill="#FFB3A8" opacity="0.3"/>
+        <circle class="ob-particle" cx="36" cy="148" r="5" fill="#FF6B6B" opacity="0.32"/>
+        <circle class="ob-particle" cx="25" cy="68" r="3" fill="#FF8C80" opacity="0.42"/>
+        <circle class="ob-particle" cx="51" cy="22" r="4" fill="#FFB3A8" opacity="0.38"/>
+      </svg>
+    </div>
+    <div class="ob-body-inner">
+      <h1 class="ob-title" data-i18n="obE4Title" aria-live="polite">Prêt à commencer votre Bloomday ?</h1>
+      <p class="ob-desc" data-i18n="obE4Desc">Créez votre espace personnel et commencez à célébrer les personnes qui comptent pour vous.</p>
+      <div class="ob-actions">
+        <button class="btn P fw" onclick="finishOb()" data-i18n="obBtnStartShort">Commencer</button>
+        <button class="ob-skip-btn" onclick="obGoTo(2)" data-i18n="obBtnBack">Retour</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Dots -->
+  <div class="ob-dots-wrap" role="tablist" aria-label="Progression de l'onboarding">
+    <span class="ob-dot ob-active" role="tab" aria-selected="true" aria-label="Étape 1 sur 3"></span>
+    <span class="ob-dot" role="tab" aria-selected="false" aria-label="Étape 2 sur 3"></span>
+    <span class="ob-dot" role="tab" aria-selected="false" aria-label="Étape 3 sur 3"></span>
+    <span class="ob-dot ob-desktop-only" role="tab" aria-selected="false" aria-label="Étape 4 sur 4" style="display:none"></span>
+  </div>
+
 </div>
 
 <!-- ═══════ LANDING ═══════ -->

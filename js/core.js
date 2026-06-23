@@ -36,7 +36,7 @@ function startApp(m,p){
   var firstLaunch=!localStorage.getItem('bdg16_ob');
   if(firstLaunch){
     var obs=document.getElementById('ob-screen');if(obs)obs.classList.add('on');
-    load().then(function(){checkPushNeeded();startOnboarding();});
+    load().then(function(){checkPushNeeded();});
   } else {
     var app=document.getElementById('app');if(app)app.classList.add('on');
     load().then(function(){checkPushNeeded();});
@@ -50,157 +50,33 @@ function startApp(m,p){
   })();
 }
 
-// ── AXE 1 : ONBOARDING MAGIQUE ──
-async function startOnboarding(){
-  var demoEl=document.getElementById('demo-ai-msg');
-  var demoName=document.getElementById('ob-name');
-  var demoAge=document.getElementById('demo-age');
-  var demoNote=document.getElementById('ob-note');
-  var demoDate=document.getElementById('ob-day');
-
-  // Remplir les champs avec une animation d'écriture
-  var today=new Date();
-  var demoMember={
-    name:'Léa Martin',
-    day:today.getDate(),
-    month:today.getMonth()+1,
-    year:1992,
-    note:t('obDemoNote'),
-    type:'birthday'
-  };
-
-  // Animer l'écriture du prénom
-  async function typeText(el, text, speed){
-    if(!el) return;
-    el.value='';
-    for(var i=0;i<text.length;i++){
-      el.value+=text[i];
-      await new Promise(function(r){setTimeout(r,speed);});
-    }
-  }
-
-  // Afficher le fallback immédiatement (avant les animations)
-  var fallbackMsg = 'Léa, en ce jour si particulier, toute notre communauté se joint à moi pour te souhaiter un anniversaire aussi épanoui que tu l\'es. Que cette nouvelle année t\'apporte des fleurs plein les bras et du bonheur à chaque instant ! 🌸✨';
-  if(demoEl){
-    demoEl.innerHTML='<div class="ob-msg">'+esc(fallbackMsg)+'</div>'+'<div style="display:flex;gap:8px;margin-top:12px">'+'<button class="btn G fw" onclick="copyObMsg()">'+t('obCopyBtn2')+'</button>'+'<button class="btn sm" onclick="regenObMsg()">'+t('obRetryBtn2')+'</button>'+'</div>';
-    window.__obFallback=fallbackMsg;
-  }
-
-  // Animer l'écriture dans les champs ob1 (en arrière-plan)
-  var obName=document.getElementById('ob-name');
-  var obDay=document.getElementById('ob-day');
-  var obMonth=document.getElementById('ob-month');
-  var obYear=document.getElementById('ob-year');
-  var obNote=document.getElementById('ob-note');
-  if(obName) await typeText(obName,t('namePlaceholder')||'Léa Martin',60);
-  if(obDay) await typeText(obDay,''+today.getDate(),80);
-  if(obMonth) await typeText(obMonth,''+(today.getMonth()+1),80);
-  if(obYear) await typeText(obYear,'1992',60);
-  if(obNote) await typeText(obNote,t('obDemoNote'),30);
-
-  // Tenter l'API IA en arrière-plan
-  try{
-    var resp=await fetch("/.netlify/functions/generate-message",{
-      method:"POST",
-      headers:await getAuthHeaders(),
-      body:JSON.stringify({prompt:"Génère en "+(window.__aiLang||'français')+" un message d'anniversaire chaleureux et personnalisé pour Léa (33 ans aujourd'hui, aime les fleurs et le chocolat). Maximum 3 phrases. Sans majuscule de début, commence directement par quelque chose de chaleureux.",plan:plan})
-    });
-    if(resp.ok){
-      var data=await resp.json();
-      var aiMsg=data.message||fallbackMsg;
-      window.__obAiMsg=aiMsg;
-      if(demoEl){
-        demoEl.innerHTML='<div class="ob-msg">'+esc(aiMsg)+'</div>'+
-          '<div style="display:flex;gap:8px;margin-top:12px">'+
-          '<button class="btn G fw" onclick="copyObMsg()">'+t('obCopyBtn2')+'</button>'+
-          '<button class="btn sm" onclick="regenObMsg()">'+t('obRetryBtn2')+'</button>'+
-          '</div>';
-      }
-    }
-  } catch(e){
-    // Fallback déjà affiché — pas d'action nécessaire
-    console.log('IA indisponible — fallback affiché');
-  }
-}
-
-function copyObMsg(){
-  var msg=window.__obAiMsg||window.__obFallback||'';
-  if(!msg) return;
-  navigator.clipboard.writeText(msg).then(function(){
-    showToast(t('copied'),'success');
-  }).catch(function(){
-    showToast(msg.substring(0,50)+'...','success');
+// ── AXE 1 : ONBOARDING ÉMOTIONNEL ──
+var obCurSlide = 0;
+function obGoTo(n) {
+  document.querySelectorAll('.ob-slide').forEach(function(s){ s.classList.remove('ob-active'); });
+  var target = document.getElementById('obs-' + n);
+  if(!target) return;
+  void target.offsetWidth;
+  target.classList.add('ob-active');
+  document.querySelectorAll('.ob-dot').forEach(function(d,i){
+    d.classList.toggle('ob-active', i === n);
+    d.setAttribute('aria-selected', i === n ? 'true' : 'false');
   });
-  stats.msgsM++;
+  obCurSlide = n;
 }
-
-async function regenObMsg(){
-  var demoEl=document.getElementById('demo-ai-msg');
-  if(!demoEl) return;
-  demoEl.innerHTML='<div style="text-align:center;padding:20px;color:var(--txt2)"><div class="ld"></div></div>';
-  try{
-    var resp=await fetch("/.netlify/functions/generate-message",{
-      method:"POST",
-      headers:await getAuthHeaders(),
-      body:JSON.stringify({prompt:"Génère en "+(window.__aiLang||'français')+" un NOUVEAU message d'anniversaire différent pour Léa (33 ans, aime les fleurs et le chocolat). Maximum 3 phrases. Commence par quelque chose d'original.",plan:plan})
-    });
-    if(!resp.ok) throw new Error('Erreur serveur');
-    var data=await resp.json();
-    var aiMsg=data.message||window.__obFallback;
-    window.__obAiMsg=aiMsg;
-    demoEl.innerHTML='<div class="ob-msg">'+esc(aiMsg)+'</div>'+
-      '<div style="display:flex;gap:8px;margin-top:12px">'+
-      '<button class="btn G fw" onclick="copyObMsg()">'+t('obCopyBtn2')+'</button>'+
-      '<button class="btn sm" onclick="regenObMsg()">'+t('obRetryBtn2')+'</button>'+
-      '</div>';
-  } catch(e){
-    var fallbacks=['Léa, que cette journée soit aussi lumineuse que ton sourire ! Joyeux anniversaire 🌸','Les 33 ans te vont à merveille ! Profite de chaque pétale de cette journée. 🌺'];
-    var msg=fallbacks[Math.floor(Math.random()*fallbacks.length)];
-    window.__obAiMsg=msg;
-    demoEl.innerHTML='<div class="ob-msg">'+esc(msg)+'</div>'+
-      '<div style="display:flex;gap:8px;margin-top:12px">'+
-      '<button class="btn G fw" onclick="copyObMsg()">'+t('obCopyBtn2')+'</button>'+
-      '<button class="btn sm" onclick="regenObMsg()">'+t('retryBtn')+'</button>'+
-      '</div>';
-  }
-}
-
-function obNext(){
-  obStep++;
-  if(obStep===1){
-    document.getElementById('ob0').style.display='none';
-    document.getElementById('ob1').style.display='block';
-    document.getElementById('obs0').classList.replace('on','done');
-    document.getElementById('obs1').classList.add('on');
-  }
-}
-async function obAddMember(){
-  const name=(document.getElementById('ob-name').value||'').trim();
-  const day=parseInt(document.getElementById('ob-day').value)||0;
-  const month=parseInt(document.getElementById('ob-month').value)||0;
-  if(!name||!day||!month){alert(t('requiredFields'));return;}
-  // Ajouter dans le premier groupe
-  if(!groups.length)groups=[{id:'g1',name:t('myGroup'),icon:'🌸',members:[],isDefault:true}];
-  const nm={id:Date.now(),day,month,year:null,name,phone:'',note:'',photo:'',type:'birthday',gender:''};
-  groups[0].members.push(nm);
-  saveG();
-  // Passer au step 2
-  obStep=2;
-  document.getElementById('ob1').style.display='none';
-  document.getElementById('ob2').style.display='block';
-  document.getElementById('obs1').classList.replace('on','done');
-  document.getElementById('obs2').classList.add('on');
-  document.getElementById('ob2-name').textContent=name.split(' ')[0];
-  // Afficher un fallback immédiatement, puis tenter l'IA
-  const msgEl=document.getElementById('ob2-msg');
-  const isTod=isToday(day,month);
-  const ob2Fallback=getFallback('birthday');
-  msgEl.innerHTML='<div style="font-size:13px;line-height:1.8;color:var(--b4d)">'+esc(ob2Fallback)+'</div>'+'<div class="brow" style="margin-top:10px"><button class="btn sm G" onclick="copyMsgCached(this,\''+_c(ob2Fallback)+'\')">📋 Copier</button></div>';
-  try{
-    const resp=await fetch("/.netlify/functions/generate-message",{method:"POST",headers:await getAuthHeaders(),body:JSON.stringify({prompt:"Génère un message d'anniversaire chaleureux pour "+name+(isTod?" dont c'est l'anniversaire aujourd'hui!":".")+". Ton : chaleureux, festif, sincère. 3-4 phrases. Commence directement par le message.",plan:plan})});
-    if(resp.ok){const data=await resp.json();const text=data.message||'';if(text)msgEl.innerHTML='<div style="font-size:13px;font-weight:600;color:var(--b4d);margin-bottom:8px">✨ Message généré pour '+esc(name.split(' ')[0])+' :</div><div style="font-size:13px;line-height:1.8;color:var(--b4d)">'+esc(text)+'</div><div class="brow" style="margin-top:10px"><button class="btn sm G" onclick="copyMsgCached(this,\''+_c(text)+'\')">📋 Copier</button></div>';}
-  }catch(e){}
-}
+(function(){
+  var el = document.getElementById('ob-screen');
+  if(!el) return;
+  var sx = 0;
+  el.addEventListener('touchstart', function(e){ sx = e.touches[0].clientX; }, {passive:true});
+  el.addEventListener('touchend', function(e){
+    var dx = e.changedTouches[0].clientX - sx;
+    var isMobile = window.innerWidth < 1024;
+    var maxSlide = isMobile ? 2 : 3;
+    if(dx < -50 && obCurSlide < maxSlide) obGoTo(obCurSlide + 1);
+    if(dx > 50 && obCurSlide > 0) obGoTo(obCurSlide - 1);
+  }, {passive:true});
+})();
 function finishOb(){
   safeLsSet('bdg16_ob','1');
   document.getElementById('ob-screen').classList.remove('on');

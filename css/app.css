@@ -359,27 +359,56 @@ details[open] summary::after{content:" ▾"}
 .tstc p{font-size:13px;line-height:1.75;margin-bottom:10px;padding-top:20px;color:var(--txt)}
 .tstc-a{font-size:11px;color:var(--txt2);font-weight:700;text-transform:uppercase;letter-spacing:.04em}
 
-/* ═══════ ONBOARDING MAGIQUE (Axe 1) ═══════ */
-#ob-screen{position:fixed;inset:0;z-index:900;background:var(--bg);display:none;flex-direction:column;overflow-y:auto}
+/* ═══════ ONBOARDING ÉMOTIONNEL ═══════ */
+#ob-screen{position:fixed;inset:0;z-index:900;background:var(--bg);display:none;flex-direction:column;overflow:hidden}
 #ob-screen.on{display:flex}
-.ob-wrap{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:32px 24px;text-align:center;max-width:440px;margin:0 auto;width:100%}
-.ob-steps{display:flex;gap:6px;margin-bottom:36px}
-.ob-step{flex:1;height:3px;border-radius:2px;background:var(--brd2);transition:background .4s}
-.ob-step.on{background:var(--grad)}
-.ob-step.done{background:var(--b3)}
-.ob-icon{font-size:64px;margin-bottom:22px;animation:obpop .5s cubic-bezier(.34,1.56,.64,1)}
-@keyframes obpop{from{transform:scale(0.4);opacity:0}to{transform:scale(1);opacity:1}}
-.ob-title{font-family:'Playfair Display',serif;font-size:26px;font-weight:800;color:var(--txt);margin-bottom:10px;line-height:1.2}
-.ob-desc{font-size:14px;color:var(--txt2);line-height:1.8;margin-bottom:28px;max-width:300px}
-/* Démo live step 1 */
-.demo-card{background:var(--card);border:1px solid var(--brd);border-radius:20px;padding:20px;margin-bottom:20px;text-align:left;box-shadow:var(--sh);width:100%;max-width:360px}
-.demo-member{display:flex;align-items:center;gap:12px;margin-bottom:14px}
-.demo-badge{display:inline-block;background:var(--b2l);color:var(--b2d);font-size:11px;padding:3px 10px;border-radius:20px;font-weight:700;margin-top:4px}
-.demo-msg{background:var(--b3l);border:1px solid var(--b3);border-radius:12px;padding:12px;font-size:13px;color:var(--b3d);line-height:1.7;margin-top:10px;animation:fi .5s ease}
-/* Step 2 — mini form ajout */
-.ob-form{background:var(--card);border:1px solid var(--brd);border-radius:20px;padding:20px;width:100%;max-width:360px;text-align:left}
-/* Step 3 — génération IA */
-.ob-ai-preview{background:var(--b4l);border:1px solid var(--b4);border-radius:16px;padding:16px;width:100%;max-width:360px;text-align:left;animation:fi .4s ease}
+.ob-slide{display:none;flex:1;flex-direction:column;align-items:center;justify-content:center;width:100%;padding:32px 24px 12px;text-align:center;overflow-y:auto;min-height:0}
+.ob-slide.ob-active{display:flex}
+.ob-illo{width:100%;max-width:260px;margin:0 auto 24px;flex-shrink:0}
+.ob-illo svg{width:100%;height:auto;display:block}
+.ob-title{font-family:'Playfair Display',serif;font-size:24px;font-weight:800;color:var(--txt);margin-bottom:10px;line-height:1.3}
+.ob-desc{font-size:14px;color:var(--txt2);line-height:1.8;margin-bottom:24px;max-width:320px;margin-left:auto;margin-right:auto}
+.ob-actions{display:flex;flex-direction:column;align-items:center;gap:8px;width:100%}
+.ob-skip-btn{background:none;border:none;color:var(--txt2);font-size:14px;padding:10px 20px;cursor:pointer;font-weight:500;width:100%;max-width:360px;text-align:center}
+.ob-skip-btn:hover{color:var(--txt)}
+.ob-dots-wrap{display:flex;justify-content:center;gap:8px;padding:12px 0 max(16px,env(safe-area-inset-bottom));flex-shrink:0}
+.ob-dot{width:8px;height:8px;border-radius:50%;background:var(--brd2);transition:background .3s,transform .3s}
+.ob-dot.ob-active{background:#FF6B6B;transform:scale(1.3)}
+.ob-mobile-show{display:flex}
+.ob-desktop-show{display:none}
+.ob-desktop-only{display:none}
+/* Animations */
+@keyframes ob-bloom{from{transform:scale(0) rotate(-8deg);opacity:0}to{transform:scale(1) rotate(0deg);opacity:1}}
+@keyframes ob-up{from{transform:translateY(18px);opacity:0}to{transform:translateY(0);opacity:1}}
+@keyframes ob-fade{from{opacity:0}to{opacity:1}}
+@keyframes ob-float{0%,100%{transform:translateY(0)}50%{transform:translateY(-7px)}}
+.ob-slide.ob-active .ob-illo svg{animation:ob-bloom .65s cubic-bezier(.34,1.4,.64,1) both}
+.ob-slide.ob-active .ob-title{animation:ob-up .38s ease-out .18s both}
+.ob-slide.ob-active .ob-desc{animation:ob-fade .38s ease-out .3s both}
+.ob-slide.ob-active .ob-actions{animation:ob-fade .38s ease-out .42s both}
+.ob-slide.ob-active .ob-sil-1{animation:ob-fade .35s ease-out .08s both}
+.ob-slide.ob-active .ob-sil-2{animation:ob-fade .35s ease-out .22s both}
+.ob-slide.ob-active .ob-sil-3{animation:ob-fade .35s ease-out .36s both}
+.ob-slide.ob-active .ob-sil-hearts{animation:ob-fade .35s ease-out .5s both}
+.ob-slide.ob-active .ob-cel-1{animation:ob-up .32s ease-out .08s both}
+.ob-slide.ob-active .ob-cel-2{animation:ob-up .32s ease-out .28s both}
+.ob-slide.ob-active .ob-cel-3{animation:ob-up .32s ease-out .48s both}
+.ob-particle{animation:ob-float 3.2s ease-in-out infinite}
+.ob-particle:nth-child(2n){animation-duration:2.8s;animation-delay:.4s}
+.ob-particle:nth-child(3n){animation-duration:3.6s;animation-delay:.9s}
+/* Desktop split 60/40 */
+@media(min-width:1024px){
+  .ob-slide{flex-direction:row;gap:0;padding:0;text-align:left;align-items:stretch;justify-content:flex-start;overflow:hidden}
+  .ob-illo{width:60%;max-width:none;height:auto;margin:0;display:flex;align-items:center;justify-content:center;background:linear-gradient(160deg,#FFFDFB 0%,#FFE9E4 60%,#FFDDD6 100%);padding:48px;flex-shrink:0}
+  .ob-illo svg{max-width:380px;max-height:380px;width:100%;height:auto}
+  .ob-title{font-size:28px;margin-left:0;margin-right:0}
+  .ob-desc{max-width:none;margin-left:0;margin-right:0}
+  .ob-actions{align-items:flex-start}
+  .ob-body-inner{width:40%;display:flex;flex-direction:column;justify-content:center;padding:52px 48px;overflow-y:auto}
+  .ob-dots-wrap{justify-content:flex-start;padding-left:48px;padding-right:0}
+  .ob-mobile-show{display:none!important}
+  .ob-desktop-show{display:flex!important}
+}
 
 /* ═══════ RIPPLE PAGE (Axe 6) ═══════ */
 #ripple{background:linear-gradient(160deg,#FFFDFB,#FFE9E4,#FFD2C8);min-height:100vh;display:none;flex-direction:column;align-items:center;justify-content:center;padding:28px 24px;text-align:center}
