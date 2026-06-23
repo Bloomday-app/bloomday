@@ -25,7 +25,6 @@ var TF = {
   submitting: false,
   user: null,
   _coAdminShareToken: null,
-  _coAdminShareName: '',
   coAdminName: ''
 };
 var TF_DELETE = { token: null, teamName: null, groupId: null, bloomdayMembers: [] };
@@ -74,7 +73,6 @@ window.addEventListener('DOMContentLoaded', async function() {
   TF.adminToken = params.get('admin');
   TF.memberToken = params.get('member');
   TF.coadminToken = params.get('coadmin');
-  TF.coAdminName = params.get('nom') || '';
   TF.prefillManager = params.get('manager') || '';
   if (TF.memberToken) { TF.mode = 'member'; tfInitMember(); }
   else if (TF.adminToken) { TF.mode = 'dashboard'; tfInitDashboard(); }
@@ -445,13 +443,11 @@ async function tfInitCoadminClaim() {
   var sessRes = await supabase.auth.getSession();
   var userId = sessRes.data && sessRes.data.session && sessRes.data.session.user
     ? sessRes.data.session.user.id : null;
-  var coAdminName = TF.coAdminName || '';
 
   if (!userId) {
     var wrapEl = document.querySelector('.tf-wrap');
     wrapEl.innerHTML = '<div class="tf-card" style="text-align:center;padding:40px 24px">'
       + '<div style="font-size:40px;margin-bottom:16px">🤝</div>'
-      + (coAdminName ? '<p style="font-size:18px;font-weight:700;margin-bottom:4px">👋 ' + tfEsc(coAdminName) + '</p>' : '')
       + '<h1 style="margin-bottom:12px">' + tfT('tfCoAdminClaimTitle') + '</h1>'
       + '<p style="color:var(--txt2);font-size:14px;margin-bottom:24px">' + tfT('tfCoAdminClaimMsg').replace('%name', '') + '</p>'
       + '<a href="index.html" class="btn btn-primary" style="display:inline-block;text-decoration:none">' + tfT('tfCoAdminSignIn') + '</a>'
@@ -468,7 +464,9 @@ async function tfInitCoadminClaim() {
     return;
   }
 
-  tfSaveAdminToken(res.data.co_admin_token, res.data.team_name, coAdminName || res.data.manager_name, true);
+  var claimedName = (res.data && res.data.co_admin_name) || '';
+  TF.coAdminName = claimedName;
+  tfSaveAdminToken(res.data.co_admin_token, res.data.team_name, claimedName || res.data.manager_name, true);
   TF.isCoadmin = true;
   await tfInitCoadminDashboard();
 }
@@ -1258,14 +1256,10 @@ async function tfLoadCoAdminSection() {
   if (res.error || !res.data) { el.innerHTML = ''; return; }
   var info = res.data;
   if (info.has_active_coadmin) {
-    var storedName = localStorage.getItem('tf_coadmin_name_' + TF.adminToken) || '';
-    el.innerHTML = '<div style="font-size:13px;color:var(--txt2);margin-bottom:8px">'
+    var displayName = info.co_admin_name || info.invited_email || '';
+    el.innerHTML = '<div style="font-size:13px;color:var(--txt2);margin-bottom:10px">'
       + (tfLang() === 'fr' ? 'Co-admin actif' : 'Active co-admin')
-      + (info.invited_email ? ' · <strong>' + tfEsc(info.invited_email) + '</strong>' : '')
-      + '</div>'
-      + '<div style="display:flex;gap:6px;align-items:center;margin-bottom:8px">'
-      + '<input id="tf-coadmin-name-edit" type="text" value="' + tfEsc(storedName) + '" placeholder="' + (tfLang() === 'fr' ? 'Prénom du co-admin' : 'Co-admin first name') + '" style="flex:1;border:1.5px solid var(--brd);border-radius:8px;padding:6px 10px;font-size:13px;background:var(--bg);color:var(--txt);font-family:inherit;outline:none" onfocus="this.style.borderColor=\'var(--b2)\'" onblur="this.style.borderColor=\'var(--brd)\'">'
-      + '<button class="btn btn-ghost btn-sm" onclick="tfSaveCoAdminName()" style="flex-shrink:0">' + (tfLang() === 'fr' ? 'Enregistrer' : 'Save') + '</button>'
+      + (displayName ? ' : <strong>' + tfEsc(displayName) + '</strong>' : '')
       + '</div>'
       + '<button class="btn btn-ghost btn-sm" style="color:#c0392b;border-color:#e8c0b8" onclick="tfRevokeCoAdmin()">' + tfT('tfRevokeCoAdmin') + '</button>';
   } else {
@@ -1274,15 +1268,6 @@ async function tfLoadCoAdminSection() {
   }
 }
 
-function tfSaveCoAdminName() {
-  var inp = document.getElementById('tf-coadmin-name-edit');
-  var name = inp ? inp.value.trim() : '';
-  if (TF.adminToken) {
-    if (name) localStorage.setItem('tf_coadmin_name_' + TF.adminToken, name);
-    else localStorage.removeItem('tf_coadmin_name_' + TF.adminToken);
-  }
-  tfToast(tfLang() === 'fr' ? 'Prénom enregistré.' : 'Name saved.');
-}
 
 function tfOpenCoAdminInviteEmail() {
   document.getElementById('tf-modal-coadmin-invite').style.display = 'flex';

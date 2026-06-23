@@ -10,9 +10,9 @@
   <link rel="icon" type="image/png" sizes="16x16" href="img/favicon-16x16.png">
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;800&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
   <style>
-    :root{--b1:#D4A843;--b2:#FF8C7A;--b3:#18A86B;--bg:#FFF8F0;--bg2:#FFFDF9;--txt:#2D1B14;--txt2:#8B6F60;--txt3:#C8B0A4;--brd:#EEE0D4;--brd2:#DDD0C0;--grad:linear-gradient(135deg,#D4A843,#FF8C7A);--sh:0 4px 24px rgba(45,27,20,.08);--rad:18px}
-    @media(prefers-color-scheme:dark){html:not(.light-mode){--bg:#131008;--bg2:#1C1810;--txt:#F5EEE2;--txt2:#A09080;--txt3:#60584C;--brd:#2C2618;--brd2:#3C3426;--sh:0 2px 20px rgba(0,0,0,.5)}}
-    html.dark-mode{--bg:#131008;--bg2:#1C1810;--txt:#F5EEE2;--txt2:#A09080;--txt3:#60584C;--brd:#2C2618;--brd2:#3C3426;--sh:0 2px 20px rgba(0,0,0,.5)}
+    :root{--b1:#FF6B6B;--b2:#F5C451;--b3:#22C55E;--bg:#FFFDFB;--bg2:#FFE9E4;--txt:#1F1F1F;--txt2:#6B7280;--txt3:#9CA3AF;--brd:#ECE7E3;--brd2:#D1C5BE;--grad:linear-gradient(135deg,#FF6B6B 0%,#FF8C80 50%,#FFD2C8 100%);--sh:0 4px 24px rgba(31,31,31,.08);--rad:20px}
+    @media(prefers-color-scheme:dark){html:not(.light-mode){--bg:#0F0D0D;--bg2:#1A1515;--txt:#F5F0F0;--txt2:#9CA3AF;--txt3:#6B7280;--brd:#2C2424;--brd2:#3C3030;--sh:0 2px 20px rgba(0,0,0,.5)}}
+    html.dark-mode{--bg:#0F0D0D;--bg2:#1A1515;--txt:#F5F0F0;--txt2:#9CA3AF;--txt3:#6B7280;--brd:#2C2424;--brd2:#3C3030;--sh:0 2px 20px rgba(0,0,0,.5)}
     *{box-sizing:border-box;margin:0;padding:0}
     body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--txt);min-height:100vh}
     .tf-wrap{max-width:540px;margin:0 auto;padding:24px 16px 80px}
@@ -70,7 +70,7 @@
     .tf-topbar-logo img{width:26px;height:26px;object-fit:contain;border-radius:6px}
     .tf-topbar-logo span{font-family:'Playfair Display',serif;font-size:18px;font-weight:800;color:var(--txt)}
     .tf-topbar-right{width:80px;position:relative;display:flex;justify-content:flex-end;align-items:center}
-    #tf-modal-qr,#tf-modal-delete,#tf-modal-remove,#tf-modal-coadmin,#tf-modal-coadmin-invite{position:fixed;inset:0;background:rgba(45,27,20,.6);z-index:100;align-items:center;justify-content:center;padding:20px}
+    #tf-modal-qr,#tf-modal-delete,#tf-modal-remove,#tf-modal-coadmin,#tf-modal-coadmin-invite{position:fixed;inset:0;background:rgba(31,31,31,.6);z-index:100;align-items:center;justify-content:center;padding:20px}
     #tf-modal-coadmin-share{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:200;display:none;align-items:flex-end}
     .tf-modal-inner{background:var(--bg2);border-radius:var(--rad);padding:24px;max-width:300px;width:100%;text-align:center;box-shadow:0 8px 40px rgba(0,0,0,.3)}
     @media print{body>*{display:none!important}#tf-modal-qr{display:flex!important;position:static;background:none;padding:0}}
@@ -181,11 +181,7 @@
     <div style="width:100%;background:var(--bg2);border-radius:24px 24px 0 0;padding:12px 20px 40px;box-shadow:0 -8px 32px rgba(0,0,0,.15)" onclick="event.stopPropagation()">
       <div style="width:36px;height:4px;background:var(--brd);border-radius:2px;margin:0 auto 16px"></div>
       <h2 id="tf-sheet-title" style="font-family:'Playfair Display',serif;font-size:17px;font-weight:800;text-align:center;margin-bottom:4px"></h2>
-      <p id="tf-sheet-sub" style="font-size:12px;color:var(--txt3);text-align:center;margin-bottom:12px"></p>
-      <div style="margin-bottom:14px">
-        <label id="tf-sheet-name-label" style="display:block;font-size:12px;font-weight:600;color:var(--txt2);margin-bottom:6px"></label>
-        <input id="tf-sheet-name-inp" type="text" style="width:100%;border:1.5px solid var(--brd);border-radius:10px;padding:10px 12px;font-size:14px;outline:none;background:var(--bg);color:var(--txt);font-family:inherit;box-sizing:border-box;transition:border-color .2s" onfocus="this.style.borderColor='var(--b2)'" onblur="this.style.borderColor='var(--brd)'">
-      </div>
+      <p id="tf-sheet-sub" style="font-size:12px;color:var(--txt3);text-align:center;margin-bottom:16px"></p>
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px">
         <button class="tf-share-tile" onclick="tfShareCoAdminWhatsApp()">
           <div style="width:44px;height:44px;border-radius:12px;background:#25D366;display:flex;align-items:center;justify-content:center">
