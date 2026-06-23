@@ -396,6 +396,15 @@ details[open] summary::after{content:" ▾"}
 .ob-particle{animation:ob-float 3.2s ease-in-out infinite}
 .ob-particle:nth-child(2n){animation-duration:2.8s;animation-delay:.4s}
 .ob-particle:nth-child(3n){animation-duration:3.6s;animation-delay:.9s}
+/* Slide 0 — floraison pétale par pétale */
+#obs-0 .ob-illo svg{animation:ob-fade .2s ease both!important}
+@keyframes ob-petal-bloom{from{transform:scaleY(.04);opacity:0}to{transform:scaleY(1);opacity:1}}
+.ob-slide.ob-active .ob-p-out,.ob-slide.ob-active .ob-p-in{transform-box:fill-box;transform-origin:50% 100%}
+.ob-slide.ob-active .ob-p-out{animation:ob-petal-bloom .7s cubic-bezier(.34,1.4,.64,1) both}
+.ob-slide.ob-active .ob-p-in{animation:ob-petal-bloom .55s cubic-bezier(.34,1.56,.64,1) both}
+.ob-slide.ob-active .ob-po1{animation-delay:0s}.ob-slide.ob-active .ob-po2{animation-delay:.07s}.ob-slide.ob-active .ob-po3{animation-delay:.14s}.ob-slide.ob-active .ob-po4{animation-delay:.21s}.ob-slide.ob-active .ob-po5{animation-delay:.28s}.ob-slide.ob-active .ob-po6{animation-delay:.35s}.ob-slide.ob-active .ob-po7{animation-delay:.42s}.ob-slide.ob-active .ob-po8{animation-delay:.49s}
+.ob-slide.ob-active .ob-pi1{animation-delay:.1s}.ob-slide.ob-active .ob-pi2{animation-delay:.2s}.ob-slide.ob-active .ob-pi3{animation-delay:.3s}.ob-slide.ob-active .ob-pi4{animation-delay:.4s}.ob-slide.ob-active .ob-pi5{animation-delay:.5s}.ob-slide.ob-active .ob-pi6{animation-delay:.6s}
+.ob-slide.ob-active .ob-fl-ctr{animation:ob-bloom .45s cubic-bezier(.34,1.8,.64,1) .65s both}
 /* Desktop split 60/40 */
 @media(min-width:1024px){
   .ob-slide{flex-direction:row;gap:0;padding:0;text-align:left;align-items:stretch;justify-content:flex-start;overflow:hidden}
