@@ -199,10 +199,10 @@ function rHome(){
           h+='</div>';
           h+='</div>';
           h+='<div style="border-top:1px solid var(--brd);padding:12px 14px">';
-          h+='<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:10px">';
-          h+='<button class="btn sm O" onclick="genGiftModal(\''+p.id+'\')">🎁 '+t('flowerIdeasBtn')+'</button>';
-          h+='<button class="btn O" onclick="genMsg(\''+p.id+'\',\'prep-'+p.id+'\')">'+t('prepareBtn')+'</button>';
-          h+='<button class="btn sm O" onclick="showFlowerIdeas('+escJs(p.name)+','+escJs(p.type)+')">🌸 '+t('fleurBtn')+'</button>';
+          h+='<div style="display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr) minmax(0,1fr);gap:6px;margin-bottom:10px">';
+          h+='<button class="btn sm O" style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0;font-size:11px" onclick="genGiftModal(\''+p.id+'\')">🎁 '+t('flowerIdeasBtn')+'</button>';
+          h+='<button class="btn sm O" style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0;font-size:11px" onclick="genMsg(\''+p.id+'\',\'prep-'+p.id+'\')">'+t('prepareBtn')+'</button>';
+          h+='<button class="btn sm O" style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0;font-size:11px" onclick="showFlowerIdeas('+escJs(p.name)+','+escJs(p.type)+')">🌸 '+t('fleurBtn')+'</button>';
           h+='</div>';
           h+='<div id="prep-'+p.id+'"></div>';
           h+='</div>';
@@ -229,10 +229,10 @@ function rHome(){
           h+='</div>';
           h+='</div>';
           h+='<div style="border-top:1px solid var(--brd);padding:12px 14px">';
-          h+='<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:10px">';
-          h+='<button class="btn sm O" onclick="genGiftModal(\''+p.id+'\')">🎁 '+t('flowerIdeasBtn')+'</button>';
-          h+='<button class="btn O" onclick="genMsg(\''+p.id+'\',\'prep-'+p.id+'\')">'+t('prepareBtn')+'</button>';
-          h+='<button class="btn sm O" onclick="showFlowerIdeas('+escJs(p.name)+','+escJs(p.type)+')">🌸 '+t('fleurBtn')+'</button>';
+          h+='<div style="display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr) minmax(0,1fr);gap:6px;margin-bottom:10px">';
+          h+='<button class="btn sm O" style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0;font-size:11px" onclick="genGiftModal(\''+p.id+'\')">🎁 '+t('flowerIdeasBtn')+'</button>';
+          h+='<button class="btn sm O" style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0;font-size:11px" onclick="genMsg(\''+p.id+'\',\'prep-'+p.id+'\')">'+t('prepareBtn')+'</button>';
+          h+='<button class="btn sm O" style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0;font-size:11px" onclick="showFlowerIdeas('+escJs(p.name)+','+escJs(p.type)+')">🌸 '+t('fleurBtn')+'</button>';
           h+='</div>';
           h+='<div id="prep-'+p.id+'"></div>';
           h+='</div>';
@@ -1790,7 +1790,7 @@ async function renderNotifSettings(){
   h+='<div style="font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--txt2);margin-bottom:8px">'+t('notifDefault')+'</div>';
   h+='<div style="background:var(--card);border:1px solid var(--brd);border-radius:12px;padding:12px 14px;margin-bottom:8px;display:flex;align-items:center;justify-content:space-between">';
   h+='<div><div style="font-size:14px;font-weight:600;color:var(--txt)">'+t('notifEnabled')+'</div><div style="font-size:12px;color:var(--txt2);margin-top:2px">'+t('notifEnabledSub')+'</div></div>';
-  h+='<label style="position:relative;display:inline-block;width:44px;height:24px;flex-shrink:0"><input type="checkbox" id="notif-toggle" '+(settings.enabled?'checked':'')+' style="opacity:0;width:0;height:0" onchange="onNotifToggle(this.checked)"><span style="position:absolute;cursor:pointer;inset:0;border-radius:24px;background:'+(settings.enabled?'var(--b3)':'var(--brd2)')+';transition:.2s"><span style="position:absolute;width:18px;height:18px;left:'+(settings.enabled?'22':'3')+'px;bottom:3px;background:#fff;border-radius:50%;transition:.2s"></span></span></label>';
+  h+='<label style="position:relative;display:inline-block;width:48px;height:28px;flex-shrink:0;touch-action:manipulation"><input type="checkbox" id="notif-toggle" '+(settings.enabled?'checked':'')+' style="position:absolute;opacity:0;width:100%;height:100%;top:0;left:0;margin:0;cursor:pointer;z-index:1" onchange="onNotifToggle(this.checked)"><span style="position:absolute;cursor:pointer;inset:0;border-radius:28px;background:'+(settings.enabled?'var(--b3)':'var(--brd2)')+';transition:.25s"><span style="position:absolute;width:20px;height:20px;left:'+(settings.enabled?'24':'4')+'px;bottom:4px;background:#fff;border-radius:50%;transition:.25s;box-shadow:0 1px 3px rgba(0,0,0,.3)"></span></span></label>';
   h+='</div>';
   h+='<div style="font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--txt2);margin-bottom:8px;margin-top:16px">'+t('notifDaysLabel')+'</div>';
   h+='<div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px">';

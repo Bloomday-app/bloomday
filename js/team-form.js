@@ -239,9 +239,12 @@ function tfInitTeams() {
   var html = '<div class="tf-card"><h1>' + tfT('myTeams') + '</h1>'
     + '<p style="font-size:13px;color:var(--txt2);margin-bottom:16px">' + teams.length + ' ' + (tfLang() === 'fr' ? (teams.length > 1 ? 'équipes enregistrées' : 'équipe enregistrée') : (teams.length > 1 ? 'saved teams' : 'saved team')) + '</p>';
   teams.forEach(function(t) {
+    var coAdminName = localStorage.getItem('tf_coadmin_name_' + t.token) || '';
     html += '<div style="display:flex;justify-content:space-between;align-items:center;padding:12px 0;border-bottom:1px solid var(--brd)">'
       + '<div><div style="font-weight:700;font-size:15px">' + tfEsc(t.teamName) + '</div>'
-      + '<div style="font-size:12px;color:var(--txt2)">' + tfT('managerLabel') + ' ' + tfEsc(t.managerName || '') + '</div></div>'
+      + '<div style="font-size:12px;color:var(--txt2)">' + tfT('managerLabel') + ' ' + tfEsc(t.managerName || '') + '</div>'
+      + (coAdminName ? '<div style="font-size:11px;color:var(--b1d);margin-top:2px">👥 Co-admin : <strong>' + tfEsc(coAdminName) + '</strong></div>' : '')
+      + '</div>'
       + '<div style="display:flex;gap:8px">'
       + '<a href="team-form.html?' + (t.is_coadmin ? 'coadmin' : 'admin') + '=' + encodeURIComponent(t.token) + '" class="btn btn-ghost btn-sm">' + tfT('openTeam') + '</a>'
       + (!t.is_coadmin
@@ -694,18 +697,64 @@ function tfCloseQRModal() {
 }
 
 function tfPrintQR() {
-  var html = '<html><head><style>body{font-family:sans-serif} .item{display:inline-block;text-align:center;margin:12px;vertical-align:top;page-break-inside:avoid} h3{font-size:13px;margin:8px 0 4px}</style></head><body>';
+  var teamName = (TF.survey && TF.survey.team_name) || '';
+  var lang = tfLang();
+  var backLabel = lang === 'fr' ? '← Retour' : '← Back';
+  var printLabel = lang === 'fr' ? '🖨️ Imprimer' : '🖨️ Print';
+  var subtitle = lang === 'fr'
+    ? 'Scannez votre QR code pour remplir vos informations'
+    : 'Scan your QR code to fill in your information';
+  var items = '';
   TF.members.forEach(function(m) {
     var qr = qrcode(0, 'M');
     qr.addData(tfMemberUrl(m.token));
     qr.make();
-    html += '<div class="item"><h3>' + tfEsc(m.first_name) + ' ' + tfEsc(m.last_name) + '</h3>' + qr.createImgTag(3) + '</div>';
+    var fullName = tfEsc((m.first_name + ' ' + m.last_name).trim());
+    var initial = tfEsc((m.first_name || m.last_name || '?')[0].toUpperCase());
+    items += '<div class="qr-card">'
+      + '<div class="qr-avatar">' + initial + '</div>'
+      + qr.createImgTag(4)
+      + '<div class="qr-name">' + fullName + '</div>'
+      + '</div>';
   });
-  html += '</body></html>';
-  var win = window.open('', '_blank');
-  win.document.write(html);
-  win.document.close();
-  setTimeout(function() { win.print(); }, 300);
+  var html = '<!DOCTYPE html><html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">'
+    + '<title>QR Codes – ' + tfEsc(teamName) + '</title>'
+    + '<style>'
+    + '*{box-sizing:border-box;margin:0;padding:0}'
+    + 'body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:#f5f0eb;min-height:100vh}'
+    + '.top-bar{background:linear-gradient(135deg,#FF6B6B,#FF8E8E);padding:16px 20px;display:flex;align-items:center;gap:12px;position:sticky;top:0;z-index:10;box-shadow:0 2px 12px rgba(255,107,107,.3)}'
+    + '.top-bar button{background:rgba(255,255,255,.2);color:#fff;border:1.5px solid rgba(255,255,255,.5);border-radius:20px;padding:7px 14px;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;touch-action:manipulation}'
+    + '.top-bar button:hover{background:rgba(255,255,255,.35)}'
+    + '.top-bar .title{flex:1;color:#fff;font-size:16px;font-weight:800;letter-spacing:-.01em}'
+    + '.top-bar .team{color:rgba(255,255,255,.85);font-size:12px;margin-top:1px}'
+    + '.subtitle{text-align:center;color:#8a7060;font-size:13px;padding:16px 20px 4px;font-style:italic}'
+    + '.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:16px;padding:16px}'
+    + '@media(min-width:480px){.grid{grid-template-columns:repeat(3,1fr)}}'
+    + '@media(min-width:768px){.grid{grid-template-columns:repeat(4,1fr)}}'
+    + '.qr-card{background:#fff;border-radius:16px;padding:16px 12px;text-align:center;box-shadow:0 2px 12px rgba(0,0,0,.08);display:flex;flex-direction:column;align-items:center;gap:8px;page-break-inside:avoid}'
+    + '.qr-avatar{width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,#FF6B6B,#FFB347);color:#fff;font-size:15px;font-weight:800;display:flex;align-items:center;justify-content:center}'
+    + '.qr-card img{width:100%;max-width:140px;height:auto;border-radius:8px}'
+    + '.qr-name{font-size:12px;font-weight:700;color:#2d1b14;text-align:center;word-break:break-word;line-height:1.3}'
+    + '@media print{'
+    + '.top-bar{display:none}'
+    + '.subtitle{display:none}'
+    + 'body{background:#fff}'
+    + '.qr-card{box-shadow:none;border:1px solid #eee}'
+    + '.grid{grid-template-columns:repeat(4,1fr)}'
+    + '}'
+    + '</style></head><body>'
+    + '<div class="top-bar">'
+    + '<div style="flex:1"><div class="title">🌸 ' + tfEsc(teamName) + '</div></div>'
+    + '<button onclick="window.print()">' + printLabel + '</button>'
+    + '<button onclick="window.close()">' + backLabel + '</button>'
+    + '</div>'
+    + '<div class="subtitle">' + subtitle + '</div>'
+    + '<div class="grid">' + items + '</div>'
+    + '</body></html>';
+  var blob = new Blob([html], { type: 'text/html;charset=utf-8' });
+  var url = URL.createObjectURL(blob);
+  window.open(url, '_blank');
+  setTimeout(function() { URL.revokeObjectURL(url); }, 10000);
 }
 
 // ── EXPORT CSV ──
@@ -745,7 +794,7 @@ function tfUpdateLocalStorage(groupId, groupName, rows) {
       if (!g.members.find(function(x) { return String(x.id) === String(r.id); })) {
         g.members.push({
           id: r.id, name: r.name, day: r.day, month: r.month, year: r.year || null,
-          phone: r.phone || '', note: r.note || '', type: 'birthday', gender: r.gender || '',
+          phone: r.phone || '', note: r.note || '', type: r.type || 'birthday', gender: r.gender || '',
           incomplete: false, notif_days_before: null, notif_time: null
         });
       }
@@ -1258,8 +1307,9 @@ async function tfLoadCoAdminSection() {
   if (info.has_active_coadmin) {
     var displayName = info.co_admin_name || info.invited_email || '';
     el.innerHTML = '<div style="font-size:13px;color:var(--txt2);margin-bottom:10px">'
-      + (tfLang() === 'fr' ? 'Co-admin actif' : 'Active co-admin')
-      + (displayName ? ' : <strong>' + tfEsc(displayName) + '</strong>' : '')
+      + (displayName
+        ? '<strong style="color:var(--txt)">' + tfEsc(displayName) + '</strong> · ' + (tfLang() === 'fr' ? 'Co-admin actif' : 'Active co-admin')
+        : (tfLang() === 'fr' ? 'Co-admin actif' : 'Active co-admin'))
       + '</div>'
       + '<button class="btn btn-ghost btn-sm" style="color:#c0392b;border-color:#e8c0b8" onclick="tfRevokeCoAdmin()">' + tfT('tfRevokeCoAdmin') + '</button>';
   } else {
