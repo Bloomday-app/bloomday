@@ -3,28 +3,426 @@
 <head>
 <meta charset="UTF-8">
 <style>
-*{margin:0;padding:0;box-sizing:border-box}
-body{width:1200px;height:630px;background:#FFF8F0;font-family:'DM Sans',sans-serif;display:flex;align-items:center;padding:0 80px;gap:60px;overflow:hidden;position:relative}
-img.logo{width:160px;height:160px;border-radius:32px;flex-shrink:0}
-.content{flex:1}
-.brand{font-size:64px;font-weight:800;color:#2D1B14;line-height:1}
-.tag{font-size:32px;color:#8B6F60;margin-top:12px}
-.badges{display:flex;gap:12px;margin-top:28px;flex-wrap:wrap}
-.badge{background:#F5EFE6;border-radius:24px;padding:10px 20px;font-size:22px;color:#2D1B14;font-weight:600}
-.url{position:absolute;bottom:28px;left:80px;font-size:18px;color:#C8B8A2}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+  width: 1200px;
+  height: 630px;
+  background: linear-gradient(135deg, #3D1D6E 0%, #C2366B 50%, #FF7B55 100%);
+  font-family: 'DM Sans', 'Helvetica Neue', Arial, sans-serif;
+  overflow: hidden;
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+/* ── Déco SVG ── */
+.decor-svg { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; }
+
+/* ── Phone shadow card ── */
+.phone-shadow {
+  position: absolute;
+  left: 96px;
+  top: 50%;
+  transform: translateY(-52%) rotate(4deg);
+  width: 230px;
+  height: 400px;
+  background: rgba(255,255,255,0.15);
+  border-radius: 32px;
+  backdrop-filter: blur(4px);
+  z-index: 1;
+}
+
+/* ── Phone frame ── */
+.phone-wrap {
+  position: absolute;
+  left: 70px;
+  top: 50%;
+  transform: translateY(-50%) rotate(-4deg);
+  z-index: 2;
+}
+.phone {
+  width: 230px;
+  height: 408px;
+  background: #FFFFFF;
+  border-radius: 36px;
+  overflow: hidden;
+  box-shadow: 0 32px 80px rgba(0,0,0,0.45), 0 8px 24px rgba(0,0,0,0.25);
+  position: relative;
+}
+
+/* Notch */
+.phone-notch {
+  position: absolute;
+  top: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 72px;
+  height: 8px;
+  background: #111;
+  border-radius: 4px;
+  z-index: 10;
+}
+
+/* Phone screen header */
+.phone-header {
+  background: linear-gradient(135deg, #C2366B, #FF7B55);
+  padding: 28px 16px 16px;
+  color: white;
+  position: relative;
+}
+.phone-header-label {
+  font-size: 10px;
+  font-weight: 600;
+  opacity: 0.8;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 4px;
+}
+.phone-header-title {
+  font-size: 15px;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+.phone-header-sub {
+  font-size: 10px;
+  opacity: 0.75;
+  margin-top: 3px;
+}
+
+/* Today badge */
+.today-pill {
+  position: absolute;
+  top: 28px;
+  right: 14px;
+  background: rgba(255,255,255,0.25);
+  border: 1px solid rgba(255,255,255,0.4);
+  border-radius: 10px;
+  padding: 3px 8px;
+  font-size: 9px;
+  font-weight: 700;
+  color: white;
+}
+
+/* Phone body */
+.phone-body { padding: 10px; }
+
+/* Birthday items */
+.bday-item {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  padding: 7px 9px;
+  border-radius: 14px;
+  margin-bottom: 7px;
+  background: #FFF8F5;
+}
+.bday-item.featured {
+  background: linear-gradient(135deg, rgba(194,54,107,0.08), rgba(255,123,85,0.08));
+  border: 1.5px solid rgba(194,54,107,0.2);
+}
+.avatar {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: 800;
+  flex-shrink: 0;
+  color: white;
+}
+.bday-info { flex: 1; min-width: 0; }
+.bday-name { font-size: 10px; font-weight: 700; color: #1A0A05; }
+.bday-date { font-size: 8.5px; color: #9A7E74; margin-top: 1px; }
+.bday-tag {
+  font-size: 8px;
+  font-weight: 700;
+  padding: 2px 7px;
+  border-radius: 8px;
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+
+/* AI message preview card */
+.ai-preview {
+  margin-top: 4px;
+  background: linear-gradient(135deg, rgba(61,29,110,0.06), rgba(194,54,107,0.07));
+  border: 1.5px solid rgba(194,54,107,0.18);
+  border-radius: 14px;
+  padding: 9px 10px;
+}
+.ai-label {
+  font-size: 8.5px;
+  font-weight: 800;
+  color: #C2366B;
+  margin-bottom: 4px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+.ai-text {
+  font-size: 8.5px;
+  color: #2D1018;
+  line-height: 1.5;
+  font-style: italic;
+}
+
+/* ── Right content ── */
+.right-content {
+  position: absolute;
+  right: 64px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 580px;
+}
+
+.logo-row {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 28px;
+}
+.logo-box {
+  width: 54px;
+  height: 54px;
+  border-radius: 14px;
+  background: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+  overflow: hidden;
+  flex-shrink: 0;
+}
+.logo-box img { width: 46px; height: 46px; border-radius: 10px; }
+.brand-name {
+  font-size: 30px;
+  font-weight: 800;
+  color: white;
+  letter-spacing: -0.5px;
+}
+
+.tagline {
+  font-size: 48px;
+  font-weight: 800;
+  color: white;
+  line-height: 1.12;
+  margin-bottom: 30px;
+  letter-spacing: -1px;
+  text-shadow: 0 2px 24px rgba(0,0,0,0.18);
+}
+
+.badges {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-bottom: 36px;
+}
+.badge {
+  background: rgba(255,255,255,0.16);
+  border: 1.5px solid rgba(255,255,255,0.28);
+  border-radius: 22px;
+  padding: 9px 18px;
+  font-size: 16px;
+  font-weight: 600;
+  color: white;
+  backdrop-filter: blur(8px);
+}
+
+.url-row {
+  font-size: 17px;
+  color: rgba(255,255,255,0.6);
+  font-weight: 500;
+  letter-spacing: 0.2px;
+}
 </style>
 </head>
 <body>
-<img class="logo" src="logo.png" alt="Bloomday">
-<div class="content">
-  <div class="brand">Bloomday</div>
-  <div class="tag">Le jour où tu fleuris 🌸</div>
-  <div class="badges">
-    <div class="badge">✨ Messages IA</div>
-    <div class="badge">🎁 Idées cadeaux</div>
-    <div class="badge">🌍 Fêtes du monde</div>
+
+<!-- ── Decorative SVG layer ── -->
+<svg class="decor-svg" viewBox="0 0 1200 630" xmlns="http://www.w3.org/2000/svg">
+  <!-- Large blur circle top-right -->
+  <circle cx="1100" cy="80" r="180" fill="rgba(255,180,100,0.15)"/>
+  <!-- Blur circle bottom-left -->
+  <circle cx="30" cy="580" r="150" fill="rgba(255,100,150,0.12)"/>
+  <!-- Blur circle center -->
+  <circle cx="600" cy="320" r="260" fill="rgba(255,255,255,0.03)"/>
+
+  <!-- Flower 1 — top right, large -->
+  <g transform="translate(1090,60) rotate(20)">
+    <ellipse cx="0" cy="-22" rx="10" ry="20" fill="rgba(255,220,230,0.55)" transform="rotate(0)"/>
+    <ellipse cx="0" cy="-22" rx="10" ry="20" fill="rgba(255,200,220,0.55)" transform="rotate(60)"/>
+    <ellipse cx="0" cy="-22" rx="10" ry="20" fill="rgba(255,185,210,0.55)" transform="rotate(120)"/>
+    <ellipse cx="0" cy="-22" rx="10" ry="20" fill="rgba(255,220,230,0.55)" transform="rotate(180)"/>
+    <ellipse cx="0" cy="-22" rx="10" ry="20" fill="rgba(255,200,220,0.55)" transform="rotate(240)"/>
+    <ellipse cx="0" cy="-22" rx="10" ry="20" fill="rgba(255,185,210,0.55)" transform="rotate(300)"/>
+    <circle cx="0" cy="0" r="8" fill="rgba(255,245,200,0.8)"/>
+  </g>
+
+  <!-- Flower 2 — top right, small -->
+  <g transform="translate(1160,155) rotate(-10)">
+    <ellipse cx="0" cy="-14" rx="6" ry="13" fill="rgba(255,200,180,0.6)" transform="rotate(0)"/>
+    <ellipse cx="0" cy="-14" rx="6" ry="13" fill="rgba(255,180,160,0.6)" transform="rotate(60)"/>
+    <ellipse cx="0" cy="-14" rx="6" ry="13" fill="rgba(255,200,180,0.6)" transform="rotate(120)"/>
+    <ellipse cx="0" cy="-14" rx="6" ry="13" fill="rgba(255,180,160,0.6)" transform="rotate(180)"/>
+    <ellipse cx="0" cy="-14" rx="6" ry="13" fill="rgba(255,200,180,0.6)" transform="rotate(240)"/>
+    <ellipse cx="0" cy="-14" rx="6" ry="13" fill="rgba(255,180,160,0.6)" transform="rotate(300)"/>
+    <circle cx="0" cy="0" r="5" fill="rgba(255,245,200,0.8)"/>
+  </g>
+
+  <!-- Flower 3 — bottom left (behind phone zone) -->
+  <g transform="translate(30,590) rotate(5)">
+    <ellipse cx="0" cy="-26" rx="12" ry="24" fill="rgba(255,170,200,0.4)" transform="rotate(0)"/>
+    <ellipse cx="0" cy="-26" rx="12" ry="24" fill="rgba(255,150,180,0.4)" transform="rotate(51.4)"/>
+    <ellipse cx="0" cy="-26" rx="12" ry="24" fill="rgba(255,170,200,0.4)" transform="rotate(102.8)"/>
+    <ellipse cx="0" cy="-26" rx="12" ry="24" fill="rgba(255,150,180,0.4)" transform="rotate(154.2)"/>
+    <ellipse cx="0" cy="-26" rx="12" ry="24" fill="rgba(255,170,200,0.4)" transform="rotate(205.7)"/>
+    <ellipse cx="0" cy="-26" rx="12" ry="24" fill="rgba(255,150,180,0.4)" transform="rotate(257.1)"/>
+    <ellipse cx="0" cy="-26" rx="12" ry="24" fill="rgba(255,170,200,0.4)" transform="rotate(308.5)"/>
+    <circle cx="0" cy="0" r="9" fill="rgba(255,240,180,0.7)"/>
+  </g>
+
+  <!-- Flower 4 — mid bottom right -->
+  <g transform="translate(1150,530) rotate(-25)">
+    <ellipse cx="0" cy="-18" rx="8" ry="16" fill="rgba(255,200,230,0.5)" transform="rotate(0)"/>
+    <ellipse cx="0" cy="-18" rx="8" ry="16" fill="rgba(255,180,210,0.5)" transform="rotate(60)"/>
+    <ellipse cx="0" cy="-18" rx="8" ry="16" fill="rgba(255,200,230,0.5)" transform="rotate(120)"/>
+    <ellipse cx="0" cy="-18" rx="8" ry="16" fill="rgba(255,180,210,0.5)" transform="rotate(180)"/>
+    <ellipse cx="0" cy="-18" rx="8" ry="16" fill="rgba(255,200,230,0.5)" transform="rotate(240)"/>
+    <ellipse cx="0" cy="-18" rx="8" ry="16" fill="rgba(255,180,210,0.5)" transform="rotate(300)"/>
+    <circle cx="0" cy="0" r="6" fill="rgba(255,245,200,0.75)"/>
+  </g>
+
+  <!-- Floating petals -->
+  <ellipse cx="480" cy="50" rx="7" ry="14" fill="rgba(255,200,220,0.4)" transform="rotate(30, 480, 50)"/>
+  <ellipse cx="920" cy="280" rx="5" ry="11" fill="rgba(255,210,180,0.35)" transform="rotate(-20, 920, 280)"/>
+  <ellipse cx="750" cy="560" rx="6" ry="12" fill="rgba(255,190,210,0.4)" transform="rotate(50, 750, 560)"/>
+  <ellipse cx="390" cy="550" rx="4" ry="9" fill="rgba(255,200,230,0.35)" transform="rotate(-40, 390, 550)"/>
+  <ellipse cx="1050" cy="380" rx="5" ry="10" fill="rgba(255,215,190,0.38)" transform="rotate(15, 1050, 380)"/>
+
+  <!-- Sparkles -->
+  <!-- Sparkle top-center -->
+  <g transform="translate(620, 68)">
+    <line x1="0" y1="-10" x2="0" y2="10" stroke="rgba(255,255,255,0.7)" stroke-width="2" stroke-linecap="round"/>
+    <line x1="-10" y1="0" x2="10" y2="0" stroke="rgba(255,255,255,0.7)" stroke-width="2" stroke-linecap="round"/>
+    <line x1="-6" y1="-6" x2="6" y2="6" stroke="rgba(255,255,255,0.45)" stroke-width="1.5" stroke-linecap="round"/>
+    <line x1="6" y1="-6" x2="-6" y2="6" stroke="rgba(255,255,255,0.45)" stroke-width="1.5" stroke-linecap="round"/>
+  </g>
+  <!-- Sparkle near phone -->
+  <g transform="translate(342, 135)">
+    <line x1="0" y1="-7" x2="0" y2="7" stroke="rgba(255,255,255,0.6)" stroke-width="1.5" stroke-linecap="round"/>
+    <line x1="-7" y1="0" x2="7" y2="0" stroke="rgba(255,255,255,0.6)" stroke-width="1.5" stroke-linecap="round"/>
+    <line x1="-4" y1="-4" x2="4" y2="4" stroke="rgba(255,255,255,0.35)" stroke-width="1" stroke-linecap="round"/>
+    <line x1="4" y1="-4" x2="-4" y2="4" stroke="rgba(255,255,255,0.35)" stroke-width="1" stroke-linecap="round"/>
+  </g>
+  <!-- Sparkle bottom tagline -->
+  <g transform="translate(1090, 460)">
+    <line x1="0" y1="-8" x2="0" y2="8" stroke="rgba(255,255,255,0.5)" stroke-width="1.5" stroke-linecap="round"/>
+    <line x1="-8" y1="0" x2="8" y2="0" stroke="rgba(255,255,255,0.5)" stroke-width="1.5" stroke-linecap="round"/>
+    <line x1="-5" y1="-5" x2="5" y2="5" stroke="rgba(255,255,255,0.3)" stroke-width="1" stroke-linecap="round"/>
+    <line x1="5" y1="-5" x2="-5" y2="5" stroke="rgba(255,255,255,0.3)" stroke-width="1" stroke-linecap="round"/>
+  </g>
+
+  <!-- Confetti dots -->
+  <circle cx="510" cy="540" r="4" fill="rgba(255,245,160,0.55)"/>
+  <circle cx="840" cy="90" r="3" fill="rgba(255,200,240,0.6)"/>
+  <circle cx="980" cy="500" r="4" fill="rgba(255,230,160,0.5)"/>
+  <circle cx="430" cy="100" r="3" fill="rgba(255,210,240,0.55)"/>
+  <circle cx="705" cy="590" r="3.5" fill="rgba(255,245,180,0.5)"/>
+
+  <!-- Confetti rectangles -->
+  <rect x="870" y="560" width="14" height="6" rx="2" fill="rgba(255,230,150,0.5)" transform="rotate(-30, 877, 563)"/>
+  <rect x="460" y="30" width="10" height="5" rx="2" fill="rgba(255,200,230,0.55)" transform="rotate(20, 465, 32)"/>
+  <rect x="1050" y="210" width="12" height="5" rx="2" fill="rgba(255,245,180,0.45)" transform="rotate(-15, 1056, 212)"/>
+
+  <!-- Subtle grid dots (very faint texture) -->
+  <pattern id="dots" x="0" y="0" width="40" height="40" patternUnits="userSpaceOnUse">
+    <circle cx="20" cy="20" r="1" fill="rgba(255,255,255,0.06)"/>
+  </pattern>
+  <rect width="1200" height="630" fill="url(#dots)"/>
+</svg>
+
+<!-- ── Phone shadow ── -->
+<div class="phone-shadow"></div>
+
+<!-- ── Phone mockup ── -->
+<div class="phone-wrap">
+  <div class="phone">
+    <div class="phone-notch"></div>
+
+    <!-- Header -->
+    <div class="phone-header">
+      <div class="phone-header-label">🌸 Bloomday</div>
+      <div class="phone-header-title">Anniversaires à venir</div>
+      <div class="phone-header-sub">Juin · 3 événements proches</div>
+      <div class="today-pill">🎂 Aujourd'hui</div>
+    </div>
+
+    <!-- Body -->
+    <div class="phone-body">
+
+      <!-- Featured birthday today -->
+      <div class="bday-item featured">
+        <div class="avatar" style="background:linear-gradient(135deg,#C2366B,#FF7B55)">S</div>
+        <div class="bday-info">
+          <div class="bday-name">Sophie</div>
+          <div class="bday-date">🎂 Aujourd'hui · 28 ans</div>
+        </div>
+        <div class="bday-tag" style="background:#C2366B;color:white">Auj.</div>
+      </div>
+
+      <div class="bday-item">
+        <div class="avatar" style="background:linear-gradient(135deg,#3D1D6E,#7B52AB)">M</div>
+        <div class="bday-info">
+          <div class="bday-name">Mamie Jeanne</div>
+          <div class="bday-date">Dans 3 jours · 75 ans 🎉</div>
+        </div>
+        <div class="bday-tag" style="background:#F5EFE6;color:#3D1D6E">J+3</div>
+      </div>
+
+      <div class="bday-item">
+        <div class="avatar" style="background:linear-gradient(135deg,#E67E22,#F39C12)">L</div>
+        <div class="bday-info">
+          <div class="bday-name">Lucas</div>
+          <div class="bday-date">28 juin · 30 ans 🎊</div>
+        </div>
+        <div class="bday-tag" style="background:#FFF3E0;color:#E67E22">J+6</div>
+      </div>
+
+      <!-- AI message card -->
+      <div class="ai-preview">
+        <div class="ai-label">✨ Message IA prêt pour Sophie</div>
+        <div class="ai-text">"Joyeux anniversaire Sophie 🌸 Tu mérites tout ce qu'il y a de plus beau..."</div>
+      </div>
+
+    </div>
   </div>
 </div>
-<div class="url">mybloomday.app</div>
+
+<!-- ── Right content ── -->
+<div class="right-content">
+
+  <div class="logo-row">
+    <div class="logo-box">
+      <img src="logo.png" alt="Bloomday">
+    </div>
+    <div class="brand-name">Bloomday</div>
+  </div>
+
+  <div class="tagline">Prends soin de ceux<br>qui comptent<br>pour toi.</div>
+
+  <div class="badges">
+    <div class="badge">✨ Messages IA</div>
+    <div class="badge">🎁 Cadeaux</div>
+    <div class="badge">🌍 Fêtes du monde</div>
+  </div>
+
+  <div class="url-row">mybloomday.app</div>
+
+</div>
+
 </body>
 </html>
