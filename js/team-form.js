@@ -167,7 +167,8 @@ function tfRenderTopbarAvatar() {
   var avatarUrl = '';
   if (TF.user) {
     displayName = (TF.user.user_metadata && (TF.user.user_metadata.full_name || TF.user.user_metadata.name)) || TF.user.email || '';
-    avatarUrl = (TF.user.user_metadata && TF.user.user_metadata.avatar_url) || '';
+    avatarUrl = localStorage.getItem('bdg16_user_photo')
+      || (TF.user.user_metadata && (TF.user.user_metadata.avatar_url || TF.user.user_metadata.picture)) || '';
   } else if (TF.isCoadmin) {
     var savedTs = tfGetSavedTeams();
     var matchedT = savedTs.find(function(t) { return t.is_coadmin && t.token === TF.coadminToken; });
@@ -761,21 +762,42 @@ function tfPrintQR() {
 function tfExportCSV() {
   var completed = TF.members.filter(function(m) { return m.completed; });
   if (!completed.length) { alert('Aucun membre complété pour l\'export.'); return; }
-  var lines = [];
+  var lang = tfLang();
+  var sep = ';';
+  var q = function(v) { return '"' + String(v || '').replace(/"/g, '""') + '"'; };
+  var fmtDate = function(d, mo, y) {
+    if (!d || !mo) return '';
+    var dd = String(d).padStart(2, '0');
+    var mm = String(mo).padStart(2, '0');
+    return y ? dd + '/' + mm + '/' + y : dd + '/' + mm;
+  };
+  var headers = lang === 'fr'
+    ? ['Prénom', 'Nom', 'Email', 'Téléphone', 'Relation', 'Date de naissance', 'Anniversaire de mariage', 'Conjoint(e)', 'Statut']
+    : ['First name', 'Last name', 'Email', 'Phone', 'Relation', 'Birthday', 'Wedding anniversary', 'Spouse', 'Status'];
+  var lines = ['﻿' + headers.map(q).join(sep)];
   completed.forEach(function(m) {
-    var fullName = (m.first_name + ' ' + m.last_name).trim();
-    if (m.birth_day && m.birth_month) {
-      lines.push('"' + fullName.replace(/"/g, '""') + '",' + m.birth_day + ',' + m.birth_month + (m.birth_year ? ',' + m.birth_year : ''));
-    }
-    if (m.married && m.wedding_day && m.wedding_month) {
-      var label = fullName + ' (mariage avec ' + (m.spouse_name || '?') + ')';
-      lines.push('"' + label.replace(/"/g, '""') + '",' + m.wedding_day + ',' + m.wedding_month + (m.wedding_year ? ',' + m.wedding_year : ''));
-    }
+    var phone = ((m.phone_code || '') + (m.phone_number || '')).trim();
+    var birthDate = fmtDate(m.birth_day, m.birth_month, m.birth_year);
+    var weddingDate = (m.married && m.wedding_day && m.wedding_month)
+      ? fmtDate(m.wedding_day, m.wedding_month, m.wedding_year) : '';
+    var status = m.completed ? (lang === 'fr' ? 'Complété' : 'Completed') : (lang === 'fr' ? 'En attente' : 'Pending');
+    lines.push([
+      q(m.first_name || ''),
+      q(m.last_name || ''),
+      q(m.email || ''),
+      q(phone),
+      q(m.relation || ''),
+      q(birthDate),
+      q(weddingDate),
+      q(m.married ? (m.spouse_name || '?') : ''),
+      q(status)
+    ].join(sep));
   });
   var blob = new Blob([lines.join('\n')], { type: 'text/csv;charset=utf-8;' });
   var url = URL.createObjectURL(blob);
   var a = document.createElement('a');
-  a.href = url; a.download = TF.survey.team_name.replace(/\s+/g, '-') + '-bloomday.csv';
+  a.href = url;
+  a.download = (TF.survey ? TF.survey.team_name : 'equipe').replace(/\s+/g, '-') + '-bloomday.csv';
   a.click();
   URL.revokeObjectURL(url);
 }
@@ -1305,7 +1327,8 @@ async function tfLoadCoAdminSection() {
   if (res.error || !res.data) { el.innerHTML = ''; return; }
   var info = res.data;
   if (info.has_active_coadmin) {
-    var displayName = info.co_admin_name || info.invited_email || '';
+    var displayName = info.co_admin_name || info.invited_email
+      || (TF.adminToken ? localStorage.getItem('tf_coadmin_name_' + TF.adminToken) : '') || '';
     el.innerHTML = '<div style="font-size:13px;color:var(--txt2);margin-bottom:10px">'
       + (displayName
         ? '<strong style="color:var(--txt)">' + tfEsc(displayName) + '</strong> · ' + (tfLang() === 'fr' ? 'Co-admin actif' : 'Active co-admin')
