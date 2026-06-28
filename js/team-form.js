@@ -486,6 +486,9 @@ async function tfInitCoadminDashboard() {
   TF.isCoadmin = true;
   tfShow('tf-view-dashboard');
   tfRenderDashboard();
+  tfRenderAddMemberForm();
+  tfStartDashboardPolling();
+  tfSetBodyClass('tf-dashboard-active');
 }
 
 async function tfLoadDashboardMembers() {
