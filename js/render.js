@@ -1708,8 +1708,6 @@ function _buildRefMsg(url, code){
   lines.push('');
   if(code) lines.push(t('refCodeLabel')+' : '+code);
   lines.push('👉 '+url);
-  lines.push('');
-  lines.push('Bloomday · mybloomday.app');
   return lines.join('\n');
 }
 
