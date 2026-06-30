@@ -1326,9 +1326,16 @@ function rMore(){
   h += '<div style="font-size:11px;color:var(--txt2);margin-bottom:10px;line-height:1.8">' + t('refBenefit3') + '<br>' + t('refBenefit10') + '<br>' + t('refBenefit25') + '</div>';
 
   if (refUrl) {
+    // Badge code personnalisé
+    h += '<div style="background:var(--bg3,#f5f5f5);border-radius:12px;padding:10px 14px;margin-bottom:10px;display:flex;align-items:center;justify-content:space-between">';
+    h += '<div><div style="font-size:10px;color:var(--txt2);margin-bottom:2px">' + t('refCodeLabel') + '</div>';
+    h += '<div style="font-size:16px;font-weight:800;color:var(--b1d);letter-spacing:1.5px">' + esc(refCode) + '</div></div>';
+    h += '<button class="btn G sm" style="font-size:11px" onclick="copyRefCode(\'' + esc(refCode) + '\')">📋 ' + t('refCopyCodeBtn') + '</button>';
+    h += '</div>';
+    // Boutons partage
     h += '<div style="display:flex;gap:8px">';
-    h += '<button class="btn G" style="flex:1;font-size:12px" onclick="copyRefLink(\'' + esc(refUrl) + '\')">' + t('refCopyBtn') + '</button>';
-    h += '<button class="btn P" style="flex:1;font-size:12px" onclick="shareRefLink(\'' + esc(refUrl) + '\')">' + t('refShareBtn') + '</button>';
+    h += '<button class="btn G" style="flex:1;font-size:12px" onclick="copyRefLink(\'' + esc(refUrl) + '\',\'' + esc(refCode) + '\')">' + t('refCopyBtn') + '</button>';
+    h += '<button class="btn P" style="flex:1;font-size:12px" onclick="shareRefLink(\'' + esc(refUrl) + '\',\'' + esc(refCode) + '\')">' + t('refShareBtn') + '</button>';
     h += '</div>';
   }
   h += '</div>';
@@ -1685,22 +1692,44 @@ function showAccountPage(){
   showSec('more',4);
 }
 
-function copyRefLink(url){
-  navigator.clipboard.writeText(url).then(function(){
-    showToast(t('refCopied'));
+function copyRefCode(code){
+  navigator.clipboard.writeText(code).then(function(){
+    showToast(t('refCodeCopied')||'✓ Code copié !','success');
   }).catch(function(){
-    prompt('Copiez ce lien :', url);
+    prompt('Votre code :', code);
   });
 }
 
-function shareRefLink(url){
-  var msg='🌸 '+t('refShareMsg')+' : '+url;
+function _buildRefMsg(url, code){
+  var name=(currentUser&&(currentUser.firstName||(currentUser.name||'').split(' ')[0]))||'';
+  var lines=[];
+  if(name) lines.push('🌸 '+name+' '+t('refShareInvite'));
+  else lines.push('🌸 '+t('refShareMsg'));
+  lines.push('');
+  if(code) lines.push(t('refCodeLabel')+' : '+code);
+  lines.push('👉 '+url);
+  lines.push('');
+  lines.push('Bloomday · mybloomday.app');
+  return lines.join('\n');
+}
+
+function copyRefLink(url, code){
+  var msg=_buildRefMsg(url, code||'');
+  navigator.clipboard.writeText(msg).then(function(){
+    showToast(t('refCopied')||'✓ Copié !','success');
+  }).catch(function(){
+    prompt('Copiez ce message :', msg);
+  });
+}
+
+function shareRefLink(url, code){
+  var msg=_buildRefMsg(url, code||'');
   if(navigator.share){
-    navigator.share({title:'Bloomday',text:'🌸 '+t('refShareMsg'),url:url}).catch(function(){
-      navigator.clipboard&&navigator.clipboard.writeText(msg).then(function(){showToast(t('refCopied')||'Lien copié !','success');});
+    navigator.share({title:'Bloomday 🌸',text:msg}).catch(function(){
+      navigator.clipboard&&navigator.clipboard.writeText(msg).then(function(){showToast(t('refCopied')||'✓ Copié !','success');});
     });
   } else {
-    navigator.clipboard&&navigator.clipboard.writeText(msg).then(function(){showToast(t('refCopied')||'Lien copié !','success');});
+    navigator.clipboard&&navigator.clipboard.writeText(msg).then(function(){showToast(t('refCopied')||'✓ Copié !','success');});
   }
 }
 function _drpClear(el){while(el.firstChild)el.removeChild(el.firstChild);}

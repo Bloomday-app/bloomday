@@ -155,6 +155,11 @@ async function doSignupSupabase() {
   var pass = (passEl && passEl.value || '').trim();
   var passConfirm = (confirmEl && confirmEl.value || '').trim();
 
+  // Capturer le code parrain saisi manuellement (priorité sur le localStorage)
+  var refCodeEl=document.getElementById('auth-ref-code');
+  var manualRef=(refCodeEl&&refCodeEl.value||'').trim().toUpperCase().slice(0,12);
+  if(manualRef) localStorage.setItem('bdg16_pending_ref', manualRef);
+
   if (!firstName) { showToast(t('errFirstNameRequired'), 'error'); return; }
   var emailReg = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
   if (!email || !emailReg.test(email)) { showToast(t('errEmailInvalid'), 'error'); return; }

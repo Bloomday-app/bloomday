@@ -394,9 +394,24 @@ async function ensureRefCode(){
   if(stats.code)return stats.code;
   var uid=currentUser&&currentUser.uid;
   if(!uid)return null;
-  var a=new Uint32Array(1);crypto.getRandomValues(a);
-  stats.code='BLD-'+a[0].toString(36).toUpperCase().substring(0,5);
+  // Code personnalisé avec le prénom : SARAH-BLD
+  var firstName=(currentUser.firstName||currentUser.name||'').split(' ')[0];
+  var clean=firstName.normalize('NFD').replace(/[̀-ͯ]/g,'')
+    .toUpperCase().replace(/[^A-Z0-9]/g,'').slice(0,5)||'BLD';
+  // Chercher tous les codes existants basés sur ce prénom
+  var chk=await supabase.from('stats').select('code,user_id').like('code',clean+'%-BLD');
+  var rows=chk.data||[];
+  // Si ce user a déjà un code basé sur son prénom, le récupérer
+  var mine=rows.find(function(r){return r.user_id===uid;});
+  if(mine){stats.code=mine.code;await sg('bdg16_stats',stats);return stats.code;}
+  // Sinon trouver le prochain libre : SARAH-BLD → SARAH2-BLD → SARAH3-BLD
+  var used=new Set(rows.map(function(r){return r.code;}));
+  var code=clean+'-BLD';
+  var n=2;
+  while(used.has(code)){code=clean+n+'-BLD';n++;}
+  stats.code=code;
   await sg('bdg16_stats',stats);
+  await dbSaveStats(uid,stats);
   return stats.code;
 }
 

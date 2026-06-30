@@ -488,6 +488,9 @@ function openAuth(ctx){
   if(ts)ts.style.display='';
   if(tl)tl.style.display='';
   switchAuthTab(ctx||'signup');openOv('m-auth');
+  // Auto-remplir le code parrain si présent en URL ou localStorage
+  var refEl=document.getElementById('auth-ref-code');
+  if(refEl&&!refEl.value){var r=localStorage.getItem('bdg16_pending_ref');if(r)refEl.value=r;}
 }
 function switchAuthTab(tab){
   document.getElementById('auth-form-s').style.display=tab==='signup'?'block':'none';
