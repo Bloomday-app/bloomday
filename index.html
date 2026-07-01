@@ -1397,9 +1397,16 @@ if('serviceWorker' in navigator){
       window.location.reload();
     }
   });
+  var _hiddenAt = null;
+  document.addEventListener('visibilitychange', function() {
+    if (document.visibilityState === 'hidden') {
+      _hiddenAt = Date.now();
+    } else if (document.visibilityState === 'visible' && _hiddenAt && Date.now() - _hiddenAt > 10000) {
+      window.location.reload(true);
+    }
+  });
   window.addEventListener('load', function(){
     navigator.serviceWorker.register('/sw.js', { updateViaCache: 'none' }).then(function(reg){
-      // Force SW update check when app comes back to foreground (iOS PWA resume)
       document.addEventListener('visibilitychange', function() {
         if(document.visibilityState === 'visible') reg.update();
       });
