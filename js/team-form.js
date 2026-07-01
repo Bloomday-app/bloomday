@@ -164,11 +164,10 @@ function tfRenderTopbarAvatar() {
   var el = document.getElementById('tf-topbar-right');
   if (!el) return;
   var displayName = '';
-  var avatarUrl = '';
+  var avatarUrl = localStorage.getItem('bdg16_user_photo') || '';
   if (TF.user) {
     displayName = (TF.user.user_metadata && (TF.user.user_metadata.full_name || TF.user.user_metadata.name)) || TF.user.email || '';
-    avatarUrl = localStorage.getItem('bdg16_user_photo')
-      || (TF.user.user_metadata && (TF.user.user_metadata.avatar_url || TF.user.user_metadata.picture)) || '';
+    avatarUrl = avatarUrl || (TF.user.user_metadata && (TF.user.user_metadata.avatar_url || TF.user.user_metadata.picture)) || '';
   } else if (TF.isCoadmin) {
     var savedTs = tfGetSavedTeams();
     var matchedT = savedTs.find(function(t) { return t.is_coadmin && t.token === TF.coadminToken; });
