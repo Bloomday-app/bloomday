@@ -98,7 +98,7 @@ function rHome(){
     h+='<div style="text-align:center;min-width:58px"><div style="font-family:var(--ff-title);font-size:42px;font-weight:800;color:var(--b4d);line-height:1">'+d+'</div>';
     h+='<div style="font-size:10px;color:var(--b4);margin-top:1px;font-weight:700">'+(d>1?t('daysUnit'):t('dayUnit'))+'</div></div>';
     h+='<div style="flex:1;min-width:0">';
-    h+='<div style="font-size:11px;font-weight:700;color:var(--b4);text-transform:uppercase;letter-spacing:.06em;margin-bottom:4px">'+t('nextEventLabel')+' '+tLbl(nextEv.type)+'</div>';
+    h+='<div style="font-size:11px;font-weight:700;color:var(--b4);text-transform:uppercase;letter-spacing:.06em;margin-bottom:4px">'+t('nextEventLabel')+' '+tLbl(nextEv)+'</div>';
     h+='<div style="display:flex;align-items:center;gap:8px">';
     h+='<div class="av '+AV[idx%4]+'" style="width:34px;height:34px;font-size:11px">'+(nextEv.photo?'<img src="'+nextEv.photo+'" alt="">':ini(nextEv.name))+'</div>';
     h+='<div><div style="font-size:15px;font-weight:700;color:var(--b4d)">'+esc(isWed(nextEv)?wname(nextEv):nextEv.name.split(' ')[0])+'</div>';
@@ -138,8 +138,8 @@ function rHome(){
       h+='<div class="card cr">';
       h+='<div style="display:flex;align-items:center;gap:12px;margin-bottom:10px">';
       h+='<div class="av '+AV[idx%4]+'" style="width:50px;height:50px;font-size:16px">'+(p.photo?'<img src="'+p.photo+'" alt="">':ini(p.name))+'</div>';
-      h+='<div><div style="font-family:var(--ff-title);font-size:18px;font-weight:700;color:var(--b2d)">'+tIco(p.type)+' '+esc(wname(p))+'</div>';
-      h+='<div style="font-size:13px;color:var(--b2);margin-top:2px">'+tLbl(p.type)+' · '+p.day+' '+MN[p.month-1]+(p.year?' '+p.year:'')+(age?' — '+age+' '+t(isWed(p)?'yearsTogether':'yearsOld'):'')+'</div>';
+      h+='<div><div style="font-family:var(--ff-title);font-size:18px;font-weight:700;color:var(--b2d)">'+tIco(p)+' '+esc(wname(p))+'</div>';
+      h+='<div style="font-size:13px;color:var(--b2);margin-top:2px">'+tLbl(p)+' · '+p.day+' '+MN[p.month-1]+(p.year?' '+p.year:'')+(age?' — '+age+' '+t(isWed(p)?'yearsTogether':'yearsOld'):'')+'</div>';
       if(ms)h+='<div style="display:inline-block;background:var(--b4l);color:var(--b4d);font-size:11px;padding:3px 10px;border-radius:20px;margin-top:5px;font-weight:700">'+ms+'</div>';
       h+='</div></div>';
       if(p.phone)h+='<div style="font-size:12px;color:var(--b2);margin-bottom:8px">📞 '+esc(p.phone)+'</div>';
@@ -173,7 +173,7 @@ function rHome(){
         const age=ageBday(p.day,p.month,p.year);
         const idx=m.indexOf(p);
         const isLast=i===nextFew.length-1;
-        const metaLine=tLbl(p.type)+' · '+p.day+' '+MN[p.month-1]+(age?' · '+age+' '+t(isWed(p)?'yearsTogether':'yearsOld'):'');
+        const metaLine=tLbl(p)+' · '+p.day+' '+MN[p.month-1]+(age?' · '+age+' '+t(isWed(p)?'yearsTogether':'yearsOld'):'');
         const dlText=p.day+' '+MN[p.month-1]+(age?' · '+age+' '+t(isWed(p)?'yearsTogether':'yearsOld'):'')+' · '+t('inDays')+' '+d+' '+(d>1?t('daysUnit'):t('dayUnit'));
         h+='<div style="display:flex;gap:14px">';
         // axe timeline
@@ -194,13 +194,13 @@ function rHome(){
           h+='<div style="display:flex;align-items:center;gap:10px;padding:12px 14px">';
           h+='<div class="av '+AV[idx%4]+'" style="width:40px;height:40px;font-size:13px">'+(p.photo?'<img src="'+p.photo+'" alt="">':ini(p.name))+'</div>';
           h+='<div style="flex:1;min-width:0">';
-          h+='<div style="font-size:14px;font-weight:800;color:var(--b1d);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+tIco(p.type)+' '+esc(wname(p))+'</div>';
+          h+='<div style="font-size:14px;font-weight:800;color:var(--b1d);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+tIco(p)+' '+esc(wname(p))+'</div>';
           h+='<div style="font-size:11px;color:var(--b1d);margin-top:2px;opacity:.8;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+metaLine+'</div>';
           h+='</div>';
           h+='</div>';
           h+='<div style="border-top:1px solid var(--brd);padding:12px 14px">';
           h+='<div style="display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr) minmax(0,1fr);gap:6px;margin-bottom:10px">';
-          h+='<button class="btn sm O" style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0;font-size:11px" onclick="genGiftModal(\''+p.id+'\')">🎁 '+t('flowerIdeasBtn')+'</button>';
+          h+='<button class="btn sm O" style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0;font-size:11px" onclick="genGiftModal(\''+p.id+'\')">'+(window.innerWidth<640?t('giftBtn'):'🎁 '+t('flowerIdeasBtn'))+'</button>';
           h+='<button class="btn sm O" style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0;font-size:11px" onclick="genMsg(\''+p.id+'\',\'prep-'+p.id+'\')">'+t('prepareBtn')+'</button>';
           h+='<button class="btn sm O" style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0;font-size:11px" onclick="showFlowerIdeas('+escJs(p.name)+','+escJs(p.type)+')">🌸 '+t('fleurBtn')+'</button>';
           h+='</div>';
@@ -213,8 +213,8 @@ function rHome(){
           h+='<div id="tl-cl-'+p.id+'" class="card" style="padding:10px 14px;display:flex;align-items:center;gap:10px;cursor:pointer" onclick="expandTlCard(\''+p.id+'\')">';
           h+='<div class="av '+AV[idx%4]+'" style="width:32px;height:32px;font-size:10px">'+(p.photo?'<img src="'+p.photo+'" alt="">':ini(p.name))+'</div>';
           h+='<div style="flex:1;min-width:0">';
-          h+='<div style="font-size:13px;font-weight:700;color:var(--txt);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+tIco(p.type)+' '+esc(wname(p))+'</div>';
-          h+='<div style="font-size:11px;color:var(--txt2);margin-top:1px">'+tLbl(p.type)+'</div>';
+          h+='<div style="font-size:13px;font-weight:700;color:var(--txt);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+tIco(p)+' '+esc(wname(p))+'</div>';
+          h+='<div style="font-size:11px;color:var(--txt2);margin-top:1px">'+tLbl(p)+'</div>';
           h+='</div>';
           h+='<span style="font-size:11px;font-weight:700;color:var(--txt2);flex-shrink:0;margin-right:4px">'+d+' '+(d>1?t('daysUnit'):t('dayUnit'))+'</span>';
           h+='<span style="color:var(--txt3);font-size:18px">›</span>';
@@ -224,13 +224,13 @@ function rHome(){
           h+='<div style="display:flex;align-items:center;gap:10px;padding:12px 14px;cursor:pointer" onclick="collapseTlCard(\''+p.id+'\')">';
           h+='<div class="av '+AV[idx%4]+'" style="width:40px;height:40px;font-size:13px">'+(p.photo?'<img src="'+p.photo+'" alt="">':ini(p.name))+'</div>';
           h+='<div style="flex:1;min-width:0">';
-          h+='<div style="font-size:14px;font-weight:800;color:var(--b1d);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+tIco(p.type)+' '+esc(wname(p))+'</div>';
+          h+='<div style="font-size:14px;font-weight:800;color:var(--b1d);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+tIco(p)+' '+esc(wname(p))+'</div>';
           h+='<div style="font-size:11px;color:var(--b1d);margin-top:2px;opacity:.8;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+metaLine+'</div>';
           h+='</div>';
           h+='</div>';
           h+='<div style="border-top:1px solid var(--brd);padding:12px 14px">';
           h+='<div style="display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr) minmax(0,1fr);gap:6px;margin-bottom:10px">';
-          h+='<button class="btn sm O" style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0;font-size:11px" onclick="genGiftModal(\''+p.id+'\')">🎁 '+t('flowerIdeasBtn')+'</button>';
+          h+='<button class="btn sm O" style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0;font-size:11px" onclick="genGiftModal(\''+p.id+'\')">'+(window.innerWidth<640?t('giftBtn'):'🎁 '+t('flowerIdeasBtn'))+'</button>';
           h+='<button class="btn sm O" style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0;font-size:11px" onclick="genMsg(\''+p.id+'\',\'prep-'+p.id+'\')">'+t('prepareBtn')+'</button>';
           h+='<button class="btn sm O" style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0;font-size:11px" onclick="showFlowerIdeas('+escJs(p.name)+','+escJs(p.type)+')">🌸 '+t('fleurBtn')+'</button>';
           h+='</div>';
@@ -255,8 +255,8 @@ function rHome(){
       h+='<div style="display:flex;align-items:center;gap:10px">';
       h+='<div class="av '+AV[idx%4]+'">'+(p.photo?'<img src="'+p.photo+'" alt="">':ini(p.name))+'</div>';
       h+='<div style="flex:1;min-width:0">';
-      h+='<div style="font-size:14px;font-weight:700;color:var(--b1d);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+tIco(p.type)+' '+esc(wname(p))+'</div>';
-      h+='<div style="font-size:11px;color:var(--b1d);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+tLbl(p.type)+' · '+p.day+' '+MN[p.month-1]+(age?' — '+age+' '+t(isWed(p)?'yearsTogether':'yearsOld'):'')+'</div>';
+      h+='<div style="font-size:14px;font-weight:700;color:var(--b1d);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+tIco(p)+' '+esc(wname(p))+'</div>';
+      h+='<div style="font-size:11px;color:var(--b1d);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+tLbl(p)+' · '+p.day+' '+MN[p.month-1]+(age?' — '+age+' '+t(isWed(p)?'yearsTogether':'yearsOld'):'')+'</div>';
       h+='</div>';
       h+='<span class="pbdg pbs" style="flex-shrink:0">'+t('inDays')+' '+d+' '+(d>1?t('daysUnit'):t('dayUnit'))+'</span>';
       h+='</div>';
@@ -278,8 +278,8 @@ function rHome(){
       h+='<div class="me">';
       h+='<div class="med'+(isPast&&!isTod?' past':'')+'">'+p.day+'</div>';
       h+='<div style="flex:1;min-width:0">';
-      h+='<div style="font-size:13px;font-weight:'+(isTod?700:500)+';color:'+(isTod?'var(--b2d)':'var(--txt)')+'">'+tIco(p.type)+' '+esc(wname(p))+'</div>';
-      h+='<div style="font-size:11px;color:var(--txt2)">'+tLbl(p.type)+(age?' · '+age+' '+t(isWed(p)?'yearsTogether':'yearsOld'):'')+'</div>';
+      h+='<div style="font-size:13px;font-weight:'+(isTod?700:500)+';color:'+(isTod?'var(--b2d)':'var(--txt)')+'">'+tIco(p)+' '+esc(wname(p))+'</div>';
+      h+='<div style="font-size:11px;color:var(--txt2)">'+tLbl(p)+(age?' · '+age+' '+t(isWed(p)?'yearsTogether':'yearsOld'):'')+'</div>';
       h+='</div>';
       if(isTod)h+='<span class="pbdg pbt">'+t('todayLabel')+'</span>';
       h+='</div>';
@@ -382,7 +382,7 @@ function rMembers(){
     const age=ageBday(p.day,p.month,p.year),ms=MS[age],isEd=editId===p.id;
     const h2=hist[String(p.id)]||[];const isBiz=p.type==='work',ancOk=isBiz&&age&&[1,3,5,10,15,20,25,30].includes(age);
     h+=`<div class="prow"><div class="av ${isBiz?'av4':AV[idx%4]}">${p.photo?`<img src="${p.photo}" alt="">`:ini(p.name)}</div>
-    <div class="pinfo"><div class="pname">${tIco(p.type)} ${esc(wname(p))}${p.incomplete?`<span style="display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--b2);margin-left:5px;vertical-align:middle"></span>`:''}${tod?'<span class="pbdg pbt">'+t('todayLabel')+'</span>':''}${soon&&!tod?`<span class="pbdg pbs">${t('inDays')} ${days}j</span>`:''}${ms&&(tod||soon)&&!isBiz?'<span class="pbdg pbk">'+t('yearsOld')+'</span>':''}</div>
+    <div class="pinfo"><div class="pname">${tIco(p)} ${esc(wname(p))}${p.incomplete?`<span style="display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--b2);margin-left:5px;vertical-align:middle"></span>`:''}${tod?'<span class="pbdg pbt">'+t('todayLabel')+'</span>':''}${soon&&!tod?`<span class="pbdg pbs">${t('inDays')} ${days}j</span>`:''}${ms&&(tod||soon)&&!isBiz?'<span class="pbdg pbk">'+t('yearsOld')+'</span>':''}</div>
     <div class="pmeta">${p.day} ${MN[p.month-1]}${p.year?' '+p.year:''}${age&&!isBiz?' — '+age+' '+t(isWed(p)?'yearsTogether':'yearsOld'):isBiz&&age?' — '+age+' '+t('yearsOld'):''}</div>
     ${ancOk?`<div style="font-size:11px;color:var(--bizd);margin-top:2px;font-weight:700">🏆 ${age} ${t('yearsOld')}</div>`:''}
     ${ms&&!isBiz?`<div style="font-size:11px;color:var(--b4d);margin-top:2px;font-weight:600">${ms}</div>`:''}
@@ -501,7 +501,7 @@ function rEvents(){
   });
   m.forEach(function(p){
     var dl=daysTill(p.day,p.month);
-    if(dl>=0)items.push({icon:tIco(p.type),name:p.name,day:p.day,month:p.month,dl:dl});
+    if(dl>=0)items.push({icon:tIco(p),name:p.name,day:p.day,month:p.month,dl:dl});
   });
   items.sort(function(a,b){return a.dl-b.dl;});
   items=items.slice(0,10);
@@ -553,7 +553,7 @@ function showEvtDay(day,month,members,allFetes,panel){
   bdaysDay.forEach(function(p){
     var row=document.createElement('div');
     row.style.cssText='display:flex;align-items:center;gap:8px;padding:6px 0;border-bottom:1px solid var(--brd)';
-    var ico=document.createElement('span');ico.textContent=tIco(p.type);ico.style.cssText='font-size:16px';
+    var ico=document.createElement('span');ico.textContent=tIco(p);ico.style.cssText='font-size:16px';
     var nm=document.createElement('span');nm.style.cssText='font-size:13px;font-weight:600;color:var(--b2d);flex:1';nm.textContent=p.name;
     var age=ageBday(p.day,p.month,p.year);
     if(age){var ag=document.createElement('span');ag.style.cssText='font-size:11px;color:var(--txt2)';ag.textContent=age+' '+t('yearsOld');row.appendChild(ag);}
@@ -825,7 +825,7 @@ function rCal(){
       var tod=isToday(p.day,p.month);
       h+='<div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--brd)">';
       h+='<div style="min-width:32px;text-align:center;font-size:14px;font-weight:700;color:'+(tod?'var(--b2d)':'var(--b1d)')+'">'+p.day+'</div>';
-      h+='<div style="flex:1"><div style="font-size:14px;font-weight:600">'+tIco(p.type)+' '+esc(wname(p))+(tod?'<span class="pbdg pbt" style="margin-left:6px">'+t('calendarToday')+'</span>':'')+'</div>';
+      h+='<div style="flex:1"><div style="font-size:14px;font-weight:600">'+tIco(p)+' '+esc(wname(p))+(tod?'<span class="pbdg pbt" style="margin-left:6px">'+t('calendarToday')+'</span>':'')+'</div>';
       if(age)h+='<div style="font-size:12px;color:var(--txt2)">'+age+' '+t(isWed(p)?'yearsTogether':'yearsOld')+'</div>';
       h+='</div></div>';
     });
@@ -963,7 +963,7 @@ function renderSideCalendar() {
 
   var events = [];
   monthBdays.forEach(function(p) {
-    events.push({ d: p.day, type: 'bday', name: tIco(p.type) + ' ' + p.name });
+    events.push({ d: p.day, type: 'bday', name: tIco(p) + ' ' + p.name });
   });
   monthFetes.forEach(function(f) {
     events.push({ d: f.d, type: 'fete', name: f.i + ' ' + f.n });
@@ -1055,12 +1055,12 @@ function showDayDetails(day, month, members) {
 
     var nm = document.createElement('div');
     nm.style.cssText = 'font-size:13px;font-weight:700;color:var(--txt)';
-    nm.textContent = tIco(p.type) + ' ' + wname(p);
+    nm.textContent = tIco(p) + ' ' + wname(p);
 
     var sub = document.createElement('div');
     sub.style.cssText = 'font-size:11px;color:var(--txt2);margin-top:1px';
     var age = ageBday(p.day, p.month, p.year);
-    sub.textContent = tLbl(p.type) + ' · ' + p.day + ' ' + MN[p.month - 1] + (p.year ? ' ' + p.year : '') + (age ? ' — ' + age + ' ' + t(isWed(p)?'yearsTogether':'yearsOld') : '');
+    sub.textContent = tLbl(p) + ' · ' + p.day + ' ' + MN[p.month - 1] + (p.year ? ' ' + p.year : '') + (age ? ' — ' + age + ' ' + t(isWed(p)?'yearsTogether':'yearsOld') : '');
 
     var dl = daysTill(p.day, p.month);
     var dlEl = document.createElement('div');
@@ -1549,7 +1549,7 @@ async function genGiftModal(id){
   el.innerHTML='<div style="text-align:center;padding:24px"><div class="ld"></div></div>';
   openOv('mgift');
   var age=ageBday(p.day,p.month,p.year);
-  var rel=tLbl(p.type)||'';
+  var rel=tLbl(p)||'';
   var lang=window.__aiLang||'français';
   var genderTxt=p.gender==='femme'?'une femme':p.gender==='homme'?'un homme':p.gender==='enfant'?'un enfant':'';
   var ctx=p.name+(age?' ('+age+' ans)':'')+(genderTxt?', '+genderTxt:'')+(rel?', occasion : '+rel:'')+(p.note?', intérêts et personnalité : '+p.note:'');
@@ -1739,7 +1739,7 @@ function _drpMemberRow(el,p){
   if(p.photo){var img=document.createElement('img');img.src=p.photo;img.alt='';av.appendChild(img);}
   else{av.textContent=ini(p.name);}
   var info=document.createElement('div');info.style.cssText='flex:1;min-width:0';
-  var nm=document.createElement('div');nm.className='drp-name';nm.textContent=tIco(p.type)+' '+p.name;
+  var nm=document.createElement('div');nm.className='drp-name';nm.textContent=tIco(p)+' '+p.name;
   var d=daysTill(p.day,p.month);
   var dLabel=d===0?t('todayLabel'):d===1?t('tomorrowLabel'):t('inDays')+' '+d+'j';
   var dt=document.createElement('div');dt.className='drp-date';dt.textContent=MN[p.month-1]+' '+p.day+' · '+dLabel;

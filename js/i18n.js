@@ -5690,8 +5690,8 @@ function daysTill(d,m){const n=new Date(),x=new Date(n.getFullYear(),m-1,d);if(x
 function easter(y){const a=y%19,b=Math.floor(y/100),c=y%100,d=Math.floor(b/4),e=b%4,f=Math.floor((b+8)/25),g=Math.floor((b-f+1)/3),h=(19*a+b-d-g+15)%30,i=Math.floor(c/4),k=c%4,l=(32+2*e+2*i-h-k)%7,mm=Math.floor((a+11*h+22*l)/451);return{m:Math.floor((h+l-7*mm+114)/31),d:((h+l-7*mm+114)%31)+1};}
 function ramadan(y){return({2025:{m:3,d:1},2026:{m:2,d:18},2027:{m:2,d:8},2028:{m:1,d:28}})[y]||{m:3,d:1};}
 function cny(y){return({2025:{m:1,d:29},2026:{m:2,d:17},2027:{m:2,d:6},2028:{m:1,d:26}})[y]||{m:2,d:1};}
-const tIco=tp=>({birthday:'🎂',wedding:'💍',work:'💼',custom:'⭐',other:'✏️'})[tp]||'✏️';
-const tLbl=tp=>({birthday:t('evtBirthday'),wedding:t('evtWedding'),work:t('evtWork'),custom:t('evtCustom')})[tp]||(tp&&tp!=='other'?tp:t('evtOther'));
+const tIco=function(tp){if(tp&&typeof tp==='object'){var t2=tp.type;var isW=(t2==='wedding')||(typeof tp.name==='string'&&tp.name.indexOf('(mariage avec')!==-1);return isW?'💍':({birthday:'🎂',work:'💼',custom:'⭐',other:'✏️'}[t2]||'✏️');}return ({birthday:'🎂',wedding:'💍',work:'💼',custom:'⭐',other:'✏️'})[tp]||'✏️';};
+const tLbl=function(tp){if(tp&&typeof tp==='object'){var t2=tp.type;var isW=(t2==='wedding')||(typeof tp.name==='string'&&tp.name.indexOf('(mariage avec')!==-1);if(isW)return t('evtWedding');return ({birthday:t('evtBirthday'),work:t('evtWork'),custom:t('evtCustom')})[t2]||(t2&&t2!=='other'?t2:t('evtOther'));}return ({birthday:t('evtBirthday'),wedding:t('evtWedding'),work:t('evtWork'),custom:t('evtCustom')})[tp]||(tp&&tp!=='other'?tp:t('evtOther'));};
 const ini=n=>(n||'').trim().split(' ').filter(Boolean).map(w=>w[0]).slice(0,2).join('').toUpperCase()||'?';
 const esc=s=>(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#x27;');
 

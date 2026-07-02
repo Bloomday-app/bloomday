@@ -23,6 +23,7 @@ var TF = {
   selectedGender: '',
   pollInterval: null,
   submitting: false,
+  importedTokens: new Set(),
   user: null,
   _coAdminShareToken: null,
   coAdminName: ''
@@ -829,6 +830,10 @@ function tfUpdateLocalStorage(groupId, groupName, rows) {
 
 // ── IMPORT UNITAIRE ──
 async function tfImportMember(memberToken) {
+  if (TF.importedTokens.has(memberToken)) {
+    tfToast(tfT('alreadyImported'));
+    return;
+  }
   var m = TF.members.find(function(x) { return x.token === memberToken; });
   if (!m || !m.completed) return;
 
@@ -860,6 +865,14 @@ async function tfImportMember(memberToken) {
   var iRes = await supabase.from('members').insert(rows);
   if (iRes.error) { alert('Erreur import : ' + iRes.error.message); return; }
   tfUpdateLocalStorage(groupId, TF.survey.team_name, rows);
+  TF.importedTokens.add(memberToken);
+  var importBtn = document.querySelector('[onclick*="tfImportMember"][data-token="' + memberToken + '"]');
+  if (importBtn) {
+    importBtn.disabled = true;
+    importBtn.style.cssText = 'grid-column:span 2;background:#ddd;border-color:#aaa;color:#888;font-weight:700;cursor:default';
+    importBtn.textContent = tfT('alreadyImported');
+    importBtn.removeAttribute('onclick');
+  }
   tfToast(tfT('syncSuccess').replace('%d', rows.length));
 }
 
