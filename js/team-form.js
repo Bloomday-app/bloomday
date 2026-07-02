@@ -627,7 +627,9 @@ function tfRenderMemberCard(m) {
     + '<button class="share-btn" data-token="' + m.token + '" onclick="tfShareSMS(this.dataset.token)">' + tfT('sendSMS') + '</button>'
     + '<button class="share-btn" data-token="' + m.token + '" onclick="tfShareCopy(this.dataset.token)">' + tfT('copyLink') + '</button>'
     + '<button class="share-btn" data-token="' + m.token + '" onclick="tfShowQR(this.dataset.token)">' + tfT('qrCode') + '</button>'
-    + (m.completed ? '<button class="share-btn" data-token="' + m.token + '" onclick="tfImportMember(this.dataset.token)" style="grid-column:span 2;background:#E3F9F0;border-color:#0A5C3A;color:#0A5C3A;font-weight:700">' + tfT('importMember') + '</button>' : '')
+    + (m.completed ? (TF.importedTokens.has(m.token)
+        ? '<button class="share-btn" disabled style="grid-column:span 2;background:#ddd;border-color:#aaa;color:#888;font-weight:700;cursor:default">' + tfT('alreadyImported') + '</button>'
+        : '<button class="share-btn" data-token="' + m.token + '" onclick="tfImportMember(this.dataset.token)" style="grid-column:span 2;background:#E3F9F0;border-color:#0A5C3A;color:#0A5C3A;font-weight:700">' + tfT('importMember') + '</button>') : '')
     + '</div>'
     + '</div>'
     + (TF.isCoadmin ? '' : '<div class="tf-dash-card-del" data-token="' + m.token + '" data-name="' + fullName + '" onclick="tfOpenRemoveModal(this.dataset.token,this.dataset.name)">' + tfT('tfRemoveMemberBtn') + '</div>')
