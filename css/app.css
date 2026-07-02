@@ -581,7 +581,7 @@ details[open] summary::after{content:" ▾"}
 }
 
 /* ── SIDEBAR (desktop only) ── */
-.desktop-sidebar{display:flex;flex-direction:column;align-items:flex-start;width:140px;flex-shrink:0;background:var(--txt);min-height:100vh;padding:12px 0 calc(env(safe-area-inset-bottom) + 44px);position:sticky;top:0;height:100vh;z-index:200;transition:width .22s ease;overflow:hidden}
+.desktop-sidebar{display:flex;flex-direction:column;align-items:flex-start;width:140px;flex-shrink:0;background:var(--txt);min-height:100vh;padding:12px 0 calc(env(safe-area-inset-bottom) + 64px);position:sticky;top:0;height:100vh;z-index:200;transition:width .22s ease;overflow:hidden}
 .desktop-sidebar.collapsed{width:52px}
 .desktop-sidebar.collapsed .dsb-btn span,.desktop-sidebar.collapsed .dsb-logo>span,.desktop-sidebar.collapsed .lang-exp{display:none}
 .desktop-sidebar.collapsed .dsb-logo{justify-content:center;padding:8px 0}
