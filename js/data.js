@@ -1,17 +1,21 @@
 const FALLBACK={
   birthday:[
-    'Joyeux anniversaire ! Que cette journée soit pleine de joie, de rires et de bons moments partagés. 🎂🌸',
-    'En ce jour spécial, toutes mes pensées se tournent vers toi pour te souhaiter un anniversaire inoubliable ! ✨🎉',
-    'Que cette nouvelle année de vie t\'apporte santé, bonheur et tout ce dont tu rêves. Joyeux anniversaire ! 🌺💫',
+    'Joyeux anniversaire ! Je pense fort à toi en ce jour si particulier. J\'espère que tu passes une journée aussi belle et lumineuse que tu l\'es. Que cette nouvelle année t\'apporte exactement ce dont tu as besoin. 🎂🌸',
+    'Aujourd\'hui c\'est ton jour, et je voulais juste te dire à quel point je suis heureux·se de t\'avoir dans ma vie. Tu mérites tout le bonheur du monde. Passe une journée inoubliable entouré·e de ceux que tu aimes. 🌺✨',
+    'Un an de plus, et tu n\'as jamais été aussi toi-même — c\'est ce que j\'admire le plus chez toi. Joyeux anniversaire ! Que cette année soit riche en belles surprises, en rires et en moments qui comptent vraiment. 💫🎉',
+  ],
+  wedding:[
+    'Joyeux anniversaire de mariage ! Vous formez un couple qui inspire — votre complicité, votre façon d\'être là l\'un pour l\'autre, c\'est quelque chose de rare et de beau. Nous sommes si heureux de célébrer cette nouvelle année avec vous. Que votre amour continue de s\'épanouir encore longtemps. 💍🌸',
+    'Quel bonheur de penser à vous aujourd\'hui ! Chaque année qui passe semble avoir renforcé ce lien magnifique que vous partagez. Merci d\'être un exemple de ce que l\'amour peut construire avec du temps, de la confiance et de la tendresse. Joyeux anniversaire à vous deux ! 💕✨',
   ],
   fete:[
-    'À l\'occasion de cette belle fête, je te souhaite une journée lumineuse et pleine de bonheur. 🎊',
-    'Que cette célébration t\'apporte joie et sérénité. Profite pleinement de chaque instant ! 🌸✨',
+    'En ce jour de fête, toutes mes pensées sont pour toi. J\'espère que cette journée sera à la hauteur de ce que tu mérites — lumineuse, joyeuse et pleine de belles personnes. Profite de chaque instant ! 🎊🌸',
+    'Quelle belle occasion de célébrer et de partager un moment de joie ! Je te souhaite une fête mémorable, entouré·e de ceux qui comptent vraiment pour toi. 🥳✨',
   ],
 };
 function getFallback(type){
   if(typeof t==='function'){
-    var keys=type==='fete'?['fallbackFete1','fallbackFete2']:['fallbackBirthday1','fallbackBirthday2','fallbackBirthday3'];
+    var keys=type==='fete'?['fallbackFete1','fallbackFete2']:type==='wedding'?['fallbackWedding1','fallbackWedding2']:['fallbackBirthday1','fallbackBirthday2','fallbackBirthday3'];
     var msgs=keys.map(function(k){var v=t(k);return v!==k?v:null;}).filter(Boolean);
     if(msgs.length)return msgs[Math.floor(Math.random()*msgs.length)];
   }
