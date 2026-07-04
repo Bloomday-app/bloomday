@@ -1505,10 +1505,10 @@ function showTonePicker(id,elId){
   h+='<div style="font-size:11px;color:var(--txt2);margin-bottom:8px">'+t('chooseTone')+'</div>';
   h+='<div class="chips" style="margin-bottom:8px">';
   allTpl.forEach(function(tp){
-    h+='<button class="chip" onclick="genMsg(\''+id+'\',\''+elId+'\',\''+tp.id+'\')">'+tp.e+' '+tp.n+'</button>';
+    h+='<button class="chip" onclick="genMsg('+escJs(id)+','+escJs(elId)+','+escJs(tp.id)+')">'+esc(tp.e)+' '+esc(tp.n)+'</button>';
   });
   h+='</div>';
-  h+='<button class="btn G sm" style="width:100%" onclick="genMsg(\''+id+'\',\''+elId+'\')">'+t('generateDefault')+' →</button>';
+  h+='<button class="btn G sm" style="width:100%" onclick="genMsg('+escJs(id)+','+escJs(elId)+')">'+t('generateDefault')+' →</button>';
   h+='</div>';
   el.innerHTML=h;
 }
