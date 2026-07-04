@@ -1519,11 +1519,12 @@ async function genGift(id,elId){
   el.innerHTML='<div style="text-align:center;padding:12px"><div class="ld"></div></div>';
   var age=ageBday(p.day,p.month,p.year);
   var lang=window.__aiLang||'français';
-  var genderTxt=p.gender==='F'?'femme':p.gender==='M'?'homme':p.gender==='Kid'?'enfant':'';
-  var prompt='Tu es un assistant cadeaux. Génère en '+lang+' exactement 3 idées cadeaux pour '+p.name+(age?' ('+age+' ans)':'')+(genderTxt?', '+genderTxt:'')+(p.note?', intérêts : '+p.note:'')+'. Réponds UNIQUEMENT en JSON valide, format : [{"emoji":"...","nom":"...","desc":"courte description","prix":"fourchette prix","search":"mot-clé court pour Amazon"}]. Juste le JSON, sans explication.';
+  var genderTxt=p.gender==='femme'?'une femme':p.gender==='homme'?'un homme':p.gender==='enfant'?'un enfant':'';
+  var tip=p.note?', intérêts : '+p.note:'';
+  var prompt='Tu es un expert en idées cadeaux. Génère en '+lang+' exactement 3 idées cadeaux UNIQUES et CRÉATIFS pour '+p.name+(age?' ('+age+' ans)':'')+(genderTxt?', '+genderTxt:'')+tip+(tip?'. Inspire-toi de ces intérêts.':'. Aucun intérêt connu : propose des idées originales et mémorables, évite les cadeaux génériques.')+' Réponds UNIQUEMENT en JSON valide, format : [{"emoji":"...","nom":"...","desc":"courte description","prix":"fourchette prix","search":"mot-clé court pour Amazon"}]. Juste le JSON, sans explication.';
   try{
     var ac2=new AbortController();var tid2=setTimeout(function(){ac2.abort();},15000);
-    var resp=await fetch('/.netlify/functions/generate-message',{method:'POST',headers:await getAuthHeaders(),body:JSON.stringify({prompt:prompt,plan:plan}),signal:ac2.signal});
+    var resp=await fetch('/.netlify/functions/generate-message',{method:'POST',headers:await getAuthHeaders(),body:JSON.stringify({prompt:prompt,plan:plan,temperature:1.0}),signal:ac2.signal});
     clearTimeout(tid2);
     var data=await resp.json();
     if(!resp.ok){console.error('[AI]',resp.status,data.error);throw new Error(data.error||'HTTP '+resp.status);}
@@ -1537,7 +1538,7 @@ async function genGift(id,elId){
         h+='<div style="background:var(--bg2,#f7f7f7);border-radius:12px;padding:10px 12px">';
         h+='<div style="font-size:15px;margin-bottom:2px">'+esc(g.emoji||'🎁')+' <strong>'+esc(g.nom)+'</strong> <span style="color:var(--b2,#e8a0b0);font-size:12px">'+esc(g.prix)+'</span></div>';
         h+='<div style="font-size:12px;color:var(--txt2,#888);margin-bottom:6px">'+esc(g.desc)+'</div>';
-        h+='<a href="'+link+'" target="_blank" rel="noopener" style="display:inline-block;font-size:12px;color:var(--b2,#e8a0b0);text-decoration:none;background:var(--bg3,#fff);border:1px solid var(--brd,#eee);padding:4px 10px;border-radius:6px">🛒 '+t('giftAmazonBtn')+'</a>';
+        h+='<a href="'+link+'" target="_blank" rel="noopener" style="display:inline-block;font-size:12px;color:var(--b1d,#D94848);text-decoration:none;background:#fff;border:1px solid var(--brd,#eee);padding:4px 10px;border-radius:6px">🛒 '+t('giftAmazonBtn')+'</a>';
         h+='</div>';
       });
       h+='</div>';
@@ -1573,11 +1574,16 @@ async function genGiftModal(id){
   var rel=tLbl(p)||'';
   var lang=window.__aiLang||'français';
   var genderTxt=p.gender==='femme'?'une femme':p.gender==='homme'?'un homme':p.gender==='enfant'?'un enfant':'';
-  var ctx=p.name+(age?' ('+age+' ans)':'')+(genderTxt?', '+genderTxt:'')+(rel?', occasion : '+rel:'')+(p.note?', intérêts et personnalité : '+p.note:'');
-  var prompt='Tu es un expert en idées cadeaux personnalisées. Génère en '+lang+' exactement 6 idées cadeaux très spécifiques, créatives et parfaitement adaptées à cette personne : '+ctx+'. Tiens compte de l\'âge, du genre, de l\'occasion et surtout des intérêts mentionnés pour proposer des cadeaux vraiment pertinents. Évite les cadeaux trop génériques. Réponds UNIQUEMENT en JSON valide, format : [{"emoji":"...","nom":"...","desc":"description courte et personnalisée","prix":"fourchette prix","search":"mot-clé précis pour Amazon"}]. Juste le JSON, sans explication.';
+  var MONTHS=['janvier','février','mars','avril','mai','juin','juillet','août','septembre','octobre','novembre','décembre'];
+  var birthMonth=p.month?MONTHS[p.month-1]:'';
+  var ctx=p.name+(age?' ('+age+' ans)':'')+(genderTxt?', '+genderTxt:'')+(birthMonth?', né·e en '+birthMonth:'')+(rel?', occasion : '+rel:'');
+  var personTip=p.note
+    ?'Intérêts et personnalité : '+p.note+'. Inspire-toi PARTICULIÈREMENT de ces infos pour rendre les cadeaux vraiment sur mesure.'
+    :'Aucun intérêt connu. Sois particulièrement original : évite absolument les cadeaux génériques (parfum générique, chocolat, carte cadeau, bougie, agenda). Propose des idées insolites et mémorables adaptées au profil (âge, genre, saison de naissance, occasion).';
+  var prompt='Tu es un expert en idées cadeaux personnalisées. Génère en '+lang+' exactement 6 idées cadeaux UNIQUES pour cette personne : '+ctx+'. '+personTip+' Chaque idée doit être différente des clichés habituels. Réponds UNIQUEMENT en JSON valide, format : [{"emoji":"...","nom":"...","desc":"description courte et personnalisée","prix":"fourchette prix","search":"mot-clé précis pour Amazon"}]. Juste le JSON, sans explication.';
   try{
     var ac=new AbortController();var tid=setTimeout(function(){ac.abort();},15000);
-    var resp=await fetch('/.netlify/functions/generate-message',{method:'POST',headers:await getAuthHeaders(),body:JSON.stringify({prompt:prompt,plan:plan}),signal:ac.signal});
+    var resp=await fetch('/.netlify/functions/generate-message',{method:'POST',headers:await getAuthHeaders(),body:JSON.stringify({prompt:prompt,plan:plan,temperature:1.0}),signal:ac.signal});
     clearTimeout(tid);
     var data=await resp.json();
     if(!resp.ok)throw new Error(data.error||'HTTP '+resp.status);
@@ -1594,7 +1600,7 @@ async function genGiftModal(id){
         h+='<div style="font-size:15px;margin-bottom:3px">'+esc(g.emoji||'🎁')+' <strong>'+esc(g.nom)+'</strong> <span style="color:var(--b2,#e8a0b0);font-size:12px">'+esc(g.prix)+'</span></div>';
         h+='<div style="font-size:12px;color:var(--txt2,#888);margin-bottom:8px">'+esc(g.desc)+'</div>';
         h+='<div style="display:flex;gap:8px;flex-wrap:wrap">';
-        h+='<a href="'+amazonUrl+'" target="_blank" rel="noopener noreferrer" style="font-size:12px;color:var(--b2,#e8a0b0);text-decoration:none;background:var(--bg3,#fff);border:1px solid var(--brd,#eee);padding:4px 10px;border-radius:6px">🛒 '+t('giftAmazonBtn')+'</a>';
+        h+='<a href="'+amazonUrl+'" target="_blank" rel="noopener noreferrer" style="font-size:12px;color:var(--b1d,#D94848);text-decoration:none;background:#fff;border:1px solid var(--brd,#eee);padding:4px 10px;border-radius:6px">🛒 '+t('giftAmazonBtn')+'</a>';
         h+='<button id="'+gid+'" class="btn sm" style="font-size:12px;padding:4px 10px" onclick="saveGiftIdea('+Number(id)+','+Number(i)+',\''+gid+'\')">'+t('saveBtn')+'</button>';
         h+='</div></div>';
       });
