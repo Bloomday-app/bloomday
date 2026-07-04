@@ -201,7 +201,7 @@ function rHome(){
           h+='<div style="border-top:1px solid var(--brd);padding:12px 14px">';
           h+='<div style="display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr) minmax(0,1fr);gap:6px;margin-bottom:10px">';
           h+='<button class="btn sm O" style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0;font-size:11px" onclick="genGiftModal(\''+p.id+'\')">'+(window.innerWidth<640?t('giftBtn'):'🎁 '+t('flowerIdeasBtn'))+'</button>';
-          h+='<button class="btn sm O" style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0;font-size:11px" onclick="genMsg(\''+p.id+'\',\'prep-'+p.id+'\')">'+t('prepareBtn')+'</button>';
+          h+='<button class="btn sm O" style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0;font-size:11px" onclick="showTonePicker(\''+p.id+'\',\'prep-'+p.id+'\')">'+t('prepareBtn')+'</button>';
           h+='<button class="btn sm O" style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0;font-size:11px" onclick="showFlowerIdeas('+escJs(p.name)+','+escJs(p.type)+')">🌸 '+t('fleurBtn')+'</button>';
           h+='</div>';
           h+='<div id="prep-'+p.id+'"></div>';
@@ -231,7 +231,7 @@ function rHome(){
           h+='<div style="border-top:1px solid var(--brd);padding:12px 14px">';
           h+='<div style="display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr) minmax(0,1fr);gap:6px;margin-bottom:10px">';
           h+='<button class="btn sm O" style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0;font-size:11px" onclick="genGiftModal(\''+p.id+'\')">'+(window.innerWidth<640?t('giftBtn'):'🎁 '+t('flowerIdeasBtn'))+'</button>';
-          h+='<button class="btn sm O" style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0;font-size:11px" onclick="genMsg(\''+p.id+'\',\'prep-'+p.id+'\')">'+t('prepareBtn')+'</button>';
+          h+='<button class="btn sm O" style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0;font-size:11px" onclick="showTonePicker(\''+p.id+'\',\'prep-'+p.id+'\')">'+t('prepareBtn')+'</button>';
           h+='<button class="btn sm O" style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0;font-size:11px" onclick="showFlowerIdeas('+escJs(p.name)+','+escJs(p.type)+')">🌸 '+t('fleurBtn')+'</button>';
           h+='</div>';
           h+='<div id="prep-'+p.id+'"></div>';
@@ -1458,7 +1458,7 @@ function buildMsgPrompt(p, tpl, age, isTod, lang, prevMsgs) {
   return lines.join('\n');
 }
 
-async function genMsg(id,elId){
+async function genMsg(id,elId,tplId){
   var el=document.getElementById(elId);if(!el)return;
   var p=mems().find(function(x){return String(x.id)===String(id);});if(!p)return;
   var pl=PL();
@@ -1473,7 +1473,7 @@ async function genMsg(id,elId){
     return;
   }
   el.innerHTML='<div style="text-align:center;padding:12px"><div class="ld"></div></div>';
-  var tpl=DTPL.find(function(x){return x.id===actTpl;})||DTPL[0];
+  var tpl=DTPL.find(function(x){return x.id===(tplId||actTpl);})||DTPL[0];
   var age=ageBday(p.day,p.month,p.year);
   var isTod=isToday(p.day,p.month);
   var prevMsgs=(hist[String(id)]||[]).slice(-2);
@@ -1490,12 +1490,27 @@ async function genMsg(id,elId){
     stats.celeb=(stats.celeb||0)+1;
     el.innerHTML='<div class="ob-msg" style="font-size:13px">'+esc(msg)+'</div>'+_renderMsgActions(elId,msg,p.phone);
   }catch(e){
-    el.innerHTML='<div style="font-size:12px;color:var(--txt2);padding:8px;white-space:pre-wrap">'+esc(getFallback('birthday'))+'</div>';
+    var fbType=(p.type==='wedding')?'wedding':(p.type==='fete')?'fete':'birthday';
+    el.innerHTML='<div style="font-size:12px;color:var(--txt2);padding:8px;white-space:pre-wrap">'+esc(getFallback(fbType))+'</div>';
   }
 }
 async function genMsgAI(id,elId){
   var p=mems().find(function(x){return String(x.id)===String(id);});
   if(p){var orig=p.customMsg;p.customMsg=undefined;await genMsg(id,elId);p.customMsg=orig;}
+}
+function showTonePicker(id,elId){
+  var el=document.getElementById(elId);if(!el)return;
+  var allTpl=[].concat(DTPL,typeof utpls!=='undefined'?utpls:[]);
+  var h='<div style="padding:8px 0">';
+  h+='<div style="font-size:11px;color:var(--txt2);margin-bottom:8px">'+t('chooseTone')+'</div>';
+  h+='<div class="chips" style="margin-bottom:8px">';
+  allTpl.forEach(function(tp){
+    h+='<button class="chip" onclick="genMsg(\''+id+'\',\''+elId+'\',\''+tp.id+'\')">'+tp.e+' '+tp.n+'</button>';
+  });
+  h+='</div>';
+  h+='<button class="btn G sm" style="width:100%" onclick="genMsg(\''+id+'\',\''+elId+'\')">'+t('generateDefault')+' →</button>';
+  h+='</div>';
+  el.innerHTML=h;
 }
 
 async function genGift(id,elId){
