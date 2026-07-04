@@ -1405,6 +1405,7 @@ function buildMsgPrompt(p, tpl, age, isTod, lang, prevMsgs) {
     else if (age)      lines.push("Ils vont fêter " + age + " an" + (age > 1 ? 's' : '') + " de mariage.");
     else if (isTod)    lines.push("C'est leur anniversaire de mariage aujourd'hui.");
     lines.push("Célèbre leur parcours commun, leur amour et ce qu'ils ont construit ensemble.");
+    lines.push("Adresse-toi directement au couple en utilisant 'vous'.");
 
   } else if (p.type === 'work') {
     var ancPrefix = age
@@ -1439,6 +1440,11 @@ function buildMsgPrompt(p, tpl, age, isTod, lang, prevMsgs) {
     lines.push("Personnalise vraiment le message en intégrant ces caractéristiques dans le texte — ne les liste pas, inspire-toi en pour créer des phrases spécifiques à cette personne : " + p.note);
   }
 
+  var firstName = p.type === 'wedding' ? '' : p.name.split(' ')[0];
+  if (firstName) {
+    lines.push("Si tu connais la signification ou l'origine du prénom " + firstName + ", intègre-la subtilement dans le message — uniquement si c'est naturel et pertinent.");
+  }
+
   if (prevMsgs && prevMsgs.length > 0) {
     var excerpts = prevMsgs.map(function(m) {
       return '"' + (m.text || '').substring(0, 80) + '"';
@@ -1447,7 +1453,7 @@ function buildMsgPrompt(p, tpl, age, isTod, lang, prevMsgs) {
   }
 
   var lengthTarget = p.type === 'work' ? '3 à 4 phrases' : '3 à 5 phrases';
-  lines.push("Écris " + lengthTarget + " courtes et percutantes. Commence directement par le message, sans guillemets, sans titre, sans explication.");
+  lines.push("Écris " + lengthTarget + " authentiques et sincères, comme si tu écrivais à quelqu'un que tu aimes vraiment. Commence par un souhait personnel, évoque quelque chose de spécifique à cette personne ou à cette occasion, et termine sur une note d'affection ou d'avenir. Commence directement par le message, sans guillemets, sans titre, sans explication.");
 
   return lines.join('\n');
 }
