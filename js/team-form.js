@@ -435,6 +435,7 @@ async function tfInitDashboard() {
   }
   TF.survey = res.data.survey;
   TF.members = res.data.members || [];
+  TF.members.forEach(function(m) { if (m.imported_at) TF.importedTokens.add(m.token); });
   tfSaveAdminToken(TF.adminToken, TF.survey.team_name, TF.survey.manager_name);
   tfRenderDashboard();
   tfRenderAddMemberForm();
@@ -483,6 +484,7 @@ async function tfInitCoadminDashboard() {
   }
   TF.survey = res.data.survey || {};
   TF.members = res.data.members || [];
+  TF.members.forEach(function(m) { if (m.imported_at) TF.importedTokens.add(m.token); });
   TF.isCoadmin = true;
   tfShow('tf-view-dashboard');
   tfRenderDashboard();
@@ -495,7 +497,11 @@ async function tfLoadDashboardMembers() {
   var res = TF.isCoadmin
     ? await supabase.rpc('tf_refresh_dashboard_coadmin', { p_coadmin_token: TF.coadminToken })
     : await supabase.rpc('tf_refresh_dashboard', { p_admin_token: TF.adminToken });
-  if (!res.error && res.data) { TF.members = res.data; tfRenderDashboard(); }
+  if (!res.error && res.data) {
+    TF.members = res.data;
+    TF.members.forEach(function(m) { if (m.imported_at) TF.importedTokens.add(m.token); });
+    tfRenderDashboard();
+  }
 }
 
 function tfRenderDashboard() {
@@ -836,12 +842,17 @@ async function tfImportMember(memberToken) {
     tfToast(tfT('alreadyImported'));
     return;
   }
+  var importBtn = document.querySelector('[onclick*="tfImportMember"][data-token="' + memberToken + '"]');
+  if (importBtn) {
+    if (importBtn.disabled) return;
+    importBtn.disabled = true;
+  }
   var m = TF.members.find(function(x) { return x.token === memberToken; });
-  if (!m || !m.completed) return;
+  if (!m || !m.completed) { if (importBtn) importBtn.disabled = false; return; }
 
   var sessRes = await supabase.auth.getSession();
   var userId = sessRes.data && sessRes.data.session && sessRes.data.session.user && sessRes.data.session.user.id;
-  if (!userId) { alert(tfT('syncNotConnected')); return; }
+  if (!userId) { alert(tfT('syncNotConnected')); if (importBtn) importBtn.disabled = false; return; }
 
   var gRes = await supabase.from('groups').select('id').eq('user_id', userId).eq('name', TF.survey.team_name).maybeSingle();
   var groupId;
@@ -849,7 +860,7 @@ async function tfImportMember(memberToken) {
     groupId = gRes.data.id;
   } else {
     var newG = await supabase.from('groups').insert({ id: 'g' + Date.now(), user_id: userId, name: TF.survey.team_name, icon: '👥', mode: 'biz' }).select('id').single();
-    if (newG.error) { alert('Erreur groupe : ' + newG.error.message); return; }
+    if (newG.error) { alert('Erreur groupe : ' + newG.error.message); if (importBtn) importBtn.disabled = false; return; }
     groupId = newG.data.id;
   }
 
@@ -863,12 +874,13 @@ async function tfImportMember(memberToken) {
   if (m.married && m.wedding_day && m.wedding_month) {
     rows.push({ id: String(base + 1), user_id: userId, group_id: groupId, name: fullName + ' (mariage avec ' + (m.spouse_name || '?') + ')', day: m.wedding_day, month: m.wedding_month, year: m.wedding_year || null, phone: ((m.phone_code || '') + (m.phone_number || '')).trim(), note: note, type: 'wedding', gender: '', incomplete: false, notif_days_before: null, notif_time: null });
   }
-  if (!rows.length) { tfToast(tfLang() === 'fr' ? 'Aucune date à importer.' : 'No date to import.'); return; }
+  if (!rows.length) { tfToast(tfLang() === 'fr' ? 'Aucune date à importer.' : 'No date to import.'); if (importBtn) importBtn.disabled = false; return; }
   var iRes = await supabase.from('members').insert(rows);
-  if (iRes.error) { alert('Erreur import : ' + iRes.error.message); return; }
+  if (iRes.error) { alert('Erreur import : ' + iRes.error.message); if (importBtn) importBtn.disabled = false; return; }
   tfUpdateLocalStorage(groupId, TF.survey.team_name, rows);
+  await supabase.from('survey_members').update({ imported_at: new Date().toISOString() }).eq('token', memberToken);
   TF.importedTokens.add(memberToken);
-  var importBtn = document.querySelector('[onclick*="tfImportMember"][data-token="' + memberToken + '"]');
+  m.imported_at = new Date().toISOString();
   if (importBtn) {
     importBtn.disabled = true;
     importBtn.style.cssText = 'grid-column:span 2;background:#ddd;border-color:#aaa;color:#888;font-weight:700;cursor:default';
@@ -884,8 +896,8 @@ async function tfSyncBloomday() {
   var userId = sessRes.data && sessRes.data.session && sessRes.data.session.user && sessRes.data.session.user.id;
   if (!userId) { alert(tfT('syncNotConnected')); return; }
 
-  var completed = TF.members.filter(function(m) { return m.completed; });
-  if (!completed.length) { alert('Aucun membre complété.'); return; }
+  var completed = TF.members.filter(function(m) { return m.completed && !TF.importedTokens.has(m.token); });
+  if (!completed.length) { tfToast(tfT('alreadyImported')); return; }
 
   var gRes = await supabase.from('groups').select('id').eq('user_id', userId).eq('name', TF.survey.team_name).maybeSingle();
   var groupId;
@@ -938,7 +950,15 @@ async function tfSyncBloomday() {
   var iRes = await supabase.from('members').insert(rows);
   if (iRes.error) { alert('Erreur import : ' + iRes.error.message); return; }
   tfUpdateLocalStorage(groupId, TF.survey.team_name, rows);
+  var importedTokensNow = completed.map(function(m) { return m.token; });
+  await supabase.from('survey_members').update({ imported_at: new Date().toISOString() }).in('token', importedTokensNow);
+  importedTokensNow.forEach(function(tok) {
+    TF.importedTokens.add(tok);
+    var mm = TF.members.find(function(x) { return x.token === tok; });
+    if (mm) mm.imported_at = new Date().toISOString();
+  });
   tfToast(tfT('syncSuccess').replace('%d', rows.length));
+  tfRenderDashboard();
 }
 
 // ── MODE FORMULAIRE MEMBRE ──
