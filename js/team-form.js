@@ -24,6 +24,7 @@ var TF = {
   pollInterval: null,
   submitting: false,
   importedTokens: new Set(),
+  importingTokens: new Set(),
   user: null,
   _coAdminShareToken: null,
   coAdminName: '',
@@ -700,7 +701,9 @@ function tfRenderMemberCard(m) {
     + '<button class="share-btn" data-token="' + m.token + '" onclick="tfShowQR(this.dataset.token)">' + tfT('qrCode') + '</button>'
     + (m.completed ? (TF.importedTokens.has(m.token)
         ? '<button class="share-btn" disabled style="grid-column:span 2;background:#ddd;border-color:#aaa;color:#888;font-weight:700;cursor:default">' + tfT('alreadyImported') + '</button>'
-        : '<button class="share-btn" data-token="' + m.token + '" onclick="tfImportMember(this.dataset.token)" style="grid-column:span 2;background:#E3F9F0;border-color:#0A5C3A;color:#0A5C3A;font-weight:700">' + tfT('importMember') + '</button>') : '')
+        : (TF.importingTokens.has(m.token)
+            ? '<button class="share-btn" disabled style="grid-column:span 2;background:#ddd;border-color:#aaa;color:#888;font-weight:700;cursor:default">' + tfT('importMember') + '</button>'
+            : '<button class="share-btn" data-token="' + m.token + '" onclick="tfImportMember(this.dataset.token)" style="grid-column:span 2;background:#E3F9F0;border-color:#0A5C3A;color:#0A5C3A;font-weight:700">' + tfT('importMember') + '</button>')) : '')
     + '</div>'
     + '</div>'
     + (TF.isCoadmin ? '' : '<div class="tf-dash-card-del" data-token="' + m.token + '" data-name="' + fullName + '" onclick="tfOpenRemoveModal(this.dataset.token,this.dataset.name)">' + tfT('tfRemoveMemberBtn') + '</div>')
@@ -903,7 +906,7 @@ function tfUpdateLocalStorage(groupId, groupName, rows) {
 
 // ── IMPORT UNITAIRE ──
 async function tfImportMember(memberToken) {
-  if (TF.importedTokens.has(memberToken)) {
+  if (TF.importedTokens.has(memberToken) || TF.importingTokens.has(memberToken)) {
     tfToast(tfT('alreadyImported'));
     return;
   }
@@ -915,45 +918,50 @@ async function tfImportMember(memberToken) {
   var m = TF.members.find(function(x) { return x.token === memberToken; });
   if (!m || !m.completed) { if (importBtn) importBtn.disabled = false; return; }
 
-  var sessRes = await supabase.auth.getSession();
-  var userId = sessRes.data && sessRes.data.session && sessRes.data.session.user && sessRes.data.session.user.id;
-  if (!userId) { alert(tfT('syncNotConnected')); if (importBtn) importBtn.disabled = false; return; }
+  TF.importingTokens.add(memberToken);
+  try {
+    var sessRes = await supabase.auth.getSession();
+    var userId = sessRes.data && sessRes.data.session && sessRes.data.session.user && sessRes.data.session.user.id;
+    if (!userId) { alert(tfT('syncNotConnected')); if (importBtn) importBtn.disabled = false; return; }
 
-  var gRes = await supabase.from('groups').select('id').eq('user_id', userId).eq('name', TF.survey.team_name).maybeSingle();
-  var groupId;
-  if (gRes.data && gRes.data.id) {
-    groupId = gRes.data.id;
-  } else {
-    var newG = await supabase.from('groups').insert({ id: 'g' + Date.now(), user_id: userId, name: TF.survey.team_name, icon: '👥', mode: 'biz' }).select('id').single();
-    if (newG.error) { alert('Erreur groupe : ' + newG.error.message); if (importBtn) importBtn.disabled = false; return; }
-    groupId = newG.data.id;
-  }
+    var gRes = await supabase.from('groups').select('id').eq('user_id', userId).eq('name', TF.survey.team_name).maybeSingle();
+    var groupId;
+    if (gRes.data && gRes.data.id) {
+      groupId = gRes.data.id;
+    } else {
+      var newG = await supabase.from('groups').insert({ id: 'g' + Date.now(), user_id: userId, name: TF.survey.team_name, icon: '👥', mode: 'biz' }).select('id').single();
+      if (newG.error) { alert('Erreur groupe : ' + newG.error.message); if (importBtn) importBtn.disabled = false; return; }
+      groupId = newG.data.id;
+    }
 
-  var rows = [];
-  var base = Date.now();
-  var fullName = (m.first_name + ' ' + m.last_name).trim();
-  var note = m.relation ? 'Relation : ' + m.relation : '';
-  if (m.birth_day && m.birth_month) {
-    rows.push({ id: String(base), user_id: userId, group_id: groupId, name: fullName, day: m.birth_day, month: m.birth_month, year: m.birth_year || null, phone: ((m.phone_code || '') + (m.phone_number || '')).trim(), note: note, type: 'birthday', gender: m.gender || '', incomplete: false, notif_days_before: null, notif_time: null });
+    var rows = [];
+    var base = Date.now();
+    var fullName = (m.first_name + ' ' + m.last_name).trim();
+    var note = m.relation ? 'Relation : ' + m.relation : '';
+    if (m.birth_day && m.birth_month) {
+      rows.push({ id: String(base), user_id: userId, group_id: groupId, name: fullName, day: m.birth_day, month: m.birth_month, year: m.birth_year || null, phone: ((m.phone_code || '') + (m.phone_number || '')).trim(), note: note, type: 'birthday', gender: m.gender || '', incomplete: false, notif_days_before: null, notif_time: null });
+    }
+    if (m.married && m.wedding_day && m.wedding_month) {
+      rows.push({ id: String(base + 1), user_id: userId, group_id: groupId, name: fullName + ' (mariage avec ' + (m.spouse_name || '?') + ')', day: m.wedding_day, month: m.wedding_month, year: m.wedding_year || null, phone: ((m.phone_code || '') + (m.phone_number || '')).trim(), note: note, type: 'wedding', gender: '', incomplete: false, notif_days_before: null, notif_time: null });
+    }
+    if (!rows.length) { tfToast(tfLang() === 'fr' ? 'Aucune date à importer.' : 'No date to import.'); if (importBtn) importBtn.disabled = false; return; }
+    var iRes = await supabase.from('members').insert(rows);
+    if (iRes.error) { alert('Erreur import : ' + iRes.error.message); if (importBtn) importBtn.disabled = false; return; }
+    tfUpdateLocalStorage(groupId, TF.survey.team_name, rows);
+    var impRes = await supabase.from('survey_members').update({ imported_at: new Date().toISOString() }).eq('token', memberToken);
+    if (impRes.error) console.warn('imported_at update failed for token ' + memberToken + ': ' + impRes.error.message);
+    TF.importedTokens.add(memberToken);
+    m.imported_at = new Date().toISOString();
+    if (importBtn) {
+      importBtn.disabled = true;
+      importBtn.style.cssText = 'grid-column:span 2;background:#ddd;border-color:#aaa;color:#888;font-weight:700;cursor:default';
+      importBtn.textContent = tfT('alreadyImported');
+      importBtn.removeAttribute('onclick');
+    }
+    tfToast(tfT('syncSuccess').replace('%d', rows.length));
+  } finally {
+    TF.importingTokens.delete(memberToken);
   }
-  if (m.married && m.wedding_day && m.wedding_month) {
-    rows.push({ id: String(base + 1), user_id: userId, group_id: groupId, name: fullName + ' (mariage avec ' + (m.spouse_name || '?') + ')', day: m.wedding_day, month: m.wedding_month, year: m.wedding_year || null, phone: ((m.phone_code || '') + (m.phone_number || '')).trim(), note: note, type: 'wedding', gender: '', incomplete: false, notif_days_before: null, notif_time: null });
-  }
-  if (!rows.length) { tfToast(tfLang() === 'fr' ? 'Aucune date à importer.' : 'No date to import.'); if (importBtn) importBtn.disabled = false; return; }
-  var iRes = await supabase.from('members').insert(rows);
-  if (iRes.error) { alert('Erreur import : ' + iRes.error.message); if (importBtn) importBtn.disabled = false; return; }
-  tfUpdateLocalStorage(groupId, TF.survey.team_name, rows);
-  var impRes = await supabase.from('survey_members').update({ imported_at: new Date().toISOString() }).eq('token', memberToken);
-  if (impRes.error) console.warn('imported_at update failed for token ' + memberToken + ': ' + impRes.error.message);
-  TF.importedTokens.add(memberToken);
-  m.imported_at = new Date().toISOString();
-  if (importBtn) {
-    importBtn.disabled = true;
-    importBtn.style.cssText = 'grid-column:span 2;background:#ddd;border-color:#aaa;color:#888;font-weight:700;cursor:default';
-    importBtn.textContent = tfT('alreadyImported');
-    importBtn.removeAttribute('onclick');
-  }
-  tfToast(tfT('syncSuccess').replace('%d', rows.length));
 }
 
 // ── SYNC DIRECTE BLOOMDAY ──
