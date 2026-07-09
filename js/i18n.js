@@ -572,6 +572,8 @@ const I18N = {
     tip4d:'Parrainez 3 amis = 1 mois gratuit. Jusqu\'à 30% de commission.',
     tip5d:'Plan Bloom : idées cadeaux personnalisées selon l\'âge et les goûts.',
     searchMember:'Rechercher un membre…',
+    sortAsc:'Ordre alphabétique A→Z',
+    sortDesc:'Ordre alphabétique Z→A',
     filterAll2:'Tous',
     noSearchResult:'Aucun résultat pour cette recherche.',
     genderSelect:'Genre',
@@ -1471,6 +1473,8 @@ const I18N = {
     tip4d:'Refer 3 friends = 1 free month. Up to 30% commission.',
     tip5d:'Bloom plan: personalized gift ideas by age and interests.',
     searchMember:'Search a member…',
+    sortAsc:'Alphabetical order A→Z',
+    sortDesc:'Alphabetical order Z→A',
     filterAll2:'All',
     noSearchResult:'No results for this search.',
     genderSelect:'Gender',
@@ -2238,6 +2242,8 @@ const I18N = {
     tip4d:'Refiere 3 amigos = 1 mes gratis. Hasta 30% de comisión.',
     tip5d:'Plan Bloom: ideas de regalo personalizadas por edad.',
     searchMember:'Buscar miembro…',
+    sortAsc:'Orden alfabético A→Z',
+    sortDesc:'Orden alfabético Z→A',
     filterAll2:'Todos',
     noSearchResult:'Sin resultados para esta búsqueda.',
     genderSelect:'Género',
@@ -3005,6 +3011,8 @@ const I18N = {
     tip4d:'أحِل 3 أصدقاء = شهر مجاني. حتى 30% عمولة.',
     tip5d:'خطة Bloom: أفكار هدايا مخصصة حسب العمر.',
     searchMember:'البحث عن عضو…',
+    sortAsc:'ترتيب أبجدي تصاعدي (A→Z)',
+    sortDesc:'ترتيب أبجدي تنازلي (Z→A)',
     filterAll2:'الكل',
     noSearchResult:'لا نتائج لهذا البحث.',
     genderSelect:'الجنس',
@@ -3772,6 +3780,8 @@ const I18N = {
     tip4d:'3 दोस्त = 1 महीना मुफ्त।',
     tip5d:'Bloom: उम्र के अनुसार उपहार विचार।',
     searchMember:'सदस्य खोजें…',
+    sortAsc:'वर्णानुक्रम A→Z',
+    sortDesc:'वर्णानुक्रम Z→A',
     filterAll2:'सभी',
     noSearchResult:'इस खोज के लिए कोई परिणाम नहीं।',
     genderSelect:'लिंग',
@@ -4539,6 +4549,8 @@ const I18N = {
     tip4d:'推荐3位朋友 = 1个月免费，高达30%佣金。',
     tip5d:'Bloom套餐：根据年龄个性化礼品建议。',
     searchMember:'搜索成员…',
+    sortAsc:'字母顺序 A→Z',
+    sortDesc:'字母顺序 Z→A',
     filterAll2:'全部',
     noSearchResult:'此搜索无结果。',
     genderSelect:'性别',
@@ -5306,6 +5318,8 @@ const I18N = {
     tip4d:'Indique 3 amigos = 1 mês grátis. Até 30% de comissão.',
     tip5d:'Plano Bloom: ideias de presente personalizadas por idade.',
     searchMember:'Buscar membro…',
+    sortAsc:'Ordem alfabética A→Z',
+    sortDesc:'Ordem alfabética Z→A',
     filterAll2:'Todos',
     noSearchResult:'Sem resultados para esta pesquisa.',
     genderSelect:'Gênero',
@@ -5698,6 +5712,7 @@ function initLang(){
 let groups=[],curG='g1',admins=[],hist={},stats={},profile={},favs=[],utpls=[];
 let editId=null,editAdm=null,fMonth=0,fType='';
 let searchInput='',searchFiltered=null; // Axe 2 : état séparé
+let sortDir='asc';
 let ppPhoto='',mode='perso',plan='free';
 let calY=new Date().getFullYear(),calM=new Date().getMonth();
 let actTpl='t1',obStep=0;

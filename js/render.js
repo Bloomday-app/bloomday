@@ -353,13 +353,16 @@ function rMembers(){
   }
   // Champ de recherche FIXE — ne se recrée pas à chaque frappe
   // → le clavier reste ouvert sur mobile
-  h+=`<div class="sw">
+  h+=`<div style="display:flex;gap:8px;align-items:center">
+  <div class="sw" style="flex:1">
     <svg width="16" height="16" viewBox="0 0 20 20" fill="none"><circle cx="9" cy="9" r="6" stroke="currentColor" stroke-width="1.5"/><path d="M13.5 13.5L17 17" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
     <input type="text" id="search-inp" placeholder="${t('searchMember')}" value="${esc(searchInput)}"
       autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
       inputmode="search"
       oninput="onSearchInput(this.value)" onkeydown="if(event.key==='Enter'){this.blur();}">
     <button id="srch-clr" class="clear-btn" style="display:${searchInput?'flex':'none'}" onclick="clearSearch()">✕</button>
+  </div>
+  <button onclick="toggleSortDir()" title="${sortDir==='asc'?t('sortAsc'):t('sortDesc')}" style="flex-shrink:0;width:40px;height:40px;border-radius:12px;border:1.5px solid var(--brd);background:var(--bg2);color:var(--txt2);font-size:16px;cursor:pointer">⇅</button>
   </div>`;
   h+=`<div class="chips"><button class="chip${fMonth===0?' on':''}" onclick="fMonth=0;rMembers()">${t('allMonths')}</button>`;
   for(let mo=1;mo<=12;mo++){if(m.some(p=>p.month===mo))h+=`<button class="chip${fMonth===mo?' on':''}" onclick="fMonth=${mo};rMembers()">${MNS[mo-1]}</button>`;}
@@ -376,6 +379,7 @@ function rMembers(){
     h+=`</div>`;
   }
   if(!filtered.length){h+=`<div class="es">${m.length===0?t('noMembersYet'):t('noSearchResults')}</div>`;el.innerHTML=h;return;}
+  filtered=filtered.slice().sort((a,b)=>{const r=wname(a).localeCompare(wname(b),undefined,{sensitivity:'base'});return sortDir==='asc'?r:-r;});
   h+=`<div style="font-size:12px;color:var(--txt2);margin-bottom:10px;font-weight:600">${filtered.length} ${filtered.length!==1?t('membersCount'):t('memberCount')} · Plan ${PLANS[plan].name}</div>`;
   filtered.forEach(p=>{
     const idx=m.indexOf(p),tod=isToday(p.day,p.month),days=daysTill(p.day,p.month),soon=days>0&&days<=7;
@@ -1664,6 +1668,11 @@ function onSearchInput(val){
 function clearSearch(){
   searchInput='';searchFiltered=null;
   var inp=document.getElementById('search-inp');if(inp)inp.value='';
+  rMembers();
+}
+
+function toggleSortDir(){
+  sortDir=sortDir==='asc'?'desc':'asc';
   rMembers();
 }
 

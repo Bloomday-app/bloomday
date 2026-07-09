@@ -266,7 +266,7 @@ function closeGroupMenu(){
   if(menu)menu.style.display='none';
   _gcMenuGroupId=null;
 }
-function switchG(id){curG=id;fMonth=0;fType='';searchInput='';searchFiltered=null;editId=null;refresh();}
+function switchG(id){curG=id;fMonth=0;fType='';searchInput='';searchFiltered=null;sortDir='asc';editId=null;refresh();}
 function addGroup(){
   const pl=PL();
   if(groups.length>=pl.mg){
