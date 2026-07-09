@@ -26,7 +26,10 @@ var TF = {
   importedTokens: new Set(),
   user: null,
   _coAdminShareToken: null,
-  coAdminName: ''
+  coAdminName: '',
+  dashSearch: '',
+  dashStatusFilter: 'all',
+  dashSearchDebounce: null
 };
 var TF_DELETE = { token: null, teamName: null, groupId: null, bloomdayMembers: [] };
 var TF_REMOVE = { token: null, name: null, userId: null };
@@ -528,10 +531,72 @@ function tfRenderDashboard() {
     + coAdminSection;
 
   if (!TF.isCoadmin) tfLoadCoAdminSection();
-  document.getElementById('tf-member-cards').innerHTML = TF.members.map(function(m) {
-    return tfRenderMemberCard(m);
-  }).join('');
+  tfRenderDashboardToolbar();
+  tfRenderMemberList();
+}
+
+// Rendu unique de la barre de recherche + chips — ne se recrée pas à chaque
+// poll (30s) ou re-render, sinon le focus/clavier mobile saute pendant la frappe.
+function tfRenderDashboardToolbar() {
+  var el = document.getElementById('tf-dash-toolbar');
+  if (!el || document.getElementById('tf-dash-search-inp')) return;
+  el.innerHTML =
+    '<div class="tf-search-wrap">'
+    + '<svg width="16" height="16" viewBox="0 0 20 20" fill="none"><circle cx="9" cy="9" r="6" stroke="currentColor" stroke-width="1.5"/><path d="M13.5 13.5L17 17" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>'
+    + '<input type="text" id="tf-dash-search-inp" placeholder="' + tfT('tfSearchPlaceholder') + '" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" inputmode="search" oninput="tfOnDashSearchInput(this.value)" onkeydown="if(event.key===\'Enter\'){this.blur();}">'
+    + '<button id="tf-dash-search-clr" class="tf-search-clr" style="display:none" onclick="tfClearDashSearch()">✕</button>'
+    + '</div>'
+    + '<div class="tf-chips" id="tf-dash-status-chips">'
+    + '<button class="tf-chip on" data-f="all" onclick="tfSetDashFilter(\'all\')">' + tfT('tfFilterAll') + '</button>'
+    + '<button class="tf-chip" data-f="completed" onclick="tfSetDashFilter(\'completed\')">' + tfT('statusCompleted') + '</button>'
+    + '<button class="tf-chip" data-f="pending" onclick="tfSetDashFilter(\'pending\')">' + tfT('statusPending') + '</button>'
+    + '</div>';
+}
+
+function tfRenderMemberList() {
+  var el = document.getElementById('tf-member-cards');
+  if (!el) return;
+  var list = TF.members.slice().sort(function(a, b) { return new Date(b.created_at) - new Date(a.created_at); });
+  var q = (TF.dashSearch || '').trim().toLowerCase();
+  if (q) {
+    list = list.filter(function(m) {
+      return (m.first_name + ' ' + m.last_name).toLowerCase().indexOf(q) !== -1;
+    });
+  }
+  if (TF.dashStatusFilter === 'completed') list = list.filter(function(m) { return m.completed; });
+  else if (TF.dashStatusFilter === 'pending') list = list.filter(function(m) { return !m.completed; });
+  if (!list.length) {
+    el.innerHTML = '<div style="text-align:center;color:var(--txt2);font-size:13px;padding:24px 0">' + tfT('tfNoSearchResults') + '</div>';
+    return;
+  }
+  el.innerHTML = list.map(function(m) { return tfRenderMemberCard(m); }).join('');
   tfInitSwipe();
+}
+
+function tfOnDashSearchInput(val) {
+  TF.dashSearch = val;
+  var clrBtn = document.getElementById('tf-dash-search-clr');
+  if (clrBtn) clrBtn.style.display = val ? 'flex' : 'none';
+  clearTimeout(TF.dashSearchDebounce);
+  TF.dashSearchDebounce = setTimeout(tfRenderMemberList, 200);
+}
+
+function tfClearDashSearch() {
+  TF.dashSearch = '';
+  var inp = document.getElementById('tf-dash-search-inp');
+  if (inp) inp.value = '';
+  var clrBtn = document.getElementById('tf-dash-search-clr');
+  if (clrBtn) clrBtn.style.display = 'none';
+  tfRenderMemberList();
+}
+
+function tfSetDashFilter(f) {
+  TF.dashStatusFilter = f;
+  var chips = document.querySelectorAll('#tf-dash-status-chips .tf-chip');
+  for (var i = 0; i < chips.length; i++) {
+    chips[i].classList.toggle('on', chips[i].dataset.f === f);
+  }
+  tfRenderMemberList();
 }
 
 function tfRenderAddMemberForm() {

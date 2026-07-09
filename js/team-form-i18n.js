@@ -86,7 +86,10 @@ var TF_I18N = {
     tfShareViaSMS: 'SMS',
     tfShareViaEmail: 'Email',
     tfShareViaCopy: 'Copier le lien',
-    tfCoAdminMsg: 't\'invite à co-gérer l\'équipe'
+    tfCoAdminMsg: 't\'invite à co-gérer l\'équipe',
+    tfSearchPlaceholder: 'Rechercher un membre…',
+    tfFilterAll: 'Tous',
+    tfNoSearchResults: 'Aucun résultat pour cette recherche.'
   },
   en: {
     title: 'Team Form',
@@ -175,7 +178,10 @@ var TF_I18N = {
     tfShareViaSMS: 'SMS',
     tfShareViaEmail: 'Email',
     tfShareViaCopy: 'Copy link',
-    tfCoAdminMsg: 'invites you to co-manage the team'
+    tfCoAdminMsg: 'invites you to co-manage the team',
+    tfSearchPlaceholder: 'Search a member…',
+    tfFilterAll: 'All',
+    tfNoSearchResults: 'No results for this search.'
   }
 };
 

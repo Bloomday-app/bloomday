@@ -44,6 +44,14 @@
     .badge{display:inline-block;padding:2px 8px;border-radius:20px;font-size:11px;font-weight:600}
     .badge-ok{background:var(--b3l,#E3F9F0);color:var(--b3d,#0A5C3A)}
     .badge-wait{background:var(--b1l,#FDF6E3);color:var(--b1,#7A5A10)}
+    .tf-search-wrap{display:flex;align-items:center;gap:8px;background:var(--bg);border:1.5px solid var(--brd);border-radius:12px;padding:8px 12px;margin-bottom:10px}
+    .tf-search-wrap svg{color:var(--txt3);flex-shrink:0}
+    .tf-search-wrap input{border:none;background:transparent;padding:0;margin:0;flex:1;font-size:14px;color:var(--txt)}
+    .tf-search-wrap input:focus{outline:none}
+    .tf-search-clr{background:none;border:none;cursor:pointer;color:var(--txt3);font-size:14px;padding:0 4px;font-family:inherit}
+    .tf-chips{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px}
+    .tf-chip{padding:6px 12px;border-radius:20px;font-size:12px;font-weight:600;border:1.5px solid var(--brd);background:var(--bg2);color:var(--txt2);cursor:pointer;font-family:inherit;transition:all .15s}
+    .tf-chip.on{background:var(--grad);color:#fff;border-color:transparent}
     .progress-bar{height:6px;border-radius:3px;background:var(--brd);margin-bottom:16px}
     .progress-fill{height:100%;border-radius:3px;background:var(--grad);transition:width .4s}
     .relation-tag{display:inline-flex;align-items:center;gap:6px;background:var(--bg2);border:1px solid var(--brd);border-radius:8px;padding:4px 10px;margin:4px}
@@ -129,6 +137,7 @@
         <div class="tf-card" id="tf-dash-form-card" style="border:1.5px dashed var(--brd2)"></div>
       </div>
       <div id="tf-dash-right">
+        <div id="tf-dash-toolbar"></div>
         <div id="tf-member-cards"></div>
       </div>
     </div>
