@@ -878,7 +878,8 @@ async function tfImportMember(memberToken) {
   var iRes = await supabase.from('members').insert(rows);
   if (iRes.error) { alert('Erreur import : ' + iRes.error.message); if (importBtn) importBtn.disabled = false; return; }
   tfUpdateLocalStorage(groupId, TF.survey.team_name, rows);
-  await supabase.from('survey_members').update({ imported_at: new Date().toISOString() }).eq('token', memberToken);
+  var impRes = await supabase.from('survey_members').update({ imported_at: new Date().toISOString() }).eq('token', memberToken);
+  if (impRes.error) console.warn('imported_at update failed for token ' + memberToken + ': ' + impRes.error.message);
   TF.importedTokens.add(memberToken);
   m.imported_at = new Date().toISOString();
   if (importBtn) {
@@ -951,7 +952,8 @@ async function tfSyncBloomday() {
   if (iRes.error) { alert('Erreur import : ' + iRes.error.message); return; }
   tfUpdateLocalStorage(groupId, TF.survey.team_name, rows);
   var importedTokensNow = completed.map(function(m) { return m.token; });
-  await supabase.from('survey_members').update({ imported_at: new Date().toISOString() }).in('token', importedTokensNow);
+  var bulkImpRes = await supabase.from('survey_members').update({ imported_at: new Date().toISOString() }).in('token', importedTokensNow);
+  if (bulkImpRes.error) console.warn('imported_at bulk update failed: ' + bulkImpRes.error.message);
   importedTokensNow.forEach(function(tok) {
     TF.importedTokens.add(tok);
     var mm = TF.members.find(function(x) { return x.token === tok; });
