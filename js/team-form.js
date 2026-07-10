@@ -950,6 +950,8 @@ async function tfImportMember(memberToken) {
     tfUpdateLocalStorage(groupId, TF.survey.team_name, rows);
     var impRes = await supabase.rpc('tf_mark_imported', { p_tokens: [memberToken] });
     if (impRes.error) console.warn('imported_at update failed for token ' + memberToken + ': ' + impRes.error.message);
+    var mirrorRes = await supabase.rpc('tf_mirror_import_to_coadmins', { p_tokens: [memberToken] });
+    if (mirrorRes.error) console.warn('mirror import failed for token ' + memberToken + ': ' + mirrorRes.error.message);
     TF.importedTokens.add(memberToken);
     m.imported_at = new Date().toISOString();
     if (importBtn) {
@@ -1027,6 +1029,8 @@ async function tfSyncBloomday() {
   var importedTokensNow = completed.map(function(m) { return m.token; });
   var bulkImpRes = await supabase.rpc('tf_mark_imported', { p_tokens: importedTokensNow });
   if (bulkImpRes.error) console.warn('imported_at bulk update failed: ' + bulkImpRes.error.message);
+  var bulkMirrorRes = await supabase.rpc('tf_mirror_import_to_coadmins', { p_tokens: importedTokensNow });
+  if (bulkMirrorRes.error) console.warn('mirror import bulk failed: ' + bulkMirrorRes.error.message);
   importedTokensNow.forEach(function(tok) {
     TF.importedTokens.add(tok);
     var mm = TF.members.find(function(x) { return x.token === tok; });
