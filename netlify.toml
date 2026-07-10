@@ -1,6 +1,6 @@
 [build]
   publish = "."
-  command = "echo 'Static site'"
+  command = "sh scripts/inject-cache-bust.sh"
 
 [[redirects]]
   from = "/*"
